@@ -1,0 +1,29 @@
+language: node_js
+node_js: stable
+# assign build branches
+branches:
+  only:
+    - blog-source
+# cache this directory
+cache:
+  directories:
+    - node_modules
+# S: Build Lifecycle
+before_install:
+  - openssl aes-256-cbc -K $encrypted_2d8a39be9be8_key -iv $encrypted_2d8a39be9be8_iv -in ./.travis/id_rsa.enc -out ~/.ssh/id_rsa -d
+  - chmod 600 ~/.ssh/id_rsa
+  - eval $(ssh-agent)
+  - ssh-add ~/.ssh/id_rsa
+  - cp .travis/ssh_config ~/.ssh/config
+  - npm install -g hexo-cli # 安装 hexo
+  - git clone -b mod https://github.com/shinerio/hexo-theme-even.git themes/even
+install:
+  - npm install # 安装 package.json 中的插件
+script:
+  - hexo generate
+after_success:
+  - git config —global user.name "shinerio"
+  - git config —global user.email "jstxzhangrui@163.com"
+  - sed -i'' "/^ *repo/s~github\.com~${githubToken}@github.com~" _config.yml
+  - hexo deploy
+# E: Build LifeCycle
