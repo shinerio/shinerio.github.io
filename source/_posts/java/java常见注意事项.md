@@ -1,5 +1,5 @@
 ---
-title: 关于java，这些你可能并没有注意
+title: java常见注意事项
 date: 2016-12-11 20:07:08
 catagories:
 - java
@@ -19,6 +19,8 @@ tags:
    （java ClassName  param1 param2 param3）
 
 5. java使用javadoc工具(JDK安装的一部分)来提取注释，输出为html文件，只能为public和protected成员进行文档注释，private和default会被忽略
+
+   <!--more-->
 
 6. 对于一个较大的数，执行操作运算很可能结果就会溢出，而你不会受到出错或警告消息
 

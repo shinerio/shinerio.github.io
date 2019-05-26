@@ -23,6 +23,8 @@ tags:
 >Java(TM) SE Runtime Environment (build 1.8.0_66-b18)
 >Java HotSpot(TM) 64-Bit Server VM (build 25.66-b18, mixed mode)# 
 
+<!--more-->
+
 # Java参数概述
 
 我将介绍一些最有用的用于获得更多关于ava运行时信息参数的设置

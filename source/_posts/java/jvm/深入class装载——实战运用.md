@@ -30,6 +30,8 @@ so easy！
 
 这并不是个线程安全的方法，也就是会有多个线程同时进入if语句块。看到这，你心想，这还不简单，直接价格synchronized不就行了，没错，是这样的。
 
+<!--more-->
+
 ```java
 public class SimpleSingleton {
 	private SimpleSingleton(){}
