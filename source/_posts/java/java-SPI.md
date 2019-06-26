@@ -15,6 +15,8 @@ SPI(Service Provider Interface)，是JDK内置的一种服务提供发现机制�
 
 服务提供者提供一个接口的实现后，需要在classpath下的META-INF/services目录下创建一个以服务接口命名的文件，这个文件里的内容就是这个接口的具体实现类的全限定名。当其他的程序需要这个服务的时候，就可以通过查找这个jar包（一般都是以jar包做依赖）的`META-INF/services/`中的配置文件，配置文件中有接口的具体实现类名，可以根据这个类名进行加载实例化，就可以使用该服务了。JDK中查找服务的实现的工具类是：`java.util.ServiceLoader`。
 
+<!--more-->
+
 # JDBC实例
 
 在JDBC4.0之前，我们开发有连接数据库的时候，通常会用`Class.forName("com.mysql.jdbc.Driver")`这句先加载数据库相关的驱动，然后再进行获取连接等的操作。而JDBC4.0之后不需用`Class.forName("com.mysql.jdbc.Driver")`来加载驱动，直接获取连接就可以了，现在这种方式就是使用了Java的SPI扩展机制来实现。
