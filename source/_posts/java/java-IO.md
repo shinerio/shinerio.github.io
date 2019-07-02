@@ -1,7 +1,7 @@
 ---
 title: java I/O
 date: 2019-05-36
-catagories:
+categories:
 - java
 tags:
 - java
