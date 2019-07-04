@@ -22,6 +22,8 @@ vim /etc/hosts
 10.103.238.97 hadoop-slave3
 ```
 
+<!--more-->
+
 ## 2. 修改主机名
 
 以master为例，其他类似

@@ -468,5 +468,7 @@ public final class ServiceLoader<S>
 }
 ```
 
+# 利用SPI做RPC调用，与HSF区别
 
+![](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/未命名.png)
 
