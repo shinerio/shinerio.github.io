@@ -1,6 +1,6 @@
 ---
-Title:java8函数式编程
-date:2019-07-04
+Title: java8函数式编程
+date: 2019-07-04
 Categories:
 - java
 Tags:

@@ -1,6 +1,6 @@
 ---
-Title:facade模式
-date:2019-07-02
+Title: facade模式
+date: 2019-07-02
 Categories:
 - 设计模式
 tags:
