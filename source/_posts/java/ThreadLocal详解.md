@@ -7,7 +7,7 @@ tags:
 - java
 ---
 
-# 概念
+# ThreadLocal详解
 
 ThreadLocal也叫线程本地变量，保证了线程之间独立，每个线程都访问的是独立的副本，在线程本地内存工作
 
