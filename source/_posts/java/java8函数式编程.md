@@ -25,7 +25,7 @@ labmda共有五种基本形式
    ActionListener listener = e->System.out.print(e);
    ```
 
-   <!--more-->
+<!--more-->
 
 3. 无入参，多行执行，无返回值
 
