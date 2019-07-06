@@ -1,7 +1,7 @@
 ---
 title: ThreadLocal详解
-Date: 2019-07-03
-Categories:
+date: 2019-07-03
+categories:
 - java
 tags:
 - java
