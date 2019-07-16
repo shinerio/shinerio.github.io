@@ -459,10 +459,14 @@ public class MyContext{
   - 不能在一个类内部方法调用自己的另一个事务方法，代理只能代理一层
   - 基于JDK代理的方法只能代理接口方法，所以只能是public，方法不能被static，private，protected，final修饰(接口也不能被这些修饰)
 
-  - 基于CGLIB代理的方法可以代理类方法，方法可以被private修饰
+  - 基于CGLIB代理的方法可以代理普通类方法
+
+- Spring默认使用JDK动态代理，在无法使用JDK的普通类上Spring使用CGLIB做代理
 
 - Spring使用代理模式来实现AOP
 
-- Spring AOP的切面设计多个interceptor的执行，使用责任链模式
+- Spring AOP增强代理类，涉及多个interceptor的执行，使用责任链模式
+
+- 配置多DataSource数据源的工程，使用事务时应指定TransactionManager，单数据源最好也指定一下，以防以后配置多数据源留下隐患
 
 - 事出反常必有妖，源码阅读是良策。
