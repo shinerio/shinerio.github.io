@@ -1,6 +1,8 @@
 ---
 title: I/O入门
 date: 2019-05-19
+category:
+    - Linux
 tags:
 	- I/O
 	- Linux
