@@ -13,6 +13,8 @@ tags:
 
 ![](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20190830140704.png)
 
+<!--more-->
+
  共有7列，分别是：
 
 - 第一列（共10位）
