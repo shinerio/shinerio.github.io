@@ -1,0 +1,195 @@
+title: 树结构
+date: 2019-08-30
+category:
+- Algorithm
+tags:
+- java
+
+## 二叉树遍历
+
+二叉树的遍历有四种方式，前序，中序，后序，层序，大多数树相关的算法题都可以通过树的遍历得到解决
+
+<!--more-->
+
+- 前序遍历
+
+  ```java
+  // 根节点-左子节点-右子节点
+  public void preOrderTraversal(TreeNode root) {
+    	if (root == null) {
+      		return;
+    	}
+    	System.out.print(root.val + " ");
+    	preOrderTraversal(root.left);
+    	preOrderTraversal(root.right);
+  }
+  
+  // 先访问根节点，右子节点需要入栈，便于回溯
+  public void preOrderTraversal(TreeNode root) {
+      Stack<TreeNode> stack = new Stack<TreeNode>();
+      while(!stack.isEmpty() || root != null) {
+          if (root != null) {
+              System.out.print(root.val + " ");
+              stack.push(root.right);
+              root = root.left;
+          } else {
+              root = stack.pop();
+          }
+      }
+  }
+  ```
+
+- 中序遍历
+
+  ```java
+  //左节点-根节点-右节点
+  public void inOrderTraversal(TreeNode root) {
+    if (root == null) {
+      return;
+    }
+    inOrderTraversal(root.left);
+    System.out.print(root.val + " ");
+    inOrderTraversal(root.right);
+  }
+  
+  // 先遍历左节点，根节点需要入栈方便回溯
+  public void inOrderTraversal(TreeNode root) {
+    Stack<TreeNode> stack = new Stack<TreeNode>();
+    while (!stack.isEmpty() || root != null) {
+      if (root != null) {
+        stack.push(root);
+        root = root.left;
+      } else{
+        root = stack.pop();
+        System.out.print(root.val + " ");
+        root = root.right;
+      }
+    }
+  }
+  ```
+
+- 后序遍历
+
+  ```java
+  //左子节点-右子节点-根节点
+  public void postOrderTraversal(TreeNode root) {
+    if (root == null) {
+      return;
+    }
+    postOrderTraversal(root.left);
+    postOrderTraversal(root.right);
+    System.out.print(root.val + " ");
+  }
+  
+  //后续遍历的结果reverse即为根节点-左子节点-右子节点遍历结果，可以转化为类似前序遍历方式
+  public void postOrderTraversal(TreeNode root) {
+    Stack<TreeNode> stackTmp = new Stack<TreeNode>();
+    Stack<TreeNode> ret = new Stack<TreeNode>();
+    while(!stackTmp.isEmpty() || root != null) {
+      if (root != null) {
+        ret.add(root);
+        stackTmp.add(root.left);
+        root = root.right;
+      } else {
+        root = stackTmp.pop();
+      }
+    }
+    while(!ret.isEmpty()) {
+      System.out.print(ret.pop().val + " ");
+    }
+  }
+  ```
+
+- 层序遍历
+
+  ```java
+  public void layerTraversal(TreeNode root) {
+    if (root == null) {
+      return;
+    }
+    Queue<TreeNode> queue = new LinkedList<TreeNode>();
+    queue.offer(root);
+    while ( !queue.isEmpty()) {
+      root = queue.poll();
+      System.out.print(root.val + " ");
+      if (root.left != null) {
+        queue.offer(root.left);
+      }
+      if (root.right != null) {
+        queue.offer(root.right);
+      }
+    }
+  }
+  ```
+
+- z形遍历
+
+  ```java
+  //层序遍历，隔层reverse，双重循环，外重循环遍历层数，内层循环遍历当前层
+  public ArrayList<ArrayList<Integer>> zigzagLevelOrder(TreeNode root) {
+    ArrayList<ArrayList<Integer>> ret = new ArrayList<>();
+    if (root == null) {
+      return ret;
+    }
+    Queue<TreeNode> tree = new LinkedList<>();
+    tree.offer(root);
+    boolean leftToRight = true;
+    while (!tree.isEmpty()) {
+      int layerSize = tree.size();
+      ArrayList<Integer> layer = new ArrayList<>();
+      while (layerSize-- > 0) {
+        root = tree.poll();
+        layer.add(root.val);
+        if (root.left != null) {
+          tree.offer(root.left);
+        }
+        if (root.right != null) {
+          tree.offer(root.right);
+        }
+      }
+      if (!leftToRight){
+        Collections.reverse(layer);
+      }
+      leftToRight = !leftToRight;
+      ret.add(layer);
+    }
+    return ret;
+  }
+  ```
+
+## LeetCode树相关算法题
+
+| 题目                                                         | 解决方案                                                     | 代码                                                         |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| [Minimum Depth of Binary Tree](https://www.nowcoder.com/practice/e08819cfdeb34985a8de9c4e6562e724?tpId=46&tqId=29030&tPage=1&rp=1&ru=/ta/leetcode&qru=/ta/leetcode/question-ranking) | 层序遍历                                                     | [Minimum Depth of Binary Tree](https://github.com/shinerio/AlgorithmQuestion/blob/master/src/main/java/leetcode_tree/MinimumDepthOfBinaryTree.java) |
+| [sum-root-to-leaf-numbers](https://www.nowcoder.com/practice/185a87cd29eb42049132aed873273e83?tpId=46&tqId=29051&tPage=2&rp=2&ru=/ta/leetcode&qru=/ta/leetcode/question-ranking) | 前序遍历                                                     | [sum-root-to-leaf-numbers](https://github.com/shinerio/AlgorithmQuestion/blob/master/src/main/java/leetcode_tree/SumNumbers.java) |
+| [binary-tree-maximum-path-sum](https://www.nowcoder.com/practice/da785ea0f64b442488c125b441a4ba4a?tpId=46&tqId=29056&tPage=2&rp=2&ru=/ta/leetcode&qru=/ta/leetcode/question-ranking) | 后序遍历，子问题化简                                         | [binary-tree-maximum-path-sum](https://github.com/shinerio/AlgorithmQuestion/blob/master/src/main/java/leetcode_tree/MaxPathSum.java) |
+| [populating-next-right-pointers-in-each-node](https://www.nowcoder.com/practice/fdbd05d647084fcf9be78444e231998b?tpId=46&tqId=29064&tPage=2&rp=2&ru=/ta/leetcode&qru=/ta/leetcode/question-ranking) | 层序遍历，完美二叉树，利用指向右节点的引用遍历当前层         | [populating-next-right-pointers-in-each-node-ii](https://github.com/shinerio/AlgorithmQuestion/blob/master/src/main/java/leetcode_tree/ConnectRightBrother.java) |
+| [populating-next-right-pointers-in-each-node-ii](https://www.nowcoder.com/practice/f18bc13a954f4389900b56e545feca6e?tpId=46&tqId=29063&tPage=2&rp=2&ru=/ta/leetcode&qru=/ta/leetcode/question-ranking) | 层序遍历，找到当前层的第一个节点                             | [populating-next-right-pointers-in-each-node-ii](https://github.com/shinerio/AlgorithmQuestion/blob/master/src/main/java/leetcode_tree/任意二叉树ConnectRightBrother.java) |
+| [path-sum](https://www.nowcoder.com/practice/508378c0823c423baa723ce448cbfd0c?tpId=46&tqId=29067&tPage=2&rp=2&ru=/ta/leetcode&qru=/ta/leetcode/question-ranking) | 前序遍历，累加路径值                                         | [path-sum](https://github.com/shinerio/AlgorithmQuestion/blob/master/src/main/java/leetcode_tree/HasPathSum.java) |
+| [path-sum-ii](https://www.nowcoder.com/practice/840dd2dc4fbd4b2199cd48f2dadf930a?tpId=46&tqId=29066&tPage=2&rp=2&ru=/ta/leetcode&qru=/ta/leetcode/question-ranking) | 前序遍历，累加路径值                                         | [path-sum-ii](https://github.com/shinerio/AlgorithmQuestion/blob/master/src/main/java/leetcode_tree/找出和为sum的所有路径.java) |
+| [balanced-binary-tree](https://www.nowcoder.com/practice/f4523caf0205476985516212047ac8e7?tpId=46&tqId=29068&tPage=2&rp=2&ru=/ta/leetcode&qru=/ta/leetcode/question-ranking) | 后序遍历，递归求树深                                         | [balanced-binary-tree](https://github.com/shinerio/AlgorithmQuestion/blob/master/src/main/java/leetcode_tree/isBalancedTree.java) |
+| [construct-binary-tree-from-inorder-and-postorder-traversal](https://www.nowcoder.com/practice/b0d07d0edc7f495696aecd265d5ef1b9?tpId=46&tqId=29072&tPage=3&rp=3&ru=/ta/leetcode&qru=/ta/leetcode/question-ranking) | 后续遍历的最后一个节点是根节点，中序遍历中根节点左边的是左子树，右边的是右子树 | [construct-binary-tree-from-inorder-and-postorder-traversal](https://github.com/shinerio/AlgorithmQuestion/blob/master/src/main/java/leetcode_tree/buildTree.java) |
+| [construct-binary-tree-from-preorder-and-inorder-traversal](https://www.nowcoder.com/practice/0ee054a8767c4a6c96ddab65e08688f4?tpId=46&tqId=29073&tPage=3&rp=3&ru=/ta/leetcode&qru=/ta/leetcode/question-ranking) | 前序遍历的第一个节点是根节点，中序遍历中根节点左边的是左子树，右边的是右子树 | [construct-binary-tree-from-preorder-and-inorder-traversal](https://github.com/shinerio/AlgorithmQuestion/blob/master/src/main/java/leetcode_tree/buildTree.java) |
+| [maximum-depth-of-binary-tree](https://www.nowcoder.com/practice/8a2b2bf6c19b4f23a9bdb9b233eefa73?tpId=46&tqId=29074&tPage=3&rp=3&ru=/ta/leetcode&qru=/ta/leetcode/question-ranking) | 后续遍历，累计求值                                           | [maximum-depth-of-binary-tree](https://github.com/shinerio/AlgorithmQuestion/blob/master/src/main/java/leetcode_tree/MaxDepth.java) |
+| [symmetric-tree](https://www.nowcoder.com/practice/1b0b7f371eae4204bc4a7570c84c2de1?tpId=46&tqId=29077&tPage=3&rp=3&ru=/ta/leetcode&qru=/ta/leetcode/question-ranking) | 左右子树遍历方向相反，逐个比较                               | [symmetric-tree](https://github.com/shinerio/AlgorithmQuestion/blob/master/src/main/java/leetcode_tree/IsSymmetric.java) |
+| [same-tree](https://www.nowcoder.com/practice/9a9e74b71f944efab9992925f7f9a65e?tpId=46&tqId=29078&tPage=3&rp=3&ru=/ta/leetcode&qru=/ta/leetcode/question-ranking) | 两个树用相同的方式遍历，比如前序遍历                         | [IsSameTree](https://github.com/shinerio/AlgorithmQuestion/blob/master/src/main/java/leetcode_tree/IsSameTree.java) |
+| [recover-binary-search-tree](https://www.nowcoder.com/practice/67c7172122b54b748e78eac7b183b5f3?tpId=46&tqId=29079&tPage=3&rp=3&ru=/ta/leetcode&qru=/ta/leetcode/question-ranking) | 搜索树中序遍历有序，按中序遍历查找错误点                     | [RecoverTree](https://github.com/shinerio/AlgorithmQuestion/blob/master/src/main/java/leetcode_tree/RecoverTree.java) |
+| [unique-binary-search-trees-ii](https://www.nowcoder.com/practice/98aaaefacaca44b9b4f2f2bd75780664?tpId=46&tqId=29082&tPage=3&rp=3&ru=/ta/leetcode&qru=/ta/leetcode/question-ranking) | 搜索树中序遍历有序，中序遍历必须升序                         | [IsValidBST](https://github.com/shinerio/AlgorithmQuestion/blob/master/src/main/java/leetcode_tree/IsValidBST.java) |
+| [unique-binary-search-trees](https://www.nowcoder.com/practice/b2b6734cbc0b43088f6084785046b861?tpId=46&tqId=29083&tPage=3&rp=3&ru=/ta/leetcode&qru=/ta/leetcode/question-ranking) | 动态规划，划分左右子树，数种类=左子树种类*右子树种类         | [NumBST](https://github.com/shinerio/AlgorithmQuestion/blob/master/src/main/java/leetcode_tree/NumBST.java) |
+
+## 剑指offer树相关题目（distinct with leetcode）
+
+| 题目                                                         | 解决方案             | 代码 |
+| ------------------------------------------------------------ | -------------------- | ---- |
+| [树的子结构](https://www.nowcoder.com/practice/6e196c44c7004d15b1610b9afca8bd88?tpId=13&tqId=11170&tPage=1&rp=1&ru=/ta/coding-interviews&qru=/ta/coding-interviews/question-ranking) | 前序遍历，子问题化简 |      |
+| [二叉树的镜像](https://www.nowcoder.com/practice/564f4c26aa584921bc75623e48ca3011?tpId=13&tqId=11171&tPage=1&rp=1&ru=/ta/coding-interviews&qru=/ta/coding-interviews/question-ranking) | 前序遍历，子问题化简 |      |
+| [二叉搜索树的后序遍历序列](https://www.nowcoder.com/practice/a861533d45854474ac791d90e447bafd?tpId=13&tqId=11176&tPage=2&rp=2&ru=/ta/coding-interviews&qru=/ta/coding-interviews/question-ranking) | 子问题化简           |      |
+|                                                              |                      |      |
+|                                                              |                      |      |
+|                                                              |                      |      |
+|                                                              |                      |      |
+|                                                              |                      |      |
+|                                                              |                      |      |
+
+未完待续

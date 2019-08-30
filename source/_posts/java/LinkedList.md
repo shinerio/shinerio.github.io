@@ -19,6 +19,8 @@ tags:
 
 - LinkedList是线程不安全的。
 
+<!--more-->
+
 ## 结构实现
 
 ![](http://ohyqvzpmb.bkt.clouddn.com/LinkedList.jpg)
