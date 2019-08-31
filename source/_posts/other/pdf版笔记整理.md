@@ -45,7 +45,7 @@ tags:
 
 [微服务](https://shinerio.oss-cn-beijing.aliyuncs.com/document/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%AC%94%E8%AE%B0.pdf)
 
-[权限控制](https://shinerio.oss-cn-beijing.aliyuncs.com/document/%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6.pdf)
+[权限控制](https://shinerio.oss-cn-beijing.aliyuncs.com/document/%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9D%97.pdf)
 
 [流量控制](https://shinerio.oss-cn-beijing.aliyuncs.com/document/%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6.pdf)
 
