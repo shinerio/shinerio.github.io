@@ -74,6 +74,10 @@ pagination_dir: page
 ## Themes: https://hexo.io/themes/
 theme: even
 
+# Security
+encrypt: # hexo-blog-encrypt
+  enable: true
+
 deploy:
   type: git
   repo: 
