@@ -16,9 +16,9 @@ before_install:
   - ssh-add ~/.ssh/id_rsa
   - cp .travis/ssh_config ~/.ssh/config
   - npm install -g hexo-cli # 安装 hexo
-  - npm install # 安装 package.json 中的插件
-  - git config —global user.name "shinerio"
-  - git config —global user.email "jstxzhangrui@163.com"
+  - hexo new page pdf
+  - git config -—global user.name "shinerio"
+  - git config —-global user.email "jstxzhangrui@163.com"
   - sed -i'' "/^ *repo/s~github\.com~${githubToken}@github.com~" _config.yml
   - git add .
   - git commit -m "add pdf"
