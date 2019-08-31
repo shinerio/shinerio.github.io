@@ -2,9 +2,7 @@
 title: pdf版笔记整理
 date: 2016-12-31
 categories:
-- java
-- Android
-- 设计模式
+- other
 tags
 - java
 - 设计模式
