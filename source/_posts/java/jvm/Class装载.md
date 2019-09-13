@@ -7,7 +7,7 @@ tags:
 - java
 ---
 
-![](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/jvm/jvm_classLoad.png)
+![](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20190913194205.png)
 
 # 类装载的条件
 
