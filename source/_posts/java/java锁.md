@@ -7,6 +7,14 @@ tags:
 - java
 ---
 
+# CAS
+
+compare and swap
+
+**如何解决ABA问题？**
+
+增加一个版本号。(AtomicStampedReference)
+
 # 可重入锁与不可重入锁
 
 - 可重入锁
