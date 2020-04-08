@@ -78,6 +78,14 @@ theme: even
 encrypt: # hexo-blog-encrypt
   enable: true
 
+# latex
+math:
+  engine: 'mathjax' # or 'katex'
+  mathjax:
+    # src: custom_mathjax_source
+    config:
+      # MathJax config
+
 deploy:
   type: git
   repo: 
