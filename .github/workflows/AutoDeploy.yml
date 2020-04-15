@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: checkToSource # 将仓库内master分支的内容下载到工作目录
+    - name: checkToSource # 将仓库内blog-source分支的内容下载到工作目录
       uses: actions/checkout@v1 # 脚本来自 https://github.com/actions/checkout
       with:
-        ref: my-branch
+        ref: blog-source
       
     - name: Use Node.js 10.x # 配置Node环境
       uses: actions/setup-node@v1 # 配置脚本来自 https://github.com/actions/setup-node
