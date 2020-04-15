@@ -32,10 +32,11 @@ jobs:
         git config --global user.name 'shinerio' # 换成你自己的邮箱和名字
         git config --global user.email 'jstxzhangrui@163.com'
         # install dependencies
-        npm i -g hexo-cli # 安装hexo
+        npm install -g hexo-cli # 安装hexo
         npm install
   
     - name: Deploy
       run: |
         # publish
+        hexo init
         hexo generate && hexo deploy # 执行部署程序
