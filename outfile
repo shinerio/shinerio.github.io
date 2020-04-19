@@ -1,0 +1,133 @@
+20:16:03.030005 IP6 fe80::93e4:b9e6:93b5:eb6b.1024 > fe80::b625:2113:66af:5e18.1024: Flags [SEW], seq 364739550, win 65535, options [mss 1320,nop,wscale 7,nop,nop,TS val 478561775 ecr 0,sackOK,eol], length 0
+20:16:03.339368 IP 192.168.0.101.mdns > 224.0.0.251.mdns: 0 PTR (QU)? b.6.b.e.5.b.3.9.6.e.9.b.4.e.3.9.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. (90)
+20:16:03.339392 IP6 zhangruidemacbook-pro.local.mdns > ff02::fb.mdns: 0 PTR (QU)? b.6.b.e.5.b.3.9.6.e.9.b.4.e.3.9.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. (90)
+20:16:04.030772 IP6 fe80::93e4:b9e6:93b5:eb6b.1024 > fe80::b625:2113:66af:5e18.1024: Flags [S], seq 364739550, win 65535, options [mss 1320,nop,wscale 7,nop,nop,TS val 478562775 ecr 0,sackOK,eol], length 0
+20:16:04.346418 IP 192.168.0.101.mdns > 224.0.0.251.mdns: 0 PTR (QM)? b.6.b.e.5.b.3.9.6.e.9.b.4.e.3.9.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. (90)
+20:16:04.346485 IP6 zhangruidemacbook-pro.local.mdns > ff02::fb.mdns: 0 PTR (QM)? b.6.b.e.5.b.3.9.6.e.9.b.4.e.3.9.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. (90)
+20:16:05.032572 IP6 fe80::93e4:b9e6:93b5:eb6b.1024 > fe80::b625:2113:66af:5e18.1024: Flags [S], seq 364739550, win 65535, options [mss 1320,nop,wscale 7,nop,nop,TS val 478563776 ecr 0,sackOK,eol], length 0
+20:16:06.034766 IP6 fe80::93e4:b9e6:93b5:eb6b.1024 > fe80::b625:2113:66af:5e18.1024: Flags [S], seq 364739550, win 65535, options [mss 1320,nop,wscale 7,nop,nop,TS val 478564777 ecr 0,sackOK,eol], length 0
+20:16:07.037426 IP6 fe80::93e4:b9e6:93b5:eb6b.1024 > fe80::b625:2113:66af:5e18.1024: Flags [S], seq 364739550, win 65535, options [mss 1320,nop,wscale 7,nop,nop,TS val 478565778 ecr 0,sackOK,eol], length 0
+20:16:07.355383 IP 192.168.0.101.mdns > 224.0.0.251.mdns: 0 PTR (QM)? b.6.b.e.5.b.3.9.6.e.9.b.4.e.3.9.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. (90)
+20:16:07.355413 IP6 zhangruidemacbook-pro.local.mdns > ff02::fb.mdns: 0 PTR (QM)? b.6.b.e.5.b.3.9.6.e.9.b.4.e.3.9.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. (90)
+20:16:08.038364 IP6 fe80::93e4:b9e6:93b5:eb6b.1024 > fe80::b625:2113:66af:5e18.1024: Flags [S], seq 364739550, win 65535, options [mss 1320,nop,wscale 7,nop,nop,TS val 478566778 ecr 0,sackOK,eol], length 0
+20:16:08.316625 IP 192.168.0.101.mdns > 224.0.0.251.mdns: 0 PTR (QU)? 8.1.e.5.f.a.6.6.3.1.1.2.5.2.6.b.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. (90)
+20:16:08.316656 IP6 zhangruidemacbook-pro.local.mdns > ff02::fb.mdns: 0 PTR (QU)? 8.1.e.5.f.a.6.6.3.1.1.2.5.2.6.b.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. (90)
+20:16:08.473460 IP 118.144.88.111.https > 192.168.0.101.64903: Flags [P.], seq 1549643413:1549643459, ack 1500087628, win 243, options [nop,nop,TS val 2520203677 ecr 478387714], length 46
+20:16:08.473463 IP 118.144.88.111.https > 192.168.0.101.64903: Flags [P.], seq 46:77, ack 1, win 243, options [nop,nop,TS val 2520203677 ecr 478387714], length 31
+20:16:08.473464 IP 118.144.88.111.https > 192.168.0.101.64903: Flags [F.], seq 77, ack 1, win 243, options [nop,nop,TS val 2520203677 ecr 478387714], length 0
+20:16:08.473504 IP 192.168.0.101.64903 > 118.144.88.111.https: Flags [.], ack 46, win 2047, options [nop,nop,TS val 478567211 ecr 2520203677], length 0
+20:16:08.473523 IP 192.168.0.101.64903 > 118.144.88.111.https: Flags [.], ack 77, win 2046, options [nop,nop,TS val 478567211 ecr 2520203677], length 0
+20:16:08.473533 IP 192.168.0.101.64903 > 118.144.88.111.https: Flags [.], ack 78, win 2046, options [nop,nop,TS val 478567211 ecr 2520203677], length 0
+20:16:08.473659 IP 192.168.0.101.64903 > 118.144.88.111.https: Flags [F.], seq 1, ack 78, win 2048, options [nop,nop,TS val 478567211 ecr 2520203677], length 0
+20:16:08.510556 IP 118.144.88.111.https > 192.168.0.101.64903: Flags [.], ack 2, win 243, options [nop,nop,TS val 2520203691 ecr 478567211], length 0
+20:16:09.274563 IP 192.168.0.101.64366 > 154.8.190.35.https: Flags [P.], seq 160828164:160828364, ack 1814414176, win 4096, length 200
+20:16:09.322804 IP 192.168.0.101.mdns > 224.0.0.251.mdns: 0 PTR (QM)? 8.1.e.5.f.a.6.6.3.1.1.2.5.2.6.b.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. (90)
+20:16:09.322834 IP6 zhangruidemacbook-pro.local.mdns > ff02::fb.mdns: 0 PTR (QM)? 8.1.e.5.f.a.6.6.3.1.1.2.5.2.6.b.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. (90)
+20:16:09.332918 IP 154.8.190.35.https > 192.168.0.101.64366: Flags [P.], seq 1:182, ack 200, win 257, length 181
+20:16:09.332921 IP 154.8.190.35.https > 192.168.0.101.64366: Flags [P.], seq 182:220, ack 200, win 257, length 38
+20:16:09.332963 IP 192.168.0.101.64366 > 154.8.190.35.https: Flags [.], ack 182, win 4093, length 0
+20:16:09.332982 IP 192.168.0.101.64366 > 154.8.190.35.https: Flags [.], ack 220, win 4092, length 0
+20:16:10.046873 IP6 fe80::93e4:b9e6:93b5:eb6b.1024 > fe80::b625:2113:66af:5e18.1024: Flags [S], seq 364739550, win 65535, options [mss 1320,nop,wscale 7,nop,nop,TS val 478568779 ecr 0,sackOK,eol], length 0
+20:16:10.278294 IP 192.168.0.1.1024 > 192.168.0.255.commplex-link: UDP, length 115
+20:16:10.284218 IP 192.168.0.101.64925 > 64.64.238.73.16clouds.com.50000: Flags [.], ack 1582173425, win 2048, length 0
+20:16:10.378676 IP 192.168.0.101.64640 > ec2-3-216-216-104.compute-1.amazonaws.com.https: Flags [.], ack 1024831194, win 2048, length 0
+20:16:10.427221 IP 64.64.238.73.16clouds.com.50000 > 192.168.0.101.64925: Flags [.], ack 1, win 252, options [nop,nop,TS val 4280517415 ecr 478478446], length 0
+20:16:10.689144 IP ec2-3-216-216-104.compute-1.amazonaws.com.https > 192.168.0.101.64640: Flags [.], ack 1, win 115, options [nop,nop,TS val 1077204375 ecr 478538839], length 0
+20:16:11.821576 IP 192.168.0.101.64128 > ec2-35-168-163-196.compute-1.amazonaws.com.https: Flags [F.], seq 967633314, ack 921704646, win 2048, options [nop,nop,TS val 478570547 ecr 79712196], length 0
+20:16:11.826287 IP 192.168.0.101.64646 > ec2-52-22-228-226.compute-1.amazonaws.com.https: Flags [.], ack 3540537948, win 2048, length 0
+20:16:12.121509 IP ec2-52-22-228-226.compute-1.amazonaws.com.https > 192.168.0.101.64646: Flags [.], ack 1, win 115, options [nop,nop,TS val 945774250 ecr 478540252], length 0
+20:16:12.133674 IP 192.168.0.101.64648 > ec2-52-22-228-226.compute-1.amazonaws.com.https: Flags [.], ack 1059874915, win 2048, length 0
+20:16:12.332307 IP 192.168.0.101.mdns > 224.0.0.251.mdns: 0 PTR (QM)? 8.1.e.5.f.a.6.6.3.1.1.2.5.2.6.b.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. (90)
+20:16:12.332342 IP6 zhangruidemacbook-pro.local.mdns > ff02::fb.mdns: 0 PTR (QM)? 8.1.e.5.f.a.6.6.3.1.1.2.5.2.6.b.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. (90)
+20:16:12.449815 IP 192.168.0.101.64644 > ec2-52-22-228-226.compute-1.amazonaws.com.https: Flags [.], ack 1239668030, win 2048, length 0
+20:16:12.775873 IP 192.168.0.101.64941 > m12-8.163.com.imap: Flags [.], ack 4158121616, win 2048, length 0
+20:16:12.803523 IP m12-8.163.com.imap > 192.168.0.101.64941: Flags [.], ack 1, win 139, options [nop,nop,TS val 4112004768 ecr 478541498], length 0
+20:16:12.898081 IP 192.168.0.101.64378 > 183.3.225.42.imaps: Flags [.], ack 154589580, win 4096, length 0
+20:16:12.931884 IP 183.3.225.42.imaps > 192.168.0.101.64378: Flags [.], ack 1, win 130, length 0
+20:16:13.185339 IP 192.168.0.101.64376 > 183.3.225.42.imaps: Flags [.], ack 2932253961, win 4096, length 0
+20:16:13.226215 IP 183.3.225.42.imaps > 192.168.0.101.64376: Flags [.], ack 1, win 130, length 0
+20:16:13.226218 IP 183.3.225.42.imaps > 192.168.0.101.64376: Flags [.], ack 1, win 130, length 0
+20:16:13.738978 IP 192.168.0.101.64642 > ec2-52-22-228-226.compute-1.amazonaws.com.https: Flags [.], ack 1812562827, win 2048, length 0
+20:16:14.062444 IP6 fe80::93e4:b9e6:93b5:eb6b.1024 > fe80::b625:2113:66af:5e18.1024: Flags [S], seq 364739550, win 65535, options [mss 1320,nop,wscale 7,nop,nop,TS val 478572780 ecr 0,sackOK,eol], length 0
+20:16:14.069574 IP ec2-52-22-228-226.compute-1.amazonaws.com.https > 192.168.0.101.64642: Flags [.], ack 1, win 115, options [nop,nop,TS val 945774728 ecr 478542125], length 0
+20:16:14.297491 IP 192.168.0.101.52861 > dns1.ctcdma.com.domain: 60546+ PTR? 101.0.168.192.in-addr.arpa. (44)
+20:16:14.308919 IP dns1.ctcdma.com.domain > 192.168.0.101.52861: 60546 NXDomain* 0/0/0 (44)
+20:16:14.309915 IP 192.168.0.101.62967 > dns1.ctcdma.com.domain: 9420+ PTR? 251.0.0.224.in-addr.arpa. (42)
+20:16:14.322244 IP dns1.ctcdma.com.domain > 192.168.0.101.62967: 9420 NXDomain 0/0/0 (42)
+20:16:14.358687 IP 192.168.0.101.mdns > 224.0.0.251.mdns: 0 PTR (QU)? 0.8.4.5.0.7.2.a.2.3.0.3.1.b.4.1.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. (90)
+20:16:14.358713 IP6 zhangruidemacbook-pro.local.mdns > ff02::fb.mdns: 0 PTR (QU)? 0.8.4.5.0.7.2.a.2.3.0.3.1.b.4.1.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. (90)
+20:16:14.462589 IP 192.168.0.101.mdns > 224.0.0.251.mdns: 0*- [0q] 1/0/1 (Cache flush) PTR zhangruideMacBook-Pro.local. (143)
+20:16:14.462642 IP6 zhangruidemacbook-pro.local.mdns > ff02::fb.mdns: 0*- [0q] 1/0/1 (Cache flush) PTR zhangruideMacBook-Pro.local. (143)
+20:16:14.463575 IP 192.168.0.101.65417 > dns1.ctcdma.com.domain: 57146+ PTR? b.f.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.2.0.f.f.ip6.arpa. (90)
+20:16:14.475174 IP dns1.ctcdma.com.domain > 192.168.0.101.65417: 57146 NXDomain 0/0/0 (90)
+20:16:14.476483 IP 192.168.0.101.60091 > dns1.ctcdma.com.domain: 26677+ PTR? 111.88.144.118.in-addr.arpa. (45)
+20:16:14.486472 IP dns1.ctcdma.com.domain > 192.168.0.101.60091: 26677 NXDomain 0/0/0 (45)
+20:16:14.487563 IP 192.168.0.101.60248 > dns1.ctcdma.com.domain: 14623+ PTR? 35.190.8.154.in-addr.arpa. (43)
+20:16:14.499125 IP dns1.ctcdma.com.domain > 192.168.0.101.60248: 14623 NXDomain 0/0/0 (43)
+20:16:14.499886 IP 192.168.0.101.60702 > dns1.ctcdma.com.domain: 53928+ PTR? 1.0.168.192.in-addr.arpa. (42)
+20:16:14.694548 IP dns1.ctcdma.com.domain > 192.168.0.101.60702: 53928 NXDomain* 0/0/0 (42)
+20:16:14.695549 IP 192.168.0.101.60370 > dns1.ctcdma.com.domain: 34277+ PTR? 255.0.168.192.in-addr.arpa. (44)
+20:16:14.704813 IP dns1.ctcdma.com.domain > 192.168.0.101.60370: 34277 NXDomain* 0/0/0 (44)
+20:16:14.705741 IP 192.168.0.101.62013 > dns1.ctcdma.com.domain: 11732+ PTR? 73.238.64.64.in-addr.arpa. (43)
+20:16:15.706943 IP 192.168.0.101.62013 > dns1.ctcdma.com.domain: 11732+ PTR? 73.238.64.64.in-addr.arpa. (43)
+20:16:16.729555 IP ec2-54-173-191-240.compute-1.amazonaws.com.https > 192.168.0.101.64657: Flags [P.], seq 454736517:454736548, ack 2648655015, win 115, options [nop,nop,TS val 776319440 ecr 478520421], length 31
+20:16:16.729594 IP 192.168.0.101.64657 > ec2-54-173-191-240.compute-1.amazonaws.com.https: Flags [.], ack 31, win 2047, options [nop,nop,TS val 478575442 ecr 776319440], length 0
+20:16:16.729935 IP 192.168.0.101.64657 > ec2-54-173-191-240.compute-1.amazonaws.com.https: Flags [P.], seq 1:36, ack 31, win 2048, options [nop,nop,TS val 478575442 ecr 776319440], length 35
+20:16:16.944972 IP 192.168.0.101.64929 > 64.64.238.73.16clouds.com.50000: Flags [.], ack 2430509427, win 2048, length 0
+20:16:17.011899 IP ec2-54-173-191-240.compute-1.amazonaws.com.https > 192.168.0.101.64657: Flags [.], ack 36, win 115, options [nop,nop,TS val 776319532 ecr 478575442], length 0
+20:16:17.086517 IP 64.64.238.73.16clouds.com.50000 > 192.168.0.101.64929: Flags [.], ack 1, win 245, options [nop,nop,TS val 4280524071 ecr 478485221], length 0
+20:16:17.710631 IP 192.168.0.101.62013 > dns2.ctcdma.com.domain: 11732+ PTR? 73.238.64.64.in-addr.arpa. (43)
+20:16:18.485270 IP 192.168.0.101.64126 > 64.64.238.73.16clouds.com.50000: Flags [.], ack 66474218, win 2050, length 0
+20:16:18.624273 IP 64.64.238.73.16clouds.com.50000 > 192.168.0.101.64126: Flags [.], ack 1, win 235, options [nop,nop,TS val 4280525613 ecr 477642608], length 0
+20:16:18.715142 IP 192.168.0.101.62013 > dns2.ctcdma.com.domain: 11732+ PTR? 73.238.64.64.in-addr.arpa. (43)
+20:16:19.670894 IP 192.168.0.101.64156 > 64.64.238.73.16clouds.com.50000: Flags [.], ack 131645766, win 2048, length 0
+20:16:19.721558 IP dns1.ctcdma.com.domain > 192.168.0.101.62013: 11732 ServFail 0/0/0 (43)
+20:16:19.815135 IP 64.64.238.73.16clouds.com.50000 > 192.168.0.101.64156: Flags [.], ack 1, win 243, options [nop,nop,TS val 4280526802 ecr 477643442], length 0
+20:16:20.312185 IP 192.168.0.1.ssdp > 239.255.255.250.ssdp: UDP, length 266
+20:16:20.312676 IP 192.168.0.1.ssdp > 239.255.255.250.ssdp: UDP, length 275
+20:16:20.312981 IP 192.168.0.1.ssdp > 239.255.255.250.ssdp: UDP, length 338
+20:16:20.313686 IP 192.168.0.1.ssdp > 239.255.255.250.ssdp: UDP, length 275
+20:16:20.314016 IP 192.168.0.1.ssdp > 239.255.255.250.ssdp: UDP, length 314
+20:16:20.314595 IP 192.168.0.1.ssdp > 239.255.255.250.ssdp: UDP, length 275
+20:16:20.315164 IP 192.168.0.1.ssdp > 239.255.255.250.ssdp: UDP, length 334
+20:16:20.315410 IP 192.168.0.1.ssdp > 239.255.255.250.ssdp: UDP, length 330
+20:16:20.315996 IP 192.168.0.1.ssdp > 239.255.255.250.ssdp: UDP, length 346
+20:16:20.316412 IP 192.168.0.1.ssdp > 239.255.255.250.ssdp: UDP, length 328
+20:16:20.715394 IP 192.168.0.101.62013 > dns1.ctcdma.com.domain: 11732+ PTR? 73.238.64.64.in-addr.arpa. (43)
+20:16:20.975289 IP 192.168.0.101.64494 > 101.226.211.235.https: Flags [P.], seq 151270289:151270637, ack 1735367634, win 4096, length 348
+20:16:21.037507 IP 101.226.211.235.https > 192.168.0.101.64494: Flags [.], ack 348, win 2516, length 0
+20:16:21.057026 IP 101.226.211.235.https > 192.168.0.101.64494: Flags [P.], seq 1:277, ack 348, win 2516, length 276
+20:16:21.057058 IP 192.168.0.101.64494 > 101.226.211.235.https: Flags [.], ack 277, win 4091, length 0
+20:16:21.289324 IP 192.168.0.101.64899 > 64.64.238.73.16clouds.com.50000: Flags [.], ack 3499573835, win 2048, length 0
+20:16:21.431847 IP 64.64.238.73.16clouds.com.50000 > 192.168.0.101.64899: Flags [.], ack 1, win 243, options [nop,nop,TS val 4280528419 ecr 478368837], length 0
+20:16:21.998594 IP 192.168.0.101.64943 > 64.64.238.73.16clouds.com.50000: Flags [.], ack 2662239065, win 2048, length 0
+20:16:21.998615 IP 192.168.0.101.64901 > 64.64.238.73.16clouds.com.50000: Flags [.], ack 284525312, win 2048, length 0
+20:16:22.081679 IP6 fe80::93e4:b9e6:93b5:eb6b.1024 > fe80::b625:2113:66af:5e18.1024: Flags [S], seq 364739550, win 65535, options [mss 1320,nop,wscale 7,nop,nop,TS val 478580781 ecr 0,sackOK,eol], length 0
+20:16:22.138766 IP 64.64.238.73.16clouds.com.50000 > 192.168.0.101.64943: Flags [.], ack 1, win 302, options [nop,nop,TS val 4280529125 ecr 478550400], length 0
+20:16:22.139022 IP 64.64.238.73.16clouds.com.50000 > 192.168.0.101.64901: Flags [.], ack 1, win 245, options [nop,nop,TS val 4280529126 ecr 478369625], length 0
+20:16:22.251400 IP dns1.ctcdma.com.domain > 192.168.0.101.62013: 11732 1/0/0 PTR 64.64.238.73.16clouds.com. (82)
+20:16:22.252413 IP 192.168.0.101.57826 > dns1.ctcdma.com.domain: 3319+ PTR? 104.216.216.3.in-addr.arpa. (44)
+20:16:22.793237 IP dns2.ctcdma.com.domain > 192.168.0.101.62013: 11732 ServFail 0/0/0 (43)
+20:16:22.793276 IP 192.168.0.101 > dns2.ctcdma.com: ICMP 192.168.0.101 udp port 62013 unreachable, length 36
+20:16:22.795218 IP dns1.ctcdma.com.domain > 192.168.0.101.57826: 3319 1/0/0 PTR ec2-3-216-216-104.compute-1.amazonaws.com. (99)
+20:16:22.796281 IP 192.168.0.101.55883 > dns1.ctcdma.com.domain: 56083+ PTR? 196.163.168.35.in-addr.arpa. (45)
+20:16:22.805679 IP dns1.ctcdma.com.domain > 192.168.0.101.55883: 56083 1/0/0 PTR ec2-35-168-163-196.compute-1.amazonaws.com. (101)
+20:16:22.806651 IP 192.168.0.101.64589 > dns1.ctcdma.com.domain: 59183+ PTR? 226.228.22.52.in-addr.arpa. (44)
+20:16:22.825675 IP dns1.ctcdma.com.domain > 192.168.0.101.64589: 59183 1/0/0 PTR ec2-52-22-228-226.compute-1.amazonaws.com. (99)
+20:16:22.826705 IP 192.168.0.101.61257 > dns1.ctcdma.com.domain: 41634+ PTR? 8.12.181.220.in-addr.arpa. (43)
+20:16:22.836107 IP dns1.ctcdma.com.domain > 192.168.0.101.61257: 41634 1/0/0 PTR m12-8.163.com. (70)
+20:16:22.837054 IP 192.168.0.101.49497 > dns1.ctcdma.com.domain: 47799+ PTR? 42.225.3.183.in-addr.arpa. (43)
+20:16:22.849321 IP dns1.ctcdma.com.domain > 192.168.0.101.49497: 47799 NXDomain 0/0/0 (43)
+20:16:23.282271 ARP, Request who-has 192.168.0.103 tell 192.168.0.1, length 28
+20:16:23.851716 IP 192.168.0.101.64603 > dns1.ctcdma.com.domain: 61477+ PTR? 2.2.2.218.in-addr.arpa. (40)
+20:16:23.864582 IP dns1.ctcdma.com.domain > 192.168.0.101.64603: 61477 1/0/0 PTR dns1.ctcdma.com. (69)
+20:16:23.865793 IP 192.168.0.101.58455 > dns1.ctcdma.com.domain: 49615+ PTR? 240.191.173.54.in-addr.arpa. (45)
+20:16:24.204846 IP dns1.ctcdma.com.domain > 192.168.0.101.58455: 49615 1/0/0 PTR ec2-54-173-191-240.compute-1.amazonaws.com. (101)
+20:16:24.206046 IP 192.168.0.101.59220 > dns1.ctcdma.com.domain: 54186+ PTR? 4.4.4.218.in-addr.arpa. (40)
+20:16:24.215175 IP dns1.ctcdma.com.domain > 192.168.0.101.59220: 54186 1/0/0 PTR dns2.ctcdma.com. (69)
+20:16:24.215773 IP 192.168.0.101.59002 > dns1.ctcdma.com.domain: 51430+ PTR? 250.255.255.239.in-addr.arpa. (46)
+20:16:24.226797 IP dns1.ctcdma.com.domain > 192.168.0.101.59002: 51430 NXDomain 0/0/0 (46)
+20:16:24.227967 IP 192.168.0.101.58729 > dns1.ctcdma.com.domain: 10153+ PTR? 235.211.226.101.in-addr.arpa. (46)
+20:16:24.236128 IP dns1.ctcdma.com.domain > 192.168.0.101.58729: 10153 NXDomain 0/0/0 (46)
+20:16:24.237674 IP 192.168.0.101.53898 > dns1.ctcdma.com.domain: 62004+ PTR? 103.0.168.192.in-addr.arpa. (44)
+20:16:24.247542 IP dns1.ctcdma.com.domain > 192.168.0.101.53898: 62004 NXDomain* 0/0/0 (44)
