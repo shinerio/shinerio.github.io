@@ -33,6 +33,8 @@ jobs:
         git config --global user.email 'jstxzhangrui@163.com'
         # install dependencies
         npm install -g hexo-cli # 安装hexo
+        npm install --save hexo
+        npm install --save hexo-blog-encrypt
         npm install
   
     - name: Deploy
