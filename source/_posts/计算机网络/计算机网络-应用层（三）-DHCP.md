@@ -21,5 +21,7 @@ DHCP（Dynamic Host Configuration Protocol）动态主机配置协议是一个�
 
 ## 2. DHCP报文
 
+DHCP基于UDP传输，DHCP服务器使用端口号67，DHCP 客户端使用端口号68。
+
 ![](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200425144347.png)
 
