@@ -36,6 +36,8 @@ jobs:
         npm install --save hexo
         npm install --save hexo-blog-encrypt
         npm install
+        npm uninstall hexo-renderer-marked --save   # 更改默认markdown渲染引擎，修复数学公式显示问题
+        npm install hexo-renderer-kramed --save
   
     - name: Deploy
       run: |

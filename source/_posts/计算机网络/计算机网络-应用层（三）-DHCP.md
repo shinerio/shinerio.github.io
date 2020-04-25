@@ -25,3 +25,9 @@ DHCP基于UDP传输，DHCP服务器使用端口号67，DHCP 客户端使用端�
 
 ![](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200425144347.png)
 
+【Op】：报文类型，Request（1），Reply(2)
+
+【HW Type】：硬件类型，一般是以外网（1）
+
+【HW Len】：
+
