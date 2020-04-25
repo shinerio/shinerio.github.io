@@ -105,7 +105,7 @@ DHCP基于UDP传输，DHCP服务器使用端口号67，DHCP 客户端使用端�
 
 - DHCP响应
 
-![image-20200425160919292](/Users/zhangrui/Library/Application Support/typora-user-images/image-20200425160919292.png)
+![](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200425171347.png)
 
 ## 4. DHCP工作流程
 
