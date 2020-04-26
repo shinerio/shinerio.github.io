@@ -61,8 +61,8 @@ tags:
 500 ps -a -x -u
 501 touch /opt/LLL/run/ok
 502 LLLSDLaserControl -ok1
-
-正文和上一段保持空行
+</pre>
+</details>
 ```
 
 <details>
@@ -83,7 +83,8 @@ tags:
 500 ps -a -x -u
 501 touch /opt/LLL/run/ok
 502 LLLSDLaserControl -ok1
-正文和上一段保持空行
+</pre>
+</details>
 
 ### 1.4 文字添加颜色
 

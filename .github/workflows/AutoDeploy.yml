@@ -38,6 +38,8 @@ jobs:
         npm install
         npm uninstall hexo-renderer-marked --save   # 更改默认markdown渲染引擎，修复数学公式显示问题
         npm install hexo-renderer-kramed --save
+        npm install hexo-filter-github-emojis --save  # emoji支持
+
   
     - name: Deploy
       run: |
