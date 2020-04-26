@@ -98,32 +98,50 @@ tags:
 <font color=blue>蓝色</font>
 <font color=#008000>黄色</font>
 
-### 1.5 diff
+### 1.5 警告提示块
 
 ```
-​```diff
-10 PRINT “BASIC IS COOL”
-- 20 GOTO 11
-+ 20 GOTO 10
-​```
-```
-```diff
-10 PRINT “BASIC IS COOL”
-- 20 GOTO 11
-+ 20 GOTO 10
+!!! note hexo-admonition 插件使用示例
+    这是基于 hexo-admonition 插件渲染的一条提示信息。类型为 note，并设置了自定义标题。 
+    提示内容开头留 4 个空格，可以有多行，最后用空行结束此标记。
 ```
 
-### 1.6 按键样式
+!!! note hexo-admonition 插件使用示例
+    这是基于 hexo-admonition 插件渲染的一条提示信息。类型为 note，并设置了自定义标题。标题是可选的，当为设置时，将用类型名称作为默认值
+    提示内容开头留 4 个空格，可以有多行，最后用空行结束此标记。
+
+支持如下类型：
+
+- note
+- info,todo
+- warning,attention,caution
+- error,failure,missing,fail
 
 ```
-<kbd>W</kbd>
-<kbd>ESC</kbd>
-<kbd>return</kbd>
+!!! warning
+    这是一条采用默认标题的警告信息。
 ```
 
-<kbd>W</kbd>
-<kbd>ESC</kbd>
-<kbd>return</kbd>
+!!! warning
+    这是一条采用默认标题的警告信息。
+
+```
+!!! Warning ""
+    这是一条不带标题的警告信息。
+```
+
+!!! Warning ""
+    这是一条不带标题的警告信息。
+
+```
+!!! node "嵌套链接及引用块"
+    在hexo-admonition内部可以嵌套标准markdown标签, 如引用
+    > 原文作者 [悟尘纪](https://www.lixl.cn)
+```
+
+!!! node "嵌套链接及引用块"
+    在hexo-admonition内部可以嵌套标准markdown标签, 如引用
+    > 原文作者 [悟尘纪](https://www.lixl.cn)
 
 ## 2. Alfred-Snippets
 
@@ -135,9 +153,44 @@ tags:
 
 :joy::sob:
 
-⌥⌘<kbd>↵</kbd><kbd>⇪</kbd><kbd>⎋</kbd>
+⌥⌘
 
-##3. 引用
+## 3. Hexo插件
+
+### 3.1 Emoji支持
+
+hexo默认使用hexo-renderer-marked作为markdown渲染引擎，不支持emoji表情，可以使用[hexo-filter-github-emojis](https://github.com/crimx/hexo-filter-github-emojis)插件支持。
+
+```bash
+ $ npm install hexo-filter-github-emojis --save
+```
+
+打开博客根目录_config.yml，添加以下内容：
+
+```yaml
+githubEmojis:
+  enable: true
+  className: github-emoji
+  unicode: false
+  styles:
+  localEmojis:
+```
+
+### 3.2 警告提示块
+
+```bash
+npm install hexo-admonition --save
+```
+
+<details>
+<summary>将如下样式放入 hexo 主题的自定义样式文件中（如：my.css），并按自己喜好修改：</summary>
+<pre>
+.admonition { margin: 1.5625em 0; padding: .6rem; overflow: hidden; font-size: .64rem; page-break-inside: avoid; border-left: .3rem solid #42b983; border-radius: .3rem; box-shadow: 0 0.1rem 0.4rem rgba(0,0,0,.05), 0 0 0.05rem rgba(0,0,0,.1); background-color: #fafafa; } p.admonition-title { position: relative; margin: -.6rem -.6rem .8em -.6rem !important; padding: .4rem .6rem .4rem 2.5rem; font-weight: 700; background-color:rgba(66, 185, 131, .1); } .admonition-title::before { position: absolute; top: .9rem; left: 1rem; width: 12px; height: 12px; background-color: #42b983; border-radius: 50%; content: ' '; } .info>.admonition-title, .todo>.admonition-title { background-color: rgba(0,184,212,.1); } .warning>.admonition-title, .attention>.admonition-title, .caution>.admonition-title { background-color: rgba(255,145,0,.1); } .failure>.admonition-title, .missing>.admonition-title, .fail>.admonition-title, .error>.admonition-title { background-color: rgba(255,82,82,.1); } .admonition.info, .admonition.todo { border-color: #00b8d4; } .admonition.warning, .admonition.attention, .admonition.caution { border-color: #ff9100; } .admonition.failure, .admonition.missing, .admonition.fail, .admonition.error { border-color: #ff5252; } .info>.admonition-title::before, .todo>.admonition-title::before { background-color: #00b8d4; border-radius: 50%; } .warning>.admonition-title::before, .attention>.admonition-title::before, .caution>.admonition-title::before { background-color: #ff9100; border-radius: 50%; } .failure>.admonition-title::before,.missing>.admonition-title::before,.fail>.admonition-title::before,.error>.admonition-title::before{ background-color: #ff5252;; border-radius: 50%; } .admonition>:last-child { margin-bottom: 0 !important; }
+</pre>
+</details>
+
+##4. 引用
 
 1. <span id="ref1">[GitHub Protips: Tips, tricks, hacks, and secrets from Lee Reilly](https://github.blog/2020-04-09-github-protips-tips-tricks-hacks-and-secrets-from-lee-reilly/)</span>
 2. <span id="ref2">[Mac效率神器Alfred系列教程---Snippets文字扩展](https://zhuanlan.zhihu.com/p/33753656)</span>
+3. [Hexo-admonition 插件安装使用指南](https://www.lixl.cn/2020/041837756.html?spm=a2c6h.14275010.0.0.732e51c3cTag3n)
