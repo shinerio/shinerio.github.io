@@ -17,34 +17,13 @@ tags:
 
  共有7列，分别是：
 
-- 第一列（共10位）
-
-  - 第1位表示文档类型，d表示目录，-表示普通文件，l表示符号链接，s表示套接字，b表示块设备（光驱、磁盘），c表示字符设备（鼠标、键盘），p表示管道。其中s/b/c/p都是伪文件
-  - 第2-10位，共9位，分表对应owner/group/others的权限，rwx分表表示readable/writable/excutable，-表示没有当前权限。
-
-- 第二列
-
-  关联硬链接数，对于一个新建文件夹来说，有两个链接，对于一个新建文件来说，有一个链接
-
-- 第三列
-
-  表示owner
-
-- 第四列
-
-  表示group
-
-- 第五列
-
-  表示文档大小，单位字节
-
-- 第六列
-
-  表示文档最后修改时间
-
-- 第七列
-
-  表示文档名，隐藏文件以`.`开头
+- <font color=red>第一列</font>（共10位） 第1位表示文档类型，d表示目录，-表示普通文件，l表示符号链接，s表示套接字，b表示块设备（光驱、磁盘），c表示字符设备（鼠标、键盘），p表示管道。其中s/b/c/p都是伪文件。第2-10位，共9位，分表对应owner/group/others的权限，rwx分表表示readable/writable/excutable，-表示没有当前权限。
+- <font color=red>第二列</font> 关联硬链接数，对于一个新建文件夹来说，有两个链接，对于一个新建文件来说，有一个链接
+- <font color=red>第三列</font> 表示owner
+- <font color=red>第四列</font> 表示group
+- <font color=red>第五列</font> 表示文档大小，单位字节
+- <font color=red>第六列</font>  表示文档最后修改时间
+- <font color=red>第七列</font> 表示文档名，隐藏文件以`.`开头
 
 ## Linux用户与群组
 
