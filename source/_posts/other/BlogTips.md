@@ -40,6 +40,7 @@ tags:
 <div align="center">
 这是一段居中显示的文字
 </div>
+
 ### 1.3 点击查看更多
 
 ```html
@@ -86,6 +87,7 @@ tags:
 </pre>
 </details>
 
+
 ### 1.4 文字添加颜色
 
 ```html
@@ -98,6 +100,7 @@ tags:
 <font color=blue>蓝色</font>
 <font color=#008000>黄色</font>
 
+
 ### 1.5 警告提示块
 
 ```
@@ -106,7 +109,7 @@ tags:
     提示内容开头留 4 个空格，可以有多行，最后用空行结束此标记。
 ```
 
-!!! note hexo-admonition 插件使用示例
+!!! note hexo-admonition插件使用示例
     这是基于 hexo-admonition 插件渲染的一条提示信息。类型为 note，并设置了自定义标题。标题是可选的，当为设置时，将用类型名称作为默认值
     提示内容开头留 4 个空格，可以有多行，最后用空行结束此标记。
 
@@ -134,12 +137,12 @@ tags:
     这是一条不带标题的警告信息。
 
 ```
-!!! node "嵌套链接及引用块"
+!!! note 嵌套链接及引用块
     在hexo-admonition内部可以嵌套标准markdown标签, 如引用
     > 原文作者 [悟尘纪](https://www.lixl.cn)
 ```
 
-!!! node "嵌套链接及引用块"
+!!! note 嵌套链接及引用块
     在hexo-admonition内部可以嵌套标准markdown标签, 如引用
     > 原文作者 [悟尘纪](https://www.lixl.cn)
 
