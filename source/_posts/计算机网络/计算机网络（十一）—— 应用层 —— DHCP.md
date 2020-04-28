@@ -1,5 +1,5 @@
 ---
-title: 计算机网络（十二）—— 应用层 —— DHCP
+title: 计算机网络（十一）—— 应用层 —— DHCP
 date: 2020-04-28
 categories:
 - 计算机网络
