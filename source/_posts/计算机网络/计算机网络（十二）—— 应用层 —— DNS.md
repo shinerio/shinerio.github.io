@@ -1,6 +1,6 @@
 ---
-title: 计算机网络-应用层（二）-DNS
-date: 2020-04-23
+title: 计算机网络（十二）—— 应用层 —— DNS
+date: 2020-04-27
 categories:
 - 计算机网络
 tags:
