@@ -22,12 +22,12 @@ C语言基本数据类型分为整数类型、浮点数类型，C++还包括了�
 - 浮点数类型：float（4字节）、double（8字节）、long double（16字节）
 - 布尔类型：bool（1字节）
 
-! note "区别"
+!!! note "区别"
     在不同的平台，C所提供的数据类型的空间占用大小是不同的（在16位的机器上，int只占2个字节），而Java则在不同平台上表现一致性。C提供了unsigned类型（不能表示负数），可以提高存储数字的效率，但是一般情况下不建议使用，除非是在非常注重效率的场景。c提供的char的实现取决于编译器的实现，VC编译器、x86上的GCC都把char定义为signed char，而arm-linux-gcc却把char定义为 unsigned char，ASCII标准里定义的字符都是0~127，所以三种char类型都能存储得下。
 
 ## 2. 变量初始化
 
-c和java的变量申明（初始化）类似，采用```TYPENAME VARIABLENAME [ = INITIALVALUE];```的形式
+c和java的变量申明（初始化）类似，采用`TYPENAME VARIABLENAME [ = INITIALVALUE];`的形式。C不会检查变量有没有被初始化，如果使用一个未被初始化的变量，那么得到的是随机的结果（取决于程序使用的内存所存储的值）。
 
 ```c++
 int main(){
@@ -35,8 +35,6 @@ int main(){
     printf("%d", a);
 }  //C中能够通过编译并执行，java不能通过编译
 ```
-
-C不会检查变量有没有被初始化，如果使用一个未被初始化的变量，那么得到的是随机的结果（取决于程序使用的内存所存储的值）
 
 ## 3. 数组
 
@@ -56,7 +54,7 @@ Person person;
 
 C++中，如上的代码真正调用默认无参构造函数构造了一个对象，可以正常使用person对象，而Java中只是生成了一个Person类型的引用，使用person会产生NullPointerError。
 
-p1和p2都是Person类型的引用，代码```p1 = p2```在java中表示的是p1和p2引用的是同一个对象，而C++则是用p2代表的对象新生成了一个p1对象，可以理解为java中调用了p2的clone函数。
+p1和p2都是Person类型的引用，代码`p1 = p2`在java中表示s的是p1和p2引用的是同一个对象，而C++则是用p2代表的对象新生成了一个p1对象，可以理解为java中调用了p2的clone函数。
 
 ## 6. 函数
 
@@ -82,8 +80,8 @@ C/C++中的内存由程序员管理，操作不当可能导致内存泄露或野
 //C/C++
 malloc、calloc、realloc分配内存，free释放后将指针置为NULL;
 new分配内存，通过delete或delete []释放内存后将指针置为NULL
- //Java
-  直接将变量置为null;
+//Java
+直接将变量置为null;
 ```
 
 
