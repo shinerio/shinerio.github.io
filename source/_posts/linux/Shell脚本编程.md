@@ -311,7 +311,18 @@ hello, zhangsan lisi wangwu
 </pre>
 </details>
 
-## 6. echo和printf
+## 6. 命令替换
+
+命令替换可以将一个命令的输出作为另外一个命令的参数。
+
+```bash
+# command1 `command2`
+cd `pwd` # 该命令将pwd命令列出的目录作为cd命令的参数，结果仍然是停留在当前目录下
+cd `echo $HOME` # 将echo的输出作为cd的参数，即打开用户根目录
+```
+
+
+## 7. echo和printf
 
 echo可以用来输出一个变量，也可以用来显示命令结果，echo命令会自动换行
 
@@ -341,9 +352,9 @@ helloshinerio
 </pre>
 </details>
 
-## 7. 流程控制
+## 8. 流程控制
 
-### 7.1 if
+### 8.1 if
 
 ```bash
 a=10
@@ -359,7 +370,7 @@ fi
 # a大于等2且小于等于10
 ```
 
-### 7.2 case
+### 8.2 case
 
 ```bash
 a=10
@@ -373,7 +384,7 @@ case $a in
 esac
 ```
 
-### 7.3 while
+### 8.3 while
 
 ```bash
 int=0
@@ -384,7 +395,7 @@ do
 done
 ```
 
-### 7.4 util
+### 8.4 util
 
 ```bash
 int=0
@@ -395,7 +406,7 @@ do
 done
 ```
 
-### 7.5 for
+### 8.5 for
 
 ```bash
 # for写法1
@@ -416,13 +427,13 @@ do
 done
 ```
 
-### 7.5 break和continue
+### 8.6 break和continue
 
 用法与一般编程语言类似，break跳出循环，continue跳出当前循环
 
-## 8. 输入/输出重定向
+## 9. 输入/输出重定向
 
-### 8.1 输出重定向
+### 9.1 输出重定向
 
 ```bash
 # command > file 将命令输出结果保存的file文件中
@@ -441,7 +452,7 @@ zhangrui ttys000  May 12 20:34
 !!! note "\>和\>\>"
     \>从文件头开始写，会覆盖旧内容，\>\>将内容追加到文件末尾
 
-### 8.2 输出重定向
+### 9.2 输出重定向
 
 ```bash
 # command < file 从file文件获取输入
@@ -453,7 +464,7 @@ wc -l < users > result
 cat result # 内容为2
 ```
 
-### 8.3 文件描述符
+### 9.3 文件描述符
 
 一般情况下，每个 Unix/Linux 命令运行时都会打开三个文件
 
@@ -475,7 +486,7 @@ ls /etc/unexist > file 2>&1 # 将标准错误重定向到标准输出
 cat file # ls: /etc/unexist: No such file or directory
 ```
 
-### 8.4 Here Document
+### 9.4 Here Document
 
 ```bash
 # command << EOF
@@ -502,7 +513,7 @@ LearnShell
 !!! warning ""
     结尾的EOF 一定要顶格写，前面不能有任何字符，后面也不能有任何字符，包括空格和 tab 缩进。开始的EOF前后的空格会被忽略掉。
 
-### 8.5 /dev/null
+### 9.5 /dev/null
 
 如果希望执行某个命令，但又不希望在屏幕上显示输出结果，那么可以将输出重定向到 /dev/null。
 
