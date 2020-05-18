@@ -98,6 +98,7 @@ HAVE_MALOC_SIZE主要是用来确定系统是否提供查询malloc分配的内�
 #endif
 </pre>
 </details>
+
 #### 2.1.2 update_zmalloc_stat_alloc
 
 ```c
