@@ -9,7 +9,7 @@ tags:
 
 ---
 
-Redis没有使用C语言的字符串结构，而是自己设计了一个简单的动态字符串结构sds(simple dynamic string))。Redis中关于sds的实现主要在sds.c和sds.h中
+Redis没有使用C语言的字符串结构，而是自己设计了一个简单的动态字符串结构sds(simple dynamic string)。Redis中关于sds的实现主要在sds.c和sds.h中
 
 <!--more-->
 
