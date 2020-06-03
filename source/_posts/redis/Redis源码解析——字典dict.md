@@ -17,7 +17,7 @@ Redis中有多个数据库，数据库采用的数据结构是哈希表，用以
 ### 1.1 哈希表节点（dictEntry）
 
 ```c
-	typedef struct dictEntry {
+typedef struct dictEntry {
     // 键
     void *key;
     // 值
