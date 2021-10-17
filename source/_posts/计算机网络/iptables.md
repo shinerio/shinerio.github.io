@@ -85,14 +85,14 @@ iptables [-t 表名] 管理选项 [链名] [匹配条件] [-j 控制类型]
   - --dport，指定目的端口，支持范围。如--port 10000:20000
   - --m multiport，支持指定多个端口。如 --m multiport --sports 22,10000:20000
 - 控制类型
-  - 接收accept
-  - 拒绝reject
-  - 丢弃drop
+  - 接收ACCEPT
+  - 拒绝REJECT
+  - 丢弃DROP
   - 日志LOG
 
-> reject和drop的区别。
-> reject动作会返回一个拒绝(终止)数据包(TCP FIN或UDP-ICMP-PORT-UNREACHABLE)，明确的拒绝对方的连接动作。连接马上断开，Client会认为访问的主机不存在。
-> drop动作只是简单的直接丢弃数据，并不反馈任何回应。需要Client等待超时，Client容易发现自己被防火墙所阻挡。
+> REJECT和DROP的区别。
+> REJECT动作会返回一个拒绝(终止)数据包(TCP FIN或UDP-ICMP-PORT-UNREACHABLE)，明确的拒绝对方的连接动作。连接马上断开，Client会认为访问的主机不存在。
+> DROP动作只是简单的直接丢弃数据，并不反馈任何回应。需要Client等待超时，Client容易发现自己被防火墙所阻挡。
 
 **示例**
 1. 丢且来自x.x.x.x的数据包
@@ -130,3 +130,12 @@ iptables -A INPUT -p icmp --icmp-type echo-reply -j ACCEPT
 ```
 
 ### 2.2 日志
+
+对于INPUT链中的所有操作都记录到日志中，添加日志前缀*** INPUT *** 并设定日志级别为debug
+
+```shell
+iptables -A INPUT -j LOG --log-prefix "*** INPUT ***" --log-level debug
+```
+
+
+
