@@ -137,5 +137,16 @@ iptables -A INPUT -p icmp --icmp-type echo-reply -j ACCEPT
 iptables -A INPUT -j LOG --log-prefix "*** INPUT ***" --log-level debug
 ```
 
+### 2.3 自定义链
 
+通过-N参数创建自定义链，将BLOCK链作为控制目标，如：
 
+```shell
+iptables -N BLOCK
+iptables -A BLOCK -p tcp -s 10.1.1.92/32 --dport 80 -j DROP
+iptables -I INPUT 1 -p tcp --dport 80 -j BLOCK
+```
+
+INPUT链中匹配规则1的包都会转入BLOCK链中，若到达了BLOCK链的结尾（即未被链中的规则匹配），则会回到INPUT链的下一条规则。如果在子链中匹配了，则就相当于在父链中匹配了，那么它不会再经过父链中的其他规则。
+
+> iptables -X BLOCK，删除自定义链，iptable -E BLOCK BLOCK_NEW重命名
