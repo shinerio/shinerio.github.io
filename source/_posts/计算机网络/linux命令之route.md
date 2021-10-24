@@ -1,6 +1,6 @@
 ---
 title: linux命令之route
-date: 2021-10-017
+date: 2021-10-24
 categories:
 - 计算机网络
 tags:
