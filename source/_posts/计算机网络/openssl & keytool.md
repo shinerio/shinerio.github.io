@@ -112,6 +112,12 @@ openssl rsa -in example.key -passin pass:shinerio -out example_unencrypt.key
 openssl rsa -in example_unencrypt.key -aes256 -passout pass:shinerio -out example_encrypt.key
 ```
 
+- 修改密码
+
+```shell
+openssl rsa -in example.key -passin pass:shinerio -aes256 -passout pass:shinerio_new -out example.key
+```
+
 
 ## 3. 生成签名请求及CA 签名
 
