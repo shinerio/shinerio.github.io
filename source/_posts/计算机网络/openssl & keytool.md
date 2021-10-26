@@ -196,6 +196,7 @@ keytool -genkeypair -keyalg rsa -keysize 2048 -storetype JKS -alias cert -keypas
 使用 "keytool -help" 获取所有可用命令
 
 ### 4.2 列出keystore中的证书
+
 ```shell
 keytool -list -v -keystore D:/example.jks -storepass shinerio
 ```
@@ -204,7 +205,7 @@ keytool -list -v -keystore D:/example.jks -storepass shinerio
 
 ```shell
 keytool -list -v -alias cert -keystore D:/example.jks -storepass shinerio
-```shell
+```
 
 ### 4.4 删除指定证书
 
