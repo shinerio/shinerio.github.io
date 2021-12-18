@@ -25,7 +25,11 @@ Reactor是响应式编程的一种实现方式。响应式编程关心数据流�
 
 ![enter description here](https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1639806573224.png)
 
-###1.1  java.util.concurrent.Flow
+当然，一个良好的编程设计，具备工作流的前提下，还需要考虑到异常处理和任务完成，提供onError和onComplete机制。因此可以总结为如下机制：
+
+`onNext 0...N | [onError | onComplete|`
+
+### 1.1  java.util.concurrent.Flow
 
 Flow是流API的主要类,这个类封装了流API的所有重要接口。
 - `java.util.concurrent.Flow.Publisher`，这是一个功能接口，每个发布者都必须实现其subscribe方法，以便能够添加对应的subscriber
