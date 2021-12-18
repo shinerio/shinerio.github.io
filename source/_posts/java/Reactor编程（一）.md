@@ -13,11 +13,11 @@ Reactor是响应式编程的一种实现方式。响应式编程关心数据流�
 
 <!--more-->
 
-## Flow
+## 1. Flow
 
 响应式编程最初由Microsoft创建，其在.NET生态中创造了响应式扩展库（Rx）。RxJava和Akka流是JAVA生态下反应是编程的流行实现。随着时间的推移，通过 Reactive Streams 的努力出现了 Java 的标准化，该规范为 JVM 上的反应库定义了一组接口和交互规则。 它的接口已集成到 Java 9的java.util.concurrent.Flow类下。
 
-反应流是关于流的异步处理，其实是迭代器模式和观察者模式的一种实现，所以应该有一个发布者和一个订阅者，发布者发布数据流，订阅者使用数据。
+反应流是关于流的异步处理，其实是观察者模式的一种实现，所以应该有一个发布者和一个订阅者，发布者发布数据流，订阅者使用数据。
 
 ![enter description here](https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1639806474119.png)
 
@@ -25,7 +25,7 @@ Reactor是响应式编程的一种实现方式。响应式编程关心数据流�
 
 ![enter description here](https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1639806573224.png)
 
-### java.util.concurrent.Flow
+###1.1  java.util.concurrent.Flow
 
 Flow是流API的主要类,这个类封装了流API的所有重要接口。
 - `java.util.concurrent.Flow.Publisher`，这是一个功能接口，每个发布者都必须实现其subscribe方法，以便能够添加对应的subscriber
@@ -194,7 +194,7 @@ public final class Flow {
 }
 ```
 
-### 示例
+### 1.2 示例
 
 ```java
 
@@ -462,6 +462,8 @@ All Processing Done
 Tps is: 31
 
 所以在使用异步流工作的时候，我们的任务中的每一环最好都是无阻塞的，否则整个异步流都会因为一个阻塞点而大大降低性能。
+
+## 2. 
 
 ## 参考链接
 
