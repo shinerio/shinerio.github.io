@@ -785,5 +785,6 @@ Name is test3,author is mary
 
 ## 4. 参考链接
 
-1. https://skyao.io/learning-reactor/docs/concept/flux/create.html
+1. https://projectreactor.io/docs/core/release/reference/#error.handling
+2. https://skyao.io/learning-reactor/docs/concept/flux/create.html
 2. https://zhuanlan.zhihu.com/p/283903217
