@@ -497,15 +497,29 @@ public class StepCounter extends AbstractMeter implements Counter {
 Statsd最早是2008年Flickr公司用Perl写的针对Graphite、datadog等监控数据后端存储开发的前端网络应用，2011 年 Etsy 公司用 node.js 重构。statsd狭义来讲，其实就是一个监听UDP（默认）或者TCP的守护程序，根据简单的协议收集statsd客户端发送来的数据，聚合之后，定时推送给后端，如graphite和influxdb等，再通过grafana等展示。statsd系统包括三部分：客户端（client）、服务器（server）和后端（backend）。客户端植入于应用代码中，将相应的metrics上报给statsd server。statsd server聚合这些metrics之后，定时发送给backends。backends则负责存储这些时间序列数据，并通过适当的图表工具展示。
 
 statsd采用简单的行协议： 
-```<bucket>:<value>|<type>[|@sample_rate]复制代码```
+```
+<bucket>:<value>|<type>[|@sample_rate]
+```
+
 bucket
-```bucket是一个metric的标识，可以看成一个metric的变量。```
+```
+bucket是一个metric的标识，可以看成一个metric的变量。
+```
+
 value
-```metric的值，通常是数字。```
+```
+metric的值，通常是数字。
+```
+
 type
-```metric的类型，通常有timer、counter、gauge和get```
+```
+metric的类型，通常有timer、counter、gauge和get
+```
+
 sample_rate
-```如果数据上报量过大，很容易溢满statsd。所以适当的降低采样，减少server负载。这个频率容易误解，需要解释一下。客户端减少数据上报的频率，然后在发送的数据中加入采样频率，如0.1。statsd server收到上报的数据之后，如cnt=10，得知此数据是采样的数据，然后flush的时候，按采样频率恢复数据来发送给backend，即flush的时候，数据为cnt=10/0.1=100，而不是容易误解的10*0.1=1。```
+```
+如果数据上报量过大，很容易溢满statsd。所以适当的降低采样，减少server负载。这个频率容易误解，需要解释一下。客户端减少数据上报的频率，然后在发送的数据中加入采样频率，如0.1。statsd server收到上报的数据之后，如cnt=10，得知此数据是采样的数据，然后flush的时候，按采样频率恢复数据来发送给backend，即flush的时候，数据为cnt=10/0.1=100，而不是容易误解的10*0.1=1。
+```
 
 #### 2.1.1 UDP和TCP
 statsd可配置相应的server为UDP和TCP。默认为UDP。UDP和TCP各有优劣。但UDP确实是不错的方式。UDP不需要建立连接，速度很快，不会影响应用程序的性能。“fire-and-forget”机制，就算statsd server挂了，也不会造成应用程序crash。当然，UDP更适合于上报频率比较高的场景，就算丢几个包也无所谓，对于一些一天已上报的场景，任何一个丢包都影响很大。另外，对于网络环境比较差的场景，也更适合用TCP，会有相应的重发，确保数据可靠。
@@ -542,7 +556,9 @@ mean: 100,
 median: 100
 ```
 对于百分数相关的数据需要解释一下。以90为例。statsd会把一个flush期间上报的数据，去掉10%的峰值，即按大小取cnt\*90%（四舍五入）个值来计算百分值。举例说明，假如10s内上报以下10个值。 
-```1,3,5,7,13,9,11,2,4,8```
+```
+1,3,5,7,13,9,11,2,4,8
+```
 则只取10*90%=9个值，则去掉13。百分值即按剩下的9个值来计算。 
 ```
 $KEY.mean_90   // (1+3+5+7+9+2+11+4+8)/9
@@ -616,7 +632,9 @@ while (true) {
 > Counter_total{region="us-east-1",} 1.0
 
 设置拉取的数据格式。默认情况下PrometheusMeterRegistry的scrape()方法返回的是 Prometheus 默认的文本格式。从 Micrometer 1.7.0 开始，也可以通过如下方式指定数据格式为OpenMetrics定义的数据格式：
-```String openMetricsScrape = registry.scrape(TextFormat.CONTENT_TYPE_OPENMETRICS_100);```
+```
+String openMetricsScrape = registry.scrape(TextFormat.CONTENT_TYPE_OPENMETRICS_100);
+```
 
 #### 2.2.3 安装
 
