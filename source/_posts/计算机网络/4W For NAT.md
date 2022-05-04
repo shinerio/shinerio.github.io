@@ -122,7 +122,7 @@ Scale up的另外一种方式就是重构，通过这种方式我们可以提高
 4. 内核工作在多核上，为可全局一致，即使采用Lock Free，也避免不了锁总线、内存屏障带来的性能损耗。
 5. 从网卡到业务进程，经过的路径太长，有些其实未必要的，例如netfilter框架，这些都带来一定的消耗，而且容易Cache Miss。
 
-为了提升在通用服务器的数据包处理效能，Intel推出了服务于IA（Intel Architecture）系统的DPDK(Data Plane Development Kit)技术。DPDK应用程序运行在操作系统的User Space，利用自身提供的数据面库进行收发包处理，绕过了Linux内核态协议栈，以提升报文处理效率。
+为了提升在通用服务器的数据包处理效能，Intel推出了服务于IA（Intel Architecture）系统的DPDK(Data Plane Development Kit)技术。DPDK应用程序运行在操作系统的User Space，利用自身提供的数据面库进行收发包处理，绕过了Linux内核态协议栈，以提升报文处理效率。DPDK的UIO驱动屏蔽了硬件发出中断，然后在用户态采用主动轮询的方式，这种模式被称为[PMD](http://doc.dpdk.org/guides/prog_guide/poll_mode_drv.html)（Poll Mode Driver）。
 
 ![enter description here](./images/1651668852031.png)
 
@@ -149,7 +149,7 @@ Scale up的本质还是在提高单机的性能，存在理论性能上限和单
 - TOP节点成为了无状态的网关，可以理论无限扩容，大大提高了整个网关平台的转发能力
 - Flow Master对于所有网关形态来说，不同的五元组都可以交由不同的Flow Master管理链接状态。FLow Master可以做到横向扩容，基于五元组hash，没有会话状态可以向Decider申请。
 - Decider不同与Flow Master，对于有状态的网关，不同的实例可以由不同的Decider管理，但同一个实例必须由同一个Decider管理。Decider横向扩容需要考虑hash策略变化带来的会话同步问题。
-- Flow Master和Decider存有会话信息，通过绕行两个节点形成主备，消除单点故障问题来说
+- Flow Master和Decider存有会话信息，通过绕行两个节点形成主备，消除单点故障问题。
 
 ## 4.3 Tenant isolation
 
