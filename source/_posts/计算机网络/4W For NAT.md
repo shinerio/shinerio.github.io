@@ -27,7 +27,10 @@ NAT（Network address translation）即网络地址转换，工作在OSI模型�
   
 >其中Basic NAT是公网ip和私网ip的1:1绑定，在云上属于EIP的功能，因此本文主要针对的是PNAT场景。
 
+<!--more-->
+
 ## 1.2 7层NAT
+
 
 # 2. Why we need NAT?
 
