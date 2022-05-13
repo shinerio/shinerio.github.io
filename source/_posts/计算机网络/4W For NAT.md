@@ -127,7 +127,7 @@ Scale up的另外一种方式就是重构，通过这种方式我们可以提高
 
 为了提升在通用服务器的数据包处理效能，Intel推出了服务于IA（Intel Architecture）系统的DPDK(Data Plane Development Kit)技术。DPDK应用程序运行在操作系统的User Space，利用自身提供的数据面库进行收发包处理，绕过了Linux内核态协议栈，以提升报文处理效率。DPDK的UIO驱动屏蔽了硬件发出中断，然后在用户态采用主动轮询的方式，这种模式被称为[PMD](http://doc.dpdk.org/guides/prog_guide/poll_mode_drv.html)（Poll Mode Driver）。
 
-![![enter description here](./images/1651668852031.png](https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1652454183396.png)
+![enter description here](https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1652454183396.png)
 
 左边是原来的方式数据从 网卡 -> 驱动 -> 协议栈 -> Socket接口 -> 业务
 
