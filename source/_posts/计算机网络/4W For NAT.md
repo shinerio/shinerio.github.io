@@ -31,6 +31,7 @@ NAT（Network address translation）即网络地址转换，工作在OSI模型�
 
 ## 1.2 7层NAT
 
+普通NAT实现了对UDP或TCP报文头中的的IP地址及端口转换功能，但对应用层数据载荷中的字段无能为力，在许多应用层协议中，比如多媒体协议（H.323、SIP等）、FTP、SQLNET等，TCP/UDP载荷中带有地址或者端口信息，这些内容不能被NAT进行有效的转换，就可能导致问题。而NAT ALG（Application Level Gateway，应用层网关）技术能对多通道协议进行应用层报文信息的解析和地址转换，将载荷中需要进行地址转换的IP地址和端口或者需特殊处理的字段进行相应的转换和处理，从而保证应用层通信的正确性。
 
 # 2. Why we need NAT?
 
@@ -166,3 +167,5 @@ Scale up的本质还是在提高单机的性能，存在理论性能上限和单
 2. [一文看懂DPDK](https://cloud.tencent.com/developer/article/1198333)
 3. [什么是DPDK？DPDK的原理及学习学习路线总结](https://zhuanlan.zhihu.com/p/397919872)
 4. [AWS Hyperplane浅谈](https://zhuanlan.zhihu.com/p/188735635)
+5. [NAT - 网络地址转换](http://arthurchiao.art/blog/nat-zh/)
+6. [NAT ALG原理与应用](http://www.h3c.com/cn/d_201206/747033_97665_0.htm)
