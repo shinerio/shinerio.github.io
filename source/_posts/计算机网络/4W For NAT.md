@@ -9,6 +9,8 @@ tags:
 
 # 1. What is NAT?
 
+## 1.1 四层NAT
+
 NAT（Network address translation）即网络地址转换，工作在OSI模型的四层，用于修改数据包的IP地址和端口。当在专用网内部的一些主机本来已经分配到了local ip地址，但又想和Internet的主机通信时，可使用NAT方法。
 
 从NAT的映射方式来看，NAT可以分为Basic NAT和PNAT：
@@ -25,7 +27,8 @@ NAT（Network address translation）即网络地址转换，工作在OSI模型�
   
 >其中Basic NAT是公网ip和私网ip的1:1绑定，在云上属于EIP的功能，因此本文主要针对的是PNAT场景。
 
-![enter description here](./images/1651666796441.png)
+## 1.2 7层NAT
+
 # 2. Why we need NAT?
 
 - 多个内网主机共享公网IP，节省IP资源
@@ -142,7 +145,7 @@ Scale up的本质还是在提高单机的性能，存在理论性能上限和单
 - FLOW MASTER：用来记录网络连接信息，FLOW MASTER是无状态通用的。
 - DECIDER：具体实现网络功能逻辑，不同网关实现不同。对于NAT来说，就是实现SNAT和DNAT规则的转换。
 
-![enter description here](./images/1651669455296.png)
+![enter description here](https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1652454138657.png)
 
 > 这里的每个节点都使用的是池化的ECS，具有很强的弹性扩缩能力。
 
