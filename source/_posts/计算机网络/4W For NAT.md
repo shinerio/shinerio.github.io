@@ -58,7 +58,49 @@ PNAT从形态上来看，可以分为锥形NAT、对称型NAT和全随机NAT。
 - NAT不能实现对通信双方的全透明，因为游湖可以在传输的数据包中携带ip和port信息（需要七层ALG）
 - 应用层需保持UDP回话连接，由于NAT资源有限，所以UDP的回话会很快被回收（以便端口重用）。由于UDP是无连接的，因此UDP层应用需要在无数据传输、但需要保持连接时通过heartbeat的方式保持会话不过期。
 
-# 3. How to NAT in Linux?
+# 3. How to NAT in router?
+
+以下配置了子网10.10.10.0/24的前32个地址和来自子网10.10.20.0/24的前32个地址可以NAT后访问外网，内部网络中可能有其他设备具有其他地址，但这些地址不会被转换。
+
+![enter description here](https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1652546543650.png)
+
+```shell
+interface ethernet 0
+ ip address 10.10.10.1 255.255.255.0
+ ip nat inside
+
+!--- Defines Ethernet 0 with an IP address and as a NAT inside interface.
+
+interface ethernet 1
+ ip address 10.10.20.1 255.255.255.0
+ ip nat inside
+
+!--- Defines Ethernet 1 with an IP address and as a NAT inside interface.
+
+interface serial 0
+ ip address 172.16.10.64 255.255.255.0
+ ip nat outside
+
+!--- Defines serial 0 with an IP address and as a NAT outside interface.
+
+ip nat pool no-overload 172.16.10.1 172.16.10.63 prefix 24
+ !
+
+!--- Defines a NAT pool named no-overload with a range of addresses !--- 172.16.10.1 - 172.16.10.63
+
+ip nat inside source list 7 pool no-overload 
+ !
+ !
+
+!--- Indicates that any packets received on the inside interface that !--- are permitted by access-list 7 has !--- the source address translated to an address out of the !--- NAT pool "no-overload".
+
+access-list 7 permit 10.10.10.0 0.0.0.31
+access-list 7 permit 10.10.20.0 0.0.0.31
+
+!--- Access-list 7 permits packets with source addresses ranging from !--- 10.10.10.0 through 10.10.10.31 and 10.10.20.0 through 10.10.20.31.
+```
+
+# 4. How to NAT in Linux?
 
 在物理网络中，NAT功能一般由路由器或防火墙之类的设备来承载，而`Iptables`则是linux提供的用户态命令行工具，可以通过在nat表中增加规则，实现在`PREROUTING`和`POSTROUTING`链上的`DNAT`和`SNAT`功能。要使用Linux提供的nat功能，首先需要确认主机支持转发，可通过以下方式确认:
 
@@ -70,7 +112,7 @@ cat /proc/sys/net/ipv4/ip_forward
 > 如未打开，可通过修改`/etc/sysctl.conf`文件，配置`net.ipv4.ip_forward = 1`后执行`sysctl -p /etc/sysctl.conf`启用转发功能。
 
 
-## 3.1 SNAT
+## 4.1 SNAT
 
 SNAT是为了让内网主机访问外网主机，将出方向报文的源地址进行替换，因此可以在`POSTROUTING`链上添加如下规则。
 
@@ -79,7 +121,7 @@ SNAT是为了让内网主机访问外网主机，将出方向报文的源地址�
 iptables -t nat -A POSTROUTING -o eth0 -s 192.168.1.0/24 -j SNAT --to 100.32.1.100
 ```
 
-## 3.2 DNAT
+## 4.2 DNAT
 
 DNAT是为了让外网主机访问内网主机，将入方向报文的目的地址进行替换，因此可以在`PREROUTING`链上添加如下规则。
 
@@ -94,7 +136,7 @@ iptables -t nat -A PREROUTING -i eth0 -p tcp -d 100.32.1.101 --dport 10000:20000
 
 > iptables提供的NAT功能并不会对范围大小、端口冲突功能进行检查。iptables的工作原理为在一条链上从前到后匹配，前面的规则会覆盖后面的规则。 
 
-## 3.3 Conntrack
+## 4.3 Conntrack
 
 上面我们提到了使用`iptables`实现SNAT功能，而SNAT存在多个内网主机通过分配端口复用同一个公网IP的情况，因此需要有个状态保持机制来记录这个会话，这个功能模块就是`Conntrack`。
 
@@ -121,19 +163,19 @@ iptables -t nat -A PREROUTING -i eth0 -p tcp -d 100.32.1.101 --dport 10000:20000
  
 >连接跟踪模块只是完成连接信息的采集和录入功能，并不会修改或丢弃数据包，后者是其他模块（例如 NAT）基于`Netfilter hook`完成的。
 
-# 4. How to NAT in cloud？
+# 5. How to NAT in cloud？
 
 “NAT网关”作为云服务的一种，面向overlay网络提供服务，其一般基于通用服务器（一般为Linux服务器）实现。在How to NAT in Linux一节中，我们已经知道，可以通过`netfilter`来实现，但这种方式只能靠单机工作，存在着**性能瓶颈**和**单点故障**的问题。为了提高性能和可靠性，我们可以从两方面入手，分别是`scale up`和`scale out`。同时，公有云服务面向了很多客户，因此云上NAT的功能对我们还有一个特殊的要求，实现多租户配置隔离。
 
-## 4.1 Scale up
+## 5.1 Scale up
 
-### 4.1.1 Better Hardware
+### 5.1.1 Better Hardware
 Scale up最简单的方式就是增强硬件，这种方式只能在一定程度上提高性能，但受限于硬件能力，还是存在性能上限，且存在单点故障的缺陷。
 
 - bigger cpu core
 - greater bandwidth NIC
 
-### 4.1.2 Architecture Refactor
+### 5.1.2 Architecture Refactor
 
 Scale up的另外一种方式就是重构，通过这种方式我们可以提高硬件的利用效率，从而增强我们的转发性能。
 
@@ -157,7 +199,7 @@ Scale up的另外一种方式就是重构，通过这种方式我们可以提高
 
 用户态的好处是易用开发和维护，灵活性好。并且Crash也不影响内核运行，鲁棒性强。
 
-## 4.2 Scale out
+## 5.2 Scale out
 
 Scale up的本质还是在提高单机的性能，存在理论性能上限和单点故障问题。云计算的本质就是池化，实现网关的动态弹性扩容才是根本解决方案。通过Scale out的方式可以无限扩容，提高性能，且集群化后，可以避免单点故障，提高可靠性。
 
@@ -176,30 +218,30 @@ Scale up的本质还是在提高单机的性能，存在理论性能上限和单
 - Decider不同与Flow Master，对于有状态的网关，不同的实例可以由不同的Decider管理，但同一个实例必须由同一个Decider管理。Decider横向扩容需要考虑hash策略变化带来的会话同步问题。
 - Flow Master和Decider存有会话信息，通过绕行两个节点形成主备，消除单点故障问题。
 
-## 4.3 Tenant isolation
+## 5.3 Tenant isolation
 
 这个就比较简单，云上数据包一般都会使用VXLAN协议进行过传递，通过对VXLAN报文中的VNI进行解析，将SNAT规则和DNAT规则与VNI进行绑定，即可实现不同租户之间的规则隔离。
 
-# 5. NAT Traversal
+# 6. NAT Traversal
 
 目前运营商提供的光猫上网服务和绝大多数的路由器都是锥型NAT，锥型NAT可以实现NAT穿越，从而实现P2P。
 
- ## 5.1 锥型NAT
+ ## 6.1 锥型NAT
 
 处于不同内网的主机A和主机B，各自先连接服务器，从而在各自NAT设备上打开了一个“孔”，服务器收到主机A和主机B的连接后，知道A与B的公网地址和NAT分配给它们的端口号，然后把这些NAT地址与端口号告诉A与B，由于在锥型NAT的特点，A和B给服务器所打开的“孔”，能给别的任何的主机使用。故A与B可连接对方的公网地址和端口直接进行通信。服务器在这里充当“介绍人”，告诉A与B对方的地址和端口号。
 
-## 5.2 地址受限锥形NAT
+## 6.2 地址受限锥形NAT
 
 A和B还是要先连接服务器，服务器发送A和B的地址和端口信息给A和B，但由于受限制锥形NAT的特点，他们所打开的“孔”，只能与服务器通信。要使他们可以直接通信，解决办法如下：
 
 假如主机A开始发送一个UDP信息到主机B的公网地址上，与此同时，它又通过服务器中转发送了一个邀请信息给主机B，请求主机B也给主机A发送一个UDP信息到主机A的公网地址上。这时主机A向主机B的公网IP发送的信息导致NAT A打开一个处于主机A的和主机B之间的会话，与此同时，NAT B也打开了一个处于主机B和主机A的会话。一旦这个新的UDP会话各自向对方打开了，主机A和主机B之间就可以直接通信了。
 
 
-## 5.3 端口受限制锥形（Port Restricted Cone）NAT
+## 6.3 端口受限制锥形（Port Restricted Cone）NAT
 
 同[地址受限锥形NAT](#地址受限锥形NAT)
 
-## 5.4 对称型（Symmetric）NAT
+## 6.4 对称型（Symmetric）NAT
 
 对称型NAT，对于不同的四元组，它都会分配不同的端口号，所以进行打孔比较困难，但也可以进行端口预测打孔，不过不能保证成功。通常，对称NAT分配端口有两种策略，一种是按顺序增加，一种是随机分配。如果这里对称NAT使用顺序增加策略，那么，ClientB将两次被分配的外网地址和端口发送给Server后，Server就可以通知ClientA在这个端口范围内猜测刚才ClientB发送给它的socket中被NAT映射后的外网地址和端口，ClientA很有可能在孔有效期内成功猜测到端口号，从而和ClientB成功通信。
 
@@ -209,19 +251,19 @@ A和B还是要先连接服务器，服务器发送A和B的地址和端口信息�
 
 > 2. 以上的NAT穿越，都是基于UDP的NAT穿越。UDP的socket允许多个socket绑定到同一个本地端口，而TCP的socket则不允许。想象一下，如果Client A使用IPA:2000端口和服务器通信，那么Client主机已经使用IPA:2000这个socket和服务器建立了一条TCP流，自然也无法再使用IPA:2000端口和client B建立一条TCP流，而UDP是可以做到的。
 
-## 5.5 NAT-DDNS穿透
+## 6.5 NAT-DDNS穿透
 
 NAT-DDNS是将用户的动态IP地址映射到一个固定的域名上，用户每次连接网络的时候客户端程序就会通过信息传递把该主机的动态IP地址传送给位于服务商主机上的服务器程序，服务项目器程序负责提供DNS服务并实现动态域名解析。DDNS的主要作用就是捕获用户每次变化的IP地址，然后将其与域名相对应，这样其他上网用户就可以通过域名来与用户交流了。可以通过NAT-DDNS穿透来实现家用主机面向互联网提供服务。
 
-## 5.6 TCP打洞
+## 6.6 TCP打洞
 
-### 5.6.1 套接字和TCP端口的重用
+### 6.6.1 套接字和TCP端口的重用
 
 实现基于TCP协议的p2p"打洞"过程中，最主要的问题不是来自于TCP协议，而是来自于来自于应用程序的API接口。这是由于标准的伯克利(Berkeley)套接字的API是围绕着构建客户端/服务器程序而设计的，API允许TCP流套接字通过调用`connect()`函数来建立向外的连接，或者通过`listen()`和`accept()`函数接受来自外部的连接，但是，API不提供类似UDP那样的，同一个端口既可以向外连接，又能够接受来自外部的连接。而且更糟的是，TCP的套接字通常仅允许建立1对1的响应，即应用程序在将一个套接字绑定到本地的一个端口以后，任何试图将第二个套接字绑定到该端口的操作都会失败。
 
 为了让TCP"打洞"能够顺利工作，我们需要使用一个本地的TCP端口来监听来自外部的TCP连接，同时建立多个向外的TCP连接。幸运的是，所有的主流操作系统都能够支持特殊的TCP套接字参数，通常叫做`SO_REUSEADDR`，该参数允许应用程序将多个套接字绑定到本地的一个端口（只要所有要绑定的套接字都设置了SO_REUSEADDR参数即可）。BSD系统引入了SO_REUSEPORT参数，该参数用于区分端口重用还是地址重用，在这样的系统里面，上述所有的参数必须都设置才行。
 
-### 5.6.2 打开p2p的TCP流
+### 6.6.2 打开p2p的TCP流
 
 假定客户端A希望建立与B的TCP连接。我们像通常一样假定A和B已经与公网上的已知服务器、建立了TCP连接。服务器记录下来每个连入的客户端的公网地址和端口，如同为UDP服务的时候一样。从协议层来看，TCP"打洞"与UDP"打洞"是几乎完全相同的过程。
 
@@ -231,7 +273,7 @@ NAT-DDNS是将用户的动态IP地址映射到一个固定的域名上，用户�
 4、A和B开始等待向外的连接是否成功，检查是否有新连接进入。如果向外的连接由于某种网络错误而失败，如："连接被重置"或者"节点无法访问"，客户端只需要延迟一小段时间（例如延迟一秒钟），然后重新发起连接即可，延迟的时间和重复连接的次数可以由应用程序编写者来确定。A发出SYN报文到达B的NAT设备，B的NAT设备如果是全锥型NAT，则连接直接建立，否则B的NAT设备丢弃该报，此时B的SYN报文到达A端NAT设备，而A端NAT设备由于看到了A主动访问B的流，因此将SYN报文NAT后转给了A，A的`listen()`函数生效，连接建立成功。
 6、TCP连接建立起来以后，客户端之间应该开始鉴权操作，确保目前联入的连接就是所希望的连接。如果鉴权失败，客户端将关闭连接，并且继续等待新的连接接入。客户端通常采用"先入为主"的策略，只接受第一个通过鉴权操作的客户端，然后将进入p2p通信过程不再继续等待是否有新的连接接入。
 
-# 6. Refrence
+# 7. Refrence
 1. [连接跟踪（conntrack）：原理、应用及 Linux 内核实现](https://arthurchiao.art/blog/conntrack-design-and-implementation-zh/)
 2. [一文看懂DPDK](https://cloud.tencent.com/developer/article/1198333)
 3. [什么是DPDK？DPDK的原理及学习学习路线总结](https://zhuanlan.zhihu.com/p/397919872)
@@ -239,3 +281,5 @@ NAT-DDNS是将用户的动态IP地址映射到一个固定的域名上，用户�
 5. [NAT - 网络地址转换](http://arthurchiao.art/blog/nat-zh/)
 6. [NAT ALG原理与应用](http://www.h3c.com/cn/d_201206/747033_97665_0.htm)
 7. [NAT基本原理及穿透详解(打洞)](https://juejin.cn/post/6844904098572009485)
+8. [配置网络地址转换：入门指南](https://www.cisco.com/c/zh_cn/support/docs/ip/network-address-translation-nat/13772-12.html)
+9.  [Configuring Static and Dynamic NAT Simultaneously](https://www.cisco.com/c/en/us/support/docs/ip/network-address-translation-nat/13778-9.html)
