@@ -13,6 +13,8 @@ tags:
 
 NAT（Network address translation）即网络地址转换，工作在OSI模型的四层，用于修改数据包的IP地址和端口。当在专用网内部的一些主机本来已经分配到了local ip地址，但又想和Internet的主机通信时，可使用NAT方法。
 
+<!--more-->
+
 从NAT的映射方式来看，NAT可以分为Basic NAT和PNAT：
 - Basic NAT只转化IP，不映射端口。
 - PNAT除了转化IP，还做端口映射，可以用于多个内部地址映射到少量（甚至一个）外部地址。
