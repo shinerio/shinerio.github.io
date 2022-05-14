@@ -43,7 +43,7 @@ PNAT从形态上来看，可以分为锥形NAT、对称型NAT和全随机NAT。
 
 普通NAT实现了对UDP或TCP报文头中的的IP地址及端口转换功能，但对应用层数据载荷中的字段无能为力，在许多应用层协议中，比如多媒体协议（H.323、SIP等）、FTP、SQLNET等，TCP/UDP载荷中带有地址或者端口信息，这些内容不能被NAT进行有效的转换，就可能导致问题。而NAT ALG（Application Level Gateway，应用层网关）技术能对多通道协议进行应用层报文信息的解析和地址转换，将载荷中需要进行地址转换的IP地址和端口或者需特殊处理的字段进行相应的转换和处理，从而保证应用层通信的正确性。
 
-# 2. Why we need NAT and why we don't like nat?
+# 2. Why we need NAT and why we hate nat?
 
 ## 2.1 advantage
 
