@@ -1,5 +1,5 @@
 ---
-title: 4W For NAT
+title: NAT Overview
 date: 2022-05-04
 categories:
 - 计算机网络
@@ -9,7 +9,7 @@ tags:
 
 # 1. What is NAT?
 
-## 1.1 四层NAT
+## 1.1 NAT(Level 4)
 
 NAT（Network address translation）即网络地址转换，工作在OSI模型的四层，用于修改数据包的IP地址和端口。当在专用网内部的一些主机本来已经分配到了local ip地址，但又想和Internet的主机通信时，可使用NAT方法。
 
@@ -18,23 +18,36 @@ NAT（Network address translation）即网络地址转换，工作在OSI模型�
 - PNAT除了转化IP，还做端口映射，可以用于多个内部地址映射到少量（甚至一个）外部地址。
  
 从NAT规则的生命周期来看，可以分为静态NAT和动态NAT：
-- 静态NAT，将内部网络中的每个主机都永久映射成外部网络中的某个地址。
-- 动态NAT，在外部网络中定义了一个或多个合法地址池，采用动态分配的方法将内部网络映射为外网网络。
-  
->其中Basic NAT是公网ip和私网ip的1:1绑定，在云上属于EIP的功能，因此本文主要针对的是PNAT场景。
+- **静态NAT**，将内部网络中的每个主机都永久映射成外部网络中的某个地址。
+- **动态NAT**，在外部网络中定义了一个或多个合法地址池，采用动态分配的方法将内部网络映射为外网网络。
 
-<!--more-->
+PNAT从形态上来看，可以分为锥形NAT、对称型NAT和全随机NAT。
 
-## 1.2 7层NAT
+- **锥形NAT**，锥形NAT只与源地址、源端口有关，只要源地址和源端口不变，都会分配同一个外网地址和端口。因此外网主机可以通过访问映射后的公网地址和端口，实现访问位于内网的主机设备功能。
+- **对称NAT**，从同一个内网IP和端口发送到同一个目的IP和端口的请求都会被映射到同一个外网IP和端口。但SIP，Sport, DIP, Dport只要有一个发生变化都会使用不同的映射条目，即此NAT映射与报文四元组绑定。
+
+![enter description here](https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1652541034741.png)
+
+> 对称型NAT，外网主机是无法主动访问内网主机的。外网主机主动发起tcp，源端口是随机的（对于内网的NAT来说，即目的端口是不固定的），那么对称型NAT分配的端口也是随机的，换言之外网主机根本不知道应该访问哪个端口。锥型NAT有两种特殊形态，即地址受限型NAT和端口受限型NAT。地址受限型NAT校验目的IP（外网的IP），因此地址受限型NAT不能主动连接内网中的主机地址，连接必须由内网地址发起。端口受限型校验目的端口和ip，地址受限型NAT只有内网主机与之通讯后，才可以进行通讯，不用担心端口号是否与内网请求的端口相同，但是端口受限型NAT也增加了端口限制。比如内网使用ip1:port1访问外网ip2:port2，地址受限型可以使用ip2:port3访问ip1:port1，但是端口受限型只能使用ip2:port2访问外网。
+
+## 1.2 NAT(Level 7)
 
 普通NAT实现了对UDP或TCP报文头中的的IP地址及端口转换功能，但对应用层数据载荷中的字段无能为力，在许多应用层协议中，比如多媒体协议（H.323、SIP等）、FTP、SQLNET等，TCP/UDP载荷中带有地址或者端口信息，这些内容不能被NAT进行有效的转换，就可能导致问题。而NAT ALG（Application Level Gateway，应用层网关）技术能对多通道协议进行应用层报文信息的解析和地址转换，将载荷中需要进行地址转换的IP地址和端口或者需特殊处理的字段进行相应的转换和处理，从而保证应用层通信的正确性。
 
-# 2. Why we need NAT?
+# 2. Why we need NAT and why we don't like nat?
+
+## 2.1 advantage
 
 - 多个内网主机共享公网IP，节省IP资源
-- 隐藏内网主机真实地址，避免直接暴露，可以抵挡portscan之类的攻击
 - 作为内网流量统一出口，共享带宽
+- 隐藏内网主机真实地址，避免直接暴露，可以抵挡port scan之类的攻击
 - 工作在NAT模式下的lvs四层负载均衡
+
+# 2.2 weakness
+- NAT下的网络被分为外网和内网两部分，以网关的形式作为私网到公网的路由出口，双向流量都要经过NAT设备，容易成为性能瓶颈
+- 由于NAT将内部网络信息进行了隐藏和转换，NAT下的设备无法进行对等网络传输（需要穿透NAT）
+- NAT不能实现对通信双方的全透明，因为游湖可以在传输的数据包中携带ip和port信息（需要七层ALG）
+- 应用层需保持UDP回话连接，由于NAT资源有限，所以UDP的回话会很快被回收（以便端口重用）。由于UDP是无连接的，因此UDP层应用需要在无数据传输、但需要保持连接时通过heartbeat的方式保持会话不过期。
 
 # 3. How to NAT in Linux?
 
@@ -158,10 +171,16 @@ Scale up的本质还是在提高单机的性能，存在理论性能上限和单
 
 这个就比较简单，云上数据包一般都会使用VXLAN协议进行过传递，通过对VXLAN报文中的VNI进行解析，将SNAT规则和DNAT规则与VNI进行绑定，即可实现不同租户之间的规则隔离。
 
-# 5. Refrence
+# 5. NAT Traversal
+
+
+ 
+
+# 6. Refrence
 1. [连接跟踪（conntrack）：原理、应用及 Linux 内核实现](https://arthurchiao.art/blog/conntrack-design-and-implementation-zh/)
 2. [一文看懂DPDK](https://cloud.tencent.com/developer/article/1198333)
 3. [什么是DPDK？DPDK的原理及学习学习路线总结](https://zhuanlan.zhihu.com/p/397919872)
 4. [AWS Hyperplane浅谈](https://zhuanlan.zhihu.com/p/188735635)
 5. [NAT - 网络地址转换](http://arthurchiao.art/blog/nat-zh/)
 6. [NAT ALG原理与应用](http://www.h3c.com/cn/d_201206/747033_97665_0.htm)
+7. [NAT基本原理及穿透详解(打洞)](https://juejin.cn/post/6844904098572009485)
