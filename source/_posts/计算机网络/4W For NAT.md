@@ -11,39 +11,41 @@ tags:
 
 ## 1.1 NAT(Level 4)
 
-NAT（Network address translation）即网络地址转换，工作在OSI模型的四层，用于修改数据包的IP地址和端口。当在专用网内部的一些主机本来已经分配到了local ip地址，但又想和Internet的主机通信时，可使用NAT方法。
+NAT（Network address translation）即网络地址转换，工作在OSI模型的三层或四层（PNAT），用于修改IP数据包中的IP地址和端口。当在专用网内部的一些主机本来已经分配到了local ip地址，但又想和Internet的主机通信时，可使用NAT方法。
 
 <!--more-->
 
 从NAT的映射方式来看，NAT可以分为Basic NAT和PNAT：
-- Basic NAT只转化IP，不映射端口。
-- PNAT除了转化IP，还做端口映射，可以用于多个内部地址映射到少量（甚至一个）外部地址。
+- **Basic NAT**，只转化IP，IP不复用，不映射端口。
+- **PNAT**，除了转化IP，还复用IP，做端口映射，可以用于多个内部地址映射到少量（甚至一个）外部地址。
  
-从NAT规则的生命周期来看，可以分为静态NAT和动态NAT：
+从NAT的生命周期来看，可以分为静态NAT和动态NAT：
 - **静态NAT**，将内部网络中的每个主机都永久映射成外部网络中的某个地址。
-- **动态NAT**，在外部网络中定义了一个或多个合法地址池，采用动态分配的方法将内部网络映射为外网网络。
+- **动态NAT**，在外部网络中定义了一个或多个合法地址池，采用动态分配的方法将内部网络映射为外网网络。会话存在过期时间，过期后自动回收。
 
-PNAT从形态上来看，可以分为锥形NAT、对称型NAT和全随机NAT。
+从NAT的形态上来看，可以分为锥型NAT、对称型NAT。
 
-- **锥形NAT**，锥形NAT只与源地址、源端口有关，只要源地址和源端口不变，都会分配同一个外网地址和端口。因此外网主机可以通过访问映射后的公网地址和端口，实现访问位于内网的主机设备功能。
-- **对称NAT**，从同一个内网IP和端口发送到同一个目的IP和端口的请求都会被映射到同一个外网IP和端口。但SIP，Sport, DIP, Dport只要有一个发生变化都会使用不同的映射条目，即此NAT映射与报文四元组绑定。
+- **锥型NAT**，锥形NAT只与源地址、源端口有关，只要源地址和源端口不变，都会分配同一个外网地址和端口。因此外网主机可以通过访问映射后的公网地址和端口，实现访问位于内网的主机设备功能。
+- **对称NAT**，从同一个内网IP和端口发送到同一个目的IP和端口的请求都会被映射到同一个外网IP和端口。但四元组(SIP，Sport, DIP, Dport)只要有一个发生变化都会使用不同的映射。
+
+> 锥型NAT的通信双方是对等的，外网主机不管是换IP还是端口，感知到的都是对端的同一个IP和端口在提供某个特定服务，而对称型NAT违反了协议双方对等的原则，外网主机是无法主动访问内网主机的，换个外网地址或端口，NAT后的地址和端口就会变化。对称型NAT下，外网主机主动发起tcp连接，源端口是随机的（对于内网的NAT来说，即目的端口是不固定的），那么对称型NAT分配的端口也是随机的，当然这个随机端口也无法被NAT回内网。
 
 ![enter description here](https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1652541034741.png)
 
-> 对称型NAT，外网主机是无法主动访问内网主机的。外网主机主动发起tcp，源端口是随机的（对于内网的NAT来说，即目的端口是不固定的），那么对称型NAT分配的端口也是随机的，换言之外网主机根本不知道应该访问哪个端口。锥型NAT有两种特殊形态，即地址受限型NAT和端口受限型NAT。地址受限型NAT校验目的IP（外网的IP），因此地址受限型NAT不能主动连接内网中的主机地址，连接必须由内网地址发起。端口受限型校验目的端口和ip，地址受限型NAT只有内网主机与之通讯后，才可以进行通讯，不用担心端口号是否与内网请求的端口相同，但是端口受限型NAT也增加了端口限制。比如内网使用ip1:port1访问外网ip2:port2，地址受限型可以使用ip2:port3访问ip1:port1，但是端口受限型只能使用ip2:port2访问外网。
+> 锥型NAT有两种特殊形态，即地址受限型NAT和端口受限型NAT。地址受限型NAT校验目的IP（外网的IP），因此地址受限型NAT不能主动连接内网中的主机地址，连接必须由内网地址发起。端口受限型校验目的端口和ip，地址受限型NAT只有内网主机与之通讯后，才可以进行通讯，不用担心端口号是否与内网请求的端口相同，但是端口受限型NAT也增加了端口限制。比如内网使用ip1:port1访问外网ip2:port2，地址受限型可以使用ip2:port3访问ip1:port1，但是端口受限型只能使用ip2:port2访问ip1:port1。
 
-| NAT类型 | 说明 |
-| --- | --- |
-| 全锥形NAT |	任何公网主机都可与之通讯。双方都可以主动发起 |
-| 地址受限锥形NAT | 只有内网主动连接的公网主机可与之通讯，必须内网主机发起。且此公网主机可通过任意端口与内网主机通讯。 |
-| 端口受限锥形NAT	| 只有内网主动连接的公网主机的连接可与之通讯，必须内网主机发起。且此公网只能通过固定的端口与之进行通讯。 |
-| 对称型NAT | 根据四元组创建NAT映射，四元组中的任何一项发生变化均导致NAT映射的更换。此形状双方一对一映射，因此被称之为对称NAT |
+| NAT类型         | 说明                                                                                                            |
+| --------------- | --------------------------------------------------------------------------------------------------------------- |
+| 全锥型NAT       | 任何公网主机都可与之通讯。双方都可以主动发起。                                                                  |
+| 地址受限锥型NAT | 只有内网主动连接的公网主机可与之通讯，必须内网主机发起。且此公网主机可通过任意端口与内网主机通讯。              |
+| 端口受限锥型NAT | 只有内网主动连接的公网主机的连接可与之通讯，必须内网主机发起。且此公网只能通过固定的端口与之进行通讯。          |
+| 对称型NAT       | 根据四元组创建NAT映射，四元组中的任何一项发生变化均导致NAT映射的更换。此形状双方一对一映射，因此被称之为对称NAT |
 
 ## 1.2 NAT(Level 7)
 
-普通NAT实现了对UDP或TCP报文头中的的IP地址及端口转换功能，但对应用层数据载荷中的字段无能为力，在许多应用层协议中，比如多媒体协议（H.323、SIP等）、FTP、SQLNET等，TCP/UDP载荷中带有地址或者端口信息，这些内容不能被NAT进行有效的转换，就可能导致问题。而NAT ALG（Application Level Gateway，应用层网关）技术能对多通道协议进行应用层报文信息的解析和地址转换，将载荷中需要进行地址转换的IP地址和端口或者需特殊处理的字段进行相应的转换和处理，从而保证应用层通信的正确性。
+普通NAT实现了对UDP或TCP报文头中的的IP地址及端口转换功能，但对应用层数据载荷中的字段无能为力，在许多应用层协议中，比如多媒体协议（H.323、SIP等）、FTP、SQLNET等，TCP/UDP载荷中带有地址或者端口信息，这些内容不能被NAT进行有效的转换，就可能导致问题。而NAT ALG（Application Level Gateway，应用层网关）技术能对多通道协议进行应用层报文信息的解析和地址转换，将载荷中需要进行地址转换的IP地址和端口或者需特殊处理的字段进行相应的转换和处理，从而保证应用层通信的正确性。ALG需要识别并适配每一种应用协议，不同应用协议的载荷中IP地址和端口的位置不同，因此具有很大的局限性，幸运的是ALG支持了我们常用的大多数协议。
 
-# 2. Why we need NAT and why we hate nat?
+# 2. Why we need NAT and why we hate NAT?
 
 ## 2.1 advantage
 
@@ -55,12 +57,12 @@ PNAT从形态上来看，可以分为锥形NAT、对称型NAT和全随机NAT。
 # 2.2 weakness
 - NAT下的网络被分为外网和内网两部分，以网关的形式作为私网到公网的路由出口，双向流量都要经过NAT设备，容易成为性能瓶颈
 - 由于NAT将内部网络信息进行了隐藏和转换，NAT下的设备无法进行对等网络传输（需要穿透NAT）
-- NAT不能实现对通信双方的全透明，因为游湖可以在传输的数据包中携带ip和port信息（需要七层ALG）
-- 应用层需保持UDP回话连接，由于NAT资源有限，所以UDP的回话会很快被回收（以便端口重用）。由于UDP是无连接的，因此UDP层应用需要在无数据传输、但需要保持连接时通过heartbeat的方式保持会话不过期。
+- NAT不能实现对通信双方的全透明，因为上层协议可能在传输的数据包中携带ip和port信息（需要七层ALG）
+- 应用层需保持UDP会话连接。由于NAT资源有限，所以UDP的会话会很快被回收（以便端口重用）。由于UDP是无连接的，因此UDP层应用需要在无数据传输、但需要保持连接时通过heartbeat的方式保持会话不过期。
 
 # 3. How to NAT in router?
 
-以下配置了子网10.10.10.0/24的前32个地址和来自子网10.10.20.0/24的前32个地址可以NAT后访问外网，内部网络中可能有其他设备具有其他地址，但这些地址不会被转换。
+以下配置了子网10.10.10.0/24的前32个地址和子网10.10.20.0/24的前32个地址可以通过NAT访问外网，内部网络中可能有其他设备具有其他地址，但这些地址不会被转换。
 
 ![enter description here](https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1652546543650.png)
 
@@ -102,7 +104,7 @@ access-list 7 permit 10.10.20.0 0.0.0.31
 
 # 4. How to NAT in Linux?
 
-在物理网络中，NAT功能一般由路由器或防火墙之类的设备来承载，而`Iptables`则是linux提供的用户态命令行工具，可以通过在nat表中增加规则，实现在`PREROUTING`和`POSTROUTING`链上的`DNAT`和`SNAT`功能。要使用Linux提供的nat功能，首先需要确认主机支持转发，可通过以下方式确认:
+在物理网络中，NAT功能一般由路由器或防火墙之类的设备来承载，而`Iptables`则是linux提供的用户态命令行工具(实际是工作的是在内核态的`netfilter`)，可以通过在nat表中增加规则，实现在`PREROUTING`和`POSTROUTING`链上的`DNAT`和`SNAT`功能。要使用Linux提供的nat功能，首先需要确认主机支持转发，可通过以下方式确认:
 
 ```shell
 cat /proc/sys/net/ipv4/ip_forward
@@ -144,9 +146,9 @@ iptables -t nat -A PREROUTING -i eth0 -p tcp -d 100.32.1.101 --dport 10000:20000
 ![enter description here](https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1651666903738.png)
 连接跟踪（Conntrack），顾名思义，就是跟踪（并记录）连接的状态。例如，上图是一台IP地址为`10.1.1.2`的Linux机器，我们能看到这台机器上有三条连接：
 
-- 机器访问外部HTTP服务的连接（目的端口 80）
-- 外部访问机器内FTP服务的连接（目的端口 21）
-- 机器访问外部DNS 服务的连接（目的端口 53）
+- 内部访问外部HTTP服务的连接（目的端口 80）
+- 外部访问内部FTP服务的连接（目的端口 21）
+- 内部访问外部DNS 服务的连接（目的端口 53）
  
 连接跟踪所做的事情就是发现并跟踪这些连接的状态，具体包括：
 
@@ -165,7 +167,7 @@ iptables -t nat -A PREROUTING -i eth0 -p tcp -d 100.32.1.101 --dport 10000:20000
 
 # 5. How to NAT in cloud？
 
-“NAT网关”作为云服务的一种，面向overlay网络提供服务，其一般基于通用服务器（一般为Linux服务器）实现。在How to NAT in Linux一节中，我们已经知道，可以通过`netfilter`来实现，但这种方式只能靠单机工作，存在着**性能瓶颈**和**单点故障**的问题。为了提高性能和可靠性，我们可以从两方面入手，分别是`scale up`和`scale out`。同时，公有云服务面向了很多客户，因此云上NAT的功能对我们还有一个特殊的要求，实现多租户配置隔离。
+“NAT网关”作为云服务的一种，面向公有云客户服务，工作在overlay网络，其一般基于通用服务器（一般为Linux服务器）实现。在How to NAT in Linux一节中，我们已经知道，可以通过`netfilter`来实现，但这种方式只能靠单机工作，存在着**性能瓶颈**和**单点故障**的问题。为了提高性能和可靠性，我们可以从两方面入手，分别是`scale up`和`scale out`。同时，公有云服务面向了很多客户，因此云上NAT的功能对我们还有一个特殊的要求，实现多租户配置隔离。
 
 ## 5.1 Scale up
 
@@ -218,7 +220,7 @@ Scale up的本质还是在提高单机的性能，存在理论性能上限和单
 - Decider不同与Flow Master，对于有状态的网关，不同的实例可以由不同的Decider管理，但同一个实例必须由同一个Decider管理。Decider横向扩容需要考虑hash策略变化带来的会话同步问题。
 - Flow Master和Decider存有会话信息，通过绕行两个节点形成主备，消除单点故障问题。
 
-## 5.3 Tenant isolation
+## 5.3 Tenant Isolation
 
 这个就比较简单，云上数据包一般都会使用VXLAN协议进行过传递，通过对VXLAN报文中的VNI进行解析，将SNAT规则和DNAT规则与VNI进行绑定，即可实现不同租户之间的规则隔离。
 
@@ -230,14 +232,14 @@ Scale up的本质还是在提高单机的性能，存在理论性能上限和单
 
 处于不同内网的主机A和主机B，各自先连接服务器，从而在各自NAT设备上打开了一个“孔”，服务器收到主机A和主机B的连接后，知道A与B的公网地址和NAT分配给它们的端口号，然后把这些NAT地址与端口号告诉A与B，由于在锥型NAT的特点，A和B给服务器所打开的“孔”，能给别的任何的主机使用。故A与B可连接对方的公网地址和端口直接进行通信。服务器在这里充当“介绍人”，告诉A与B对方的地址和端口号。
 
-## 6.2 地址受限锥形NAT
+## 6.2 地址受限锥型NAT
 
 A和B还是要先连接服务器，服务器发送A和B的地址和端口信息给A和B，但由于受限制锥形NAT的特点，他们所打开的“孔”，只能与服务器通信。要使他们可以直接通信，解决办法如下：
 
 假如主机A开始发送一个UDP信息到主机B的公网地址上，与此同时，它又通过服务器中转发送了一个邀请信息给主机B，请求主机B也给主机A发送一个UDP信息到主机A的公网地址上。这时主机A向主机B的公网IP发送的信息导致NAT A打开一个处于主机A的和主机B之间的会话，与此同时，NAT B也打开了一个处于主机B和主机A的会话。一旦这个新的UDP会话各自向对方打开了，主机A和主机B之间就可以直接通信了。
 
 
-## 6.3 端口受限制锥形（Port Restricted Cone）NAT
+## 6.3 端口受限锥型（ Port Restricted Cone）NAT
 
 同[地址受限锥形NAT](#地址受限锥形NAT)
 
@@ -273,7 +275,91 @@ NAT-DDNS是将用户的动态IP地址映射到一个固定的域名上，用户�
 4、A和B开始等待向外的连接是否成功，检查是否有新连接进入。如果向外的连接由于某种网络错误而失败，如："连接被重置"或者"节点无法访问"，客户端只需要延迟一小段时间（例如延迟一秒钟），然后重新发起连接即可，延迟的时间和重复连接的次数可以由应用程序编写者来确定。A发出SYN报文到达B的NAT设备，B的NAT设备如果是全锥型NAT，则连接直接建立，否则B的NAT设备丢弃该报，此时B的SYN报文到达A端NAT设备，而A端NAT设备由于看到了A主动访问B的流，因此将SYN报文NAT后转给了A，A的`listen()`函数生效，连接建立成功。
 6、TCP连接建立起来以后，客户端之间应该开始鉴权操作，确保目前联入的连接就是所希望的连接。如果鉴权失败，客户端将关闭连接，并且继续等待新的连接接入。客户端通常采用"先入为主"的策略，只接受第一个通过鉴权操作的客户端，然后将进入p2p通信过程不再继续等待是否有新的连接接入。
 
-# 7. Refrence
+# 7. Other Tech
+
+## 7.1 会话结构
+
+首先定义几个概念：
+
+- CIP，内网主机的IP
+- Cport，内网主机的port
+- DIP，外网主机的IP
+- Dport，外网主机的port
+- TIP，NAT后的IP
+- Tport，NAT后的port
+### 7.1.1 完全锥型NAT
+
+- Up Key，内部四元组（CIP、Cport、Protocol）
+- Down Key，外部四元组（TIP、Tport、Protocol）
+- Session，Up key + Down key + Start Time + ExpireTime
+
+上行，内网主机访问外网只要CIP、Cport不变，一定会映射到TIP、Tport；下行，外网主机访问TIP、Tport总能NAT会内网的CIp和Cport；在Key中添加protocol可以实现TCP和UDP单独管理，也可以不使用Protocol作为key字段来统一管理。
+
+### 7.1.2 地址受限型NAT
+
+- Up Key，内部四元组（CIP、Cport、Protocol）
+- Down Key，外部四元组（TIP、Tport、DIP、Protocol）
+- Session，Up key + Down key + Start Time + ExpireTime
+
+上行，内网主机访问外网只要CIP、Cport不变，一定会映射到TIP、Tport；下行，外网主机以DIP为源地址，端口任意访问TIP、Tport可以NAT回内网的CIp和Cport，换个DIP则不行
+
+
+### 7.1.3 端口受限型NAT
+
+- Up Key，内部四元组（CIP、Cport、Protocol）
+- Down Key，外部四元组（TIP、Tport、DIP、DPORT、Protocol）
+- Session，Up key + Down key + Start Time + ExpireTime
+
+上行，内网主机访问外网只要CIP、Cport不变，一定会映射到TIP、Tport；下行，外网主机以DIP为源地址、DPort访问TIP、Tport可以NAT回内网的CIp和Cport，换个DIP或DPORT都不行。
+
+### 7.1.4 对称型NAT
+
+- Up Key，内部四元组（CIP、Cport、DIP、Dport、Protocol）
+- Down Key，外部四元组（TIP、Tport、DIP、Dport、Protocol）
+- Session，Up key + Down key + Start Time + ExpireTime
+
+上行，内网主机访问外网主机，只有(CIP、Cport、DIP、Dport)任意一个发生变化都会产生新会话，即分配新的TIP或TPORT；下行，外网主机只能以固定的DIP和Dport访问固定的TIP、Tport。
+
+
+## 7.2 会话分配
+
+这里假设TIP只有一个，实际可以配置多个，通过hash的方式随机选择一个TIP就行了，因此以下我们只讨论在一个TIP的情况下保证会话分配不冲突。
+
+### 7.2.1 锥型NAT
+
+仅需要管理TIP对应的PORT即可，TIP + PORT会固定映射为某个CIP + CPORT的逻辑。因此数据结构可以设置为：
+
+```c
+struct nat_port_key {
+	uint32_t tip;
+	uint32_t protocol;
+}
+struct hash_table *nat_port_table; // nat_port_key 映射到 nat_port_warehouse
+struct nat_port_warehouse {
+	 uint32_t allocated_port_bmp; // 使用bitmap记录占用状态
+}
+```
+
+### 7.2.2 对称型NAT
+
+对于内网主机来说，NAT后的地址和端口并不感知，而对于外网主机来说是感知的，因此对称型NAT需要保证（TIP,Tport,DIP,Dport,Protocl）不一致即可，这五元组只有任意一个不一致，就会对应不同的DOWN Key，自然也能找到对应的Session来找到UP Key，保证可以NAT回去。所以我们只需要基于DOWN Key进行管理会话即可，其中TIP我们可以作为固定值，也就是我们要基于(DIP,Dport,Protocol)来分配Tport。可设计如下数据结构：
+
+```c
+struct nat_port_key {
+    uint32_t tip;
+	uint32_t dip;
+	uint32_t dport;
+	uint32_t protocol;
+}
+struct hash_table *nat_port_table;//port_key 映射到 nat_port_warehouse
+struct nat_port_warehouse {
+	 uint32_t port_allocated_state_bmp; // 使用bitmap记录占用状态
+}
+```
+
+> 此方案存在一个缺陷，因为Tport的端口被复用了。假设以下场景，DIP1和DIP2都是提供代理的VIP，他们有同一个后端(SIP,SPORT)。由于DIP1和DIP2不同，因此有可能分配到相同Tport，此时对于后端server来说就会很迷惑，因为它看到了两条不一样的（TIP,TPORT,SIP,SPORT）流，后端服务的协议栈处理的数据流必然也是乱套的，流量就会不同。
+
+# 8. Refrence
 1. [连接跟踪（conntrack）：原理、应用及 Linux 内核实现](https://arthurchiao.art/blog/conntrack-design-and-implementation-zh/)
 2. [一文看懂DPDK](https://cloud.tencent.com/developer/article/1198333)
 3. [什么是DPDK？DPDK的原理及学习学习路线总结](https://zhuanlan.zhihu.com/p/397919872)
