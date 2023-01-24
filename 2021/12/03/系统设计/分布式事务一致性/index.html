@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="分布式事务一致性"><meta name="keywords" content="系统设计, 分布式, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2021/12/03/系统设计/分布式事务一致性/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>分布式事务一致性 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">分布式事务一致性
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2021-12-03
+        </span><span class="post-category">
+            <a href="/categories/系统设计/">系统设计</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-ACID原则"><span class="toc-text">1. ACID原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-CAP理论"><span class="toc-text">2. CAP理论</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-BASE理论"><span class="toc-text">3. BASE理论</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-分布式事务"><span class="toc-text">4. 分布式事务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-2PC-两阶段提交"><span class="toc-text">4.1 2PC(两阶段提交)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-1-投票阶段"><span class="toc-text">4.1.1 投票阶段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-2-提交阶段"><span class="toc-text">4.1.2 提交阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#4-1-2-1-成功case"><span class="toc-text">4.1.2.1 成功case</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-1-2-2-失败case"><span class="toc-text">4.1.2.2 失败case</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-1-2-3-异常case"><span class="toc-text">4.1.2.3 异常case</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-1-2-4-XA事务"><span class="toc-text">4.1.2.4 XA事务</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-3PC-三阶段提交"><span class="toc-text">4.2 3PC(三阶段提交)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-1-CanCommit阶段"><span class="toc-text">4.2.1 CanCommit阶段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-2-PreCommit阶段"><span class="toc-text">4.2.2 PreCommit阶段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-3-DoCommit阶段"><span class="toc-text">4.2.3 DoCommit阶段</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-补偿事务（TCC）"><span class="toc-text">5. 补偿事务（TCC）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-消息队列MQ事务"><span class="toc-text">6. 消息队列MQ事务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-paxos算法"><span class="toc-text">7. paxos算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接"><span class="toc-text">参考链接</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p>本文在将分布式事务之前，会先回顾一下事务的一些基本概念，分布式事务本身与数据库事务的概念是一致的，需要满足事务的ACID原则。单体架构下，我们可以依赖数据库提供的事务能力保证；分布式架构下我们则需要保证一个请求在多个微服务调用链中，所有服务的数据要么全部成功，要么全部回滚，保证多节点数据一致性。分布式事务的实现有很多种方式，主要包括两阶段提交（2PC）、三阶段提交（3PC）、补偿事务（TCC）以及Paxos算法。</p>
+<a id="more"></a>
+<h2 id="1-ACID原则"><a href="#1-ACID原则" class="headerlink" title="1. ACID原则"></a>1. ACID原则</h2><ul>
+<li><strong>Atomicity(原子性)</strong>：事务是一个不可分割的整体，所有操作要么一起成功，要么一起失败；一个事务中如果有一个操作出错，那么事务应该被回滚到事务开始前的状态。</li>
+<li><strong>Consistency(一致性)</strong>：在并发事务的场景下，单个事务执行前后，数据从一个状态到另一个状态的变化必须是一致的。比如多个账户之间发生多次相互转账，一个人扣了钱，那么一定有另一个人的钱增加了，所有账户的总额一定要保持不变。</li>
+<li><strong>Isolation(隔离性)</strong>：多个并发事务之间相互隔离，不能互相干扰，不能出现脏读、不可重复读、幻读等问题；数据库常用的各种锁机制来保证这点。</li>
+<li><strong>Durability(持久性)</strong>：事务完成后，对数据库的更改是永久保存的，不能回滚；要求数据库数据要落盘持久化。</li>
+</ul>
+<h2 id="2-CAP理论"><a href="#2-CAP理论" class="headerlink" title="2. CAP理论"></a>2. CAP理论</h2><p>一个分布式系统最多只能同时满足一致性（Consistency）、可用性（Availability）和分区容错性（Partition tolerance）这三项中的两项。</p>
+<ul>
+<li><strong>Consistency(一致性)</strong>：一致性指的是”all nodes see the same data at the same time”，即所有节点在同一时间的数据完全一致。从客户端来看，一致性主要是指可以访问到更新过的数据；从服务端来看，一致性主要是保证数据的更新能够分布到整个系统中，保证结果一致。对于一致性可以分为强/弱/最终一致性三类，强一致性保证更新后的数据能够被后续读取到；弱一致能够容忍更新后部分或全部访问不到；最终一致性保证在经过一段时候后，被更新的数据总是能被正确地访问。</li>
+<li><strong>Availability(可用性)</strong>：可用性指的是”Reads and writes always succeed”，即在部分节点故障后，整个服务仍一直处于可用状态，且响应时间保持在正常范围。</li>
+<li><strong>Partition Tolerance分区容错性</strong>：分区容错性指的是”the system continues to operate despite arbitrary message loss or failure of part of the system”，即分布式系统在遇到某节点或网络分区故障的时候，仍然能够对外提供满足一致性或可用性的服务。</li>
+</ul>
+<p>CA without P：如果不要求分区，保证CA场景，就违背了分布式系统设计的初衷，传统的关系型数据库就是这种设计的典型代表<br>CP without A: 如果不要求可用，那就保证所有节点之间的强一致性，就会导致同步时间无限延长。涉及到计费系统，银行系统，这时候就应该舍弃A，保证C。<br>AP without C：一旦分区中某个节点发生故障，为了高可用，只能舍弃这个节点的数据一致性。在分布式系统中，集群规模庞大，节点故障，网络异常再所难免，为了保证服务的可用性，只能放弃C，保证数据的最终一致性。如果服务宣称要支持几个9的可用性，那基本都是AP withou C模型。</p>
+<h2 id="3-BASE理论"><a href="#3-BASE理论" class="headerlink" title="3. BASE理论"></a>3. BASE理论</h2><p>BASE是Basically Available（基本可用）、Soft state（软状态）和Eventually consistent（最终一致性）三个短语的简写。BASE理论是对CAP理论中C和A权衡的结果，应用可以不做到强一致性，但应该保证最终一致性。</p>
+<ul>
+<li><strong>基本可用</strong>：基本可用的意思是在分布式系统部分节点出现偶发故障的时候，可以牺牲掉部分可用性，如api时延延长但仍处于可用状态。分布式服务常通过服务限流、服务降级等手段进行保护。</li>
+<li><strong>软状态</strong>：软状态是相对于硬状态来说，软状态允许存在中间态，即允许存在短时间的数据不一致，且这种中间状态不会影响整体系统的可用性。</li>
+<li><strong>最终一致性</strong>：最终一致性强调系统中的数据在经过一段时间后，可以达到最终一致的状态。</li>
+</ul>
+<h2 id="4-分布式事务"><a href="#4-分布式事务" class="headerlink" title="4. 分布式事务"></a>4. 分布式事务</h2><h3 id="4-1-2PC-两阶段提交"><a href="#4-1-2PC-两阶段提交" class="headerlink" title="4.1 2PC(两阶段提交)"></a>4.1 2PC(两阶段提交)</h3><p>两阶段提交又称2PC（two-phase commit protocol)，是一个强一致、中心化的原子提交协议，参与的角色包括一个<strong>协调节点(coordinator)</strong><br>和多个<strong>参与者节点(participant)</strong>。</p>
+<p>所谓的两阶段包括如下两阶段：</p>
+<ul>
+<li>第一阶段：voting phase 投票阶段</li>
+<li>第二阶段：commit phase 提交阶段</li>
+</ul>
+<h4 id="4-1-1-投票阶段"><a href="#4-1-1-投票阶段" class="headerlink" title="4.1.1 投票阶段"></a>4.1.1 投票阶段</h4><ul>
+<li>事务coordinator给每个participant发送prepare(vote_request)消息，询问是否可以执行提交操作，等待事务participant响应</li>
+<li>每个事务participant判断能否执行事务，如果能则执行本地执行事务，并记录redo和undo日志（为了故障后恢复使用），但不提交</li>
+<li>事务participant告诉事务coordinator同意提交或拒绝提交</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1638451333424.png" alt="enter description here"></p>
+<blockquote>
+<p>undo log，回滚日志，在事务执行过程中操作任何数据之前现将数据备份到undolog中，事务失败时刻根据undo log进行回滚，用来保证事务的一致性。redo log，重做日志，在事务执行过程中不断记录事务操作的变化。恢复提交后的物理数据也，用来保证事务的持久性。</p>
+</blockquote>
+<h4 id="4-1-2-提交阶段"><a href="#4-1-2-提交阶段" class="headerlink" title="4.1.2 提交阶段"></a>4.1.2 提交阶段</h4><p>如果coordinator收到了participant的失败消息或者超时，直接给每个participant发送回滚(Rollback)消息；否则，发送提交(Commit)消息；participant根据coordinator的指令执行提交或者回滚操作。</p>
+<h5 id="4-1-2-1-成功case"><a href="#4-1-2-1-成功case" class="headerlink" title="4.1.2.1 成功case"></a>4.1.2.1 成功case</h5><ul>
+<li>所有事务participant向事务coordinator发送vote commit</li>
+<li>事务coordinator收到所有事务participant的vote commit，向所有事务participant发送可以提交通知</li>
+<li>事务participant完成提交并向事务coordinator发送ack消息</li>
+<li><p>coordinator收到所有participantack消息后，事务完成</p>
+<p><img src="https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1638452553640.png" alt="enter description here"></p>
+<h5 id="4-1-2-2-失败case"><a href="#4-1-2-2-失败case" class="headerlink" title="4.1.2.2 失败case"></a>4.1.2.2 失败case</h5><ul>
+<li>部分事务participant向事务coordinator发送vote commit，部分事务participant向事务coordinator发送vote abort</li>
+</ul>
+</li>
+<li>事务coordinator收到部分事务participantvote abort消息，则向所有事务participant发送回滚通知</li>
+<li>事务participant完成回滚并向事务coordinator发送ack消息</li>
+<li><p>coordinator收到所有participantack消息后，事务失败</p>
+<p><img src="https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1638453118578.png" alt="enter description here"></p>
+</li>
+</ul>
+<h5 id="4-1-2-3-异常case"><a href="#4-1-2-3-异常case" class="headerlink" title="4.1.2.3 异常case"></a>4.1.2.3 异常case</h5><p>两阶段是不可靠的，存在一下典型问题场景：</p>
+<ul>
+<li><strong>性能问题</strong>：两阶段最大的问题在于，事务执行的过程中，所有participant都处于阻塞状态，数据库连接也被一直占用着，只有当所有节点准备完成，事务coordinator通过global commit或global rollback的时候，资源才能释放。</li>
+<li><strong>coordinator故障</strong>：如果在coordinator在二阶段发送global commit或global rollback之前挂掉了，或者coordinator和participant之间网络出现了异常，会导致participant始终处于事务无法完成的中间状态。</li>
+<li><strong>数据不一致</strong>：如果在coordinator向participant发送global commit后部分participant出现故障，或局部网络出现异常，就会出现部分participant提交了事务，而部分participant没有提交事务，从而出现数据不一致的情况。极限情况下，在coordinator发送commit消息后，coordinator和participant同时宕机了，及时coordinator通过选举协议产生了新的coordinator，这条事务的状态也是不确定的，没有人知道事务最终是否被提交了。</li>
+</ul>
+<h5 id="4-1-2-4-XA事务"><a href="#4-1-2-4-XA事务" class="headerlink" title="4.1.2.4 XA事务"></a>4.1.2.4 XA事务</h5><p>一个全局事务可能写入数据到多个DB实例， InnoDB存储引擎提供了对XA事务的支持，并通过XA事务来支持分布式事务。XA事务允许不同数据库之间的分布式事务，例如一台MySQL数据库，一台ORACLE数据库，只要全局事务中每个点都支持XA事务即可。</p>
+<h3 id="4-2-3PC-三阶段提交"><a href="#4-2-3PC-三阶段提交" class="headerlink" title="4.2 3PC(三阶段提交)"></a>4.2 3PC(三阶段提交)</h3><p>三阶段提交把2PC的投票阶段再次一分为二，这样三阶段提交就有canCommit、preCommit、DoCommit三个阶段。将投票阶段一份为二可以保证在预执行之前，所有的participant都具备可执行条件，从而减少资源浪费。回顾两阶段提交，如果coordinator发出prepare消息后，所有participant都将资源锁住，执行事务，进入阻塞状态，但coordinator收到响应后发现有一个participant不能参与，就发出global rollback消息，让其他所有participant进行消息回滚，浪费了大量的资源。</p>
+<h4 id="4-2-1-CanCommit阶段"><a href="#4-2-1-CanCommit阶段" class="headerlink" title="4.2.1 CanCommit阶段"></a>4.2.1 CanCommit阶段</h4><p>3PC的CanCommit阶段和2PC的准备阶段类似，coordinator向participant发送Can-Commit请求，participant认为自身可以完成事务就返回“YES”，否则“NO”。实际应用中，participant可以对自身业务逻辑进行简单校验，判断时候有进行事务的能力。此阶段主要解决了二阶段中部分participant没有执行事务的能力而造成其他事务参与资源浪费的问题。</p>
+<p><img src="https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1638502307552.png" alt="enter description here"></p>
+<h4 id="4-2-2-PreCommit阶段"><a href="#4-2-2-PreCommit阶段" class="headerlink" title="4.2.2 PreCommit阶段"></a>4.2.2 PreCommit阶段</h4><p>此阶段有两种可能情况：</p>
+<ol>
+<li>所有participant都响应YES<br>此情况进入PreCommit阶段进行事务预提交。此时分布式事务coordinator会向所有participant节点发送PreCommit请求，请求这收到后开始执行事务操作，并将Undo和Redo消息记录到事务日志中。participant执行完事务操作但不提交后，向coordinator反馈Ack代表我已经准备好提交了，等待coordinator指令。此阶段和二阶段中的投票阶段工作原理是一致的。</li>
+<li>存在participant响应NO或等待超时后，coordinator没有接收到participant的响应<br>此情况进入Abort阶段。coordinator向所有participant发送Abort请求，participant收到来自coordinator的abort请求（或超时之后，仍未收到coordinator的请求，2PC中只有coordinator有超时机制，participant没有），执行事务中断。</li>
+</ol>
+<h4 id="4-2-3-DoCommit阶段"><a href="#4-2-3-DoCommit阶段" class="headerlink" title="4.2.3 DoCommit阶段"></a>4.2.3 DoCommit阶段</h4><p>如果PreCommit阶段，所有participant都反馈YES并ACK后，coordinator就会从PreCommit到Commit状态，向所有participant发送DoCommit请求，participant在收到提交请求后就会各自执行事务提交操作，并向coordinator反馈ACK消息，coordinator收到所有participant的ack消息后完成事务。同样，如果有部分participant未完成PreCommit反馈或反馈超时，那么coordinator就会向所有participant发送abort请求，中断事务。</p>
+<blockquote>
+<p>相对于2PC，3PC主要解决了单点故障问题，并减少阻塞。在DoCommit阶段，如果participant无法及时接收到来及协调者的doCommit或者abort请求，会在等待超时后，继续进行事务提交。这里其实有两个可能的选择，一是提交，而是回滚。这个是基于平均期望来考虑的，当进入到第三阶段，说明所有participant至少都收到了PreCommit请求，代表这收到所有participant的YES响应，代表大家都能执行事务了，这时候事务被成功执行的概率很大。这里很多同学会想，出现问题，第一时间难道不应该回退吗？其实不然，如果coordinatorfa发出global commit指令，而部分participant由于超时未收到执行了rollback，同样会出现数据不一致的情况，那还不如选择期望更高的超时commit策略。3PC仍然无法完全解决数据一致性的问题，在故障发生时，coordinator和participant的沟通出现问题，就会出现participant动作与coordinator指令不一致的情况，从而导致数据不一样。比如coordinator发送rollback指令，而部分participant没有收到指令，在等待超时后执行了commit指令。</p>
+</blockquote>
+<h2 id="5-补偿事务（TCC）"><a href="#5-补偿事务（TCC）" class="headerlink" title="5. 补偿事务（TCC）"></a>5. 补偿事务（TCC）</h2><p>TCC（Try-Confirm-Cancel）又称补偿事务，其核心思想是针对每个操作都要注册一个与其对应的确认（redo）和补偿（undo）操作。TCC要求组成事务的一系列步骤中，每个步骤都具备可回退能力，一个或多个步骤失败，则撤销该操作。undo操作必须能够撤销原始操作的影响，但补偿事务不能简单地将当前状态替换为系统在操作开始时所处于的状态，因为该方法可能会覆盖应用程序的其他并发实例所做的更改。TCC一个常见的方法是使用workflow的方式来实现最终一致的，需要补偿的操作。随着原始操作的进行，系统时刻记录这每个步骤的信息以及该步骤执行的工作如何撤销。如果操作在任何时候时候，可以通过工作流完成回滚，反转每个步骤的工作。回滚的动作可能会失败，因此回滚的动作必须保证幂等性，在系统故障恢复后能够正确执行补偿事务。</p>
+<blockquote>
+<p>TCC相比与2PC和3PC的优势在于，TCC不需要其他事务参与者支持分布式事务的能力，也不需要coordinator的角色，应用程序可以基于TCC的设计原子，自己保证事务的完整性和可回滚性。同时2PC和3PC只适用于数据库层面的事务，要求所有paticipant具有acid的能力，而TCC能够保证业务层面的事务。TCC的缺点在于对应用的侵入性非常强，所有的事务操作逻辑都需要try、confirm、cancel三个操作，对应用编程实现的难度较大，需要考虑网络异常，系统故障等不同失败原因下的回滚策略。同时为了满足最终一致性的要求，confirm和cancel还必须具备幂等能力。</p>
+</blockquote>
+<h2 id="6-消息队列MQ事务"><a href="#6-消息队列MQ事务" class="headerlink" title="6. 消息队列MQ事务"></a>6. 消息队列MQ事务</h2><p>事务消息适用于异步更新的场景，对数据的实时性要求不高的地方，主要目的是为了解决消息生产者和消息消费者的数据一致性问题。使用消息队列MQ的时候，我们可以采用write ahead和write done的方式来保证事务的一致性。开启事务之前，先发送write ahead消息，告知消息消费者事务开启，随后生产者执行事务，并发送write done消息，如果write done消息发送成功，则可能保证消息消费者能够正确拿到消息，如果write done消息发送失败，则需要消息消费者根据ahead消息维护一个定时器，在超时后通过生产者提供的接口进行资源的反差，确认生产者的事务是否执行成功，并执行相应的消费或放弃操作。这里需要保证ahead消息中包括能够确认资源唯一性的键，通常使用资源主键替代。</p>
+<p><img src="https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1638512362859.png" alt="enter description here"></p>
+<h2 id="7-paxos算法"><a href="#7-paxos算法" class="headerlink" title="7. paxos算法"></a>7. paxos算法</h2><p>无论是2PC还是3PC算法，都无法真正意义上地解决分布式一致性的问题。Paxos算法运行在允许宕机故障的异步系统中，不要求可靠的消息传递，可容忍消息丢失、延迟、乱序以及重复。它利用大多数 (Majority) 机制保证了2F+1的容错能力，即2F+1个节点的系统最多允许F个节点同时出现故障。具体可见<a href="#参考链接">参考链接</a></p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/35616810" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/35616810</a></li>
+<li><a href="https://cloud.tencent.com/developer/article/1477464" target="_blank" rel="noopener">https://cloud.tencent.com/developer/article/1477464</a></li>
+<li><a href="https://www.cnblogs.com/orange-CC/p/13291960.html" target="_blank" rel="noopener">https://www.cnblogs.com/orange-CC/p/13291960.html</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/31780743" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/31780743</a></li>
+</ol>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2021/12/03/系统设计/分布式事务一致性/">https://shinerio.cc/2021/12/03/系统设计/分布式事务一致性/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/系统设计/">系统设计</a>
+            <a href="/tags/分布式/">分布式</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2021/12/14/java/CompletableFuture/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">CompletableFuture</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2021/10/24/计算机网络/openssl & keytool/">
+        <span class="next-text nav-default">openssl & keytool</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2021/12/03/系统设计/分布式事务一致性/';
+        this.page.identifier = '2021/12/03/系统设计/分布式事务一致性/';
+        this.page.title = '分布式事务一致性';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="计算机网络（五）—— 数据链路层 —— ARP"><meta name="keywords" content="计算机网络, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2020/04/23/计算机网络/计算机网络（五）—— 数据链路层 —— ARP/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>计算机网络（五）—— 数据链路层 —— ARP - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">计算机网络（五）—— 数据链路层 —— ARP
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020-04-23
+        </span><span class="post-category">
+            <a href="/categories/计算机网络/">计算机网络</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-交换机原理"><span class="toc-text">1. 交换机原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-ARP"><span class="toc-text">2. ARP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-ARP包格式"><span class="toc-text">2.1 ARP包格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-wireshark抓包分析"><span class="toc-text">2.2 wireshark抓包分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-ARP代理"><span class="toc-text">2.3 ARP代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-ARP欺骗"><span class="toc-text">2.4 ARP欺骗</span></a></li></ol></li></ol>
+    </div>
+  </div><div class="post-content"><p>ARP（Address Resolution Protocol，地址解析协议）主要完成由IP地址得到MAC地址的功能。网络层实现主机之间的通信，而链路层实现具体每段链路之间的通信。因此在通信过程中，IP 数据报的源地址和目的地址始终不变，而 MAC 地址随着链路的改变而改变。</p>
+<a id="more"></a>
+<h2 id="1-交换机原理"><a href="#1-交换机原理" class="headerlink" title="1. 交换机原理"></a>1. 交换机原理</h2><p>交换机根据MAC地址表转发数据帧的。MAC地址表记录着局域网主机MAC地址与交换机端口的对应关系，交换机根据MAC地址表将数据帧转发到指定的端口。交换机在接收到数据帧以后，会将数据帧中的源MAC地址和端口绑定，记录到MAC地址表中。</p>
+<h2 id="2-ARP"><a href="#2-ARP" class="headerlink" title="2. ARP"></a>2. ARP</h2><p>ARP协议非常简单，采用“一问一答”模式。通常上层应用程序只关注IP和端口号，而数据链路层传输需要用到MAC地址。每台主机都会维护一个ARP缓存表，如果目标主要MAC地址不在主机ARP缓存表中，此时就需要ARP协议来获取MAC地址。</p>
+<h3 id="2-1-ARP包格式"><a href="#2-1-ARP包格式" class="headerlink" title="2.1 ARP包格式"></a>2.1 ARP包格式</h3><p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200428191255.png" alt></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>长度(Byte)</th>
+<th>默认值</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hardware type</td>
+<td>2</td>
+<td>0x1</td>
+<td>硬件类型，标识链路层协议，默认以太网</td>
+</tr>
+<tr>
+<td>Protocol type</td>
+<td>2</td>
+<td>0x0800</td>
+<td>协议类型，标识网络层协议</td>
+</tr>
+<tr>
+<td>Hardware size</td>
+<td>1</td>
+<td>0x6</td>
+<td>硬件地址大小，标识MAC地址长度</td>
+</tr>
+<tr>
+<td>Protocol size</td>
+<td>1</td>
+<td>0x4</td>
+<td>协议地址大小，标识IP地址长度</td>
+</tr>
+<tr>
+<td>操作码</td>
+<td>2</td>
+<td></td>
+<td>操作代码，标识ARP数据包类型，0x1表示ARP请求包,0x2表示应答包</td>
+</tr>
+<tr>
+<td>Sender MAC address</td>
+<td>6</td>
+<td></td>
+<td>发送者MAC</td>
+</tr>
+<tr>
+<td>Sender IP address</td>
+<td>4</td>
+<td></td>
+<td>发送者IP</td>
+</tr>
+<tr>
+<td>Target MAC address</td>
+<td>6</td>
+<td></td>
+<td>目标MAC，全0表示在请求</td>
+</tr>
+<tr>
+<td>Target IP address</td>
+<td>4</td>
+<td></td>
+<td>目标IP</td>
+</tr>
+<tr>
+<td>填充数据</td>
+<td>18</td>
+<td></td>
+<td>因为物理帧最小长度为64字节,前面的42字节再加上4个CRC校验字节,还差18个字节</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="2-2-wireshark抓包分析"><a href="#2-2-wireshark抓包分析" class="headerlink" title="2.2 wireshark抓包分析"></a>2.2 wireshark抓包分析</h3><p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200428192859.png" alt></p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200428192823.png" alt></p>
+<p>ARP协议采用以太网的广播功能，目标MAC地址为FF:FF:FF:FF:FF:FF，交换机收到广播包时，记录下源MAC地址与端口号的映射，然后会将此数据包发送给同一局域网的其他所有主机。目标主机收到数据包后，发现请求包中的目标IP地址是自己，会返回ARP响应包，而由于请求中携带了源目标地址的MAC地址，此时ARP响应就可以通过单播的方式进行，交换机收到单播包，记录下目标地址的MAC地址和端口号映射关系。此时交换机就可以通过MAC地址表知道如何将源目标数据发送到目标主机。</p>
+<h3 id="2-3-ARP代理"><a href="#2-3-ARP代理" class="headerlink" title="2.3 ARP代理"></a>2.3 ARP代理</h3><p>ARP通过广播包的方式获取MAC地址，而广播包只能工作在同一个网段下的广播域，对于另一个网段下的主机，则需要通过ARP代理完成。在ARP协议中，我们发往其他网段的请求主机物理地址会由路由器回答，得到的就是路由器的物理地址，发送方就根据这个物理地址把数据报发送到路由器，由路由器转发，再下面的事情由路由器完成。</p>
+<h3 id="2-4-ARP欺骗"><a href="#2-4-ARP欺骗" class="headerlink" title="2.4 ARP欺骗"></a>2.4 ARP欺骗</h3><p>ARP欺骗的主要原理是攻击者发送大量假的ARP数据包到网络上，尤其是网关。</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200428195143.png" alt></p>
+<p>假如攻击者为PC2，攻击者大量在网上发送ARP请求包，告诉其他设备我的IP是192.168.0.1，我的MAC地址时AA:BB:CC:DD:EE:FF，此时交换机和PC1的ARP表都会受到毒害，原来应该发往网关的数据，现在都被引流到PC2。PC2知道网关的真正MAC地址，它可以对PC1的数据进行监听、篡改（转发至网关）、甚至直接丢弃，造成PC1无法与外界通信。</p>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2020/04/23/计算机网络/计算机网络（五）—— 数据链路层 —— ARP/">https://shinerio.cc/2020/04/23/计算机网络/计算机网络（五）—— 数据链路层 —— ARP/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/计算机网络/">计算机网络</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2020/04/24/计算机网络/计算机网络（六）—— 网络层/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">计算机网络（六）—— 网络层</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2020/04/22/计算机网络/计算机网络（四）—— 数据链路层/">
+        <span class="next-text nav-default">计算机网络（四）—— 数据链路层</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2020/04/23/计算机网络/计算机网络（五）—— 数据链路层 —— ARP/';
+        this.page.identifier = '2020/04/23/计算机网络/计算机网络（五）—— 数据链路层 —— ARP/';
+        this.page.title = '计算机网络（五）—— 数据链路层 —— ARP';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

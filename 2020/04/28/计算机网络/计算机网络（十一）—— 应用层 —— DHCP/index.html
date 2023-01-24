@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="计算机网络（十一）—— 应用层 —— DHCP"><meta name="keywords" content="计算机网络, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2020/04/28/计算机网络/计算机网络（十一）—— 应用层 —— DHCP/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>计算机网络（十一）—— 应用层 —— DHCP - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">计算机网络（十一）—— 应用层 —— DHCP
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020-04-28
+        </span><span class="post-category">
+            <a href="/categories/计算机网络/">计算机网络</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-DHCP的分配机制"><span class="toc-text">1. DHCP的分配机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-DHCP报文"><span class="toc-text">2. DHCP报文</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-DHCP报文之Option"><span class="toc-text">3. DHCP报文之Option</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-DHCP-Message-Type"><span class="toc-text">3.1 DHCP Message Type</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-DHCP抓包分析"><span class="toc-text">3.2 DHCP抓包分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-DHCP工作流程"><span class="toc-text">4. DHCP工作流程</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p>DHCP（Dynamic Host Configuration Protocol）动态主机配置协议是一个局域网的网络协议。DHCP协议采用C/S模型，服务器控制一段ip地址，客户机向服务器请求，获得服务器分配的ip地址、子网掩码、网关地址、DNS服务器地址等信息。</p>
+<a id="more"></a>
+<h2 id="1-DHCP的分配机制"><a href="#1-DHCP的分配机制" class="headerlink" title="1. DHCP的分配机制"></a>1. DHCP的分配机制</h2><ul>
+<li>【自动分配】DHCP服务器为主机制定一个永久性的ip地址，一旦DHCP客户端第一次成功从DHCP服务器端租用到IP地址后，就可以永久性的使用该地址。</li>
+<li>【动态分配】DHCP服务器给主机制定一个具有时间限制的IP地址，时间到期或主机明确表示放弃该地址时，该地址可以被其他主机使用。</li>
+<li>【手工分配】客户端的IP地址由网络管理员指定的，DHCP服务器只是将指定的IP地址告诉客户端主机。</li>
+</ul>
+<blockquote>
+<p>这三种分配方式中，只有动态分配可以重复使用客户端不再需要的IP地址</p>
+</blockquote>
+<h2 id="2-DHCP报文"><a href="#2-DHCP报文" class="headerlink" title="2. DHCP报文"></a>2. DHCP报文</h2><p>DHCP基于UDP传输，DHCP服务器使用端口号67，DHCP 客户端使用端口号68。</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200425144347.png" alt></p>
+<p>【Op】：报文类型，Request（1），Reply(2)</p>
+<p>【HW Type】：硬件类型，一般是以外网（1）</p>
+<p>【HW Len】：硬件地址长度，单位字节。对应以太网mac地址为6字节</p>
+<p>【Transcation ID】DHCP Request 时产生的数值，以作 Reply 时的依据</p>
+<p>【Secs】：距离第一次发送IP请求或Renew请求过去的秒数</p>
+<p>【Flags】：从 0 到 15 共 16 bits ，最左一 bit 为 1 时表示 server 将以广播方式传送给 client ，其余尚未使用</p>
+<p>【Client IP Address】：要是 client 端想继续使用之前取得之 IP 地址，则列于这里。</p>
+<p>【Your IP Address】：服务器端给客户端分配的IP地址</p>
+<p>【(Next) Server IP Address】：若 client 需要透过网络开机，从 server 送出之 DHCP OFFER、DHCPACK、DHCPNACK封包中，此栏填写开机程序代码所在 server 之地址。</p>
+<p>【Gateway (Relay) IP Address】：若需跨网域进行 DHCP 发放，此栏为 relay agent 的地址，否则为 0。</p>
+<p>【Server Name】：Server名字，一般不适用，填充为0</p>
+<p>【Boot File name】：boot file的路径，一般不使用，填充为0</p>
+<p>【Option】：选项，不定长度</p>
+<h2 id="3-DHCP报文之Option"><a href="#3-DHCP报文之Option" class="headerlink" title="3. DHCP报文之Option"></a>3. DHCP报文之Option</h2><p>　DHCP从Bootp拓展而来，DHCP报文也是有Bootp报文发展而来。但是DHCP在Bootp之上添加了许多功能，其报文也需要有一定的拓展。如果Bootp报文不能满足的内容，就以Option的形式存在于DHCP报文中。DHCP协议其实就是携带许多Option的Bootp。</p>
+<p>　DHCP有许多类型的Option，长度不一（但都是整数字节）。Option遵循以下格式:</p>
+<ul>
+<li>如果Option没有值，则只有标志位之类的内容，则以一个字节表示</li>
+<li>如果Opiton有值，即Opiton是以下name-value对，则Opiton需要多个字节表示，其中第一个字节表示 option的名字，第二字节表示value的长度，第三个字节开始表示value。</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Pad</td>
+<td>填充位</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Subnet Mask</td>
+<td>子网掩码</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Router Address</td>
+<td>路由器地址</td>
+</tr>
+<tr>
+<td>6</td>
+<td>DNS</td>
+<td>DNS server</td>
+</tr>
+<tr>
+<td>15</td>
+<td>DN</td>
+<td>域名</td>
+</tr>
+<tr>
+<td>50</td>
+<td>Requested IP Address</td>
+<td>请求的IP地址</td>
+</tr>
+<tr>
+<td>51</td>
+<td>Address Lease Time</td>
+<td>地址租约时间</td>
+</tr>
+<tr>
+<td>53</td>
+<td>DHCP Message Type</td>
+<td>DHCP 消息类型，如Discover、Request、Offer、ACK等</td>
+</tr>
+<tr>
+<td>54</td>
+<td>Server Identifier</td>
+<td>服务器标识</td>
+</tr>
+<tr>
+<td>55</td>
+<td>Parameter Request List</td>
+<td>参数请求列表</td>
+</tr>
+<tr>
+<td>56</td>
+<td>DHCP Error Message</td>
+<td>DHCP错误消息</td>
+</tr>
+<tr>
+<td>58</td>
+<td>Lease Renewal Time</td>
+<td>租约续期时间</td>
+</tr>
+<tr>
+<td>61</td>
+<td>Client Identifier</td>
+<td>客户标识</td>
+</tr>
+<tr>
+<td>119</td>
+<td>Domain Search List</td>
+<td>域名查找列表</td>
+</tr>
+<tr>
+<td>255</td>
+<td>End</td>
+<td>结束</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>以上是常用的Option，DHCP报文以Option 255标志报文结束</p>
+<h3 id="3-1-DHCP-Message-Type"><a href="#3-1-DHCP-Message-Type" class="headerlink" title="3.1 DHCP Message Type"></a>3.1 DHCP Message Type</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>DHCP消息类型</th>
+<th>对应的Option值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DHCPDISCOVER</td>
+<td>1</td>
+</tr>
+<tr>
+<td>DHCPOFFER</td>
+<td>2</td>
+</tr>
+<tr>
+<td>DHCPREQUEST</td>
+<td>3</td>
+</tr>
+<tr>
+<td>DHCPDECLINE</td>
+<td>4</td>
+</tr>
+<tr>
+<td>DHCPACK</td>
+<td>5</td>
+</tr>
+<tr>
+<td>DHCPNAK</td>
+<td>6</td>
+</tr>
+<tr>
+<td>DHCPRELEASE</td>
+<td>7</td>
+</tr>
+<tr>
+<td>DHCPINFORM</td>
+<td>8</td>
+</tr>
+<tr>
+<td>DHCPFORCERENEW</td>
+<td>9</td>
+</tr>
+<tr>
+<td>DHCPLEASEQUERY</td>
+<td>10</td>
+</tr>
+<tr>
+<td>DHCPLEASEUNASSIGNED</td>
+<td>11</td>
+</tr>
+<tr>
+<td>DHCPLEASEUNKNOWN</td>
+<td>12</td>
+</tr>
+<tr>
+<td>DHCPLEASEACTIVE</td>
+<td>13</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="3-2-DHCP抓包分析"><a href="#3-2-DHCP抓包分析" class="headerlink" title="3.2 DHCP抓包分析"></a>3.2 DHCP抓包分析</h3><ul>
+<li>DHCP请求</li>
+</ul>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200425160708.png" alt></p>
+<ul>
+<li>DHCP响应</li>
+</ul>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200425171347.png" alt></p>
+<h2 id="4-DHCP工作流程"><a href="#4-DHCP工作流程" class="headerlink" title="4. DHCP工作流程"></a>4. DHCP工作流程</h2><ol>
+<li><p><font color="red">发现阶段</font>。 即DHCP客户机寻找DHCP服务器的阶段。DHCP客户机以广播方式（因为DHCP服务器的IP地址对于客户机来说是未知的）发送<strong>DHCP discover</strong>发现信息来寻找DHCP服务器，即向地址255.255.255.255发送特定的广播信息。网络上每一台安装了TCP/IP协议的主机都会接收到这种广播信息，但只有DHCP服务器才会做出响应。</p>
+</li>
+<li><p><font color="red">提供阶段</font>。DHCP服务器提供IP地址的阶段。在网络中接收到DHCP discover发现信息的DHCP服务器都会做出响应，它从尚未出租的IP地址中挑选一个分配给DHCP客户机，向DHCP客户机发送一个包含出租的IP地址和其他设置的<strong>DHCP offer</strong>提供信息。</p>
+</li>
+<li><p><font color="red">选择阶段</font>。DHCP客户机选择某台DHCP服务器提供的IP地址的阶段。如果有多台DHCP服务器向DHCP客户机发来的DHCP offer提供信息，则DHCP客户机只接受第一个收到的DHCP offer提供信息，然后它就以广播方式回答一个<strong>DHCP request</strong>请求信息，该信息中包含向它所选定的DHCP服务器请求IP地址的内容。之所以要以广播方式回答，是为了通知所有的DHCP服务器，他将选择某台DHCP服务器所提供的IP地址。</p>
+</li>
+<li><p><font color="red">确认阶段</font>。DHCP服务器确认所提供的IP地址的阶段。当DHCP服务器收到DHCP客户机回答的DHCP request请求信息之后，它便向DHCP客户机发送一个包含它所提供的IP地址和其他设置的<strong>DHCP ack</strong>确认信息，告诉DHCP客户机可以使用它所提供的IP地址。然后DHCP客户机便将其TCP/IP协议与网卡绑定，另外，除DHCP客户机选中的服务器外，其他的DHCP服务器都将收回曾提供的IP地址。</p>
+<p> DHCP客户机收到ack报文后，会针对获得的IP地址发送ARP Request，进行IP地址冲突检测。</p>
+<ol>
+<li>如果IP地址已经被其他主机使用，则Client放弃该IP地址，向Server发送DHCP DECLINE报文告诉Server该地址不能使用。然后一段时间后（一般10s）再此尝试获取该IP地址</li>
+<li>如果Client仍然无法使用该IP地址，则发送DHCP RELEASE报文，放弃该地址。</li>
+</ol>
+</li>
+<li><p><font color="red">重新登录</font>。以后DHCP客户机每次重新登录网络时，就不需要再发送DHCP discover发现信息了，而是直接发送包含前一次所分配的IP地址的DHCP request请求信息。当DHCP服务器收到这一信息后，它会尝试让DHCP客户机继续使用原来的IP地址，并回答一个DHCP ack确认信息。如果此IP地址已无法再分配给原来的DHCP客户机使用时（比如此IP地址已分配给其它DHCP客户机使用），则DHCP服务器给DHCP客户机回答一个DHCP nack否认信息。当原来的DHCP客户机收到此DHCP nack否认信息后，它就必须重新发送DHCP discover发现信息来请求新的IP地址。</p>
+</li>
+<li><p><font color="red">更新租约</font>。DHCP服务器向DHCP客户机出租的IP地址一般都有一个租借期限，期满后DHCP服务器便会收回出租的IP地址。如果DHCP客户机要延长其IP租约，则必须更新其IP租约。DHCP客户机启动时和IP租约期限过一半时，DHCP客户机都会自动向DHCP服务器发送更新其IP租约的信息。</p>
+</li>
+</ol>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200425170404.png" alt></p>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2020/04/28/计算机网络/计算机网络（十一）—— 应用层 —— DHCP/">https://shinerio.cc/2020/04/28/计算机网络/计算机网络（十一）—— 应用层 —— DHCP/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/计算机网络/">计算机网络</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2020/04/29/计算机网络/计算机网络（十二）—— 应用层 —— DNS/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">计算机网络（十二）—— 应用层 —— DNS</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2020/04/27/计算机网络/计算机网络（十）—— 应用层/">
+        <span class="next-text nav-default">计算机网络（十）—— 应用层</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2020/04/28/计算机网络/计算机网络（十一）—— 应用层 —— DHCP/';
+        this.page.identifier = '2020/04/28/计算机网络/计算机网络（十一）—— 应用层 —— DHCP/';
+        this.page.title = '计算机网络（十一）—— 应用层 —— DHCP';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

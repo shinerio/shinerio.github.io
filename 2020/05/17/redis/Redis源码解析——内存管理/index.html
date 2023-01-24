@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="Redis源码解析——内存分配"><meta name="keywords" content="C/C++, Redis, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2020/05/17/redis/Redis源码解析——内存管理/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>Redis源码解析——内存分配 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">Redis源码解析——内存分配
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020-05-17
+        </span><span class="post-category">
+            <a href="/categories/C-C/">C/C++</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-zmalloc-h"><span class="toc-text">1. zmalloc.h</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-zmalloc-c"><span class="toc-text">2. zmalloc.c</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-宏定义"><span class="toc-text">2.1 宏定义</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-1-PREFIX-SIZE"><span class="toc-text">2.1.1 PREFIX_SIZE</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-2-update-zmalloc-stat-alloc"><span class="toc-text">2.1.2 update_zmalloc_stat_alloc</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-全局变量"><span class="toc-text">2.2 全局变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-内存申请"><span class="toc-text">2.3 内存申请</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-3-1-zmalloc"><span class="toc-text">2.3.1 zmalloc</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-3-2-zcalloc"><span class="toc-text">2.3.2 zcalloc</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-3-3-zrecalloc"><span class="toc-text">2.3.3 zrecalloc</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-内存释放"><span class="toc-text">2.4 内存释放</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-其他函数"><span class="toc-text">2.5 其他函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-1-zstrdup"><span class="toc-text">2.5.1 zstrdup</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-2-zmalloc-used-memory"><span class="toc-text">2.5.2 zmalloc_used_memory</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-3-zmalloc-get-rss"><span class="toc-text">2.5.3 zmalloc_get_rss</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-4-zlibc-free"><span class="toc-text">2.5.4 zlibc_free</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-5-zmalloc-get-private-dirty"><span class="toc-text">2.5.5 zmalloc_get_private_dirty</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-6-zmalloc-get-fragmentation-ratio"><span class="toc-text">2.5.6 zmalloc_get_fragmentation_ratio</span></a></li></ol></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#3-总结"><span class="toc-text">3. 总结</span></a></li>
+    </div>
+  </div><div class="post-content"><p>redis内存分配的主要方法是在zmalloc.h中定义、zmalloc.c中实现的，主要是对tcmalloc、jemalloc、macos系统的封装的。这些方法基本上实现了Redis内存申请、释放和统计的功能。</p>
+<a id="more"></a>
+<p>jemalloc是freebsd操作系统自带的内存分配器，与其他内存分配器相比，其最大优势在于多线程情况下的高性能以及内存碎片较少，firefox以及facebook都在使用。</p>
+<p>tcmalloc是Google开发的内存分配器，对小对象占用空间进行了优化，能够对抗内存碎片，chrome和golang都在使用。</p>
+<h2 id="1-zmalloc-h"><a href="#1-zmalloc-h" class="headerlink" title="1. zmalloc.h"></a>1. zmalloc.h</h2><p>首先看zmalloc.h中声明的函数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//申请大小为size的空间</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">zmalloc</span><span class="params">(<span class="keyword">size_t</span> size)</span></span>;       </span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">zcalloc</span><span class="params">(<span class="keyword">size_t</span> size)</span></span>;     </span><br><span class="line"><span class="comment">//重新调整已申请的内存大小为size</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">zrealloc</span><span class="params">(<span class="keyword">void</span> *ptr, <span class="keyword">size_t</span> size)</span></span>; </span><br><span class="line"><span class="comment">//释放内存空间</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">zfree</span><span class="params">(<span class="keyword">void</span> *ptr)</span></span>;    </span><br><span class="line"><span class="comment">//字符串复制</span></span><br><span class="line"><span class="function"><span class="keyword">char</span> *<span class="title">zstrdup</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *s)</span></span>;  </span><br><span class="line"><span class="comment">//获取redis已经使用(分配)的内存大小</span></span><br><span class="line"><span class="keyword">size_t</span> zmalloc_used_memory(<span class="keyword">void</span>); </span><br><span class="line"><span class="comment">//控制是否开启线程安全</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">zmalloc_enable_thread_safeness</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="comment">//自定义内存溢出时回调函数</span></span><br><span class="line">void zmalloc_set_oom_handler(void (*oom_handler)(size_t));</span><br><span class="line"><span class="comment">//获取所给内存和已使用内存的大小之比</span></span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">zmalloc_get_fragmentation_ratio</span><span class="params">(<span class="keyword">size_t</span> rss)</span></span>;</span><br><span class="line"><span class="comment">//获取RSS(常驻内存集)大小</span></span><br><span class="line"><span class="keyword">size_t</span> zmalloc_get_rss(<span class="keyword">void</span>);</span><br><span class="line"><span class="comment">//获取进程私有的内容已经发生更改的内存大小</span></span><br><span class="line"><span class="keyword">size_t</span> zmalloc_get_private_dirty(<span class="keyword">void</span>);</span><br><span class="line"><span class="comment">//直接调用系统free函数释放已分配内存</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">zlibc_free</span><span class="params">(<span class="keyword">void</span> *ptr)</span></span>;</span><br></pre></td></tr></table></figure>
+<div class="admonition note"><p class="admonition-title">size_t
+</p><p>size_t是通过typedef定义的unsigned int 类型。用来表示参数/数组元素个数，sizeof 返回值，或 str相关函数返回的size或长度。sizeof 操作符的结果类型是size_t。</p>
+</div>
+
+<h2 id="2-zmalloc-c"><a href="#2-zmalloc-c" class="headerlink" title="2. zmalloc.c"></a>2. zmalloc.c</h2><h3 id="2-1-宏定义"><a href="#2-1-宏定义" class="headerlink" title="2.1 宏定义"></a>2.1 宏定义</h3><h4 id="2-1-1-PREFIX-SIZE"><a href="#2-1-1-PREFIX-SIZE" class="headerlink" title="2.1.1 PREFIX_SIZE"></a>2.1.1 PREFIX_SIZE</h4><p>HAVE_MALOC_SIZE主要是用来确定系统是否提供查询malloc分配的内存大小的函数，如macOS中就提供了malloc_size函数，可以用来返回申请过的内存空间p的大小。对于不提供查询大小方法的系统，redis申请内存时会额外申请PREFIX_SIZE个字节的空间，用来存储malloc分配内存空间的大小。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> HAVE_MALLOC_SIZE</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PREFIX_SIZE (0)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__sun) || defined(__sparc) || defined(__sparc__)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PREFIX_SIZE (sizeof(long long))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PREFIX_SIZE (sizeof(size_t))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<details>
+<summary>HAVE_MALLOC_SIZE在src/zmalloc.h定义</summary>
+<pre>
+#if defined(USE_TCMALLOC)
+#define ZMALLOC_LIB ("tcmalloc-" __xstr(TC_VERSION_MAJOR) "." __xstr(TC_VERSION_MINOR))
+#include <google tcmalloc.h>
+#if (TC_VERSION_MAJOR == 1 && TC_VERSION_MINOR >= 6) || (TC_VERSION_MAJOR > 1)
+#define HAVE_MALLOC_SIZE 1
+#define zmalloc_size(p) tc_malloc_size(p)
+#else
+#error "Newer version of tcmalloc required"
+#endif
+#elif defined(USE_JEMALLOC)
+#define ZMALLOC_LIB ("jemalloc-" __xstr(JEMALLOC_VERSION_MAJOR) "." __xstr(JEMALLOC_VERSION_MINOR) "." __xstr(JEMALLOC_VERSION_BUGFIX))
+#include <jemalloc jemalloc.h>
+#if (JEMALLOC_VERSION_MAJOR == 2 && JEMALLOC_VERSION_MINOR >= 1) || (JEMALLOC_VERSION_MAJOR > 2)
+#define HAVE_MALLOC_SIZE 1
+#define zmalloc_size(p) je_malloc_usable_size(p)
+#else
+#error "Newer version of jemalloc required"
+#endif
+#elif defined(__APPLE__)
+#include <malloc malloc.h>
+#define HAVE_MALLOC_SIZE 1
+#define zmalloc_size(p) malloc_size(p)
+#endif
+</malloc></jemalloc></google></pre>
+</details>
+
+<h4 id="2-1-2-update-zmalloc-stat-alloc"><a href="#2-1-2-update-zmalloc-stat-alloc" class="headerlink" title="2.1.2 update_zmalloc_stat_alloc"></a>2.1.2 update_zmalloc_stat_alloc</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> update_zmalloc_stat_alloc(__n) do &#123; \</span></span><br><span class="line">    <span class="keyword">size_t</span> _n = (__n);</span><br><span class="line">    <span class="comment">// _n&amp;(sizeof(long)-1)等价于_n%(sizeof(long)-1)，与运算效率高于取余。将_n调整sizeof(long)的整数倍</span></span><br><span class="line">    <span class="keyword">if</span> (_n&amp;(<span class="keyword">sizeof</span>(<span class="keyword">long</span>)<span class="number">-1</span>)) _n += <span class="keyword">sizeof</span>(<span class="keyword">long</span>)-(_n&amp;(<span class="keyword">sizeof</span>(<span class="keyword">long</span>)<span class="number">-1</span>)); \</span><br><span class="line">    <span class="comment">//如果采用的线程安全模式，通过互斥锁used_memory_mutex更新已使用内存</span></span><br><span class="line">    <span class="keyword">if</span> (zmalloc_thread_safe) &#123; \</span><br><span class="line">        update_zmalloc_stat_add(_n); \</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123; \</span><br><span class="line">        <span class="comment">//不考虑线程安全，直接更新</span></span><br><span class="line">        used_memory += _n; \</span><br><span class="line">    &#125; \</span><br><span class="line">&#125; <span class="keyword">while</span>(<span class="number">0</span>)  <span class="comment">//当成函数使用，只执行一遍</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-2-全局变量"><a href="#2-2-全局变量" class="headerlink" title="2.2 全局变量"></a>2.2 全局变量</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">size_t</span> used_memory = <span class="number">0</span>;   <span class="comment">//已使用内存大小</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> zmalloc_thread_safe = <span class="number">0</span>;  <span class="comment">//是否启用内存安全模式</span></span><br><span class="line"><span class="comment">//静态初始化互斥锁，用来控制多线程同步</span></span><br><span class="line"><span class="keyword">pthread_mutex_t</span> used_memory_mutex = PTHREAD_MUTEX_INITIALIZER;</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-内存申请"><a href="#2-3-内存申请" class="headerlink" title="2.3 内存申请"></a>2.3 内存申请</h3><h5 id="2-3-1-zmalloc"><a href="#2-3-1-zmalloc" class="headerlink" title="2.3.1 zmalloc"></a>2.3.1 zmalloc</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">zmalloc</span><span class="params">(<span class="keyword">size_t</span> size)</span> </span>&#123;    </span><br><span class="line">		<span class="comment">//没有提供查询malloc分配大小的函数的系统需要多申请PREFIX_SIZE个字节用来存储分配内存大小</span></span><br><span class="line">    <span class="keyword">void</span> *ptr = <span class="built_in">malloc</span>(size+PREFIX_SIZE);</span><br><span class="line">    <span class="comment">//如果内存分配失败，则调用异常回调函数</span></span><br><span class="line">    <span class="keyword">if</span> (!ptr) zmalloc_oom_handler(size);</span><br><span class="line">    <span class="comment">//更新已使用内存大小</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> HAVE_MALLOC_SIZE</span></span><br><span class="line">    <span class="comment">//提供查询malloc分配大小的函数的系统，直接调用zmalloc_size获取实际分配内存的大小</span></span><br><span class="line">    update_zmalloc_stat_alloc(zmalloc_size(ptr));</span><br><span class="line">    <span class="keyword">return</span> ptr;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">    <span class="comment">//对于没有提供查询malloc分配大小的函数的系统，将此次分配的实际可使用空间大小存入分配内存首部</span></span><br><span class="line">    *((<span class="keyword">size_t</span>*)ptr) = size;</span><br><span class="line">    update_zmalloc_stat_alloc(size+PREFIX_SIZE);</span><br><span class="line">		<span class="comment">//将指针指向实际可用空间首地址，想要获取该空间大小时只需要将指针前移PREFIX_SIZE大小即可</span></span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">char</span>*)ptr+PREFIX_SIZE;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200517214418.png" alt></p>
+<p>异常处理函数通过函数指针定义</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">zmalloc_default_oom</span><span class="params">(<span class="keyword">size_t</span> size)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//打印日志</span></span><br><span class="line">    <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"zmalloc: Out of memory trying to allocate %zu bytes\n"</span>,</span><br><span class="line">        size);</span><br><span class="line">    <span class="comment">// 中断退出</span></span><br><span class="line">    fflush(<span class="built_in">stderr</span>);</span><br><span class="line">    <span class="built_in">abort</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//redis也允许自定义异常处理函数</span></span><br><span class="line">void zmalloc_set_oom_handler(void (*oom_handler)(size_t)) &#123;</span><br><span class="line">    zmalloc_oom_handler = oom_handler; <span class="comment">// 绑定自定义的异常处理函数</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="title">void</span> <span class="params">(*zmalloc_oom_handler)</span><span class="params">(<span class="keyword">size_t</span>)</span> </span>= zmalloc_default_oom;</span><br></pre></td></tr></table></figure>
+<p>update_zmalloc_stat_alloc通过宏定义给出</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> update_zmalloc_stat_alloc(__n) do &#123; \</span></span><br><span class="line">    <span class="keyword">size_t</span> _n = (__n); \</span><br><span class="line">    <span class="keyword">if</span> (_n&amp;(<span class="keyword">sizeof</span>(<span class="keyword">long</span>)<span class="number">-1</span>)) _n += <span class="keyword">sizeof</span>(<span class="keyword">long</span>)-(_n&amp;(<span class="keyword">sizeof</span>(<span class="keyword">long</span>)<span class="number">-1</span>)); \</span><br><span class="line">    atomicIncr(used_memory,__n); \</span><br><span class="line">&#125; <span class="keyword">while</span>(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<h5 id="2-3-2-zcalloc"><a href="#2-3-2-zcalloc" class="headerlink" title="2.3.2 zcalloc"></a>2.3.2 zcalloc</h5><p>与zmalloc相似，通过calloc分配内存</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">zcalloc</span><span class="params">(<span class="keyword">size_t</span> size)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">void</span> *ptr = <span class="built_in">calloc</span>(<span class="number">1</span>, size+PREFIX_SIZE);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!ptr) zmalloc_oom_handler(size);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> HAVE_MALLOC_SIZE</span></span><br><span class="line">    update_zmalloc_stat_alloc(zmalloc_size(ptr));</span><br><span class="line">    <span class="keyword">return</span> ptr;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">    *((<span class="keyword">size_t</span>*)ptr) = size;</span><br><span class="line">    update_zmalloc_stat_alloc(size+PREFIX_SIZE);</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">char</span>*)ptr+PREFIX_SIZE;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="2-3-3-zrecalloc"><a href="#2-3-3-zrecalloc" class="headerlink" title="2.3.3 zrecalloc"></a>2.3.3 zrecalloc</h5><p>调用系统recalloc函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">zrealloc</span><span class="params">(<span class="keyword">void</span> *ptr, <span class="keyword">size_t</span> size)</span> </span>&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> HAVE_MALLOC_SIZE</span></span><br><span class="line">    <span class="keyword">void</span> *realptr;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">    <span class="keyword">size_t</span> oldsize;</span><br><span class="line">    <span class="keyword">void</span> *newptr;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ptr == <span class="literal">NULL</span>) <span class="keyword">return</span> zmalloc(size);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> HAVE_MALLOC_SIZE</span></span><br><span class="line">    oldsize = zmalloc_size(ptr);</span><br><span class="line">    newptr = <span class="built_in">realloc</span>(ptr,size);</span><br><span class="line">    <span class="keyword">if</span> (!newptr) zmalloc_oom_handler(size);</span><br><span class="line">    <span class="comment">//更新已使用内存</span></span><br><span class="line">    update_zmalloc_stat_free(oldsize);</span><br><span class="line">    update_zmalloc_stat_alloc(zmalloc_size(newptr));</span><br><span class="line">    <span class="keyword">return</span> newptr;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">    <span class="comment">//指针前移PREFIX_SIZE，得到原来分配内存的大小</span></span><br><span class="line">    realptr = (<span class="keyword">char</span>*)ptr-PREFIX_SIZE;</span><br><span class="line">    oldsize = *((<span class="keyword">size_t</span>*)realptr);</span><br><span class="line">    <span class="comment">//调用系统realloc函数重新分配内存</span></span><br><span class="line">    newptr = <span class="built_in">realloc</span>(realptr,size+PREFIX_SIZE);</span><br><span class="line">    <span class="keyword">if</span> (!newptr) zmalloc_oom_handler(size);</span><br><span class="line"></span><br><span class="line">    *((<span class="keyword">size_t</span>*)newptr) = size;</span><br><span class="line">    update_zmalloc_stat_free(oldsize);</span><br><span class="line">    update_zmalloc_stat_alloc(size);</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">char</span>*)newptr+PREFIX_SIZE;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>update_zmalloc_stat_free更新已使用内存</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> update_zmalloc_stat_free(__n) do &#123; \</span></span><br><span class="line">    <span class="keyword">size_t</span> _n = (__n); \</span><br><span class="line">    <span class="keyword">if</span> (_n&amp;(<span class="keyword">sizeof</span>(<span class="keyword">long</span>)<span class="number">-1</span>)) _n += <span class="keyword">sizeof</span>(<span class="keyword">long</span>)-(_n&amp;(<span class="keyword">sizeof</span>(<span class="keyword">long</span>)<span class="number">-1</span>)); \</span><br><span class="line">    <span class="keyword">if</span> (zmalloc_thread_safe) &#123; \</span><br><span class="line">        update_zmalloc_stat_sub(_n); \</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123; \</span><br><span class="line">        used_memory -= _n; \</span><br><span class="line">    &#125; \</span><br><span class="line">&#125; <span class="keyword">while</span>(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="2-4-内存释放"><a href="#2-4-内存释放" class="headerlink" title="2.4 内存释放"></a>2.4 内存释放</h3><p>与内存申请类似，redis通过调用系统free函数来释放内存</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">zfree</span><span class="params">(<span class="keyword">void</span> *ptr)</span> </span>&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> HAVE_MALLOC_SIZE</span></span><br><span class="line">    <span class="keyword">void</span> *realptr;</span><br><span class="line">    <span class="keyword">size_t</span> oldsize;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">    <span class="comment">//为空直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (ptr == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> HAVE_MALLOC_SIZE</span></span><br><span class="line">    <span class="comment">//更新已使用内存</span></span><br><span class="line">    update_zmalloc_stat_free(zmalloc_size(ptr));</span><br><span class="line">    <span class="comment">//释放内存</span></span><br><span class="line">    <span class="built_in">free</span>(ptr);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">    <span class="comment">//指针前移，指向申请时实际申请内存大小空间</span></span><br><span class="line">    realptr = (<span class="keyword">char</span>*)ptr-PREFIX_SIZE;</span><br><span class="line">    oldsize = *((<span class="keyword">size_t</span>*)realptr);</span><br><span class="line">    <span class="comment">//更新已使用内存</span></span><br><span class="line">    update_zmalloc_stat_free(oldsize+PREFIX_SIZE);</span><br><span class="line">    <span class="built_in">free</span>(realptr);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-5-其他函数"><a href="#2-5-其他函数" class="headerlink" title="2.5 其他函数"></a>2.5 其他函数</h3><h4 id="2-5-1-zstrdup"><a href="#2-5-1-zstrdup" class="headerlink" title="2.5.1 zstrdup"></a>2.5.1 zstrdup</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">char</span> *<span class="title">zstrdup</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *s)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//c中字符串以\0结尾，strlen只统计字符串字符数，实际需要多占用一个字节存放\0</span></span><br><span class="line">    <span class="keyword">size_t</span> l = <span class="built_in">strlen</span>(s)+<span class="number">1</span>;</span><br><span class="line">    <span class="comment">//分配内存</span></span><br><span class="line">    <span class="keyword">char</span> *p = zmalloc(l);</span><br><span class="line">    <span class="comment">//拷贝字符串</span></span><br><span class="line">    <span class="built_in">memcpy</span>(p,s,l);</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-5-2-zmalloc-used-memory"><a href="#2-5-2-zmalloc-used-memory" class="headerlink" title="2.5.2 zmalloc_used_memory"></a>2.5.2 zmalloc_used_memory</h4><p>获取redis已经使用（申请）的内存大小</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">size_t</span> zmalloc_used_memory(<span class="keyword">void</span>) &#123;</span><br><span class="line">    <span class="keyword">size_t</span> um;</span><br><span class="line">    <span class="comment">//线程安全模式，加互斥锁访问used_memory，防止zmalloc或zfree等对值的影响</span></span><br><span class="line">    <span class="keyword">if</span> (zmalloc_thread_safe) &#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> HAVE_ATOMIC</span></span><br><span class="line">        um = __sync_add_and_fetch(&amp;used_memory, <span class="number">0</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">        pthread_mutex_lock(&amp;used_memory_mutex);</span><br><span class="line">        um = used_memory;</span><br><span class="line">        pthread_mutex_unlock(&amp;used_memory_mutex);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//非线程安全模式，直接返回</span></span><br><span class="line">        um = used_memory;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> um;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-5-3-zmalloc-get-rss"><a href="#2-5-3-zmalloc-get-rss" class="headerlink" title="2.5.3 zmalloc_get_rss"></a>2.5.3 zmalloc_get_rss</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(HAVE_PROC_STAT)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">size_t</span> zmalloc_get_rss(<span class="keyword">void</span>) &#123;</span><br><span class="line">    <span class="comment">//获取内存页大小</span></span><br><span class="line">    <span class="keyword">int</span> page = sysconf(_SC_PAGESIZE);</span><br><span class="line">    <span class="keyword">size_t</span> rss;</span><br><span class="line">    <span class="keyword">char</span> buf[<span class="number">4096</span>];</span><br><span class="line">    <span class="keyword">char</span> filename[<span class="number">256</span>];</span><br><span class="line">    <span class="keyword">int</span> fd, count;</span><br><span class="line">    <span class="keyword">char</span> *p, *x;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">snprintf</span>(filename,<span class="number">256</span>,<span class="string">"/proc/%d/stat"</span>,getpid());</span><br><span class="line">    <span class="keyword">if</span> ((fd = open(filename,O_RDONLY)) == <span class="number">-1</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (read(fd,buf,<span class="number">4096</span>) &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        close(fd);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    close(fd);</span><br><span class="line"></span><br><span class="line">    p = buf;</span><br><span class="line">    count = <span class="number">23</span>; <span class="comment">/* RSS is the 24th field in /proc/&lt;pid&gt;/stat */</span></span><br><span class="line">    <span class="keyword">while</span>(p &amp;&amp; count--) &#123;</span><br><span class="line">        p = <span class="built_in">strchr</span>(p,<span class="string">' '</span>);</span><br><span class="line">        <span class="keyword">if</span> (p) p++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!p) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    x = <span class="built_in">strchr</span>(p,<span class="string">' '</span>);</span><br><span class="line">    <span class="keyword">if</span> (!x) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    *x = <span class="string">'\0'</span>;</span><br><span class="line"></span><br><span class="line">    rss = strtoll(p,<span class="literal">NULL</span>,<span class="number">10</span>);</span><br><span class="line">    <span class="comment">//一个进程占占用的实际内存等于一页大小乘以实际页个数</span></span><br><span class="line">    rss *= page;</span><br><span class="line">    <span class="keyword">return</span> rss;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">elif</span> defined(HAVE_TASKINFO)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/sysctl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;mach/task.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;mach/mach_init.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">size_t</span> zmalloc_get_rss(<span class="keyword">void</span>) &#123;</span><br><span class="line">    <span class="keyword">task_t</span> task = MACH_PORT_NULL;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">task_basic_info</span> <span class="title">t_info</span>;</span></span><br><span class="line">    <span class="keyword">mach_msg_type_number_t</span> t_info_count = TASK_BASIC_INFO_COUNT;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (task_for_pid(current_task(), getpid(), &amp;task) != KERN_SUCCESS)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    task_info(task, TASK_BASIC_INFO, (<span class="keyword">task_info_t</span>)&amp;t_info, &amp;t_info_count);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> t_info.resident_size;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"><span class="keyword">size_t</span> zmalloc_get_rss(<span class="keyword">void</span>) &#123;</span><br><span class="line">    <span class="comment">/* If we can't get the RSS in an OS-specific way for this system just</span></span><br><span class="line"><span class="comment">     * return the memory usage we estimated in zmalloc()..</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * Fragmentation will appear to be always 1 (no fragmentation)</span></span><br><span class="line"><span class="comment">     * of course... */</span></span><br><span class="line">    <span class="keyword">return</span> zmalloc_used_memory();</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<div class="admonition note"><p class="admonition-title">rss
+</p><p>RSS是常驻内存集（Resident Set Size），表示该进程分配的内存大小。RSS包括共享库占用的内存，所有分配的栈内存和堆内存，不包括进入交换分区的内存。/proc/pid/stat包含了进程的状态信息。</p>
+</div>
+
+<h4 id="2-5-4-zlibc-free"><a href="#2-5-4-zlibc-free" class="headerlink" title="2.5.4 zlibc_free"></a>2.5.4 zlibc_free</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">void zlibc_free(void *ptr) &#123;</span><br><span class="line">    free(ptr);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-5-5-zmalloc-get-private-dirty"><a href="#2-5-5-zmalloc-get-private-dirty" class="headerlink" title="2.5.5 zmalloc_get_private_dirty"></a>2.5.5 zmalloc_get_private_dirty</h4><p><strong>private_clean与private_dirty</strong></p>
+<p>private指的是当前进程私有的（rss包括一些线程共享的内存空间，主要是一些lib库）。clean指的是从磁盘加载或者零填充的未修改过的页面。因此，如果需要释放这些页面来为其他进程提供内存页面，就可以直接丢弃，在需要的时候可以重新加载或填充。dirty指的是这块空间内容已经更改过了，如果需要释放这块空间，需要将内容写到交换区，以便将来需要的时候可以重新恢复。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(HAVE_PROC_SMAPS)</span></span><br><span class="line"><span class="keyword">size_t</span> zmalloc_get_private_dirty(<span class="keyword">void</span>) &#123;</span><br><span class="line">    <span class="keyword">char</span> line[<span class="number">1024</span>];</span><br><span class="line">    <span class="keyword">size_t</span> pd = <span class="number">0</span>;</span><br><span class="line">    FILE *fp = fopen(<span class="string">"/proc/self/smaps"</span>,<span class="string">"r"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!fp) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(fgets(line,<span class="keyword">sizeof</span>(line),fp) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">strncmp</span>(line,<span class="string">"Private_Dirty:"</span>,<span class="number">14</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">char</span> *p = <span class="built_in">strchr</span>(line,<span class="string">'k'</span>);</span><br><span class="line">            <span class="keyword">if</span> (p) &#123;</span><br><span class="line">                *p = <span class="string">'\0'</span>;</span><br><span class="line">                pd += strtol(line+<span class="number">14</span>,<span class="literal">NULL</span>,<span class="number">10</span>) * <span class="number">1024</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    fclose(fp);</span><br><span class="line">    <span class="keyword">return</span> pd;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"><span class="keyword">size_t</span> zmalloc_get_private_dirty(<span class="keyword">void</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<p>!!! note “/proc/pid/maps”<br>   /proc/self是一个链接，当进程访问此链接时，就会访问这个进程本身的/proc/pid目录。/proc/pid/smaps显示了每个进程映射的内存消耗，Private_Dirty为Rss中已改写的私有页面。<a href="http://liutaihua.github.io/2013/04/25/process-smaps-analysis.html" target="_blank" rel="noopener">详情点击</a></p>
+<p>操作系统为每一个进程维护了一个虚拟地址空间，虚拟地址空间对应着物理地址空间，在虚拟地址空间上的连续并不代表物理地址空间上的连续。在 linux 编程中，进程调用 fork() 函数后会产生子进程。之前的做法是，将父进程的物理空间为子进程拷贝一份。出于效率的考虑，可以只在父子进程出现写内存操作（内存页为dirty）的时候，才为子进程拷贝一份。如此不仅节省了内存空间，且提高了 fork() 的效率。在持久化过程中，父进程继续提供服务，子进程进行持久化。持久化完毕后，会调用 zmalloc_get_private_dirty() 获取写时拷贝的内存大小，此值实际为子进程在持久化操作过程中所消耗的内存。</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200518213220.png" alt></p>
+<h4 id="2-5-6-zmalloc-get-fragmentation-ratio"><a href="#2-5-6-zmalloc-get-fragmentation-ratio" class="headerlink" title="2.5.6 zmalloc_get_fragmentation_ratio"></a>2.5.6 zmalloc_get_fragmentation_ratio</h4><p>获取rss与已经使用的内存大小之比，比值越小说明内存负载压力越大。正常情况下数据存储在内存中，但当内存不足时，系统就会创建虚拟内存， 把不常用的内存放到磁盘上， 需要的时候再加载到内存中。如果存在从磁盘上加载数据， 性能必然就会低下了。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">zmalloc_get_fragmentation_ratio</span><span class="params">(<span class="keyword">size_t</span> rss)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">float</span>)rss/zmalloc_used_memory();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h2><p>redis对内存管理函数进行了封装，主要的目的可以分为以下几点</p>
+<ol>
+<li>可以统一对redis内存管理进行控制，方便修改。</li>
+<li>系统迁移性好，可以很方便地迁移到另一种内存管理库</li>
+<li>可以对redis使用的内存有整体的把握，控制内存的分配与回收</li>
+</ol>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2020/05/17/redis/Redis源码解析——内存管理/">https://shinerio.cc/2020/05/17/redis/Redis源码解析——内存管理/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/C-C/">C/C++</a>
+            <a href="/tags/Redis/">Redis</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2020/05/18/redis/Redis源码解析——redisObject/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Redis源码解析——redisObject</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2020/05/13/redis/Redis源码解析——总览/">
+        <span class="next-text nav-default">Redis源码解析——总览</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2020/05/17/redis/Redis源码解析——内存管理/';
+        this.page.identifier = '2020/05/17/redis/Redis源码解析——内存管理/';
+        this.page.title = 'Redis源码解析——内存分配';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

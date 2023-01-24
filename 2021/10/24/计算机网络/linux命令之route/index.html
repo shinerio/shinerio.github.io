@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="linux命令之route"><meta name="keywords" content="linux, 计算机网络, network, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2021/10/24/计算机网络/linux命令之route/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>linux命令之route - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">linux命令之route
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2021-10-24
+        </span><span class="post-category">
+            <a href="/categories/计算机网络/">计算机网络</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-查看路由表"><span class="toc-text">1. 查看路由表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-字段解释"><span class="toc-text">2. 字段解释</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-路由分类"><span class="toc-text">3. 路由分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-主机路由"><span class="toc-text">3.1 主机路由</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-网络路由"><span class="toc-text">3.2 网络路由</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-默认路由"><span class="toc-text">3.3 默认路由</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-route命令详解"><span class="toc-text">4. route命令详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-增加一条主机路由"><span class="toc-text">4.1 增加一条主机路由</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-增加一条网络路由"><span class="toc-text">4.2 增加一条网络路由</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-添加或删除默认网关"><span class="toc-text">4.3 添加或删除默认网关</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-添加直连地址"><span class="toc-text">4.4 添加直连地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-屏蔽地址"><span class="toc-text">4.4 屏蔽地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-删除路由"><span class="toc-text">4.5 删除路由</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-持久化路由"><span class="toc-text">5. 持久化路由</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p>计算机或网络设置使用路由表用来计算数据包的下一跳。 route命令用来显示并设置Linux内核中的网络路由表，route命令设置的路由主要是静态路由。要实现两个不同的子网之间的通信，需要一台连接两个网络的路由器，或者同时位于两个网络的网关来实现。</p>
+<a id="more"></a>
+<h2 id="1-查看路由表"><a href="#1-查看路由表" class="headerlink" title="1. 查看路由表"></a>1. 查看路由表</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">netstat -n -r </span><br><span class="line"><span class="meta">#</span><span class="bash"> 或</span></span><br><span class="line">route -n</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1635056397569.png" alt></p>
+<blockquote>
+<p>windows使用route print</p>
+</blockquote>
+<h2 id="2-字段解释"><a href="#2-字段解释" class="headerlink" title="2. 字段解释"></a>2. 字段解释</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>列名</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Destination</td>
+<td>目的地址</td>
+</tr>
+<tr>
+<td>Gateway</td>
+<td>网关地址，如果未设置则为*</td>
+</tr>
+<tr>
+<td>Genmask</td>
+<td>目的地址子网掩码，0.0.0.0为default</td>
+</tr>
+<tr>
+<td>Flags</td>
+<td>标记</td>
+</tr>
+<tr>
+<td>Metric</td>
+<td>路由距离(一般是到下一跳的跳数)，是大型局域网和广域网设置所必需的(linux内核不使用)</td>
+</tr>
+<tr>
+<td>Ref</td>
+<td>路由项引用次数(linux内核不使用)</td>
+</tr>
+<tr>
+<td>Use</td>
+<td>路由表被查找的次数</td>
+</tr>
+<tr>
+<td>Iface</td>
+<td>数据包将被发往的网口</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>flags可选项</strong></p>
+<ul>
+<li>U  路由启动</li>
+<li>H  目标是个主机</li>
+<li>G  需要经过网关</li>
+<li>R  恢复动态路由产生的表象</li>
+<li>D  由路由的后台程序动态安装</li>
+<li>M  由路由的后台程序修改</li>
+<li>！ 拒绝路由</li>
+</ul>
+<h2 id="3-路由分类"><a href="#3-路由分类" class="headerlink" title="3. 路由分类"></a>3. 路由分类</h2><h3 id="3-1-主机路由"><a href="#3-1-主机路由" class="headerlink" title="3.1 主机路由"></a>3.1 主机路由</h3><p>到达单个ip或主机的路由，主机路由可以动态决定每个网络地址的路由，可以用来自动以控制或者调优特定类型的网络流量</p>
+<h3 id="3-2-网络路由"><a href="#3-2-网络路由" class="headerlink" title="3.2 网络路由"></a>3.2 网络路由</h3><p>到达特定network ID的路由</p>
+<h3 id="3-3-默认路由"><a href="#3-3-默认路由" class="headerlink" title="3.3 默认路由"></a>3.3 默认路由</h3><p>当目的地址在路由表中没有被匹配时，将匹配默认路由</p>
+<h2 id="4-route命令详解"><a href="#4-route命令详解" class="headerlink" title="4. route命令详解"></a>4. route命令详解</h2><p>route命令的格式如下：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">route [-Options] [Command [Destination] [mask Netmask] [Gateway] [metric Metric]] [if Interface]]</span><br></pre></td></tr></table></figure></p>
+<p><strong>Options</strong></p>
+<ul>
+<li>-c 显示更多信息</li>
+<li>-n 不解析名字</li>
+<li>-v 显示详细的处理信息</li>
+<li>-F 显示发送信息</li>
+<li>-C 显示路由缓存</li>
+<li>-f 清除所有网关入口的路由表。 </li>
+</ul>
+<p><strong>Command</strong></p>
+<ul>
+<li>add  添加一条新路由</li>
+<li>del 删除一条路由</li>
+</ul>
+<h3 id="4-1-增加一条主机路由"><a href="#4-1-增加一条主机路由" class="headerlink" title="4.1 增加一条主机路由"></a>4.1 增加一条主机路由</h3><p><img src="https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1635058414021.png" alt="enter description here"></p>
+<h3 id="4-2-增加一条网络路由"><a href="#4-2-增加一条网络路由" class="headerlink" title="4.2 增加一条网络路由"></a>4.2 增加一条网络路由</h3><p><img src="https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1635058504391.png" alt="enter description here"></p>
+<h3 id="4-3-添加或删除默认网关"><a href="#4-3-添加或删除默认网关" class="headerlink" title="4.3 添加或删除默认网关"></a>4.3 添加或删除默认网关</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">route del default gw 64.64.236.1</span><br><span class="line">route add default gw 64.64.236.1</span><br></pre></td></tr></table></figure>
+<h3 id="4-4-添加直连地址"><a href="#4-4-添加直连地址" class="headerlink" title="4.4 添加直连地址"></a>4.4 添加直连地址</h3><p>网关是0.0.0.0，表示目的网段不需要经过路由，是一个直连地址</p>
+<p><img src="https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1635058773611.png" alt="enter description here"></p>
+<h3 id="4-4-屏蔽地址"><a href="#4-4-屏蔽地址" class="headerlink" title="4.4 屏蔽地址"></a>4.4 屏蔽地址</h3><p>屏蔽到10网段的数据包</p>
+<p><img src="https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1635058907250.png" alt="enter description here"></p>
+<h3 id="4-5-删除路由"><a href="#4-5-删除路由" class="headerlink" title="4.5 删除路由"></a>4.5 删除路由</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">route del -net 10.0.0.0 netmask 255.0.0.0 reject  # 删除屏蔽路由</span><br><span class="line">route del -net 64.64.236.100 netmask 255.255.255.255 # 删除主机路由</span><br><span class="line">route del -net 64.64.236.128 netmask 255.255.255.192 # 删除网络路由</span><br><span class="line"> route del -net 192.168.0.0 netmask 255.255.0.0 # 删除直连地址</span><br><span class="line"> route -n</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/小书匠/1635056397569.png" alt></p>
+<h2 id="5-持久化路由"><a href="#5-持久化路由" class="headerlink" title="5. 持久化路由"></a>5. 持久化路由</h2><p>使用route添加的路由并不会永久生效，在主机重启后就会丢失。可以利用/etc/rc.local文件，linux会在开机之后自动source执行/etc/rc.local，达到永久保存路由的效果</p>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2021/10/24/计算机网络/linux命令之route/">https://shinerio.cc/2021/10/24/计算机网络/linux命令之route/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/linux/">linux</a>
+            <a href="/tags/计算机网络/">计算机网络</a>
+            <a href="/tags/network/">network</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2021/10/24/计算机网络/openssl & keytool/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">openssl & keytool</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2021/10/17/计算机网络/iptables/">
+        <span class="next-text nav-default">iptables</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2021/10/24/计算机网络/linux命令之route/';
+        this.page.identifier = '2021/10/24/计算机网络/linux命令之route/';
+        this.page.title = 'linux命令之route';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

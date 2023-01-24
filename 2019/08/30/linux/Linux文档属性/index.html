@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="Linux文档属性"><meta name="keywords" content="Linux, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2019/08/30/linux/Linux文档属性/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>Linux文档属性 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">Linux文档属性
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019-08-30
+        </span><span class="post-category">
+            <a href="/categories/Linux/">Linux</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#文档属性"><span class="toc-text">文档属性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux用户与群组"><span class="toc-text">Linux用户与群组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux权限"><span class="toc-text">Linux权限</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><h2 id="文档属性"><a href="#文档属性" class="headerlink" title="文档属性"></a>文档属性</h2><p>使用命令<code>ls -al --full-time</code> 或者<code>ll</code>可以查看文件或者目录的所有属性</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20190830140704.png" alt></p>
+<a id="more"></a>
+<p> 共有7列，分别是：</p>
+<ul>
+<li><font color="red">第一列</font>（共10位） 第1位表示文档类型，d表示目录，-表示普通文件，l表示符号链接，s表示套接字，b表示块设备（光驱、磁盘），c表示字符设备（鼠标、键盘），p表示管道。其中s/b/c/p都是伪文件。第2-10位，共9位，分表对应owner/group/others的权限，rwx分表表示readable/writable/excutable，-表示没有当前权限。</li>
+<li><font color="red">第二列</font> 关联硬链接数，对于一个新建文件夹来说，有两个链接，对于一个新建文件来说，有一个链接</li>
+<li><font color="red">第三列</font> 表示owner</li>
+<li><font color="red">第四列</font> 表示group</li>
+<li><font color="red">第五列</font> 表示文档大小，单位字节</li>
+<li><font color="red">第六列</font>  表示文档最后修改时间</li>
+<li><font color="red">第七列</font> 表示文档名，隐藏文件以<code>.</code>开头</li>
+</ul>
+<h2 id="Linux用户与群组"><a href="#Linux用户与群组" class="headerlink" title="Linux用户与群组"></a>Linux用户与群组</h2><p>使用<code>cat /etc/passwd</code>查看所有用户</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20190830142723.png" alt></p>
+<p>使用<code>cat /etc/group</code>查看所有用户组</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20190830142837.png" alt></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> chmmond [-options] [账号/群组] [文件或目录]</span><br><span class="line"><span class="meta">#</span> 改变文档所属用户或用户组，-R为可选餐具是，表示递归表更</span><br><span class="line">chown [-R] [账号] [文件或目录]</span><br><span class="line">chown [-R] [账号]:[群组] [文件或目录]</span><br><span class="line"><span class="meta">#</span> 改变文档所属用户组</span><br><span class="line">chgrp [-R] [群组] [文件或目录]</span><br></pre></td></tr></table></figure>
+<h2 id="Linux权限"><a href="#Linux权限" class="headerlink" title="Linux权限"></a>Linux权限</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">chmod | u g o a | + - = | r w x | 文档路径</span><br><span class="line">或</span><br><span class="line">chmod | xxx | 文档路径</span><br></pre></td></tr></table></figure>
+<p>u，g，o代表三种身份user/group/other，a代表全部身份all</p>
+<p>+-\=代表三种操作行为（添加/删除/设置权限）</p>
+<p>rwx表示三种权限，也可以使用4/2/1或者他们的和作为权限，如5代表rx</p>
+<p>xxx代表三位数字，rwx分别为4/2/1，三种权限相加可以得出一种身份的权限</p>
+<p>示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 给test文件设置所有人拥有所有权限</span><br><span class="line">chmod u=rwx,g=rwx,0=rwx test</span><br><span class="line">chmod ugo=rwx test</span><br><span class="line">chmod a=rwx test</span><br><span class="line">chmod ugo+rwx test</span><br><span class="line">chmod 777 test</span><br><span class="line"><span class="meta">#</span> 所有人添加执行权限</span><br><span class="line">chmod a+x test</span><br><span class="line"><span class="meta">#</span> 所有人删除写权限</span><br><span class="line">chmod a-w test</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>对于文件来说x表示文件可以被系统执行的权限，对于目录来说，x代表着可以进入目录的权限，即可以cd进入</p>
+</blockquote>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2019/08/30/linux/Linux文档属性/">https://shinerio.cc/2019/08/30/linux/Linux文档属性/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/Linux/">Linux</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2019/08/31/面经/阿里实习一面/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">阿里一面</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2019/08/30/algorithm/树结构/">
+        <span class="next-text nav-default">树结构</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2019/08/30/linux/Linux文档属性/';
+        this.page.identifier = '2019/08/30/linux/Linux文档属性/';
+        this.page.title = 'Linux文档属性';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

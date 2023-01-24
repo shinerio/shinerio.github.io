@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="垃圾回收器"><meta name="keywords" content="java, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2016/12/18/java/jvm/垃圾回收器/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>垃圾回收器 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">垃圾回收器
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-12-18
+        </span><span class="post-category">
+            <a href="/categories/JVM/">JVM</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#垃圾回收器使用参数"><span class="toc-text">垃圾回收器使用参数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#串行回收器"><span class="toc-text">串行回收器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#新生代ParNew回收器"><span class="toc-text">新生代ParNew回收器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#新生代ParallelGC回收器"><span class="toc-text">新生代ParallelGC回收器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#老年代ParallelOldGC回收器"><span class="toc-text">老年代ParallelOldGC回收器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CMS和G1回收器这里不作过多讲解"><span class="toc-text">CMS和G1回收器这里不作过多讲解</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><h1 id="垃圾回收器使用参数"><a href="#垃圾回收器使用参数" class="headerlink" title="垃圾回收器使用参数"></a>垃圾回收器使用参数</h1><p>-XX:+UseSerialGC指定使用新生代串行收集器和老年代串行收集器</p>
+<p>-XX:+UseParNewGC指定新生代使用ParNew回收器，老年代使用串行回收器</p>
+<p>-XX:+UseParallelGC指定新生代使用ParallelGC回收器，老年代使用串行收集器</p>
+<p>-XX:+UseConMarkSweepGC指定新生代使用ParNew回收器，老年代使用CMS</p>
+<p>-XX:+UseParllelOldGC指定新生代使用ParallelGC回收器，老年代使用ParallelOld回收器</p>
+<p>-XX:+UseConcMarkSweepGC启用CMS回收器</p>
+<p>-XX:+UseG1GC使用G1收集器</p>
+<h1 id="串行回收器"><a href="#串行回收器" class="headerlink" title="串行回收器"></a>串行回收器</h1><p>使用单线程进行垃圾回收，对于并行能力较弱的计算机，串行回收器的专注性和独占性往往有更好的性能表现。在串行收集器进行垃圾回收时，java应用程序的线程都需要暂停，等待垃圾回收的完成。虚拟机运行在client模式下时，它是默认的垃圾回收器</p>
+<h1 id="新生代ParNew回收器"><a href="#新生代ParNew回收器" class="headerlink" title="新生代ParNew回收器"></a>新生代ParNew回收器</h1><p>它只是简单地将串行回收器多线程化，回收策略，算法以及参数和串行回收器一样。由于并行回收器使用多线程进行垃圾回收，因此并发能力比较强的cpu，他产生的停顿时间较短，而在单CPU或者并发能力较弱的系统中，并行回收器的效果不会比串行回收器好。</p>
+<p>ParNew回收器工作时的线程数量可以使用-XX:ParallelGCThreads参数指定。一般，最好与CPU数量相当，避过多的线程数，影响垃圾收集性能，在默认情况下，当CPU数量小于8时，ParallelGCThreads的值等于CPU数量，当CPU数量大于8个时，ParallelGCThreads的值等于3+5/8*CPU_COUNT</p>
+<h1 id="新生代ParallelGC回收器"><a href="#新生代ParallelGC回收器" class="headerlink" title="新生代ParallelGC回收器"></a>新生代ParallelGC回收器</h1><p>ParallelGC也是多线程、独占式的收集器，但是ParallelGC回收器有一个重要的特点：它更关注系统的吞吐量</p>
+<p>ParallelGC提供了两个重要的参数用于控制系统的吞吐量</p>
+<ul>
+<li>-XX:MaxGCPauseMillis设置最大垃圾回收停顿时间。它的值是一个大于0的整数，ParallelGC在工作时会调整java堆大小或者一些其他参数，尽可能地把停顿时间控制在MaxGCPauseMillis内，如果这个值设得很小，为了达到预期停顿时间，虚拟机可能会使用一个较小的堆，这将导致垃圾回收变得很频繁，从而增加了垃圾回收总时间，降低了吞吐量</li>
+<li>-XX:GCTimeRatio设置吞吐量大小，它的值是一个0到100之间的整数。假设GCTimeRatio值为n,那么系统将花费不超过1/(1+n)的时间用于垃圾收集，默认取值99。</li>
+</ul>
+<p>注意，这两个参数是一对互相矛盾的参数，需要设置好平衡点。</p>
+<p>ParallelGC还支持一种自适应的GC调节策略，使用-XX:UseAdaptivePolicy可以打开自适应GC策略。在这种模式下，新生代的大小，eden和survivor的比例，晋升老年代的对象年龄等参数都会被自动调整，已达到在堆大小，吞吐量和停顿时间之间的平衡点。在手工调优比较困难的场合，可以直接使用这种适应的方式，仅指定虚拟机的最大堆，目标吞吐量和停顿时间，让虚拟机自己完成调优工作。</p>
+<h1 id="老年代ParallelOldGC回收器"><a href="#老年代ParallelOldGC回收器" class="headerlink" title="老年代ParallelOldGC回收器"></a>老年代ParallelOldGC回收器</h1><p>老年代ParallelOldGC也是一种多线程并发的收集器。和新生代ParallelGC回收器一样，它也是一种关注吞吐量的收集器。它使用标记压缩法。</p>
+<h1 id="CMS和G1回收器这里不作过多讲解"><a href="#CMS和G1回收器这里不作过多讲解" class="headerlink" title="CMS和G1回收器这里不作过多讲解"></a>CMS和G1回收器这里不作过多讲解</h1>
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2016/12/18/java/jvm/垃圾回收器/">https://shinerio.cc/2016/12/18/java/jvm/垃圾回收器/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/java/">java</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2016/12/18/java/jvm/Java命令行界面，垃圾回收，内存以及工具概览/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Java命令行，垃圾回收，内存及工具概览</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2016/12/17/java/jvm/java垃圾回收机制——分代算法/">
+        <span class="next-text nav-default">java垃圾回收算法</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2016/12/18/java/jvm/垃圾回收器/';
+        this.page.identifier = '2016/12/18/java/jvm/垃圾回收器/';
+        this.page.title = '垃圾回收器';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

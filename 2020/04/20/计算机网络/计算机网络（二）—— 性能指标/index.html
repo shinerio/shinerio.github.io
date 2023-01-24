@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="计算机网络（二）—— 性能指标"><meta name="keywords" content="计算机网络, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2020/04/20/计算机网络/计算机网络（二）—— 性能指标/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>计算机网络（二）—— 性能指标 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">计算机网络（二）—— 性能指标
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020-04-20
+        </span><span class="post-category">
+            <a href="/categories/计算机网络/">计算机网络</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-速率（bit-s或byte-s）"><span class="toc-text">1. 速率（bit/s或byte/s）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-带宽（bit-s）"><span class="toc-text">2. 带宽（bit/s）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-信道容量（bit-s）"><span class="toc-text">3. 信道容量（bit/s）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-吞吐量-Throughput"><span class="toc-text">4. 吞吐量(Throughput)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-时延-delay-latency"><span class="toc-text">5. 时延(delay/latency)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-时延带宽积"><span class="toc-text">6. 时延带宽积</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-往返时间-Round-Trip-Time，RTT"><span class="toc-text">7. 往返时间(Round-Trip Time，RTT)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-利用率"><span class="toc-text">8. 利用率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-web服务性能指标"><span class="toc-text">9. web服务性能指标</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#9-1-RT（Response-time，响应时间）"><span class="toc-text">9.1 RT（Response time，响应时间）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-2-TPS（Transaction-Per-Second，每秒事务数）"><span class="toc-text">9.2 TPS（Transaction Per Second，每秒事务数）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-2-QPS（Query-Per-Second，每秒查询数）"><span class="toc-text">9.2 QPS（Query Per Second，每秒查询数）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-3-并发用户数"><span class="toc-text">9.3 并发用户数</span></a></li></ol></li></ol>
+    </div>
+  </div><div class="post-content"><p>计算机网络的常见的性能指标有速率、带宽、吞吐量、时延、时延带宽积、往返时间、利用率。</p>
+<a id="more"></a>
+<h2 id="1-速率（bit-s或byte-s）"><a href="#1-速率（bit-s或byte-s）" class="headerlink" title="1. 速率（bit/s或byte/s）"></a>1. 速率（bit/s或byte/s）</h2><p>速率是物理层概念，指的是信道上每秒钟传输的0/1比特数量。比如下载文件中显示的7.8MB/s指的是每秒中可以传输7.8M字节的信息。</p>
+<h2 id="2-带宽（bit-s）"><a href="#2-带宽（bit-s）" class="headerlink" title="2. 带宽（bit/s）"></a>2. 带宽（bit/s）</h2><p>带宽是逻辑概念，表示网络信道传输数据的能力，即最高速率。不同的信道占据着不同的频谱，信道在最大频带下能够达到的最大速率称之为带宽。我们常常会在运营商办理入网服务，常见的百兆带宽指的是100Mbps，即（12800byte/s）。通信网络包括核心网、传输网、接入网等，运营商一般在位于接入网的入口处进行限速，一旦用户流量跨过接入网，就不再限速。</p>
+<h2 id="3-信道容量（bit-s）"><a href="#3-信道容量（bit-s）" class="headerlink" title="3. 信道容量（bit/s）"></a>3. 信道容量（bit/s）</h2><p>香农定理给出了信道信息传送速率的上限（比特每秒）和信道信噪比及带宽的关系。在有随机热噪声的信道上传输数据信号时，信道容量$C_{max}$与信道带宽W，信噪比$S/N$关系为：</p>
+<script type="math/tex; mode=display">
+C_{max}=W*\log_{2}(1+S/N)</script><p>简单来看，就是信道带宽越大，信噪比越大（信号越强，噪音越弱），信道容量越大。香农定理指导我们，只要实际传输速率$R&lt;C_{max}$，理论上就可以保证误码率为0。想要提高信息传输的速率，要么增大带宽（电话线换光纤），要么使用合适编码方案提高信噪比，这就是香农定理的意义。</p>
+<blockquote>
+<p>此处带宽是与计网中的带宽概念不同，通信领域“带宽”指的信号所占据的频带宽度（以赫兹Hz为单位）。例如，在普通电话线上提高访问Internet的ADSL使用了大约1MHz的带宽，对于1-2千米的短距离来说，40分贝的信噪比已经算是比较好的状况了。正是由于电话线具有这样的特性，因此我们永远不可能期望在电话线上获得高于13Mbps的速率。而光纤的带宽大约有3000GHz，是传统电话线的200000倍。</p>
+</blockquote>
+<h2 id="4-吞吐量-Throughput"><a href="#4-吞吐量-Throughput" class="headerlink" title="4. 吞吐量(Throughput)"></a>4. 吞吐量(Throughput)</h2><p>吞吐量表示在单位时间内通过某个网络或接口的数据量，包括全部上传和下载的流量。通常我们更倾向于用“吞吐量”一词来表示一个系统的测试性能。因为受各种低效率因素的影响，一段带宽为10Mbps的链路连接的一对节点可能只达到2Mbps的吞吐量。</p>
+<h2 id="5-时延-delay-latency"><a href="#5-时延-delay-latency" class="headerlink" title="5. 时延(delay/latency)"></a>5. 时延(delay/latency)</h2><p>时延是指数据（一个数据包或bit）从网络的一端传送到另一端所需要的时间。总时延=发送时延+传播时延+排队时延+处理时延。</p>
+<ul>
+<li>发送时延（transmission delay）是主机或路由器发送数据帧所需时间，也就是从发送数据帧的第一个比特开始，到该帧最后一个比特发送完毕所需要的时间。</li>
+</ul>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200424213210.png" alt></p>
+<ul>
+<li>传播时延（propagation delay）是电磁波在信道中传播一定的距离需要花费的时间。主机或路由器发送完数据到最后一比特到达主机或路由器的所需时间。</li>
+</ul>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200424213227.png" alt></p>
+<ul>
+<li>排队时延是指分组在经过网络传输时，要经过许多的路由器。但分组在进入路由器后要先在输入队列中排队等待处理。</li>
+<li>处理时延是指路由器或主机在收到数据包时，要花费一定时间进行处理，例如分析数据包的首部、进行首部差错检验，查找路由表给数据包选定转发出口，这就产生了处理时延。</li>
+</ul>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200424213336.png" alt></p>
+<h2 id="6-时延带宽积"><a href="#6-时延带宽积" class="headerlink" title="6. 时延带宽积"></a>6. 时延带宽积</h2><p>时延带宽积=传播时延×带宽。表示在特定时间里，网络上的最大数据量。</p>
+<blockquote>
+<p>假设两台电脑百兆网口接在一起用Chariot跑TCP流量，电脑的窗口大小为64KB（窗口不自动扩大）。它们之间线路速度为100Mb/s ，RTT稳定为1ms，那么带宽时延乘积为100Kb (12.5KB，tcp已发送未确认的数据), 小于窗口大小，那么跑出来的速度是接近线速（100Mb/s）的。如果RTT稳定为10ms，那么理论速度为64*8/10=51.2Mb/s。</p>
+</blockquote>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200424213612.png" alt></p>
+<h2 id="7-往返时间-Round-Trip-Time，RTT"><a href="#7-往返时间-Round-Trip-Time，RTT" class="headerlink" title="7. 往返时间(Round-Trip Time，RTT)"></a>7. 往返时间(Round-Trip Time，RTT)</h2><p>往返时间表示从发送方发送数据开始，到发送方接收到来自接收方的确认，总共经历的时间。</p>
+<h2 id="8-利用率"><a href="#8-利用率" class="headerlink" title="8. 利用率"></a>8. 利用率</h2><p>利用率是指的网络有百分之几的时间是被利用的（有数据通过），没有数据通过的网络利用率为零。U是网络利用率，D表示网络当前时延，$D_0$表示网络空闲时的时延。$D=D_0/(1-U)$</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200424214055.png" alt></p>
+<h2 id="9-web服务性能指标"><a href="#9-web服务性能指标" class="headerlink" title="9. web服务性能指标"></a>9. web服务性能指标</h2><h3 id="9-1-RT（Response-time，响应时间）"><a href="#9-1-RT（Response-time，响应时间）" class="headerlink" title="9.1 RT（Response time，响应时间）"></a>9.1 RT（Response time，响应时间）</h3><p>响应时间是指系统对请求作出响应的时间。对于我们常见的手游来说，比如王者荣耀100ms的响应时间应该是不错的，400ms则到了无法忍受的程度。</p>
+<h3 id="9-2-TPS（Transaction-Per-Second，每秒事务数）"><a href="#9-2-TPS（Transaction-Per-Second，每秒事务数）" class="headerlink" title="9.2 TPS（Transaction Per Second，每秒事务数）"></a>9.2 TPS（Transaction Per Second，每秒事务数）</h3><p>在性能测试工具中，TPS也被称之为吞吐量。吞吐量直接体现系统性能的承载能力，是指单位时间内处理的客户请求的数量。其计量单位可以根据需求不同而不同，比如请求数/秒，页面数/秒，业务数/小时</p>
+<h3 id="9-2-QPS（Query-Per-Second，每秒查询数）"><a href="#9-2-QPS（Query-Per-Second，每秒查询数）" class="headerlink" title="9.2 QPS（Query Per Second，每秒查询数）"></a>9.2 QPS（Query Per Second，每秒查询数）</h3><p>每秒查询率QPS是对一个特定的查询服务器在规定时间内所处理流量多少的衡量标准，在因特网上，作为域名系统服务器的机器的性能经常用每秒查询率来衡量。对应fetches/sec，即每秒的响应请求数，也即是最大吞吐能力。 （看来是类似于TPS，只是应用于特定场景的吞吐量）</p>
+<h3 id="9-3-并发用户数"><a href="#9-3-并发用户数" class="headerlink" title="9.3 并发用户数"></a>9.3 并发用户数</h3><p>并发用户数对于一个系统来说具有统计意义，指系统可以同时承载的正常使用系统功能的用户的数量。实际上，并发用户数是一个非常不准确的指标，因为用户不同的使用模式会导致不同用户在单位时间发出不同数量的请求。</p>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2020/04/20/计算机网络/计算机网络（二）—— 性能指标/">https://shinerio.cc/2020/04/20/计算机网络/计算机网络（二）—— 性能指标/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/计算机网络/">计算机网络</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2020/04/21/计算机网络/计算机网络（三）—— 网络的基本分类/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">计算机网络（三）—— 网络的基本分类</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2020/04/19/计算机网络/计算机网络（一）—— 分层模型/">
+        <span class="next-text nav-default">计算机网络（一）—— 分层模型</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2020/04/20/计算机网络/计算机网络（二）—— 性能指标/';
+        this.page.identifier = '2020/04/20/计算机网络/计算机网络（二）—— 性能指标/';
+        this.page.title = '计算机网络（二）—— 性能指标';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

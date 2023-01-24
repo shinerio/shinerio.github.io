@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="京东面试"><meta name="keywords" content="面经, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2019/09/02/面经/京东一面/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>京东面试 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">京东面试
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019-09-02
+        </span><span class="post-category">
+            <a href="/categories/面经/">面经</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#技术一面"><span class="toc-text">技术一面</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java线程安全和线程非安全的类举例"><span class="toc-text">Java线程安全和线程非安全的类举例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HashTable和CurrentMap区别"><span class="toc-text">HashTable和CurrentMap区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#volatile作用及原理"><span class="toc-text">volatile作用及原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HttpRequest内容"><span class="toc-text">HttpRequest内容</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ThreadLocal"><span class="toc-text">ThreadLocal</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程安全的原子类"><span class="toc-text">线程安全的原子类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CAS原理"><span class="toc-text">CAS原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程实现方案有哪些"><span class="toc-text">线程实现方案有哪些</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程的状态有哪些"><span class="toc-text">线程的状态有哪些</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何理解分布式事务"><span class="toc-text">如何理解分布式事务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分布式锁如何实现"><span class="toc-text">分布式锁如何实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#微服务概念"><span class="toc-text">微服务概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Join和union区别"><span class="toc-text">Join和union区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据库隔离级别"><span class="toc-text">数据库隔离级别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据库可重复读的实现"><span class="toc-text">数据库可重复读的实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#联合索引ABC，对ABC排列组合，哪些用到了索引"><span class="toc-text">联合索引ABC，对ABC排列组合，哪些用到了索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-AOP原理"><span class="toc-text">Spring AOP原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring事务传播机制"><span class="toc-text">Spring事务传播机制</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#技术二面"><span class="toc-text">技术二面</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#讲项目"><span class="toc-text">讲项目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一致性Hash算法，如何保证散列均匀"><span class="toc-text">一致性Hash算法，如何保证散列均匀</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何防止数据库击穿和数据库雪崩"><span class="toc-text">如何防止数据库击穿和数据库雪崩</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JDK锁"><span class="toc-text">JDK锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AQS"><span class="toc-text">AQS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#null"><span class="toc-text"> </span></a></li></ol></li></ol>
+    </div>
+  </div><div class="post-content"><h1 id="技术一面"><a href="#技术一面" class="headerlink" title="技术一面"></a>技术一面</h1><h2 id="Java线程安全和线程非安全的类举例"><a href="#Java线程安全和线程非安全的类举例" class="headerlink" title="Java线程安全和线程非安全的类举例"></a>Java线程安全和线程非安全的类举例</h2><ul>
+<li>线程安全。  Vector，ConcurrentHashMap</li>
+<li>线程非安全。ArrayList，HashMap</li>
+</ul>
+<a id="more"></a>
+<h2 id="HashTable和CurrentMap区别"><a href="#HashTable和CurrentMap区别" class="headerlink" title="HashTable和CurrentMap区别"></a>HashTable和CurrentMap区别</h2><p>HashTable使用Synchronized关键字进行同步控制，CurrentHashMap使用分段锁进行同步控制，CurrentHashMap性能更好</p>
+<h2 id="volatile作用及原理"><a href="#volatile作用及原理" class="headerlink" title="volatile作用及原理"></a>volatile作用及原理</h2><ul>
+<li><font color="red">可见性</font>。可见性的解读为一个行程修改的状态对另一个线程是可见的，一个线程修改的结果，另一个线程马上就能看到。volatile关键字会强制将修改的值立即写入主存，一个线程修改volatile修饰变量会导致其他线程的工作内存中缓存失效（从硬件层面上来看就是讲CPU中的L1或L2缓存中对应的缓存行无效）</li>
+<li><font color="red">禁止指令重排</font>。保证对volatile变量进行读写时，在其前面的操作的更改肯定全部进行，且结果对后面的操作可见，其后面的操作肯定还没有进行</li>
+</ul>
+<p>在进行指令优化时，不能把volatile变量前面的语句放到其后面执行，也不能把volatile变量后面的语句放到其前面执行</p>
+<blockquote>
+<p>volatile内存语义的实现与内存屏障有关，编译器在生成字节码时，会在指令序列插入内存屏障，内存屏障是一组处理器指令，先于这个内存屏障的指令必须先执行，后于这个内存屏障的指令必须后执行，在读指令前插入读屏障，可以让高速缓存中的数据失效，重新从主内存中加载数据，在写指令后插入写屏障，能让写入缓存的最新数据写回主内存。</p>
+</blockquote>
+<h2 id="HttpRequest内容"><a href="#HttpRequest内容" class="headerlink" title="HttpRequest内容"></a>HttpRequest内容</h2><ul>
+<li><font color="red">请求行</font>。 请求方法(get/post)，请求URL，HTTP协议及版本</li>
+<li><font color="red">请求头</font>。 Accept/Cookie/Connection之类</li>
+<li><font color="red">请求体</font>。具体请求内容</li>
+</ul>
+<blockquote>
+<p>请求头和请求体之间通过换行分隔</p>
+</blockquote>
+<h2 id="ThreadLocal"><a href="#ThreadLocal" class="headerlink" title="ThreadLocal"></a>ThreadLocal</h2><ul>
+<li><font color="red">原理</font> Thread维护了ThreadLocalMap变量，ThreadLocalMap是ThreadLocal的内部类。ThreadLocalMap的key是ThreadLocal的引用，value是要存储的对象</li>
+<li><font color="red">应用场景</font> ThreadLocal实现当前线程的操作都使用同一个数据库Connection</li>
+</ul>
+<h2 id="线程安全的原子类"><a href="#线程安全的原子类" class="headerlink" title="线程安全的原子类"></a>线程安全的原子类</h2><p>AtomicInteger/AtomicLong</p>
+<h2 id="CAS原理"><a href="#CAS原理" class="headerlink" title="CAS原理"></a>CAS原理</h2><p>compare and set，比较旧值是否相同，然后设置新值</p>
+<h2 id="线程实现方案有哪些"><a href="#线程实现方案有哪些" class="headerlink" title="线程实现方案有哪些"></a>线程实现方案有哪些</h2><p>实现Runnable/Callable接口，继承Thread，使用线程池创建</p>
+<h2 id="线程的状态有哪些"><a href="#线程的状态有哪些" class="headerlink" title="线程的状态有哪些"></a>线程的状态有哪些</h2><p>new/runnable/blocked/Time waiting/waiting/Terminated</p>
+<h2 id="如何理解分布式事务"><a href="#如何理解分布式事务" class="headerlink" title="如何理解分布式事务"></a>如何理解分布式事务</h2><p>随着微服务架构的普及，一个大型业务系统往往由若干个子系统构成，这些子系统又拥有各自独立的数据库，一个业务往往由多个子系统共同完成，这些操作需要在一个事务中完成。</p>
+<ul>
+<li>实现原理</li>
+<li>两阶段提交协议2PC</li>
+<li>三阶段提交协议3PC</li>
+</ul>
+<h2 id="分布式锁如何实现"><a href="#分布式锁如何实现" class="headerlink" title="分布式锁如何实现"></a>分布式锁如何实现</h2><ul>
+<li>Mysql</li>
+<li>Zookeeper</li>
+<li>Redis。使用<code>setNx resourceName value</code>，过期时间控制`set resourceName value ex 5 nx ]</li>
+</ul>
+<h2 id="微服务概念"><a href="#微服务概念" class="headerlink" title="微服务概念"></a>微服务概念</h2><ul>
+<li>x，y，z轴切分，服务发现，服务治理</li>
+</ul>
+<h2 id="Join和union区别"><a href="#Join和union区别" class="headerlink" title="Join和union区别"></a>Join和union区别</h2><p>join是联表查询，union是组合查询，组合查询可以将两个select语句（结果列数相同且字段类型相似）的结果去并集去重，可以使用<code>union all</code>去重。</p>
+<h2 id="数据库隔离级别"><a href="#数据库隔离级别" class="headerlink" title="数据库隔离级别"></a>数据库隔离级别</h2><ul>
+<li>读未提交</li>
+<li>读已提交</li>
+<li>可重复度</li>
+<li>串行化</li>
+</ul>
+<h2 id="数据库可重复读的实现"><a href="#数据库可重复读的实现" class="headerlink" title="数据库可重复读的实现"></a>数据库可重复读的实现</h2><p>三级封锁协议，要求读取A数据时必须加S锁，指导事务结束后才能释放S锁，因为读A时，其他事务不能对A加X锁，从而避免了在读的期间数据发生变化</p>
+<h2 id="联合索引ABC，对ABC排列组合，哪些用到了索引"><a href="#联合索引ABC，对ABC排列组合，哪些用到了索引" class="headerlink" title="联合索引ABC，对ABC排列组合，哪些用到了索引"></a>联合索引ABC，对ABC排列组合，哪些用到了索引</h2><p>根据数据库最左匹配原则，A，AB，ABC的查询用到了联合索引。</p>
+<h2 id="Spring-AOP原理"><a href="#Spring-AOP原理" class="headerlink" title="Spring AOP原理"></a>Spring AOP原理</h2><p>Spring AOP主要是通过JDK动态代理和Cglib动态代理实现，将非业务代码通过切面的方式编织到业务代码中去</p>
+<h2 id="Spring事务传播机制"><a href="#Spring事务传播机制" class="headerlink" title="Spring事务传播机制"></a>Spring事务传播机制</h2><ul>
+<li><font color="red">PROPAGATION_REQUIRED</font> 支持当前事务，如果上下文中已经存在事务，那么就加入到事务中执行，如果当前上下文中不存在事务，则新建事务执行。</li>
+<li><font color="red">PROPAGATION_SUPPORTS</font>  如果上下文存在事务，则支持事务加入事务，如果没有事务，则使用非事务方式执行</li>
+<li><font color="red">PROPAGATION_MANDATORY</font> 要求上下文中必须存在事务，这个方法不能被单独执行，必须被事务方法调用，否则抛出异常</li>
+<li><font color="red">PROPAGATION_REQUIRES_NEW</font> 每次都会新建一个事务，并且同时将上下文中的事务挂起。AB均申明事务，如果A失败回滚，B是不会回滚的，因为两个在不同事务中，如果B失败回归，A中捕获异常，事务A仍会提交</li>
+<li><font color="red">PROPAGATION_NOT_SUPPORTED</font>  不支持事务，如果存在事务则事务被挂起，执行当前逻辑后恢复事务，可以帮助缩小事务粒度</li>
+<li><font color="red">PROPAGTION_NEVER</font> 逻辑不能在事务中运行，一旦有事务，则抛出异常</li>
+<li><font color="red">PROPAGATION_NESTED</font> PROPAGATION_NESTED为父子事务，实际上是借助jdbc的savepoint实现的，属于同一个事务。PROPAGATION_NESTED的回滚可以总结为，子事务回滚到savepoint，父事务可选择性回滚或者不不滚；父事务回滚子事务一定回滚。</li>
+</ul>
+<blockquote>
+<p>REQUIRED和SUPPORTS区别，A方法调用B方法，A未申明事务，B申明事务，REQUIRED会为B新建事务，SUPPORTS则以非事务方式执行B</p>
+</blockquote>
+<h1 id="技术二面"><a href="#技术二面" class="headerlink" title="技术二面"></a>技术二面</h1><h2 id="讲项目"><a href="#讲项目" class="headerlink" title="讲项目"></a>讲项目</h2><p>谈到了排队分流引擎</p>
+<h2 id="一致性Hash算法，如何保证散列均匀"><a href="#一致性Hash算法，如何保证散列均匀" class="headerlink" title="一致性Hash算法，如何保证散列均匀"></a>一致性Hash算法，如何保证散列均匀</h2><p>机器数量不多的情况下，可以使用虚拟节点</p>
+<h2 id="如何防止数据库击穿和数据库雪崩"><a href="#如何防止数据库击穿和数据库雪崩" class="headerlink" title="如何防止数据库击穿和数据库雪崩"></a>如何防止数据库击穿和数据库雪崩</h2><ul>
+<li><font color="red">使用互斥锁（mutex key）</font> 缓存失效，使用分布式互斥锁，单线程去load db并设置缓存，其他线程重试get方法</li>
+<li><font color="red">流控</font>
+
+</li>
+</ul>
+<h2 id="JDK锁"><a href="#JDK锁" class="headerlink" title="JDK锁"></a>JDK锁</h2><ul>
+<li>Synchronized</li>
+<li>ReentrantLock</li>
+</ul>
+<h2 id="AQS"><a href="#AQS" class="headerlink" title="AQS"></a>AQS</h2><ul>
+<li><font color="red">state</font> 状态计数</li>
+<li><font color="red">queue</font> 线程排队</li>
+</ul>
+<h2 id><a href="#" class="headerlink" title=" "></a> </h2>
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2019/09/02/面经/京东一面/">https://shinerio.cc/2019/09/02/面经/京东一面/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/面经/">面经</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2019/09/04/面经/ali-intern/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">ali-intern</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2019/08/31/项目相关/实验室项目/">
+        <span class="next-text nav-default">实验室项目整理</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2019/09/02/面经/京东一面/';
+        this.page.identifier = '2019/09/02/面经/京东一面/';
+        this.page.title = '京东面试';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="加密算法"><meta name="keywords" content="网络安全, 加密, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2020/04/07/网络安全/加密算法/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>加密算法 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">加密算法
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020-04-07
+        </span><span class="post-category">
+            <a href="/categories/网络安全/">网络安全</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-散列（摘要）算法"><span class="toc-text">1. 散列（摘要）算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-Example1"><span class="toc-text">1.1  Example1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-Example2"><span class="toc-text">1.2 Example2</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-对称加密"><span class="toc-text">2. 对称加密</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-非对称加密"><span class="toc-text">3.非对称加密</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-应用场景一（加密）"><span class="toc-text">3.1 应用场景一（加密）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-应用场景二（验证签名）"><span class="toc-text">3.2 应用场景二（验证签名）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-对称加密与非对称加密对比"><span class="toc-text">4. 对称加密与非对称加密对比</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-参考文献"><span class="toc-text">5. 参考文献</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p>本文主要介绍密码学中常见的两种加密算法—对称加密和非对称加密。</p>
+<a id="more"></a>
+<h2 id="1-散列（摘要）算法"><a href="#1-散列（摘要）算法" class="headerlink" title="1. 散列（摘要）算法"></a>1. 散列（摘要）算法</h2><p>在学习加密算法之前，我们先来了解一下散列算法。散列算法是通过一定方式对原文进行计算，产生一个哈希值，不管原始数据是什么样的，得到的哈希值都是固定长度的，其作用只是为了验证数据的完整性和唯一性，无法通过摘要解密得到原始数据。而对于加密算法来说，我们可以通过“秘钥”或者“解密算法”将加密后的结果还原成原文。</p>
+<blockquote>
+<p>常见的散列算法有：SM3、MD5、SHA-1</p>
+</blockquote>
+<h3 id="1-1-Example1"><a href="#1-1-Example1" class="headerlink" title="1.1  Example1"></a>1.1  Example1</h3><p>  我们可以设计一个简单的对整数进行散列的算法</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">integer_hash</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> x % <span class="number">16</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    print(integer_hash(<span class="number">16</span>), integer_hash(<span class="number">17</span>), integer_hash(<span class="number">32</span>))</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">0</span> <span class="number">1</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>  我们采用对16取余的方案，可以看到对16和17进行hash后得到的摘要是不一样的。在实际传输过程中，我们可以通过同时传输原文和散列后的摘要，接收方通过对原文进行相同散列，比较得到的摘要和接收的摘要是否相同来验证文本的正确性。但是通过hash后的结果“0”或“1”并不能得到原文，而且不同的原文hash后的结果也可能相同，如16和32的hash结果都是0。当然，我们这里的hash算法过于简单，一个优秀的hash算法应该保证散列的随机性，尽量减少冲突。</p>
+<h3 id="1-2-Example2"><a href="#1-2-Example2" class="headerlink" title="1.2 Example2"></a>1.2 Example2</h3>  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">str = <span class="string">"This text is hashed via md5"</span></span><br><span class="line"></span><br><span class="line">hl = hashlib.md5()</span><br><span class="line">hl.update(str.encode(encoding=<span class="string">'utf-8'</span>))</span><br><span class="line"></span><br><span class="line">print(<span class="string">"MD5散列前："</span> + str)</span><br><span class="line">print(<span class="string">"MD5散列后："</span> + hl.hexdigest())</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>MD5散列前：This text <span class="keyword">is</span> hashed via md5</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>MD5散列后：<span class="number">5</span>d3a325f6a7fd4c8e4d4dad3879cfcdd</span><br></pre></td></tr></table></figure>
+<p>  我们常常可以看到网上有工具可以对MD5算法加密后的结果进行还原，那是由于MD5算法设计足够优秀，可以保证无冲突，因此我们可以保留很多“摘要-原文”字典，通过hash值来暴力求取原文。由于是通过字典暴力求解，所以一般缓存的都是常用的、较短的字符串，本例中的文本较长且不常见，因此将本例中的摘要通过工具进行解密往往不能成功。如果加“hello”的MD5结果加以解密，则很快能得到结果。很多网站常常用MD5来保存散列后的密码来避免明文存储，这时候可以通过加盐的方式进一步提高安全性。所谓加盐就是通过特定的方法将某一个固定的字符串或随机的字符串（需要保存）插入到原文中去，对原文进行改造。</p>
+<h2 id="2-对称加密"><a href="#2-对称加密" class="headerlink" title="2. 对称加密"></a>2. 对称加密</h2><p>对称加密指的是加、解密使用的同是一串秘钥，所以被称作对称加密。常见的对称加密算法有<strong>DES、AES</strong>等。对称算法又可分为两类。一次只对明文中的单个位（有时对字节）运算的算法称为序列算法或序列密码。另一类算法是对明文的一组位进行运算，这些位组称为分组，相应的算法称为分组算法或分组密码。现代计算机密码算法的典型分组长度为64位――这个长度既考虑到分析破译密码的难度，又考虑到使用的方便性。后来，随着破译能力的发展，分组长度又提高到128位或更长。（摘录自参考文献2，建议阅读原文，写得比较详细）</p>
+<ul>
+<li>优点：加解密效率高，加密速度快。</li>
+<li>缺点：秘钥保管困难，网络传输秘钥不安全</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> binascii</span><br><span class="line"><span class="keyword">from</span> pyDes <span class="keyword">import</span> des, CBC, PAD_PKCS5</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">des_encrypt</span><span class="params">(str, secret_key)</span>:</span></span><br><span class="line"></span><br><span class="line">    k = des(secret_key, CBC, secret_key, pad=<span class="keyword">None</span>, padmode=PAD_PKCS5)</span><br><span class="line">    en = k.encrypt(str, padmode=PAD_PKCS5)</span><br><span class="line">    <span class="keyword">return</span> binascii.b2a_hex(en)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">des_descrypt</span><span class="params">(str, secret_key)</span>:</span></span><br><span class="line"></span><br><span class="line">    k = des(secret_key, CBC, secret_key, pad=<span class="keyword">None</span>, padmode=PAD_PKCS5)</span><br><span class="line">    de = k.decrypt(binascii.a2b_hex(str), padmode=PAD_PKCS5)</span><br><span class="line">    <span class="keyword">return</span> de</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line"></span><br><span class="line">    str_en = des_encrypt(<span class="string">'hello world'</span>, <span class="string">"20200407"</span>)</span><br><span class="line">    print(str_en.decode(<span class="string">'utf-8'</span>))</span><br><span class="line">    str_de = des_descrypt(str_en, <span class="string">"20200407"</span>)</span><br><span class="line">    print(<span class="string">"正确的key解密结果："</span> + str_de.decode(<span class="string">'utf-8'</span>))</span><br><span class="line">    str_de = des_descrypt(str_en, <span class="string">"20210407"</span>)</span><br><span class="line">    print(<span class="string">"错误的key解密结果："</span> + str_de.decode(<span class="string">'utf-8'</span>))</span><br><span class="line">   </span><br><span class="line">  </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">886</span>a9aca4d78c90016a81d3a296544ca</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>正确的key解密结果：hello world</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>错误的key解密结果：helmo world</span><br></pre></td></tr></table></figure>
+<h2 id="3-非对称加密"><a href="#3-非对称加密" class="headerlink" title="3.非对称加密"></a>3.非对称加密</h2><p>非对称加密指的是加、解密使用不同的秘钥，一把作为公钥、另一把作为私钥。公钥加密的信息，只有私钥才能解密，且私钥加密的信息，只有公钥才能解密。非对称加密的常见算法是RSA。</p>
+<ul>
+<li>优点：比较安全</li>
+<li>缺点：效率较低</li>
+</ul>
+<h3 id="3-1-应用场景一（加密）"><a href="#3-1-应用场景一（加密）" class="headerlink" title="3.1 应用场景一（加密）"></a>3.1 应用场景一（加密）</h3><p>（1）乙方生成两把密钥（公钥和私钥）。公钥是公开的，任何人都可以获得，私钥则是保密的。</p>
+<p>（2）甲方获取乙方的公钥，然后用它对信息加密。</p>
+<p>（3）乙方得到加密后的信息，用私钥解密。</p>
+<h3 id="3-2-应用场景二（验证签名）"><a href="#3-2-应用场景二（验证签名）" class="headerlink" title="3.2 应用场景二（验证签名）"></a>3.2 应用场景二（验证签名）</h3><p>（1）甲方生成两把秘钥（公钥和私钥）。公钥是公开的，任何人都可以获得，私钥则是保密的。</p>
+<p>（2）甲方用散列算法生成文件摘要，然后用私钥对摘要进行加密生成签名。</p>
+<p>（3）乙方拿到文件文件后，用相同的散列算法生成摘要，用公钥对签名进行解密，比较两份摘要是否相同</p>
+<blockquote>
+<p>数字签名可以保证甲方发给乙方的文件是完整的、没有被篡改过的。由于只有甲方拥有私钥，篡改者无法通过私钥进行加密，也就无法篡改签名。因此接收方如果通过公钥对签名进行解密得到的摘要与在接收方对原文进行散列得到的摘要不相同的话，就可以断定原文已经被修改过了。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> rsa</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_keys</span><span class="params">()</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    生成秘钥对</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line"></span><br><span class="line">    (pubkey, prikey) = rsa.newkeys(<span class="number">1024</span>)</span><br><span class="line">    pub = pubkey.save_pkcs1()</span><br><span class="line">    pri = prikey.save_pkcs1()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> open(<span class="string">'rsa.pub'</span>, <span class="string">'wb+'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        f.write(pub)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> open(<span class="string">'rsa.pri'</span>, <span class="string">'wb+'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        f.write(pri)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">encrypt</span><span class="params">(original_text)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    公钥加密</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">with</span> open(<span class="string">'rsa.pub'</span>, <span class="string">'rb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        pub = f.read()</span><br><span class="line">    pubkey = rsa.PublicKey.load_pkcs1(pub)</span><br><span class="line">    encrypted_text = rsa.encrypt(original_text.encode(<span class="string">'utf-8'</span>), pubkey)</span><br><span class="line">    <span class="keyword">return</span> encrypted_text</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decrypt</span><span class="params">(encrypted_text)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    私钥解密</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">with</span> open(<span class="string">'rsa.pri'</span>, <span class="string">'rb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        pri = f.read()</span><br><span class="line">    prikey = rsa.PrivateKey.load_pkcs1(pri)</span><br><span class="line">    original_text = rsa.decrypt(encrypted_text, prikey).decode(<span class="string">"utf-8"</span>)</span><br><span class="line">    <span class="keyword">return</span> original_text</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sign</span><span class="params">(message)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    私钥签名</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">with</span> open(<span class="string">'rsa.pri'</span>, <span class="string">'rb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        pri = f.read()</span><br><span class="line">    prikey = rsa.PrivateKey.load_pkcs1(pri)</span><br><span class="line">    <span class="comment"># 使用MD5所有散列算法生成摘要</span></span><br><span class="line">    signed_message = rsa.sign(message.encode(<span class="string">'utf-8'</span>), prikey, hash_method=<span class="string">'MD5'</span>)</span><br><span class="line">    <span class="keyword">return</span> signed_message</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">verify</span><span class="params">(message, signed_message)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    公钥验证</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">with</span> open(<span class="string">'rsa.pub'</span>, <span class="string">'rb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        pub = f.read()</span><br><span class="line">    pubkey = rsa.PublicKey.load_pkcs1(pub)</span><br><span class="line">    <span class="keyword">return</span> rsa.verify(message.encode(<span class="string">'utf-8'</span>), signed_message, pubkey)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    text = <span class="string">"This is encrypted by rsa"</span></span><br><span class="line">    create_keys()</span><br><span class="line">    text = encrypt(text)</span><br><span class="line">    print(<span class="string">"加密结果："</span>, text)</span><br><span class="line">    text = decrypt(text)</span><br><span class="line">    print(<span class="string">"解密结果："</span>, text)</span><br><span class="line">    signed_message = sign(text)</span><br><span class="line">    print(<span class="string">"签名结果："</span>, signed_message)</span><br><span class="line">    print(<span class="string">"验签结果："</span>, verify(text, signed_message))</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>MD5加密前：This text <span class="keyword">is</span> hashed via md5</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>MD5加密后：<span class="number">5</span>d3a325f6a7fd4c8e4d4dad3879cfcdd</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>签名结果： <span class="string">b'\x10^\xa53\x8a\xda\xf0"e&#125;\x7f\x8dtg\x0f\x96\x08\xd2\xa2L\x16#c\xc6\xad*C\xa6\x84\x11A\xe9\t\xf9\\\xce\x03\x99\xf1\xb4\xfa\xdf\x83\xa4[\x1d\xbff\x9eO\x08\x92\xf4\x05E4"&amp;v\xcfTD\xbbq\x87\x9f\xdb\xc0u\x9b(\x13\\\x0b&lt;j*Y\x15\x97!\x0b\x17q1h\xcd\xb8\xe0\x98\xbb\xe7\xbb3\xbc\xb8\xef\xbf\xe1\xda$0:\xa0z\xbdP\xd9\xe65\xf4\x17X\xf5H\xc3\x15\x8f\xc67\xbb\x8e#Ba\xd8\'\x7f'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>验签结果：MD5</span><br></pre></td></tr></table></figure>
+<h2 id="4-对称加密与非对称加密对比"><a href="#4-对称加密与非对称加密对比" class="headerlink" title="4. 对称加密与非对称加密对比"></a>4. 对称加密与非对称加密对比</h2><ul>
+<li>对称加密多用户通信秘钥管理困难，N个人两两之间需要保管一个秘钥，共$C_N^2$个秘钥对。</li>
+<li>非对称加密，N个用户，共有N个私钥和N个秘钥。</li>
+<li>在实际运用中可以将两种加密方式混合使用，将对称加密的密钥使用非对称加密的公钥进行加密，然后发送出去，接收方使用私钥进行解密得到对称加密的密钥，然后双方可以使用对称加密来进行沟通。</li>
+</ul>
+<h2 id="5-参考文献"><a href="#5-参考文献" class="headerlink" title="5. 参考文献"></a>5. 参考文献</h2><ol>
+<li><a href="https://juejin.im/post/5a7d11be5188257a5e5738c3" target="_blank" rel="noopener">摘要与加密的区别</a></li>
+<li><a href="https://www.jianshu.com/p/c44a8a1b7c38" target="_blank" rel="noopener">DES加密算法原理</a></li>
+<li><a href="https://www.liaoxuefeng.com/wiki/1252599548343744/1304227873816610" target="_blank" rel="noopener">非对称加密算法</a></li>
+</ol>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2020/04/07/网络安全/加密算法/">https://shinerio.cc/2020/04/07/网络安全/加密算法/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/网络安全/">网络安全</a>
+            <a href="/tags/加密/">加密</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2020/04/09/other/BlogTips/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">BlogTips</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2020/03/25/cloud-compute/云计算/">
+        <span class="next-text nav-default">云计算</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2020/04/07/网络安全/加密算法/';
+        this.page.identifier = '2020/04/07/网络安全/加密算法/';
+        this.page.title = '加密算法';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

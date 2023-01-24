@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="进程管理"><meta name="keywords" content="linux, thread, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2023/01/23/linux/进程管理/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>进程管理 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">进程管理
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2023-01-23
+        </span><span class="post-category">
+            <a href="/categories/linux/">linux</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#进程类型"><span class="toc-text">进程类型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#用户进程"><span class="toc-text">用户进程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#守护进程"><span class="toc-text">守护进程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内核进程"><span class="toc-text">内核进程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#进程状态"><span class="toc-text">进程状态</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#R-TASK-RUNNING，可执行状态"><span class="toc-text">R(TASK_RUNNING，可执行状态)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#S-TASK-INTERRUPTIBLE，可中断状态"><span class="toc-text">S(TASK_INTERRUPTIBLE，可中断状态)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#D-TASK-UNINTERRUPTIBLE，不可中断状态"><span class="toc-text">D(TASK_UNINTERRUPTIBLE，不可中断状态)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#T-TASK-STOPPED-or-TASK-TRACED-，暂停状态或跟踪状态"><span class="toc-text">T (TASK_STOPPED or TASK_TRACED)，暂停状态或跟踪状态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Z-TASK-DEAD-EXIT-ZOMBIE-，退出状态，进程成为僵尸进程"><span class="toc-text">Z(TASK_DEAD - EXIT_ZOMBIE)，退出状态，进程成为僵尸进程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#X-TASK-DEAD-EXIT-DEAD-，退出状态，进程即将被销毁"><span class="toc-text">X (TASK_DEAD - EXIT_DEAD)，退出状态，进程即将被销毁</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#进程树"><span class="toc-text">进程树</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#进程归属权"><span class="toc-text">进程归属权</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Init-System"><span class="toc-text">Init System</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#PS命令"><span class="toc-text">PS命令</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#参数"><span class="toc-text">参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常见使用方式"><span class="toc-text">常见使用方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ps-ef"><span class="toc-text">ps -ef</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ps-–aux"><span class="toc-text">ps –aux</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#TOP命令"><span class="toc-text">TOP命令</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#终止进程"><span class="toc-text">终止进程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考链接"><span class="toc-text">参考链接</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p>在 <code>linux</code>系统中，进程是资源调度的最小单位，进程的管理关乎着你使用<code>linux</code>系统的体验。</p>
+<a id="more"></a>
+<h1 id="进程类型"><a href="#进程类型" class="headerlink" title="进程类型"></a>进程类型</h1><p>Linux 系统里有几种不同类型的进程：用户进程（User processes）、守护进程（Deamon processes）和内核进程（Kernel processes）。</p>
+<h2 id="用户进程"><a href="#用户进程" class="headerlink" title="用户进程"></a>用户进程</h2><p>系统里大多数进程都是用户进程。用户进程由通常的用户账户启动，并在用户空间（user space）当中执行。在没有获得额外许可的情况下，通常用户进程无法对处理器进行特殊访问，或是访问启动进程的用户无权访问的文件。</p>
+<h2 id="守护进程"><a href="#守护进程" class="headerlink" title="守护进程"></a>守护进程</h2><p>守护进程通常是后台程序，它们往往由一些持续运行的服务来管理。守护进程可以用来监听请求，而后访问某些服务。举例来说，<code>httpd</code>这一守护进程监听访问网络页面的请求。守护进程也可以用来自行启动一些任务。例如，<code>crond</code> 这一守护进程会在预设的时间点启动计划任务。</p>
+<p>尽管用于管理守护进程的服务通常是 <code>root</code> 用户启动的，但守护进程本身往往以非 <code>root</code> 用户启动。这种启动方式，符合「只赋予进程运行所必须的权限」之要求，因而能使系统免于一些攻击。举例来说，若是黑客骇入了 <code>httpd</code> 这一由 <code>Apache</code> 用户启动的守护进程，黑客仍然无法访问包括 <code>root</code> 用户在内的其他用户的文件，或是影响其他用户启动的守护进程。</p>
+<p>守护进程通常由系统在启动时拉起，而后一直运行到系统关闭。当然，守护进程也可以按需启动和终止，以及让守护进程在特定的系统运行级别上执行，或是在运行过程中触发重新加载配置信息。</p>
+<h2 id="内核进程"><a href="#内核进程" class="headerlink" title="内核进程"></a>内核进程</h2><p>内核进程仅在内核空间（kernel space）当中执行。内核进程与守护进程有些相似，它们之间主要的不同在于：</p>
+<ol>
+<li>内核进程对内核数据结构拥有完全的访问权限。</li>
+<li>内核进程不如守护进程灵活：修改配置文件并触发重载即可修改守护进程的行为；但对于内核进程来说，修改行为则需要重新编译内核本身。</li>
+</ol>
+<h1 id="进程状态"><a href="#进程状态" class="headerlink" title="进程状态"></a>进程状态</h1><p><code>linux</code>是一个多用户、多任务的系统，可以同时运行多个用户的多个程序，就必然会产生很多的进程，而每个进程会有不同的状态。同一时间同一<code>CPU</code>上只能运行一个进程，其他进程只能等待，因此我们可以宽泛地将进程状态分为：</p>
+<ul>
+<li>在CPU上执行，此时进程正在运行</li>
+<li>不在CPU上执行，此时进程不在运行</li>
+</ul>
+<p>进一步来讲，未在运行的进程也可能处于不同的状态：</p>
+<ul>
+<li>TASK_RUNNING</li>
+<li>TASK_INTERRUPTIBLE</li>
+<li>TASK_UNINTERRUPTIBLE</li>
+<li>TASK_STOPPED/TASK_TRACED</li>
+<li>TASK_DEAD - EXIT_ZOMBIE</li>
+<li>TASK_DEAD - EXIT_DEAD</li>
+</ul>
+<h2 id="R-TASK-RUNNING，可执行状态"><a href="#R-TASK-RUNNING，可执行状态" class="headerlink" title="R(TASK_RUNNING，可执行状态)"></a><code>R</code>(TASK_RUNNING，可执行状态)</h2><p>只有在该状态的进程才可能在CPU上运行。而同一时刻可能有多个进程处于可执行状态，这些进程的task_struct结构（进程控制块）被放入对应CPU的可执行队列中（一个进程最多只能出现在一个CPU的可执行队列中）。进程调度器的任务就是从各个CPU的可执行队列中分别选择一个进程在该CPU上运行。很多操作系统教科书将正在CPU上执行的进程定义为RUNNING状态、而将可执行但是尚未被调度执行的进程定义为READY状态，这两种状态在linux下统一为<code>TASK_RUNNING</code>状态。</p>
+<h2 id="S-TASK-INTERRUPTIBLE，可中断状态"><a href="#S-TASK-INTERRUPTIBLE，可中断状态" class="headerlink" title="S(TASK_INTERRUPTIBLE，可中断状态)"></a><code>S</code>(TASK_INTERRUPTIBLE，可中断状态)</h2><p>这个状态的进程因为等待某事件的发生（比如等待socket连接、等待信号量等）而被挂起，然后当这些事件发生或完成后，对应的等待队列中的一个或多个进程将被唤醒。一般情况下，系统中的大部分进程都处于这个状态。因为系统的CPU数量是有限的，而系统的进程数量是非常多的，所以大部分进程都处于睡眠状态。</p>
+<h2 id="D-TASK-UNINTERRUPTIBLE，不可中断状态"><a href="#D-TASK-UNINTERRUPTIBLE，不可中断状态" class="headerlink" title="D(TASK_UNINTERRUPTIBLE，不可中断状态)"></a><code>D</code>(TASK_UNINTERRUPTIBLE，不可中断状态)</h2><p>与<code>TASK_INTERRUPTIBLE</code>状态类似，进程处于睡眠状态，但是此刻进程是不可中断的。不可中断，指的并不是CPU不响应外部硬件的中断，而是指进程不响应异步信号。</p>
+<p>绝大多数情况下，进程处在睡眠状态时，总是应该能够响应异步信号的。否则你将惊奇的发现，<code>kill -9</code>竟然杀不死一个正在睡眠的进程了！因此我们也很好理解<code>ps</code>命令看到的进程几乎不会出现<code>TASK_UNINTERRUPTIBLE</code>状态，而总是<code>TASK_INTERRUPTIBLE</code>状态。</p>
+<p><code>TASK_UNINTERRUPTIBLE</code>状态存在的意义就在于，内核的某些处理流程是不能被打断的。如果响应异步信号，程序的执行流程中就会被插入一段用于处理异步信号的流程（这个插入的流程可能只存在于内核态，也可能延伸到用户态），于是原有的流程就被中断了。在进程对某些硬件进行操作时（比如进程调用read系统调用对某个设备文件进行读操作，而read系统调用最终执行到对应设备驱动的代码，并与对应的物理设备进行交互），可能需要使用<code>TASK_UNINTERRUPTIBLE</code>状态对进程进行保护，以避免进程与设备交互的过程被打断，造成设备陷入不可控的状态。这种情况下的<code>TASK_UNINTERRUPTIBLE</code>状态总是非常短暂的，通过ps命令基本上不可能捕捉到。</p>
+<p><code>linux</code>系统中也存在容易捕捉的<code>TASK_UNINTERRUPTIBLE</code>状态。执行<code>vfork</code>系统调用后，父进程将进入<code>TASK_UNINTERRUPTIBLE</code>状态，直到子进程调用<code>exit</code>或<code>exec</code>。<br>通过下面的代码就能得到处于<code>TASK_UNINTERRUPTIBLE</code>状态的进程：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span>   </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">	<span class="keyword">if</span> (!vfork()) &#123;</span><br><span class="line">		sleep(<span class="number">100</span>);  </span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="T-TASK-STOPPED-or-TASK-TRACED-，暂停状态或跟踪状态"><a href="#T-TASK-STOPPED-or-TASK-TRACED-，暂停状态或跟踪状态" class="headerlink" title="T (TASK_STOPPED or TASK_TRACED)，暂停状态或跟踪状态"></a><code>T</code> (TASK_STOPPED or TASK_TRACED)，暂停状态或跟踪状态</h2><p>向进程发送一个<code>SIGSTOP</code>信号，它就会因响应该信号而进入<code>TASK_STOPPED</code>状态（除非该进程本身处于<code>TASK_UNINTERRUPTIBLE</code>状态而不响应信号）。（<code>SIGSTOP</code>与<code>SIGKILL</code>信号一样，是非常强制的。不允许用户进程通过<code>signal</code>系列的系统调用重新设置对应的信号处理函数。）  向进程发送一个<code>SIGCONT</code>信号，可以让其从<code>TASK_STOPPED</code>状态恢复到<code>TASK_RUNNING</code>状态。</p>
+<p>当进程正在被跟踪时，它处于<code>TASK_TRACED</code>这个特殊的状态。“正在被跟踪”指的是进程暂停下来，等待跟踪它的进程对它进行操作。比如在<code>gdb</code>中对被跟踪的进程下一个断点，进程在断点处停下来的时候就处于<code>TASK_TRACED</code>状态。而在其他时候，被跟踪的进程还是处于前面提到的那些状态。</p>
+<p>对于进程本身来说，<code>TASK_STOPPED</code>和<code>TASK_TRACED</code>状态很类似，都是表示进程暂停下来。而<code>TASK_TRACED</code>状态相当于在<code>TASK_STOPPED</code>之上多了一层保护，处于<code>TASK_TRACED</code>状态的进程不能响应<code>SIGCONT</code>信号而被唤醒。只能等到调试进程通过<code>ptrace</code>系统调用执行<code>PTRACE_CONT</code>、<code>PTRACE_DETACH</code>等操作（通过<code>ptrace</code>系统调用的参数指定操作），或调试进程退出，被调试的进程才能恢复<code>TASK_RUNNING</code>状态。</p>
+<h2 id="Z-TASK-DEAD-EXIT-ZOMBIE-，退出状态，进程成为僵尸进程"><a href="#Z-TASK-DEAD-EXIT-ZOMBIE-，退出状态，进程成为僵尸进程" class="headerlink" title="Z(TASK_DEAD - EXIT_ZOMBIE)，退出状态，进程成为僵尸进程"></a><code>Z</code>(TASK_DEAD - EXIT_ZOMBIE)，退出状态，进程成为僵尸进程</h2><p>进程在退出的过程中，处于TASK_DEAD状态。在这个退出过程中，进程占有的所有资源将被回收，除<code>task_struct</code>结构（以及少数资源）以外。于是进程就只剩下<code>task_struct</code>这么个空壳，故称为僵尸。  </p>
+<p>之所以保留<code>task_struct</code>，是因为<code>task_struct</code>里面保存了进程的退出码、以及一些统计信息。而其父进程很可能会关心这些信息。比如在<code>shell</code>中，<code>$?</code>变量就保存了最后一个退出的前台进程的退出码，而这个退出码往往被作为if语句的判断条件。  </p>
+<p>当然，内核也可以将这些信息保存在别的地方，而将<code>task_struct</code>结构释放掉，以节省一些空间。但是使用<code>task_struct</code>结构更为方便，因为在内核中已经建立了从<code>pid</code>到<code>task_struct</code>查找关系，还有进程间的父子关系。释放掉<code>task_struct</code>，则需要建立一些新的数据结构，以便让父进程找到它的子进程的退出信息。</p>
+<p>父进程可以通过wait系列的系统调用（如wait4、waitid）来等待某个或某些子进程的退出，并获取它的退出信息。然后wait系列的系统调用会顺便将子进程的尸体（task_struct）也释放掉。子进程在退出的过程中，内核会给其父进程发送一个信号，通知父进程来“收尸”。这个信号默认是<code>SIGCHLD</code>，在通过<code>clone</code>系统调用创建子进程时，可以设置这个信号。</p>
+<h2 id="X-TASK-DEAD-EXIT-DEAD-，退出状态，进程即将被销毁"><a href="#X-TASK-DEAD-EXIT-DEAD-，退出状态，进程即将被销毁" class="headerlink" title="X (TASK_DEAD - EXIT_DEAD)，退出状态，进程即将被销毁"></a><code>X</code> (TASK_DEAD - EXIT_DEAD)，退出状态，进程即将被销毁</h2><p>进程在退出过程中也可能不会保留它的<code>task_struct</code>。比如这个进程是多线程程序中被detach过的进程（进程？线程？参见《linux线程浅析》）。或者父进程通过设置SIGCHLD信号的handler为SIG_IGN，显式的忽略了SIGCHLD信号。（这是posix的规定，尽管子进程的退出信号可以被设置为SIGCHLD以外的其他信号。）<br>此时，进程将被置于EXIT_DEAD退出状态，这意味着接下来的代码立即就会将该进程彻底释放。所以EXIT_DEAD状态是非常短暂的，几乎不可能通过ps命令捕捉到。</p>
+<h1 id="进程树"><a href="#进程树" class="headerlink" title="进程树"></a>进程树</h1><p>每一个进程都是被别的进程启动的，或者说是复刻（Fork）的。当系统刚刚启动的时候，有一个非常特别的根进程 init ，它就是是直接被操作系统内核启动的。</p>
+<p>这样一来，这个系统中运行的所有进程集合就构成了一颗以<code>init</code>进程为根节点的进程树，所有的其他进程都有一个父进程，也有可能有多个子进程。</p>
+<p>比方说，每次我们在<code>bash</code>命令行提示符下执行一个命令的时候，bash 会复刻一个新的进程来执行这个命令，这时这个进程就变成了<code>bash</code>的子进程了。</p>
+<p>相似地，当我们看见一个「登录」提示符时，这其实是<code>login</code>命令在运行着。如果我们成功的登录了，<code>login</code>命令会复刻一个新的进程来执行登录用户选择的<code>shell</code>。</p>
+<p>我们可以使用<code>ps auxf</code>命令来查看树形结构的进程列表，像下面这样:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">-+= 00001 root /sbin/launchd</span><br><span class="line"> |--= 00085 root /usr/libexec/logd</span><br><span class="line"> |--= 00086 root /usr/libexec/UserEventAgent (System)</span><br><span class="line"> |--= 00089 root /System/Library/PrivateFrameworks/Uninstall.framework/Resource</span><br><span class="line"> |--= 00090 root /System/Library/Frameworks/CoreServices.framework/Versions/A/F</span><br><span class="line"> |--= 00091 root /System/Library/PrivateFrameworks/MediaRemote.framework/Suppor</span><br><span class="line"> |-+= 00093 root /usr/sbin/systemstats --daemon</span><br><span class="line"> | \--- 00359 root /usr/sbin/systemstats --logger-helper /private/var/db/system</span><br><span class="line"> |--= 00095 root /usr/libexec/configd</span><br><span class="line"> |--= 00096 root endpointsecurityd</span><br></pre></td></tr></table></figure>
+<h1 id="进程归属权"><a href="#进程归属权" class="headerlink" title="进程归属权"></a>进程归属权</h1><p>每一个进程都归属于某个特定的用户，归属于该用户的进程有权限像该用户直接登录了一样执行所有该用户可以执行的所有命令。</p>
+<p>比方说，假如有一个进程归<code>shinerio</code>用户所有，那么这个进程就可以做所有<code>shinerio</code>用户能做的事情了：编辑<code>shinerio</code>用户<code>home</code>目录下的文件，启动一个归属于<code>shinerio</code>用户的新进程，等等。</p>
+<p>系统进程比如<code>init</code>和<code>login</code>归属于<code>root</code>用户，而且当一个根进程复刻一个新进程的时候，它可以改变这个子进程的归属。</p>
+<p>所以，当我们登录后， <code>login</code>命令会复刻一个新的进程我运行我们的<code>shell</code>，但是新的进程是所属于成功登陆的那个用户的。接下来所有的后续命令都会以该用户的名义执行，所启动的进程都归属于他。</p>
+<p>默认情况下，只有 root 进程可以像这样改变归属权。</p>
+<h1 id="Init-System"><a href="#Init-System" class="headerlink" title="Init System"></a>Init System</h1><p>操作系统内核在初始化进程中所做的最后一件事情就是启动「init system」，也就是执行 <code>/sbin/init</code>命令。「init system」有很多种，但它们都有相同的职责：</p>
+<ol>
+<li>控制哪些服务在系统启动时跟随启动</li>
+<li>提供可以开启、停止服务的工具，并且给出服务的状态信息总览</li>
+<li>提供一个可以编写新的服务的框架</li>
+</ol>
+<p>这里的服务涵盖了从<code>web</code>服务器到用来管理登录的系统级服务器在内的所有服务。基本上，一个「init system」的工作就是让所有面向用户（即非内核）的程序和服务运行起来。</p>
+<blockquote>
+<p>例如，Ubuntu和centos都使用<code>systemd</code>作为默认的「init system」。根据 Linux 惯例，字母 d 是守护进程（daemon）的缩写。 Systemd这个名字的含义，就是它要<strong>守护整个系统</strong>。</p>
+</blockquote>
+<p>(1)-(3) 中设计的特定命令和工具会因不同的「init system」而各有不同。<code>Linux</code>系统历史上最通用的一个「init system」叫做「System V Init」，它是以极具影响力的<code>UNIX SYSTEM V</code>来命名的。在现在<code>Linux</code>系统中，同时被<code>CentOS</code>、<code>RedHad</code>、<code>Debian</code>、<code>Ubuntu</code>等等主流发行版本所采用的「init system」叫做「systemd init system」。</p>
+<p>有两点需要铭记：</p>
+<ol>
+<li>不同的 Linux 发行版本可以使用不同的「init system」</li>
+<li>同一 Linux 发型版本的不同版本号可以使用不同的「init system」</li>
+</ol>
+<h1 id="PS命令"><a href="#PS命令" class="headerlink" title="PS命令"></a>PS命令</h1><p><code>ps</code>命令是process status的简称，用于显示当前运行的进程的信息。在不使用任何标识的情况下，<code>ps</code>会显示所有当前用户启动的进程，比如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ps</span></span><br><span class="line">  PID TTY          TIME CMD</span><br><span class="line"> 9961 pts/0    00:00:00 bash</span><br><span class="line"> 9981 pts/0    00:00:00 ps</span><br></pre></td></tr></table></figure>
+<ul>
+<li>PID: 进程的ID号</li>
+<li>TTY: 终端名称缩写</li>
+<li>TIME: CPU时间，即进程使用CPU的总时间</li>
+<li>CMD: 所执行的命令名称。</li>
+</ul>
+<h2 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h2><p><code>ps</code>命令支持的参数很多，这里我们只列出常用的一些。</p>
+<ul>
+<li><code>a</code>显示当前终端所有进程</li>
+<li><code>-A</code>显示系统所有进程</li>
+<li><code>e</code>显示每个进程使用的环境变量</li>
+<li><code>-e</code>显示所有进程，等价于<code>-A</code></li>
+<li><code>-f</code>显示进程之间关系</li>
+<li><code>-H</code>显示树桩结构</li>
+<li><code>u</code>显示进程的归属用户及内存的使用情况</li>
+<li><code>x</code>显示没有控制终端的进程</li>
+</ul>
+<h2 id="常见使用方式"><a href="#常见使用方式" class="headerlink" title="常见使用方式"></a>常见使用方式</h2><h3 id="ps-ef"><a href="#ps-ef" class="headerlink" title="ps -ef"></a>ps -ef</h3><p>显示所有进程的pid、启动命令和父进程pid，常配合管道符<code>|</code>和<code>grep</code>来查找某个特定进程。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">  UID   PID  PPID   C STIME   TTY           TIME CMD</span><br><span class="line">    0     1     0   0 11:36AM ??         1:18.88 /sbin/launchd</span><br><span class="line">    0    85     1   0 11:36AM ??         1:16.91 /usr/libexec/logd</span><br><span class="line">    0    86     1   0 11:36AM ??         0:06.62 /usr/libexec/UserEventAgent (System)</span><br><span class="line">    0    89     1   0 11:36AM ??         0:01.04 /System/Library/PrivateFrameworks/Uninstall.framework/Resources/uninstalld</span><br></pre></td></tr></table></figure>
+<ul>
+<li>UID：启动用户ID</li>
+<li>PID：进程ID</li>
+<li>PPID：父进程 ID</li>
+<li>C：CPU用于计算执行优先级的因子。数值越大，表明进程是CPU密集型运算，执行优先级会降低；数值越小，表明进程是I/O密集型运算，执行优先级会提高。</li>
+<li>STIME：进程启动的时间</li>
+<li>TTY：终端名称缩写</li>
+<li>TIME：CPU时间，即进程使用CPU的总时间</li>
+<li>CMD：启动进程所用的命令和参数</li>
+</ul>
+<h3 id="ps-–aux"><a href="#ps-–aux" class="headerlink" title="ps –aux"></a>ps –aux</h3><p>适合于需要查看进程更多的详细信息，包括系统资源占用情况、进程状态等。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND</span><br><span class="line">root         1  0.0  0.8  77664  8668 ?        Ss    2022   1:08 /sbin/init</span><br><span class="line">root         2  0.0  0.0      0     0 ?        S     2022   0:05 [kthreadd]</span><br><span class="line">root         4  0.0  0.0      0     0 ?        I&lt;    2022   0:00 [kworker/0:0H]</span><br><span class="line">root         6  0.0  0.0      0     0 ?        I&lt;    2022   0:00 [mm_percpu_wq]</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>USER：用户名称</li>
+<li>PID：进程号</li>
+<li>%CPU：进程占用CPU的百分比</li>
+<li>%MEM：进程占用物理内存的百分比</li>
+<li>VSZ：进程占用的虚拟内存大小（单位：KB）</li>
+<li>RSS：进程占用的物理内存大小（单位：KB）</li>
+<li>TTY：终端名称缩写</li>
+<li>STAT：进程状态，其中 <code>S（Sleep）可中断，</code>s-表示该进程是会话的先导进程。</li>
+<li>STARTED：进程的启动时间</li>
+<li>TIME：CPU时间，即进程使用CPU的总时间</li>
+<li>COMMAND：启动进程所用的命令和参数，如果过长会被截断显示</li>
+</ul>
+<h1 id="TOP命令"><a href="#TOP命令" class="headerlink" title="TOP命令"></a>TOP命令</h1><p><code>ps</code>为我们提供了进程的一次性的快照，它所提供的查看结果并不动态连续。如果想对进程时间监控，应该使用<code>TOP</code>命令。</p>
+<p>TOP交互式命令：</p>
+<ul>
+<li><code>P</code> 按照 CPU 占用来排序</li>
+<li><code>M</code>  按照内存占用来排序</li>
+<li><code>q</code> 退出</li>
+</ul>
+<p><code>TOP -p pid</code>可以查看指定进程信息。</p>
+<h1 id="终止进程"><a href="#终止进程" class="headerlink" title="终止进程"></a>终止进程</h1><p>我们可以使用<code>kill</code>命令或<code>killall</code>命令来终止一个进程。常用的kill命令如下：</p>
+<ul>
+<li>1 (HUP)：重新加载进程。</li>
+<li>2 (INT):    中断（同<code>Ctrl + C</code>）</li>
+<li>3 ( QUIT):   退出（同<code>Ctrl + \</code>）</li>
+<li>9 (KILL)：无条件强制杀死一个进程。</li>
+<li>15 (TERM)：正常停止一个进程。</li>
+<li>18 (CONT):    继续（与STOP相反）</li>
+<li>19 (STOP):    暂停（同<code>Ctrl + Z</code>）</li>
+</ul>
+<blockquote>
+<p>只有第9种信号(SIGKILL)才可以无条件终止进程，其他信号进程都有权利忽略</p>
+</blockquote>
+<p>默认情况下，<code>kill</code>和<code>killall</code>命令会发送<code>TERM</code>信号给特定的进程。<code>TERM</code>信号是一个「优雅」的终止信号，进程收到这个信号时会以合适的方式处理和结束进程。比如，被终止的进程可能想要在终止之前完成当前的任务、或者是清理可能会残留在系统中的临时文件等等。</p>
+<p>如果一个进程有漏洞导致它已经不能响应<code>TERM</code>信号了，这种情况下我们就只能发送另一个比较激进的信号了。有两种方法可以发送这个信号：</p>
+<ol>
+<li>kill -KILL pid</li>
+<li>kill -9 pid</li>
+</ol>
+<p><code>kill -9</code>或者<code>killall -9</code>指令都是非常激进了，粗略地等同于直接拔掉计算机的电源。像这样来终止进程可能会留下一堆麻烦，只不过如果进程真的不响应了，也没啥别的办法。所以，在使用<code>kill -9 PID</code>之前，一定要先尽量尝试使用<code>kill PID</code>才是。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://liam.page/2020/01/10/the-states-of-processes-on-Linux/" target="_blank" rel="noopener"># Linux 系统里的进程状态</a></li>
+</ol>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2023/01/23/linux/进程管理/">https://shinerio.cc/2023/01/23/linux/进程管理/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/linux/">linux</a>
+            <a href="/tags/thread/">thread</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2023/01/23/Tech/Os/Linux/用户和权限/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">用户和权限</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2023/01/23/Tech/Middleware/Database/数据库隔离级别/">
+        <span class="next-text nav-default">数据库隔离级别</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2023/01/23/linux/进程管理/';
+        this.page.identifier = '2023/01/23/linux/进程管理/';
+        this.page.title = '进程管理';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

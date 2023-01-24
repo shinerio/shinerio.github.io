@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="负载均衡"><meta name="keywords" content="ELB, 负载均衡, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2022/05/01/计算机网络/负载均衡/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>负载均衡 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">负载均衡
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2022-05-01
+        </span><span class="post-category">
+            <a href="/categories/计算机网络/">计算机网络</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-四层负载均衡和七层负载均衡"><span class="toc-text">1. 四层负载均衡和七层负载均衡</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-七层负载均衡"><span class="toc-text">2. 七层负载均衡</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-nginx"><span class="toc-text">2.1 nginx</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-haproxy"><span class="toc-text">2.2 haproxy</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-四层负载均衡lvs"><span class="toc-text">3. 四层负载均衡lvs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-硬件负载均衡"><span class="toc-text">5. 硬件负载均衡</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-负载均衡算法"><span class="toc-text">6. 负载均衡算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-DNS-ECMP-LVS-NGINX的高可靠、高性能方案"><span class="toc-text">7. DNS + ECMP + LVS + NGINX的高可靠、高性能方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-参考链接"><span class="toc-text">8. 参考链接</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p>对于一个简单的demo项目来说，我们可以用一个单体架构完成，而实际的线上应用普遍面临着高并发、高流量问题。作为一个上线的项目，对服务的可靠性还是有很高要求的，因此会选择使用一组服务器作为集群来提供服务，以此来保证单节点的处理性能以及保证服务的高可靠。如何将请求分担到不同的后端节点上，这就是负载均衡做的事情。</p>
+<a id="more"></a>
+<h2 id="1-四层负载均衡和七层负载均衡"><a href="#1-四层负载均衡和七层负载均衡" class="headerlink" title="1. 四层负载均衡和七层负载均衡"></a>1. 四层负载均衡和七层负载均衡</h2><p>四层负载均衡工作在OSI模型的传输层，主要工作就是流量转发，它在接口到客户端的流量以后通过修改数据包地址信息的方式将流量转发到应用服务器。七层负载均衡工作在OSI模型的应用层，因此需要解析应用层的流量，所以七层负载均衡在接收到客户端的流量以后需要经过一个完成的TPC/IP协议栈。七层负载均衡与客户端建立一条完成的连接并将应用层的请求流量解析出来，再按照调度算法选择一个应用服务器，并与应用服务器建立另外一条连接将请求发送出去，因此七层负载均衡的本质就是反向代理。七层负载均衡在四层负载均衡的基础上，再考虑应用层的特征，比如同一个Web服务器的负载均衡，除了根据IP+PORT，还可根据七层的URL、浏览器类别、语言、Cookie来决定是否要进行负载均衡。举个例子，如果你的Web服务器分成两组，一组是中文语言的，一组是英文语言的，那么七层负载均衡就可以当用户来访问你的域名时，自动辨别用户语言，然后选择对应的语言服务器组进行负载均衡处理。目前主流的负载均衡主要是基于nginx，haproxy和lvs实现，其中nginx和haproxy主要用于七层负载均衡，lvs主要用于四层lvs。</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategoryload+balance.png" alt></p>
+<blockquote>
+<p>四层的本质是转发，七层的本质是代理。</p>
+</blockquote>
+<p>由于七层负载均衡经过的协议栈链路更长，解析内容更多，且需要分别和client和server建立独立的两条tcp连接，因此通常情况下七层负载均衡的性能是要<strong>稍</strong>弱于四层负载均衡的，而七层应用负载均衡的好处，是使得整个网络更“智能化”。一个常见的场景就是API网关，其就是通过七层的方式实现的，可以将不同的url转发到不同的后端服务器组上，作为内部多个微服务组件的统一外部访问入口。且正是由于API网关工作在七层，API网关能承担起鉴权、过滤、流控和防SYN攻击的能力。API网关在可以对用户的请求header进行重写或响应response添加字段等。云服务时代，网络常见的鉴权方式有TOKEN、AK/SK等，API网关可以对API进行统一鉴权，在鉴权通过后统一转化为TOKEN放入到请求header中，对内部服务屏蔽细节，减少内部服务的适配难度。API网关还可以对请求body提进行过滤，防止命令注入和sql注入等。另外一个常常被提到功能就是安全性，网络中最常见的SYN Flood攻击，即使用虚假IP地址对同一目标发送SYN攻击。通常这种攻击会大量发送SYN报文，快速耗尽服务器的连接资源，以达到Denial of Service(DoS) 的目的。从技术原理上也可以看出，四层模式下这些 SYN 攻击都会被转发到后端的服务器上，而七层负载均衡由于client和负载均衡器无法建立完整的tcp连接，自然也不会对后端发起请求，不会影响后端服务器的正常运行。现在的七层负载均衡，主要还是着重于应用广泛的 HTTP 协议，所以其应用范围主要是众多的网站或者内部信息平台等基于 B/S 开发的系统，4 层负载均衡则对应其他 TCP 应用，例如基于 C/S 开发的 ERP 等系统。</p>
+<h2 id="2-七层负载均衡"><a href="#2-七层负载均衡" class="headerlink" title="2. 七层负载均衡"></a>2. 七层负载均衡</h2><h3 id="2-1-nginx"><a href="#2-1-nginx" class="headerlink" title="2.1 nginx"></a>2.1 nginx</h3><p>Nginx是开源的轻量级Web服务器、反向代理服务器，以及负载均衡器和 HTTP 缓存器。其特点是高并发，高性能和低内存。</p>
+<h3 id="2-2-haproxy"><a href="#2-2-haproxy" class="headerlink" title="2.2 haproxy"></a>2.2 haproxy</h3><p>HAProxy是一个使用C语言编写的自由及开放源代码软件，其提供高可用性、负载均衡，以及基于TCP和HTTP的应用程序代理。</p>
+<h2 id="3-四层负载均衡lvs"><a href="#3-四层负载均衡lvs" class="headerlink" title="3. 四层负载均衡lvs"></a>3. 四层负载均衡lvs</h2><p>四层负载均衡存在以下几个概念：</p>
+<ul>
+<li>DS：Director Server。指的是负载均衡器节点</li>
+<li>RS：Real Server。后端真实的工作服务器</li>
+<li>VIP：向外部直接面向用户请求，作为用户请求的目标的IP地址</li>
+<li>DIP：Director Server IP，主要用于负载均衡器节点和内部主机通讯的IP地址</li>
+<li>RIP：Real Server IP，后端服务器的IP地址</li>
+<li>CIP：Client IP，访问客户端的IP地址</li>
+</ul>
+<p>lvs四层转发，存在以下四种转发模式：DR模式、NAT模式、TUNNEL模式、FULLNAT模式。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th>原理</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DR</td>
+<td>通过修改数据包目的mac地址的方式经过二层转发到达应用服务器，真实后端服务器可以不经过负载均衡器直接以源ip是vip，目的ip是cip的方式应答给应用服务器</td>
+<td>由于返程流量不需要经过DS，因此性能较好</td>
+<td>1. DS和RS需要在同一个二层网络中<br>2. RS需要配置vip地址，且关闭vip的arp应答</td>
+</tr>
+<tr>
+<td>NAT</td>
+<td>通过修改该数据包目的ip地址的方式经过三层转发到达应用服务器</td>
+<td>因为NAT后的目的ip是RIP，所以不需要在应用服务器上配置VIP了</td>
+<td>1. 由于目的ip被修改了，所以应用服务器如果直接响应给客户端的话，其源ip是RIP，而客户端看到的是VIP，客户端就不会正常接收这个应答，因此需要将回程流量回到负载均衡器，修改源IP为VIP后再回到客户端。由于来回流量都会经过DS，因此DS很容易成为性能瓶颈，此种模式下性能比DR模式差。<br>2. 为了流量能够回到负载均衡器的前提就是负载均衡器需要以网关的形式存在网络中，让默认路由指向负载均衡器。</td>
+</tr>
+<tr>
+<td>tunnel</td>
+<td>采用NAT模式时，由于请求和响应报文都必须经过DS，为了解决这个问题，DS可以把请求报文通过IP隧道转发到真实服务器，真实服务器解IP隧道封装，将响应直接返回给客户端。</td>
+<td>由于DS只处理入方向报文，而一般服务应答数据要比请求数据大得多，采用TUN模式后，集群吞吐量一般可以 提高10倍。</td>
+<td>1. 需要RS支持隧道技术</td>
+</tr>
+<tr>
+<td>FULLNAT</td>
+<td>为了解决NAT模式下，负载均衡器必须以网关形式存在，可以在做目的地址替换的前提下，在做一次源地址替换，这样回程流量就可以正常走路由到达DS</td>
+<td>对网络要求比较低，负载均衡可以对RS完全透明，DS和RS之间走正常的三层路由，对组网无要求。</td>
+<td>1. 由于做了两次NAT，所以性能要稍弱于NAT模式<br>2. 由于做了SNAT，因此RS丢失了CIP的信息<br>3. 由于做了SNAT，因为DS需要维护会话状态</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="5-硬件负载均衡"><a href="#5-硬件负载均衡" class="headerlink" title="5. 硬件负载均衡"></a>5. 硬件负载均衡</h2><p>典型的硬件负载均衡服务器有F5服务器，主流互联网公司目前都倾向于用软件负载均衡替代硬件负载均衡，主要是其主要存在以下问题</p>
+<ul>
+<li>硬件成本：中低端硬件负载均衡价格在数十万，高端的上百万，价格非常昂贵。当我们需要组成一个高可用集群时，需要数台机器，成本异常高。</li>
+<li>人力成本：硬件负载均衡功能比较强大，配置比较灵活，这也导致在维护上，我们需要一些经过专业培训的人员，就增加了人力成本。</li>
+<li>时间成本：当使用的过程中遇到bug或者新需求需要厂商提供新版本的时候，我们需要经过繁琐的流程向厂商上报，然后厂商再发布新版本供我们升级，时间周期非常长，在高速发展的互联网行业，这种周期是无法接受的。</li>
+</ul>
+<h2 id="6-负载均衡算法"><a href="#6-负载均衡算法" class="headerlink" title="6. 负载均衡算法"></a>6. 负载均衡算法</h2><ol>
+<li><p>轮询调度<br>轮询调度（Round Robin 简称’RR’）算法就是按依次循环的方式将请求调度到不同的服务器上，该算法最大的特点就是实现简单。轮询算法假设所有的服务器处理请求的能力都一样的，调度器会将所有的请求平均分配给每个真实服务器。</p>
+</li>
+<li><p>加权轮询调度<br>加权轮询（Weight Round Robin 简称’WRR’）算法主要是对轮询算法的一种优化与补充，LVS会考虑每台服务器的性能，并给每台服务器添加一个权值，如果服务器A的权值为1，服务器B的权值为2，则调度器调度到服务器B的请求会是服务器A的两倍。权值越高的服务器，处理的请求越多。</p>
+</li>
+<li><p>最小连接调度<br>最小连接调度（Least Connections 简称’LC’）算法是把新的连接请求分配到当前连接数最小的服务器。最小连接调度是一种动态的调度算法，它通过服务器当前活跃的连接数来估计服务器的情况。调度器需要记录各个服务器已建立连接的数目，当一个请求被调度到某台服务器，其连接数加1；当连接中断或者超时，其连接数减1。</p>
+</li>
+<li><p>加权最小连接调度<br>加权最少连接（Weight Least Connections 简称’WLC’）算法是最小连接调度的超集，各个服务器相应的权值表示其处理性能。服务器的缺省权值为1，系统管理员可以动态地设置服务器的权值。加权最小连接调度在调度新连接时尽可能使服务器的已建立连接数和其权值成比例。调度器可以自动问询真实服务器的负载情况，并动态地调整其权值。</p>
+</li>
+<li><p>基于局部的最少连接<br>基于局部的最少连接调度（Locality-Based Least Connections 简称’LBLC’）算法是针对请求报文的目标IP地址的负载均衡调度，目前主要用于Cache集群系统，因为在Cache集群客户请求报文的目标IP地址是变化的。这里假设任何后端服务器都可以处理任一请求，算法的设计目标是在服务器的负载基本平衡情况下，将相同目标IP地址的请求调度到同一台服务器，来提高各台服务器的访问局部性和Cache命中率，从而提升整个集群系统的处理能力。LBLC调度算法先根据请求的目标IP地址找出该目标IP地址最近使用的服务器，若该服务器是可用的且没有超载，将请求发送到该服务器；若服务器不存在，或者该服务器超载且有服务器处于一半的工作负载，则使用’最少连接’的原则选出一个可用的服务器，将请求发送到服务器。</p>
+</li>
+<li><p>带复制的基于局部性的最少连接<br>带复制的基于局部性的最少连接（Locality-Based Least Connections with Replication  简称’LBLCR’）算法也是针对目标IP地址的负载均衡，目前主要用于Cache集群系统，它与LBLC算法不同之处是它要维护从一个目标IP地址到一组服务器的映射，而LBLC算法维护从一个目标IP地址到一台服务器的映射。按’最小连接’原则从该服务器组中选出一一台服务器，若服务器没有超载，将请求发送到该服务器；若服务器超载，则按’最小连接’原则从整个集群中选出一台服务器，将该服务器加入到这个服务器组中，将请求发送到该服务器。同时，当该服务器组有一段时间没有被修改，将最忙的服务器从服务器组中删除，以降低复制的程度。</p>
+</li>
+<li><p>目标地址散列调度<br>目标地址散列调度（Destination Hashing 简称’DH’）算法先根据请求的目标IP地址，作为散列键（Hash Key）从静态分配的散列表找出对应的服务器，若该服务器是可用的且并未超载，将请求发送到该服务器，否则返回空。</p>
+</li>
+<li><p>源地址散列调度U<br>源地址散列调度（Source Hashing  简称’SH’）算法先根据请求的源IP地址，作为散列键（Hash Key）从静态分配的散列表找出对应的服务器，若该服务器是可用的且并未超载，将请求发送到该服务器，否则返回空。它采用的散列函数与目标地址散列调度算法的相同，它的算法流程与目标地址散列调度算法的基本相似。</p>
+</li>
+<li><p>最短的期望的延迟<br>最短的期望的延迟调度（Shortest Expected Delay 简称’SED’）算法基于WLC算法。举个例子吧，ABC三台服务器的权重分别为1、2、3 。那么如果使用WLC算法的话一个新请求进入时它可能会分给ABC中的任意一个。使用SED算法后会进行一个运算</p>
+</li>
+</ol>
+<p>A：（1+1）/1=2   B：（1+2）/2=3/2   C：（1+3）/3=4/3   就把请求交给得出运算结果最小的服务器。</p>
+<ol>
+<li>最少队列调度<br>最少队列调度（Never Queue 简称’NQ’）算法，无需队列。如果有realserver的连接数等于0就直接分配过去，不需要在进行SED运算。</li>
+</ol>
+<h2 id="7-DNS-ECMP-LVS-NGINX的高可靠、高性能方案"><a href="#7-DNS-ECMP-LVS-NGINX的高可靠、高性能方案" class="headerlink" title="7. DNS + ECMP + LVS + NGINX的高可靠、高性能方案"></a>7. DNS + ECMP + LVS + NGINX的高可靠、高性能方案</h2><p>在真实生产环境中， 有时候一种负载均衡器并不能完全解决问题，我们可以用多种组合方式来实现高可靠和高性能。</p>
+<ol>
+<li>通过DNS解析器，将来自不同区域的请求解析到不同的IDC机房，如将背景客户解析到北京机房，将上海客户解析到上海机房，以此来实现基于DNS的负载均衡和流量路径优化。</li>
+<li>一台lvs机器在面临高并发的情况下存在性能瓶颈且有单点故障风险，因此可以利用OSPF + ECMP，通过五元组hash将请求调度到不同的lvs节点。同时为了解决由于lvs节点上下线以及交换机hash策略变化带来的流量路径改变问题，需要在不同的lvs节点之间进行会话同步。</li>
+<li>在web应用场景下，由于nginx在api网关场景下的出色表现，我们可以考虑在lvs后面在加一层nginx作为反向代理服务器，同时充当部分负载均衡的能力。</li>
+</ol>
+<h2 id="8-参考链接"><a href="#8-参考链接" class="headerlink" title="8. 参考链接"></a>8. 参考链接</h2><ol>
+<li><a href="https://tech.meituan.com/2017/01/05/mgw.html" target="_blank" rel="noopener">MGW——美团点评高性能四层负载均衡</a></li>
+<li><a href="https://cloud.tencent.com/developer/article/1082047" target="_blank" rel="noopener">四层、七层负载均衡的区别</a></li>
+<li><a href="https://www.cnblogs.com/jing99/p/14616653.html" target="_blank" rel="noopener">Nginx学习之Nginx高性能的实现原理</a></li>
+<li><a href="https://segmentfault.com/a/1190000020299695" target="_blank" rel="noopener">【均衡负载之LVS 系列四】 - OSPF(ECMP)-LVS 集群</a></li>
+</ol>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2022/05/01/计算机网络/负载均衡/">https://shinerio.cc/2022/05/01/计算机网络/负载均衡/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/ELB/">ELB</a>
+            <a href="/tags/负载均衡/">负载均衡</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2022/05/04/计算机网络/4W For NAT/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">NAT Overview</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2022/01/16/系统设计/基于Micrometer和Prometheus实现度量和监控的方案/">
+        <span class="next-text nav-default">基于Micrometer和Prometheus实现度量和监控的方案</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2022/05/01/计算机网络/负载均衡/';
+        this.page.identifier = '2022/05/01/计算机网络/负载均衡/';
+        this.page.title = '负载均衡';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

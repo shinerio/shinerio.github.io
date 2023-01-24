@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="服务器推技术"><meta name="keywords" content="系统设计, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2018/12/06/系统设计/服务器推技术/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>服务器推技术 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">服务器推技术
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-12-06
+        </span><span class="post-category">
+            <a href="/categories/系统设计/">系统设计</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#实现方式"><span class="toc-text">实现方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#短轮询"><span class="toc-text">短轮询</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#comet-长轮询"><span class="toc-text">comet(长轮询)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#长连接"><span class="toc-text">长连接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#websocket"><span class="toc-text">websocket</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p>服务器推送（Server Push）是一类特定技术的总称。一般情况，客户端与服务器的交互方式是：客户端发起请求，服务器收到请求返回响应结果，客户端接收响应结果进行处理。从上述的交互过程中可以看出，客户端想要获取数据，需要自主地向服务端发起请求，获取相关数据。</p>
+<a id="more"></a>
+<p>在大多数场景下，客户端的“主动式”行为已经可以满足需求了。然而，在一些场景下，需要服务器“主动”向客户端推送数据。例如：</p>
+<ul>
+<li>即时通信系统如聊天室等</li>
+<li><strong>实时的数据监控与统计</strong></li>
+<li>股票财经类看板等等</li>
+</ul>
+<p>这类应用有几个重要特点：要求较高的实时性，同时客户端无法预期数据更新周期，在服务端获取最新数据时，需要将信息同步给客户端，而无须客户端发出请求。这类应用场景被称为“服务器推送”（Server Push）。“服务器推送”技术由来已久，从最初的简单轮询，到后来基于长轮询的COMET，到HTML5规范的SSE，以及实现全双工的WebSocket协议，“服务器推送”的技术不断发展。</p>
+<h2 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h2><ul>
+<li>短轮询</li>
+<li>comet(长轮询)</li>
+<li>websocket</li>
+<li>sse(长连接)</li>
+</ul>
+<h2 id="短轮询"><a href="#短轮询" class="headerlink" title="短轮询"></a>短轮询</h2><p>简易轮询本质上就是在前端创建一个定时器，每隔一定的时间去查询后端服务，如果有数据则进行相应的处理。本质上还是浏览器发送请求，服务端接受请求的一个过程。</p>
+<p><strong>优点</strong>：这种做法的优点就是非常简单，几乎不需要进行任何额外的配置或开发</p>
+<p><strong>缺点</strong>: 这种相当于定时轮询的方式在获取数据上存在显而易见的延迟，要想降低延迟，只能缩短轮询间隔；而另一方面，每次轮询都会进行一次完整的HTTP请求，如果没有数据更新，相当于是一次“浪费”的请求，对服务端资源也是一种浪费。因此，轮询的时间间隔需要进行仔细考虑。轮询的间隔过长，会导致用户不能及时接收到更新的数据；轮询的间隔过短，会导致查询请求过多，增加服务器端的负担。</p>
+<h2 id="comet-长轮询"><a href="#comet-长轮询" class="headerlink" title="comet(长轮询)"></a>comet(长轮询)</h2><p>基于HTTP长连接、无须在浏览器端安装插件的“服务器推送”技术为“Comet”。</p>
+<p>常用的COMET分为两种：基于AJAX的长轮询（long-polling）技术，以及基于iframe的长连接流（stream）模式。</p>
+<ul>
+<li><p>基于Ajax的长轮询</p>
+<p>在简单轮询中，我们会每隔一定的时间向后端请求。这种方式最大的问题之一就是，数据的获取延迟受限于轮询间隔，无法第一时间获取服务想要推送数据。长轮询是在此基础上的一种改进，客户端发起请求后，服务端会<strong>保持住该连接</strong>，直到后端有数据更新后，才会将数据返回给客户端；客户端在收到响应结果后再次发送请求，如此循环往复。</p>
+</li>
+</ul>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20190831225525.png" alt></p>
+<p>这样，服务端一旦有数据想要推送，可以及时送达到客户端。</p>
+<p>AJAX的出现使得JavaScript可以调用XMLHttpRequest对象发出发出Http请求，JavaScript响应处理函数根据服务器返回的信息对HTML页面的显示进行更新。</p>
+<ul>
+<li>基于iframe的长连接流（stream）模式</li>
+</ul>
+<p>Iframe是html标记，这个标记的src属性会保持对指定服务器的长连接请求，服务器端则可以不停地返回数据，这种方式跟传统的服务器推送则更接近。在长轮询的方式中，浏览器在收到数据后会直接调用JS回调函数，但是这种方式是通过返回数据中嵌入JS脚本的方式，如</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;js_func(“data <span class="keyword">from</span> server ”)&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p>服务器端将返回的数据作为回调函数的参数，浏览器在收到数据后就会执行这段JS脚本。使用 iframe 请求一个长连接有一个很明显的不足之处：IE、Morzilla Firefox 下端的进度栏都会显示加载没有完成，而且 IE 上方的图标会不停的转动，表示加载正在进行。Google 使用一个称为“htmlfile”的 ActiveX 解决了在 IE 中的加载显示问题，并将这种方法用到了 gmail+gtalk 产品中。</p>
+<p>使用Comet技术需要注意两点：</p>
+<ol>
+<li><p>控制信息与数据信息使用不同的HTTP连接</p>
+<p>使用长连接时，存在一个很常见的场景：客户端网页需要关闭，而服务器端还处在读取数据的堵塞状态，客户端需要及时通知服务器端关闭数据连接。服务器在收到关闭请求后首先要从读取数据的阻塞状态唤醒，然后释放为这个客户端分配的资源，再关闭连接。所以在设计上，我们需要使客户端的控制请求和数据请求使用不同的 HTTP 连接，才能使控制请求不会被阻塞。在实现上，如果是基于 iframe 流方式的长连接，客户端页面需要使用两个 iframe，一个是控制帧，用于往服务器端发送控制请求，控制请求能很快收到响应，不会被堵塞；一个是显示帧，用于往服务器端发送长连接请求。如果是基于 AJAX 的长轮询方式，客户端可以异步地发出一个 XMLHttpRequest 请求，通知服务器端关闭数据连接。</p>
+</li>
+<li><p>在客户和服务器之间保持“心跳”信息</p>
+<p>在浏览器与服务器之间维持一个长连接会为通信带来一些不确定性：因为数据传输是随机的，客户端不知道何时服务器才有数据传送。服务器端需要确保当客户端不再工作时，释放为这个客户端分配的资源，防止内存泄漏。</p>
+<p>在实现上：服务器端在阻塞读时会设置一个时限，超时后阻塞读调用会返回，同时发给客户端没有新数据到达的心跳信息。此时如果客户端已经关闭，服务器往通道写数据会出现异常，服务器端就会及时释放为这个客户端分配的资源。</p>
+</li>
+</ol>
+<p><strong>总结</strong>： 轮询与长轮询都是基于HTTP的，两者本身存在着缺陷:轮询需要更快的处理速度；长轮询则更要求处理并发的能力;两者都是“被动型服务器”的体现:服务器不会主动推送信息，而是在客户端发送ajax请求后进行返回的响应。而理想的模型是”在服务器端数据有了变化后，可以主动推送给客户端”,这种”主动型”服务器是解决这类问题的很好的方案。Web Sockets就是这样的方案。</p>
+<h2 id="长连接"><a href="#长连接" class="headerlink" title="长连接"></a>长连接</h2><p>SSE (Server-Sent Events) 是HTML5标准中的一部分,其实现原理类似于基于iframe的长连接模式。HTTP响应内容有一种特殊的<code>content-type —— text/event-stream</code>，该响应头标识了响应内容为事件流，客户端不会关闭连接，而是等待服务端不断得发送响应结果。SSE规范比较简单，主要分为两个部分：浏览器端可提供JavaScript使用的<code>EventSource</code>对象，以及服务器端与浏览器端之间的通讯协议。在浏览器中可以通过<code>EventSource</code>构造函数来创建该对象</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> source = <span class="keyword">new</span> EventSource(<span class="string">'/sse'</span>);</span><br></pre></td></tr></table></figure>
+<p>而SSE的响应内容可以看成是一个事件流，由不同的事件所组成。这些事件会触发前端<code>EventSource</code>对象上的方法。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 默认的事件</span></span><br><span class="line">source.addEventListener(<span class="string">'message'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(e.data);</span><br><span class="line">&#125;, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用户自定义的事件名</span></span><br><span class="line">source.addEventListener(<span class="string">'my_msg'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</span><br><span class="line">  process(e.data);</span><br><span class="line">&#125;, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 监听连接打开</span></span><br><span class="line">source.addEventListener(<span class="string">'open'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'open sse'</span>);</span><br><span class="line">&#125;, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 监听错误</span></span><br><span class="line">source.addEventListener(<span class="string">'error'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'error'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><code>EventSource</code>通过事件监听的方式来工作。注意上面的代码监听了<code>my_msg</code>事件，SSE支持自定义事件，默认事件通过监听<code>message</code>来获取数据。</p>
+<p>SSE中，每个事件由类型和数据两部分组成，同时每个事件可以有一个可选的标识符。不同事件的内容之间通过仅包含回车符和换行符的空行（”\r\n”）来分隔。每个事件的数据可能由多行组成。</p>
+<ul>
+<li>类型为空白，表示该行是注释，会在处理时被忽略。</li>
+<li>类型为 data，表示该行包含的是数据。以 data 开头的行可以出现多次。所有这些行都是该事件的数据。</li>
+<li>类型为 event，表示该行用来声明事件的类型。浏览器在收到数据时，会产生对应类型的事件。例如我在上面自定义的<code>my_msg</code>事件。</li>
+<li>类型为 id，表示该行用来声明事件的标识符。</li>
+<li>类型为 retry，表示该行用来声明浏览器在连接断开之后进行再次连接之前的等待时间。</li>
+</ul>
+<p>服务器端实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> app = http.createServer((req, res) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> sseSend = data =&gt; &#123;</span><br><span class="line">        res.write(<span class="string">'retry:10000\n'</span>);           </span><br><span class="line">        res.write(<span class="string">'event:my_msg\n'</span>);</span><br><span class="line">        <span class="comment">// 注意文本数据传输</span></span><br><span class="line">        res.write(`data:$&#123;JSON.stringify(data)&#125;\n\n`);</span><br><span class="line">    &#125;;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// 注意设置响应头的content-type</span></span><br><span class="line">    res.setHeader(<span class="string">'content-type'</span>, <span class="string">'text/event-stream'</span>);</span><br><span class="line">    <span class="comment">// 一般不会缓存SSE数据</span></span><br><span class="line">    res.setHeader(<span class="string">'cache-control'</span>, <span class="string">'no-cache'</span>);</span><br><span class="line">    res.setHeader(<span class="string">'connection'</span>, <span class="string">'keep-alive'</span>);</span><br><span class="line">    res.statusCode = <span class="number">200</span>;</span><br><span class="line"> </span><br><span class="line">    res.write(<span class="string">'retry:10000\n'</span>);</span><br><span class="line">    res.write(<span class="string">'event:my_msg\n\n'</span>);</span><br><span class="line"> </span><br><span class="line">    EVENT.addListener(MSG_POST, sseSend);</span><br><span class="line"> </span><br><span class="line">    req.socket.on(<span class="string">'close'</span>, () =&gt; &#123;</span><br><span class="line">        console.log(<span class="string">'sse socket close'</span>);</span><br><span class="line">        EVENT.removeListener(MSG_POST, sseSend);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="websocket"><a href="#websocket" class="headerlink" title="websocket"></a>websocket</h2><p>WebSocket与http协议一样都是基于TCP的。WebSocket其实不仅仅限于“服务器推送”了，它是一个全双工的协议，适用于需要进行复杂双向数据通讯的场景。因此也有着更复杂的规范。当客户端要和服务端建立WebSocket连接时，在客户端和服务器的握手过程中，客户端首先会向服务端发送一个HTTP请求，包含一个<code>Upgrade</code>请求头来告知服务端客户端想要建立一个WebSocket连接。</p>
+<p>客户端建立一个WebSocket连接</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ws = <span class="keyword">new</span> WebSocket(<span class="string">'ws://127.0.0.1:8080'</span>);</span><br></pre></td></tr></table></figure>
+<p>当然，类似于<code>HTTP</code>和<code>HTTPS</code>，<code>ws</code>相对应的也有<code>wss</code>用以建立安全连接。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Accept-Encoding: gzip, deflate, br</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.9,en;q=0.8</span><br><span class="line">Cache-Control: no-cache</span><br><span class="line">Connection: Upgrade</span><br><span class="line">Cookie: Hm_lvt_4e63388c959125038aabaceb227cea91=1527001174</span><br><span class="line">Host: 127.0.0.1:8080</span><br><span class="line">Origin: http://127.0.0.1:8080</span><br><span class="line">Pragma: no-cache</span><br><span class="line">Sec-WebSocket-Extensions: permessage-deflate; client_max_window_bits</span><br><span class="line">Sec-WebSocket-Key: 0lUPSzKT2YoUlxtmXvdp+w==</span><br><span class="line">Sec-WebSocket-Version: 13</span><br><span class="line">Upgrade: websocket</span><br></pre></td></tr></table></figure>
+<p>而服务器在收到请求后进行处理，响应头如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Connection: Upgrade</span><br><span class="line">Origin: http://127.0.0.1:8080</span><br><span class="line">Sec-WebSocket-Accept: 3NOOJEzyscVfEf0q14gkMrpV20Q=</span><br><span class="line">Upgrade: websocket</span><br></pre></td></tr></table></figure>
+<p>表示升级到了WebSocket协议。</p>
+<p>注意，上面的请求头中有一个<code>Sec-WebSocket-Key</code>，这其实和加密、安全性关系不大，最主要的作用是来验证服务器是否真的正确“理解”了WebSocket、该WebSocket连接是否有效。服务器会使用<code>Sec-WebSocket-Key</code>，并根据一个固定的算法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mask = &quot;258EAFA5-E914-47DA-95CA-C5AB0DC85B11&quot;;  // 一个规定的字符串</span><br><span class="line">accept = base64(sha1(key + mask));</span><br></pre></td></tr></table></figure>
+<p>生成<code>Sec-WebSocket-Accept</code>响应头字段，交由浏览器验证。接下来，浏览器与服务器之间就可以愉快地进行双向通信了。在浏览器端，建立WebSocket连接后，可以通过<code>onmessage</code>来监听数据信息。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ws = <span class="keyword">new</span> WebSocket(<span class="string">'ws://127.0.0.1:8080'</span>);</span><br><span class="line">ws.onopen = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'open websocket'</span>);</span><br><span class="line">&#125;;</span><br><span class="line">ws.onmessage = <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> data = <span class="built_in">JSON</span>.parse(e.data);</span><br><span class="line">    process(data);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在服务器端，由于WebSocket协议具有较多的规范与细节需要处理，因此建议使用一些封装较完备的第三方库。例如node中的<a href="https://link.juejin.im/?target=https%3A%2F%2Fgithub.com%2Ftheturtle32%2FWebSocket-Node" target="_blank" rel="noopener">websocket-node</a>和著名的<a href="https://link.juejin.im/?target=https%3A%2F%2Fgithub.com%2Fsocketio%2Fsocket.io" target="_blank" rel="noopener">socket.io</a>。node部分代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">'http'</span>);</span><br><span class="line"><span class="keyword">const</span> WebSocketServer = <span class="built_in">require</span>(<span class="string">'websocket'</span>).server;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">const</span> app = http.createServer(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;);</span><br><span class="line">app.listen(process.env.PORT || <span class="number">8080</span>);</span><br><span class="line"><span class="keyword">const</span> ws = <span class="keyword">new</span> WebSocketServer(&#123;</span><br><span class="line">    httpServer: app</span><br><span class="line">&#125;);</span><br><span class="line">ws.on(<span class="string">'request'</span>, req =&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> connection = req.accept(<span class="literal">null</span>, req.origin);</span><br><span class="line">    <span class="keyword">let</span> wsSend = <span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">        connection.send(<span class="built_in">JSON</span>.stringify(data));</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">// 接收客户端发送的数据</span></span><br><span class="line">    connection.on(<span class="string">'message'</span>, msg =&gt; &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(msg);</span><br><span class="line">    &#125;);</span><br><span class="line">    connection.on(<span class="string">'close'</span>, con =&gt; &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'websocket close'</span>);</span><br><span class="line">        EVENT.removeListener(MSG_POST, wsSend);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="comment">// 当有数据更新时，使用WebSocket连接来向客户端发送数据</span></span><br><span class="line">    EVENT.addListener(MSG_POST, wsSend);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2018/12/06/系统设计/服务器推技术/">https://shinerio.cc/2018/12/06/系统设计/服务器推技术/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/系统设计/">系统设计</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2019/03/05/java/LinkedList/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">LinkedList源码阅读</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2018/04/01/algorithm/动态查找树/">
+        <span class="next-text nav-default">动态查找树</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2018/12/06/系统设计/服务器推技术/';
+        this.page.identifier = '2018/12/06/系统设计/服务器推技术/';
+        this.page.title = '服务器推技术';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

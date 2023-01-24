@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="堆参数配置"><meta name="keywords" content="java, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2016/12/16/java/jvm/堆参数配置/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>堆参数配置 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">堆参数配置
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-12-16
+        </span><span class="post-category">
+            <a href="/categories/JVM/">JVM</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Xms和-Xmx"><span class="toc-text">-Xms和-Xmx</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#初始堆、最大堆和系统可用内存"><span class="toc-text">初始堆、最大堆和系统可用内存</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#新生代配置"><span class="toc-text">新生代配置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p>堆空间是JAVA程序的重压组成部分，几乎所有应用相关的内存空间都和堆有关。</p>
+<h1 id="Xms和-Xmx"><a href="#Xms和-Xmx" class="headerlink" title="-Xms和-Xmx"></a>-Xms和-Xmx</h1><p>一般来说虚拟机会尽可能维持在初堆空间范围内（-Xms指定）运行，但是如果初始堆空间耗尽，虚拟机将会对堆空间进行扩展，其扩展上限为最大空间用-Xmx指定</p>
+<a id="more"></a>
+<h1 id="初始堆、最大堆和系统可用内存"><a href="#初始堆、最大堆和系统可用内存" class="headerlink" title="初始堆、最大堆和系统可用内存"></a>初始堆、最大堆和系统可用内存</h1><p>代码测试：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HeapAlloc</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"MaxMemory="</span>+Runtime.getRuntime().maxMemory()+<span class="string">"bytes"</span>);</span><br><span class="line">		System.out.println(<span class="string">"Free memory="</span>+Runtime.getRuntime().freeMemory()+<span class="string">"bytes"</span>);</span><br><span class="line">		System.out.println(<span class="string">"Total memory="</span>+Runtime.getRuntime().totalMemory()+<span class="string">"bytes"</span>);</span><br><span class="line">		</span><br><span class="line">		System.out.println(<span class="string">"我是分割线----------------------------------------"</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">byte</span> [] b = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1</span>*<span class="number">1024</span>*<span class="number">1024</span>]; <span class="comment">//b数组分配了1M的空间</span></span><br><span class="line">		System.out.println(<span class="string">"MaxMemory="</span>+Runtime.getRuntime().maxMemory()+<span class="string">"bytes"</span>);</span><br><span class="line">		System.out.println(<span class="string">"Free memory="</span>+Runtime.getRuntime().freeMemory()+<span class="string">"bytes"</span>);</span><br><span class="line">		System.out.println(<span class="string">"Total memory="</span>+Runtime.getRuntime().totalMemory()+<span class="string">"bytes"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MaxMemory=1884815360bytes</span><br><span class="line">Free memory=126929920bytes</span><br><span class="line">Total memory=128974848bytes</span><br><span class="line">我是分割线----------------------------------------</span><br><span class="line">MaxMemory=1884815360bytes</span><br><span class="line">Free memory=125881328bytes</span><br><span class="line">Total memory=128974848bytes</span><br></pre></td></tr></table></figure>
+<p>可以看出第二次空余内存减少了1M</p>
+<p>通过设置<code>-Xmx20m -Xms5m -XX:+PrintGCDetails -XX:+PrintCommandLineFlags -XX:+UseSerialGC</code>参数再次运行</p>
+<p>可得输出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">-XX:InitialHeapSize=5242880 -XX:MaxHeapSize=20971520 -XX:+PrintCommandLineFlags -XX:+PrintGCDetails -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:-UseLargePagesIndividualAllocation -XX:+UseSerialGC </span><br><span class="line">MaxMemory=20316160bytes</span><br><span class="line">Free memory=5319728bytes</span><br><span class="line">Total memory=6094848bytes</span><br><span class="line">我是分割线----------------------------------------</span><br><span class="line">[GC (Allocation Failure) [DefNew: 756K-&gt;192K(1856K), 0.0032907 secs] 756K-&gt;516K(5952K), 0.0034158 secs] [Times: user=0.02 sys=0.00, real=0.00 secs] </span><br><span class="line">MaxMemory=20316160bytes</span><br><span class="line">Free memory=4448984bytes</span><br><span class="line">Total memory=6094848bytes</span><br><span class="line">Heap</span><br><span class="line"> def new generation   total 1856K, used 1333K [0x00000000fec00000, 0x00000000fee00000, 0x00000000ff2a0000)</span><br><span class="line">  eden space 1664K,  68% used [0x00000000fec00000, 0x00000000fed1d438, 0x00000000feda0000)</span><br><span class="line">  from space 192K, 100% used [0x00000000fedd0000, 0x00000000fee00000, 0x00000000fee00000)</span><br><span class="line">  to   space 192K,   0% used [0x00000000feda0000, 0x00000000feda0000, 0x00000000fedd0000)</span><br><span class="line"> tenured generation   total 4096K, used 324K [0x00000000ff2a0000, 0x00000000ff6a0000, 0x0000000100000000)</span><br><span class="line">   the space 4096K,   7% used [0x00000000ff2a0000, 0x00000000ff2f1220, 0x00000000ff2f1400, 0x00000000ff6a0000)</span><br><span class="line"> Metaspace       used 2482K, capacity 4486K, committed 4864K, reserved 1056768K</span><br><span class="line">  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K</span><br></pre></td></tr></table></figure>
+<p>初始堆空间 5<em>1024*</em>1024=5242880</p>
+<p>最大堆空间20<em>1024</em>1024 = 20971520</p>
+<p>打印最大可用内存为20316160（与垃圾回收有关，与计算机对from/to空间估算大小有关)</p>
+<blockquote>
+<p>实际项目中可以将-Xms与最大堆-Xmx设置相等，可以减少垃圾回收次数，提高系统性能</p>
+</blockquote>
+<h1 id="新生代配置"><a href="#新生代配置" class="headerlink" title="新生代配置"></a>新生代配置</h1><p>-Xmn可以用于设置新生代大小，设置一个较大的新生代会减少老年代的大小，这个参数对系统性能以及GC行为有很大的影响。新生代的大小一般设置为整个堆空间的1/3到1/4</p>
+<p>-XX:SurvivorRatio用来设置eden空间和from/to空间的比例</p>
+<p>测试程序：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NewSizeDemo</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">byte</span>[] b = <span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123; </span><br><span class="line">			b = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1</span>*<span class="number">1024</span>*<span class="number">1024</span>];     <span class="comment">//连续向系统请求10m</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>第一次使用参数-Xmx20m -Xms20m -Xmn1m -XX:SurvivorRatio=2 -XX:+PrintGCDetails</li>
+</ul>
+<p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[GC (Allocation Failure) [PSYoungGen: 510K-&gt;496K(1024K)] 510K-&gt;512K(19968K), 0.0433597 secs] [Times: user=0.00 sys=0.00, real=0.04 secs] </span><br><span class="line">Heap</span><br><span class="line"> PSYoungGen      total 1024K, used 708K [0x00000000ffe80000, 0x0000000100000000, 0x0000000100000000)</span><br><span class="line">  eden space 512K, 41% used [0x00000000ffe80000,0x00000000ffeb50a0,0x00000000fff00000)</span><br><span class="line">  from space 512K, 96% used [0x00000000fff00000,0x00000000fff7c020,0x00000000fff80000)</span><br><span class="line">  to   space 512K, 0% used [0x00000000fff80000,0x00000000fff80000,0x0000000100000000)</span><br><span class="line"> ParOldGen       total 18944K, used 10256K [0x00000000fec00000, 0x00000000ffe80000, 0x00000000ffe80000)</span><br><span class="line">  object space 18944K, 54% used [0x00000000fec00000,0x00000000ff6040a0,0x00000000ffe80000)</span><br><span class="line"> Metaspace       used 2476K, capacity 4486K, committed 4864K, reserved 1056768K</span><br><span class="line">  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K</span><br><span class="line">Java HotSpot(TM) 64-Bit Server VM warning: NewSize (1536k) is greater than the MaxNewSize (1024k). A new max generation size of 1536k will be used.</span><br></pre></td></tr></table></figure>
+<p>eden/from(to)=2,eden=512k,from=to=256k</p>
+<p>看最后的警告信息。新生代内存过小，系统采用了新的1536k作为新生代，均分给eden,from,to</p>
+<p>由于eden不过1m，所以触发了一次新生代GC，对eden区进行了部分回收，由于新生代无法为数组预留足够空间，故数组分配在了老年区。</p>
+<ul>
+<li>-Xmx20m -Xms20m -Xmn7m -XX:SurvivorRatio=2 -XX:+PrintGCDetails</li>
+</ul>
+<p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[GC (Allocation Failure) [PSYoungGen: 3883K-&gt;1512K(5632K)] 3883K-&gt;1584K(18944K), 0.0039618 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] </span><br><span class="line">[GC (Allocation Failure) [PSYoungGen: 4746K-&gt;1528K(5632K)] 4818K-&gt;1600K(18944K), 0.0039290 secs] [Times: user=0.02 sys=0.00, real=0.00 secs] </span><br><span class="line">[GC (Allocation Failure) [PSYoungGen: 4670K-&gt;1528K(5632K)] 4742K-&gt;1600K(18944K), 0.0023263 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] </span><br><span class="line">Heap</span><br><span class="line"> PSYoungGen      total 5632K, used 2634K [0x00000000ff900000, 0x0000000100000000, 0x0000000100000000)</span><br><span class="line">  eden space 4096K, 27% used [0x00000000ff900000,0x00000000ffa14930,0x00000000ffd00000)</span><br><span class="line">  from space 1536K, 99% used [0x00000000ffd00000,0x00000000ffe7e040,0x00000000ffe80000)</span><br><span class="line">  to   space 1536K, 0% used [0x00000000ffe80000,0x00000000ffe80000,0x0000000100000000)</span><br><span class="line"> ParOldGen       total 13312K, used 72K [0x00000000fec00000, 0x00000000ff900000, 0x00000000ff900000)</span><br><span class="line">  object space 13312K, 0% used [0x00000000fec00000,0x00000000fec12000,0x00000000ff900000)</span><br><span class="line"> Metaspace       used 2476K, capacity 4486K, committed 4864K, reserved 1056768K</span><br><span class="line">  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K</span><br></pre></td></tr></table></figure>
+<p>eden区有足够的空间，因此所有的数组都首先分配在eden区，但是eden区并不足以存放10m，幸运的是，内次为数组分配空间时，之前分配的空间也是去了引用，成为垃圾回收的对象，因此触发了三次垃圾回收。</p>
+<p>最终结果是:所有的数组分配都在eden区进行，在GC过程中，部分失去引用的空间晋升到老年代</p>
+<ul>
+<li>-Xmx20m -Xms20m -Xmn15m -XX:SurvivorRatio=8 -XX:+PrintGCDetails</li>
+</ul>
+<p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Heap</span><br><span class="line"> PSYoungGen      total 13824K, used 11526K [0x00000000ff100000, 0x0000000100000000, 0x0000000100000000)</span><br><span class="line">  eden space 12288K, 93% used [0x00000000ff100000,0x00000000ffc41828,0x00000000ffd00000)</span><br><span class="line">  from space 1536K, 0% used [0x00000000ffe80000,0x00000000ffe80000,0x0000000100000000)</span><br><span class="line">  to   space 1536K, 0% used [0x00000000ffd00000,0x00000000ffd00000,0x00000000ffe80000)</span><br><span class="line"> ParOldGen       total 5120K, used 0K [0x00000000fec00000, 0x00000000ff100000, 0x00000000ff100000)</span><br><span class="line">  object space 5120K, 0% used [0x00000000fec00000,0x00000000fec00000,0x00000000ff100000)</span><br><span class="line"> Metaspace       used 2473K, capacity 4486K, committed 4864K, reserved 1056768K</span><br><span class="line">  class space    used 272K, capacity 386K, committed 512K, reserved 1048576K</span><br></pre></td></tr></table></figure>
+<p>eden区大小为15*8/10=12M完全满足了10M空间的需求，因此整个过程中没有触发垃圾回收机制，from/to和老年代的使用率均为0</p>
+<blockquote>
+<p>-XX:NewSize指定新生代初始大小，-XX:MaxNewSize指定新生代最大空间 -Xmn为两者的额缩写形式</p>
+<p>也可以使用-XX:NewRatio指定老年代/新生代比例</p>
+</blockquote>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>堆空间分布会对系统执行产生一定影响，实际工程中，应根据系统的特点做合理的设置，尽可能将对象预留在新生代，减少老年代GC的此次数。</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/jvm/jvm_heap_param.png" alt></p>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2016/12/16/java/jvm/堆参数配置/">https://shinerio.cc/2016/12/16/java/jvm/堆参数配置/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/java/">java</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2016/12/17/java/jvm/直接内存配置/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">直接内存的配置</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2016/12/14/java/jvm/跟踪类加载、卸载/">
+        <span class="next-text nav-default">跟踪类加载、卸载</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2016/12/16/java/jvm/堆参数配置/';
+        this.page.identifier = '2016/12/16/java/jvm/堆参数配置/';
+        this.page.title = '堆参数配置';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

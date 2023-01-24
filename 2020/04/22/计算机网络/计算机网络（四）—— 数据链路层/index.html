@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="计算机网络（四）—— 数据链路层"><meta name="keywords" content="计算机网络, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2020/04/22/计算机网络/计算机网络（四）—— 数据链路层/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>计算机网络（四）—— 数据链路层 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">计算机网络（四）—— 数据链路层
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020-04-22
+        </span><span class="post-category">
+            <a href="/categories/计算机网络/">计算机网络</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-基本问题"><span class="toc-text">1. 基本问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-封装成帧"><span class="toc-text">1.1 封装成帧</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-透明传输"><span class="toc-text">1.2 透明传输</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-差错控制"><span class="toc-text">1.3 差错控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-流量控制"><span class="toc-text">1.4 流量控制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-点到点信道的数据链路"><span class="toc-text">2. 点到点信道的数据链路</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-组成部分"><span class="toc-text">2.1 组成部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-工作过程"><span class="toc-text">2.2 工作过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-PPP协议帧格式"><span class="toc-text">2.3 PPP协议帧格式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-广播信道"><span class="toc-text">3. 广播信道</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-MAC子层和LLC子层"><span class="toc-text">4. MAC子层和LLC子层</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-MAC子层"><span class="toc-text">4.1 MAC子层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-LLC子层"><span class="toc-text">4.2 LLC子层</span></a></li></ol></li></ol>
+    </div>
+  </div><div class="post-content"><h2 id="1-基本问题"><a href="#1-基本问题" class="headerlink" title="1. 基本问题"></a>1. 基本问题</h2><p>数据链路层使用物理层提供的服务在通信信道上发送和接收比特。数据链路层解决的主要问题包括：</p>
+<ul>
+<li>封装成帧</li>
+<li>透明传输</li>
+<li>差错控制</li>
+<li>流量控制</li>
+</ul>
+<a id="more"></a>
+<h3 id="1-1-封装成帧"><a href="#1-1-封装成帧" class="headerlink" title="1.1 封装成帧"></a>1.1 封装成帧</h3><p>封装成帧（帧同步）就是在将网络层的IP数据报的前后分别添加首部和尾部。不同数据链路层协议的帧首部和尾部包含的信息有明确规定，帧的首部和尾部有帧开始符和帧结束符，称之为<font color="red">帧界定符</font>。每一种数据链路层协议都规定了所能够传输的帧的数据部分的上限，即MTU（Maximum Transmission Unit），以太网的MTU为1500字节。</p>
+<div class="admonition note"><p class="admonition-title">MTU大小
+</p><p>1500字节是考虑到传输效率以及传输时间而折中选择的一个值</p>
+</div>
+
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200428143139.png" alt></p>
+<h3 id="1-2-透明传输"><a href="#1-2-透明传输" class="headerlink" title="1.2 透明传输"></a>1.2 透明传输</h3><p>透明表示一个实际存在的事物看起来好像不存在一样，该层上传输的数据的内容、格式及编码没有限制，也没有必要解释信息结构的意义</p>
+<p>比如使用SOH(Start Of Header)—0x01和EOT(End Of Transmission)—0x04来表示，这样数据链路层就可以识别出帧的开始和结束。如果数据部分出现SOH或EOT，则采用<font color="red">字节填充</font>的方式，比如在SOH和EOT前面分别插入一个转义字符ESC—0x1B，在接收端的数据链路层将数据交递给网络层之前删除这个插入的转义字符。</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200428152202.png" alt></p>
+<h3 id="1-3-差错控制"><a href="#1-3-差错控制" class="headerlink" title="1.3 差错控制"></a>1.3 差错控制</h3><p>现实的通信链路并不是理想的，比特在传输过程中可能会产生差错（1变0，0变1），这就叫做比特差错。为了保证数据传输的可靠性，在计算机网络传输数据时，必须采用各种差错检测措施。目前在数据链路层广泛使用了循环冗余检验CRC(Cyclic Redundancy Check）的差错检验技术来判定一帧是否在传输过程中发生了错误，一旦发生错误就可以采用反馈重传的方法来纠正。发送数据前先计算<font color="red">帧的数据部分</font>得出FCS添加在数据部分后，接收端收到数据后进行同样的CRC计算与接收到的FCS字段进行比较，判断数据有无差错。</p>
+<h3 id="1-4-流量控制"><a href="#1-4-流量控制" class="headerlink" title="1.4 流量控制"></a>1.4 流量控制</h3><p>数据链路层的流量控制采用和TCP中滑动窗口类似的机制，将数据区分为已发送并接收到确认的帧、已发送未接收到确认的帧、在窗口大小允许范围内可以继续发送的帧。</p>
+<h2 id="2-点到点信道的数据链路"><a href="#2-点到点信道的数据链路" class="headerlink" title="2. 点到点信道的数据链路"></a>2. 点到点信道的数据链路</h2><p>点到点信道指的是一条链路上就一个发送端和接收端的信道，通常用在广域网链路。点到点的信道不会发生碰撞，因此比较简单，使用PPP协议控制。</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200428153923.png" alt></p>
+<h3 id="2-1-组成部分"><a href="#2-1-组成部分" class="headerlink" title="2.1 组成部分"></a>2.1 组成部分</h3><p>PPP协议主要分成三个部分：</p>
+<ul>
+<li><font color="red">高级数据链路控制协议（HDLC）</font>：将IP数据报封装到串行链路，支持同步传输和异步传输。因为计算机内的I/O通信是并行的，而链路传输则是按比特流的串行，因此需要协议的封装转换，一般由网络适配器完成。</li>
+<li><font color="red">链路控制协议（LCP）</font>：建立、配置和测试链路连接，用来协商一些选项。</li>
+<li><font color="red">网络控制协议（NCP）</font>：用于支持上层的不同的网络协议。</li>
+</ul>
+<div class="admonition note"><p class="admonition-title">同步传输与异步传输
+</p><p>同步传输（Synchronous Transmission）以数据帧为单位传输数据，可采用字符形式或位组合形式的帧同步信号，在短距离的高速传输中，该时钟信号可由专门的时钟线路传输，由发送端或接收端提供专用于同步的时钟信号。计算机网络采用同步传输方式时，常将时钟同步信号（前同步码）植入数据信号帧中，以实现接收端与发送端的时钟同步。异步传输（Asynchronous Transmission）以字符为单位传输数据，发送端和接收端具有相互独立的时钟（频率相差不能太多），并且两者中任一方都不向对方提供时钟同步信号。</p>
+</div>
+
+<h3 id="2-2-工作过程"><a href="#2-2-工作过程" class="headerlink" title="2.2 工作过程"></a>2.2 工作过程</h3><ol>
+<li>用户的PC机通过调制解调器呼叫路由器，路由器就能够检测到调制解调器发出的载波信号，在双方建立了物理层的连接之后，PPP协议就进入“链路建立”状态，其目的是建立链路层的LCP连接。</li>
+<li>LCP开始发送配置请求帧，进行协商一些配置选项，包括链路上的最大帧长、所使用的鉴别协议，以及不适用的PPP帧中的地址和控制字段等。LCP的配置请求帧依旧是一个PPP帧，其协议字段置为LCP对应的代码，而信息字段包含特定的配置请求。链路的另一端可以发送以下几种响应中的一种：（一）配置确认帧：所有选项都接受；（二）配置否认帧：所有选项都理解但不能接受；（三）配置拒绝帧：选项有的无法识别或不能接受，需要协商</li>
+<li>协商结束后双方建立了LCP链路，接着就进入鉴别阶段，在这一状态下，只允许传送LCP协议的分组、鉴别协议的分组以及监测链路质量的分组。若鉴别失败，则转到“链路终止”状态，成功则进入“网络层协议”状态。</li>
+<li>在“网络层协议”状态，PPP链路两端的网络控制协议NCP根据网络层的不同协议互相交换网络层特定的网络控制分组，总之也许PPP协议两端的网络层可能运行不同的网络层协议，但是都可以使用一个PPP协议进行通信。</li>
+</ol>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200428154652.png" alt></p>
+<h3 id="2-3-PPP协议帧格式"><a href="#2-3-PPP协议帧格式" class="headerlink" title="2.3 PPP协议帧格式"></a>2.3 PPP协议帧格式</h3><ul>
+<li><font color="red">F</font>：PPP协议帧界定符0x7E</li>
+<li><font color="red">A</font>：地址字段0xFF，点到点信道PPP帧中的地址字段形同虚设，可以看到没有源地址和目标地址</li>
+<li><font color="red">C</font>：字段的值为0x03，无实际意义</li>
+<li><font color="red">协议</font>：数据中的协议类型，0x0021-IP数据报；0xC021-LCP数据；0x8021-NCP数据等</li>
+</ul>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200428160127.png" alt></p>
+<p>为了实现透明传输，还需要对PPP协议进行帧填充，同步传输和异步传输由于机制不同，采用的填充方法也不同。</p>
+<ul>
+<li><font color="red">同步传输</font>。数据以帧为单位，PPP协议采用零比特填充。PPP协议的帧界定符0x7E对应的二进制为01111110，即有6个连续的1。为了避免在数据字段出现帧界定符，因此在每当发送方的数据链路层在数据中遇到连续的5个1，便自动在插入一个比特0，接收方将5个连续1后面的0自动去除。<code>011011111111111010转换为01101111101111101010-&gt;还原为011011111111111010</code></li>
+<li><font color="red">异步传输</font>：数据传输以字节为单位，使用0x7D作为PPP帧的转义符，并使用字节填充。把信息字段中出现的每一个0x7E字节转变成为2字节序列（0x7D，0x5E），每一个0x7D的字节（即出现了和转义字符一样的比特组合），则把0x7D转变成为2字节序列（0x7D，0x5D）。</li>
+</ul>
+<h2 id="3-广播信道"><a href="#3-广播信道" class="headerlink" title="3. 广播信道"></a>3. 广播信道</h2><p>广播信道是指一对多通信，一个节点发送的数据能够被广播信道上所有的节点接收到。所有的节点都在同一个广播信道上发送数据，因此需要有专门的控制方法进行协调，避免发生冲突（冲突也叫碰撞）。主要有两种控制方法进行协调，一个是使用信道复用技术，一是使用 CSMA/CD 协议。现在以太网已经成为了事实的局域网标准，采用CSMA/CD协议。</p>
+<p>CSMA/CD(Carrier Sense Multiple Access/Collision Detection，载波多重访问/碰撞检测）工作原理：</p>
+<ol>
+<li>【开始】如果线路空闲，则启动传输，否则跳转到第4步。</li>
+<li>【发送】如果检测到冲突，继续发送数据直到达到最小回报时间（min echo receive interval）以确保所有其他转发器和终端检测到冲突，而后跳转到第4步。</li>
+<li>【成功传输】向更高层的网络协议报告发送成功，退出传输模式。</li>
+<li>【线路繁忙】持续等待直到线路空闲。</li>
+<li>【线路空闲】在尚未达到最大尝试次数之前，每隔一段随机时间转到第1步重新尝试。</li>
+<li>【超过最大尝试传输次数】向更高层的网络协议报告发送失败，退出传输模式。</li>
+</ol>
+<div class="admonition note"><p class="admonition-title">以太网为什么不采用信道复用
+</p><p>主要还是为了降低成本。通常局域网的物理层的传输主要是基于基带传输，CSMA/CD其实可以某种程度上认为是时分复用的技术，而频分复用则需要考虑频谱带宽问题，需要用到调制解调器。如今的以太网其实已经不怎么需要CSMA/CD协议了，交换机的出现取代了集线器。集线器中每一个端口都在同一个冲突域，所有数据包都跑在一条物理链路上，因此需要CSMA/CD协调，而交换机可以隔离冲突域（路由器可以隔离广播域），每一个端口都是独立的冲突域，现在的交换机都采用双绞线作为媒介，发送信道和接收信道独立，工作在全双工模式下，因此不会出现冲突。</p>
+</div>
+
+<h2 id="4-MAC子层和LLC子层"><a href="#4-MAC子层和LLC子层" class="headerlink" title="4. MAC子层和LLC子层"></a>4. MAC子层和LLC子层</h2><p>由于广域网采用点对点通信方式，不存在介质冲突问题，而局域网是共享介质的，因此局域网内的数据链路层需要分为MAC（Media Access Control，媒体访问控制）子层和LLC（Logic Link Control，逻辑链路控制）子层。其中MAC子层的一项重要功能就是仲裁介质的使用权（CSMA/CD）。</p>
+<h3 id="4-1-MAC子层"><a href="#4-1-MAC子层" class="headerlink" title="4.1 MAC子层"></a>4.1 MAC子层</h3><p>MAC子层是局域网中数据链路层的下层部分，主要功能有：</p>
+<ul>
+<li>提供定址及媒体访问的控制方式，使得不同设备或网络上的节点可以在多点的网络上通信，而不会互相冲突</li>
+<li>数据帧的封装/解封装，帧的寻址和识别，帧的接收与发送，链路的管理，帧的差错控制等。MAC子层的存在屏蔽了不同物理链路种类的差异性。MAC子层作为LLC子层及物理层之间沟通的介质，提供了一种寻址的方法，即MAC地址。MAC地址是唯一的，每个网络适配器的MAC地址都不一样，因此可以在同一子网中发送数据包到特定的目的设备。</li>
+</ul>
+<div class="admonition note"><p class="admonition-title">MAC地址
+</p><p>Mac地址是数据链路层地址，长度为6字节（48）位，用于唯一标识网络适配器。一台主机拥有多少个网络适配器就有多少个Mac地址。Mac地址通常使用6组，每组2位16进制数表示，每组之间冒号隔开。如<code>82:17:0d:2d:9d:00</code></p>
+</div>
+
+<p>MAC帧格式</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200428180335.png" alt></p>
+<p>我们发现MAC帧没有帧开始界定符，那么我们如何区分不同帧呢。其实以太网发送的数据使用了物理层编码违禁法，利用曼彻斯特编码(从高到低跳变表示“1”，从低到高跳变表示“0”)，每个码元正中间一定有一次电压转换，当发送方把一个以太网帧发送完毕后，就不在发送其他码元了，因此发送方网络适配器的接口上的电压也就不再变换了。这样接收方就可以知道以太网帧的结束位置了。</p>
+<h3 id="4-2-LLC子层"><a href="#4-2-LLC子层" class="headerlink" title="4.2 LLC子层"></a>4.2 LLC子层</h3><p>逻辑链路控制子层是局域网中数据链路层的上层部分，用户的数据链路服务通过LLC子层为网络层提供统一的接口。该子层通过在IP包上加了8位的源服务存取点和目的服务存取点（用于标识以太网帧所携带的上层数据类型）来保证在不同网络类型中传输。另外，有一个8或16位的控制字段用于像流控制的辅助功能。</p>
+<p>LLC子层提供了两种无连接和一种面向连接的操作方式：</p>
+<ul>
+<li><font color="red">无回复的无连接方式</font>：它允许发送帧时：给单一的目的地址（单点传输）、给相同网络中的多个目的地址（多点传输）、给网络中的所有地址（广播传输）。多点和广播传输在同一信息需要发送到整个网络的情况下可以减少网络流量。单点传输不能保证接收端收到帧的次序和发送时的次序相同。发送端甚至无法确定接收端是否收到了帧。</li>
+<li><font color="red">面向连接的操作方式</font>。给每个帧进行编号，接收端就能保证它们按发送的次序接收，并且没有帧丢失。利用滑动窗口控制协议可以让快的发送端也能流到慢的接收端。</li>
+<li><font color="red">有回复的无连接方式</font>。它仅限于点到点通信。</li>
+</ul>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2020/04/22/计算机网络/计算机网络（四）—— 数据链路层/">https://shinerio.cc/2020/04/22/计算机网络/计算机网络（四）—— 数据链路层/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/计算机网络/">计算机网络</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2020/04/23/计算机网络/计算机网络（五）—— 数据链路层 —— ARP/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">计算机网络（五）—— 数据链路层 —— ARP</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2020/04/21/计算机网络/计算机网络（三）—— 网络的基本分类/">
+        <span class="next-text nav-default">计算机网络（三）—— 网络的基本分类</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2020/04/22/计算机网络/计算机网络（四）—— 数据链路层/';
+        this.page.identifier = '2020/04/22/计算机网络/计算机网络（四）—— 数据链路层/';
+        this.page.title = '计算机网络（四）—— 数据链路层';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

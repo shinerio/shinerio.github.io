@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="face++人脸识别"><meta name="keywords" content="c#, 人工智能, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2016/12/10/other/基于face++的faceRecognition/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>face++人脸识别 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">face++人脸识别
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-12-10
+        </span><span class="post-category">
+            <a href="/categories/other/">other</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#调用及返回说明"><span class="toc-text">调用及返回说明</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#本博文使用工具类"><span class="toc-text">本博文使用工具类</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#face-recognition相关的几个api介绍"><span class="toc-text">face recognition相关的几个api介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Compare-API"><span class="toc-text">Compare API</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Detect-API"><span class="toc-text">Detect API</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FaceSet"><span class="toc-text">FaceSet</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#FaceSet-Create"><span class="toc-text">FaceSet Create</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FaceSet-Add"><span class="toc-text">FaceSet Add</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Search-API"><span class="toc-text">Search API</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#写在最后"><span class="toc-text">写在最后</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p>本博文旨在帮助读者快速掌握完成基于face++的测试，实现一个简单的人脸识别功能。关于接入这一点就不多说了，百度或者google一下，face++官网都有详细的介绍。</p>
+<a id="more"></a>
+<p><strong>注意：下面的程序都未进行任何异常处理，任何期望成功的结果都得基于你的正确操作</strong></p>
+<h1 id="调用及返回说明"><a href="#调用及返回说明" class="headerlink" title="调用及返回说明"></a>调用及返回说明</h1><p>face++采用http api,通过发起http请求，带上合适参数（通常都包含一组api_key和api_secret作为参数，可通过注册开发者账号获得免费受限开发使用权，不同API参数详见官方文档，这里不作具体说明）。返回的正确处理结果通常是Json格式数据，解析Json数据就能得到你想要的结果。</p>
+<blockquote>
+<p>本文说明:本文是基于开发者免费账号实现的face recognition，如果想要实现高并发稳定可靠的识别，请移步收费版face++人脸识别sdk</p>
+</blockquote>
+<h1 id="本博文使用工具类"><a href="#本博文使用工具类" class="headerlink" title="本博文使用工具类"></a>本博文使用工具类</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">public class HttpHelper</span><br><span class="line">    &#123;</span><br><span class="line">        private static readonly Encoding DEFAULTENCODE = Encoding.UTF8;</span><br><span class="line">        public static HttpWebResponse HttpUploadFile(string url, string[] fileKey,string[] files, NameValueCollection data)</span><br><span class="line">        &#123;</span><br><span class="line">            string boundary = &quot;---------------------------&quot; + DateTime.Now.Ticks.ToString(&quot;x&quot;);</span><br><span class="line">            byte[] boundarybytes = Encoding.ASCII.GetBytes(&quot;\r\n--&quot; + boundary + &quot;\r\n&quot;);</span><br><span class="line">            byte[] endbytes = Encoding.ASCII.GetBytes(&quot;\r\n--&quot; + boundary + &quot;--\r\n&quot;);</span><br><span class="line"></span><br><span class="line">            //1.HttpWebRequest</span><br><span class="line">            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);</span><br><span class="line">            request.ContentType = &quot;multipart/form-data; boundary=&quot; + boundary;</span><br><span class="line">            request.Method = &quot;POST&quot;;</span><br><span class="line">            request.KeepAlive = true;</span><br><span class="line">            request.Credentials = CredentialCache.DefaultCredentials;</span><br><span class="line"></span><br><span class="line">            using (Stream stream = request.GetRequestStream())</span><br><span class="line">            &#123;</span><br><span class="line">                //1.1 key/value</span><br><span class="line">                string formdataTemplate = &quot;Content-Disposition: form-data; name=\&quot;&#123;0&#125;\&quot;\r\n\r\n&#123;1&#125;&quot;;</span><br><span class="line">                if (data != null)</span><br><span class="line">                &#123;</span><br><span class="line">                    foreach (string key in data.Keys)</span><br><span class="line">                    &#123;</span><br><span class="line">                        stream.Write(boundarybytes, 0, boundarybytes.Length);</span><br><span class="line">                        string formitem = string.Format(formdataTemplate, key, data[key]);</span><br><span class="line">                        byte[] formitembytes = DEFAULTENCODE.GetBytes(formitem);</span><br><span class="line">                        stream.Write(formitembytes, 0, formitembytes.Length);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                //1.2 file</span><br><span class="line">                string headerTemplate = &quot;Content-Disposition: form-data; name=\&quot;&#123;0&#125;\&quot;; filename=\&quot;&#123;1&#125;\&quot;\r\nContent-Type: application/octet-stream\r\n\r\n&quot;;</span><br><span class="line">                byte[] buffer = new byte[4096];</span><br><span class="line">                int bytesRead = 0;</span><br><span class="line">                for (int i = 0; i &lt; files.Length; i++)</span><br><span class="line">                &#123;</span><br><span class="line">                    stream.Write(boundarybytes, 0, boundarybytes.Length);</span><br><span class="line">                    string header = string.Format(headerTemplate, fileKey[i], Path.GetFileName(files[i]));</span><br><span class="line">                    byte[] headerbytes = DEFAULTENCODE.GetBytes(header);                    </span><br><span class="line">                    stream.Write(headerbytes, 0, headerbytes.Length);</span><br><span class="line">                    using (FileStream fileStream = new FileStream(files[i], FileMode.Open, FileAccess.Read))</span><br><span class="line">                    &#123;                        </span><br><span class="line">                        while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) != 0)</span><br><span class="line">                        &#123;</span><br><span class="line">                            stream.Write(buffer, 0, bytesRead);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                //1.3 form end</span><br><span class="line">                stream.Write(endbytes, 0, endbytes.Length);</span><br><span class="line">            &#125;</span><br><span class="line">            //2.WebResponse</span><br><span class="line">            HttpWebResponse response = (HttpWebResponse)request.GetResponse();</span><br><span class="line">            return response;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>使用说明：</p>
+<ul>
+<li><p>参数:</p>
+<ul>
+<li>String url:face++请求调用的URL</li>
+<li>String[] filekey:face++请求类型为File的参数名数组，请务必保持与官方文档一致</li>
+<li>String[] files：本机图片资源地址数据，请注意这个必须与filekey一一对应，保持着两个数组大小一致</li>
+<li>NameValueCollection data：基本类型数据，通过add的方式添加”参数名—值”键值对，数值类型也请加引号使用字符串代替</li>
+</ul>
+</li>
+<li><p>返回值：</p>
+<p>HttpWebResponse response,通过response可以获得一系列包括错误码或者输出流等信息</p>
+</li>
+</ul>
+<h1 id="face-recognition相关的几个api介绍"><a href="#face-recognition相关的几个api介绍" class="headerlink" title="face recognition相关的几个api介绍"></a>face recognition相关的几个api介绍</h1><h2 id="Compare-API"><a href="#Compare-API" class="headerlink" title="Compare API"></a>Compare API</h2><p>官方描述：</p>
+<p>将两个人脸进行比对，来判断是否为同一个人。支持传两张图片进行比对，或者一张图片与一个已知的face_token比对，也支持两个face_token进行比对。使用图片进行比对时会选取图片中检测到人脸尺寸最大的一个人脸。</p>
+<p>文档链接：<a href="https://console.faceplusplus.com.cn/documents/4887586" target="_blank" rel="noopener">https://console.faceplusplus.com.cn/documents/4887586</a></p>
+<p>基于此API本人用c#做了一个小的示例demo，代码放在<a href="https://github.com/shinerio/faceDetect" target="_blank" rel="noopener">本人github</a>账号上</p>
+<blockquote>
+<p>要实现基本的人脸识别功能，需要的功能是将一张图片与图片库资源进行对比，进行识别。</p>
+<p>本文采用<strong>detect-&gt;存入 FaceSet-&gt;Search</strong>的方式来实现</p>
+</blockquote>
+<h2 id="Detect-API"><a href="#Detect-API" class="headerlink" title="Detect API"></a>Detect API</h2><p>官方描述：</p>
+<p>调用者提供图片文件或者图片URL，进行人脸检测和人脸分析。识别出的人脸会给出face_token，用于后续的人脸比对等操作。请注意，只对人脸包围盒面积最大的5个人脸进行分析，其他人脸可以使用Face Analyze API进行分析。如果您<strong>需要使用检测出的人脸于后续操作，建议将对应face_token添加到FaceSet</strong>中。如果一个face_token连续72小时没有存放在任意FaceSet中，则该face_token将会失效。如果对同一张图片进行多次人脸检测，同一个人脸得到的face_token是不同的。</p>
+<p>文档链接：<a href="https://console.faceplusplus.com.cn/documents/4888373" target="_blank" rel="noopener">https://console.faceplusplus.com.cn/documents/4888373</a></p>
+<p>注意，描述中加重的一句话，我们可以通过用户首次登陆注册，将其对应face_token添加到FaceSet中，这样就为以后的recognition提供了对比来源。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HttpWebResponse response = HttpHelper.HttpUploadFile(&quot;https://api-cn.faceplusplus.com/facepp/v3/detect&quot;, new string[] &#123; &quot;image_file&quot; &#125;, new String[] &#123; fliePath &#125;, data);</span><br></pre></td></tr></table></figure>
+<h2 id="FaceSet"><a href="#FaceSet" class="headerlink" title="FaceSet"></a>FaceSet</h2><h3 id="FaceSet-Create"><a href="#FaceSet-Create" class="headerlink" title="FaceSet Create"></a>FaceSet Create</h3><p>官方描述：</p>
+<p> 创建一个人脸的集合FaceSet，用于存储人脸标识face_token。一个FaceSet能够存储1,000个face_token。</p>
+<p>文档链接：<a href="https://console.faceplusplus.com.cn/documents/4888391" target="_blank" rel="noopener">https://console.faceplusplus.com.cn/documents/4888391</a></p>
+<p>这里我们最好创建一个outer_i方便记忆操作，使用上述工具时，filekey和files字段置null</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HttpWebResponse response = HttpHelper.HttpUploadFile(&quot;https://api-cn.faceplusplus.com/facepp/v3/faceset/create&quot;, null, null, data);</span><br></pre></td></tr></table></figure>
+<h3 id="FaceSet-Add"><a href="#FaceSet-Add" class="headerlink" title="FaceSet Add"></a>FaceSet Add</h3><p>官方描述：</p>
+<p>为一个已经创建的FaceSet添加人脸标识face_token。一个FaceSet最多存储1,000个face_token。</p>
+<p>文档链接：<a href="https://console.faceplusplus.com.cn/documents/4888389" target="_blank" rel="noopener">https://console.faceplusplus.com.cn/documents/4888389</a></p>
+<p>这里将通过detect获得的face_toke以及FaceSet Create获得的faceset_token，outer_id(二选一)作为参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HttpWebResponse response = HttpHelper.HttpUploadFile(&quot; https://api-cn.faceplusplus.com/facepp/v3/faceset/addface&quot;, null, null, data);</span><br></pre></td></tr></table></figure>
+<h2 id="Search-API"><a href="#Search-API" class="headerlink" title="Search API"></a>Search API</h2><p>官方描述：</p>
+<p>在Faceset中找出与目标人脸最相似的一张或多张人脸。支持传入face_token或者直接传入图片进行人脸搜索。使用图片进行比对时会选取图片中检测到人脸尺寸最大的一个人脸。</p>
+<p>文档链接：<a href="https://console.faceplusplus.com.cn/documents/4888381" target="_blank" rel="noopener">https://console.faceplusplus.com.cn/documents/4888381</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HttpWebResponse response = HttpHelper.HttpUploadFile(&quot;https://api-cn.faceplusplus.com/facepp/v3/search&quot;, new string[] &#123; &quot;image_file&quot; &#125;, new String[] &#123; fliePath &#125;, data);</span><br></pre></td></tr></table></figure>
+<p>到此整个的人脸识别过程就结束了，传入的image会与你face_set中的图片进行对比，从而可以通过thresholds</p>
+<p>和confidence字段判断是否认证成功，具体阈值设为多少认为认证成功由各位自行决定。</p>
+<h1 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h1><p>本文只简单介绍了下face++的用法，更多详细功能请自行探索</p>
+<p>详细代码参考请点击测试代码<a href="https://github.com/shinerio/FaceRecognitionTest" target="_blank" rel="noopener">链接</a>，<strong>注意！！！请务必阅读read.me</strong></p>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2016/12/10/other/基于face++的faceRecognition/">https://shinerio.cc/2016/12/10/other/基于face++的faceRecognition/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/c/">c#</a>
+            <a href="/tags/人工智能/">人工智能</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2016/12/11/java/java常见注意事项/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">java常见注意事项</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2016/12/09/java/java堆栈/">
+        <span class="next-text nav-default">堆(heap)和栈(stack)</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2016/12/10/other/基于face++的faceRecognition/';
+        this.page.identifier = '2016/12/10/other/基于face++的faceRecognition/';
+        this.page.title = 'face++人脸识别';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

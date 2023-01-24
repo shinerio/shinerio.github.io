@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="Class装载"><meta name="keywords" content="java, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2016/12/25/java/jvm/Class装载/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>Class装载 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">Class装载
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-12-25
+        </span><span class="post-category">
+            <a href="/categories/JVM/">JVM</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#类装载的条件"><span class="toc-text">类装载的条件</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#加载类"><span class="toc-text">加载类</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#连接阶段"><span class="toc-text">连接阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#验证类"><span class="toc-text">验证类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#准备类"><span class="toc-text">准备类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解析类"><span class="toc-text">解析类</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#初始化"><span class="toc-text">初始化</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20190913194205.png" alt></p>
+<h1 id="类装载的条件"><a href="#类装载的条件" class="headerlink" title="类装载的条件"></a>类装载的条件</h1><p>Class只有在必须使用的时候才会被装载，Java虚拟机不会无条件地装载Class类型。Java虚拟机规定，一个类或者接口在初次”主动使用“前，必须要进行初始化。</p>
+<p>主动使用的几种情况：</p>
+<ul>
+<li>当创建一个类的实例时，比如使用new关键字，或者通过反射、克隆、反序列化</li>
+<li>当调用类的静态方法时</li>
+<li>当使用类或接口的静态字段时（final常量除外）</li>
+<li>当使用java.lang.reflect包中发的方法反射类的方法时</li>
+<li>当初始化子类时，要求先初始化父类</li>
+<li>作为启动虚拟机，含有main()方法的那个类</li>
+</ul>
+<a id="more"></a>
+<h1 id="加载类"><a href="#加载类" class="headerlink" title="加载类"></a>加载类</h1><p>Java虚拟机完成以下工作</p>
+<ul>
+<li>通过类的全限定名，获取类的二进制数据流</li>
+<li>解析类的二进制数据流为方法区内的数据结构</li>
+<li>创建java.lang.Class类的实例，表示该类型</li>
+</ul>
+<p>获取类二进制数据流的方法</p>
+<ul>
+<li>通过文件系统读入一个class后缀的文件，或者也可能读入JAR、ZIP等归档数据包，或者提取类文件 </li>
+<li>通过HTTP之类的协议通过网络进行加载</li>
+<li>运行时生成一段Class的二进制信息</li>
+</ul>
+<h1 id="连接阶段"><a href="#连接阶段" class="headerlink" title="连接阶段"></a>连接阶段</h1><h2 id="验证类"><a href="#验证类" class="headerlink" title="验证类"></a>验证类</h2><p>当类加载到系统之后，就开始连接操作，验证是连接操作的第一步，它的目的是保证加载的字节码是合法、合理并符合规范的。主要包括：格式检查、语义检查、字节码验证、符号引用验证</p>
+<h2 id="准备类"><a href="#准备类" class="headerlink" title="准备类"></a>准备类</h2><p>当一个类验证通过时，虚拟机就会进入准备阶段，在这个阶段，虚拟机就会为这个类分配相应的内存空间，并设置初始值。Java虚拟机类型变量默认初始值表如下：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>默认初始值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>int</td>
+<td>0</td>
+</tr>
+<tr>
+<td>long</td>
+<td>0L</td>
+</tr>
+<tr>
+<td>short</td>
+<td>0</td>
+</tr>
+<tr>
+<td>char</td>
+<td>\u0000</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>false</td>
+</tr>
+<tr>
+<td>refrence</td>
+<td>0f</td>
+</tr>
+<tr>
+<td>double</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>注：Java并不支持boolean类型，对于boolean类型，内部实现是int，由于int的默认值是0，所以boolean默认值是false</p>
+<p>如果类存在final修饰常量字段，那么常量字段也会在准备阶段被附上正确的值，这个赋值属于Java虚拟机的行为，属于变量的初始化。事实上，在准备阶段，不会有任何代码被执行。</p>
+<h2 id="解析类"><a href="#解析类" class="headerlink" title="解析类"></a>解析类</h2><p>在准备阶段完成之后，就进入了解析阶段。解析阶段的工作就是将类、接口、字段和方法的符号引用转为直接引用。</p>
+<p>符号引用就是一些字面量的引用，和虚拟机的内部数据结构和内存布局无关。</p>
+<h1 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h1><p>类的初始化是类装载的最后一个阶段。此时，类才会开始执行Java字节码。初始化阶段的重要工作时执行类的初始化方法<code>&lt;clinit&gt;</code>。此方法是由编译器自动生成的，它是由类的静态成员赋值语句以及static语句块合并产生的。</p>
+<p>但编译器不会为所有的类都产生<code>&lt;clinit&gt;</code>初始化函数。如果一个类既没有赋值语句，也没有static语句块，那么生成的<code>&lt;clinit&gt;</code>函数就为空，编译器不会为该类插入<code>&lt;clinit&gt;</code>函数</p>
+<p><code>&lt;clinit&gt;</code>的调用，也就是类的初始化，虚拟机会在其内部确保多线程环境中的安全性，也就是说，当多个线程试图初始化同一个类时，只有一个线程可以进入<code>&lt;clinit&gt;</code>函数，而其他线程必须等待，如果之前的线程成功加载了类，则等在队列中国的线程就没有机会再执行<code>&lt;clinit&gt;</code>函数了。正是由于这种带锁线程安全的，因此，在多线程环境下进行类初始化的时候，可能会引起死锁，并且这种死锁是很难发现的。</p>
+<blockquote>
+<p>下一篇博文，我们将结合三个实例，来加深理解。</p>
+</blockquote>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2016/12/25/java/jvm/Class装载/">https://shinerio.cc/2016/12/25/java/jvm/Class装载/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/java/">java</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2016/12/25/java/jvm/深入class装载——实战运用/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">深入class装载——实战运用（一）</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2016/12/18/java/jvm/Java命令行界面，垃圾回收，内存以及工具概览/">
+        <span class="next-text nav-default">Java命令行，垃圾回收，内存及工具概览</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2016/12/25/java/jvm/Class装载/';
+        this.page.identifier = '2016/12/25/java/jvm/Class装载/';
+        this.page.title = 'Class装载';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

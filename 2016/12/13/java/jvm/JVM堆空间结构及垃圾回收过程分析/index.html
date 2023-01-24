@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="JVM堆空间结构及垃圾回收过程分析"><meta name="keywords" content="java, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2016/12/13/java/jvm/JVM堆空间结构及垃圾回收过程分析/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>JVM堆空间结构及垃圾回收过程分析 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">JVM堆空间结构及垃圾回收过程分析
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-12-13
+        </span><span class="post-category">
+            <a href="/categories/JVM/">JVM</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Java堆空间"><span class="toc-text">Java堆空间</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#垃圾回收追踪"><span class="toc-text">垃圾回收追踪</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#补充虚拟机相关设置"><span class="toc-text">补充虚拟机相关设置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#扩展"><span class="toc-text">扩展</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><h1 id="Java堆空间"><a href="#Java堆空间" class="headerlink" title="Java堆空间"></a>Java堆空间</h1><p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/jvm/jvm_heap_structure.png" alt></p>
+<p>新生代存放新生对象或者年龄不大的对象，老年代存放老年对象。from和to区域是两块大小相等，可以互换角色的内存空间，详细内容会在以后的博文中介绍</p>
+<p>在大多数情况，对象首先被分配在eden区，在一次新生代回收之后，如果对象还存活，则会进入from或者to区，之后每经过一次新生代回收，对象如果存活，年龄就会加1，当对象年龄达到一定条件后，就会被认为是老年对象，从而进入老年代。</p>
+<a id="more"></a>
+<h1 id="垃圾回收追踪"><a href="#垃圾回收追踪" class="headerlink" title="垃圾回收追踪"></a>垃圾回收追踪</h1><p>参数配置</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>-Xms</th>
+<th>初始堆大小。如：-Xms256m</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-Xmx</td>
+<td>最大堆大小。如：-Xmx512m</td>
+</tr>
+<tr>
+<td>-Xmn</td>
+<td>新生代大小。通常为 Xmx 的 1/3 或 1/4。新生代 = Eden + 2 个 Survivor 空间。实际可用空间为 = Eden + 1 个 Survivor，即 90%</td>
+</tr>
+<tr>
+<td>-Xss</td>
+<td>JDK1.5+ 每个线程堆栈大小为 1M，一般来说如果栈不是很深的话， 1M 是绝对够用了的。</td>
+</tr>
+<tr>
+<td>-XX:NewRatio</td>
+<td>新生代与老年代的比例，如 –XX:NewRatio=2，则新生代占整个堆空间的1/3，老年代占2/3</td>
+</tr>
+<tr>
+<td>-XX:SurvivorRatio</td>
+<td>新生代中 Eden 与 Survivor 的比值。默认值为 8。即 Eden 占新生代空间的 8/10，另外两个 Survivor 各占 1/10</td>
+</tr>
+<tr>
+<td>-XX:PermSize（JDK1.8废除）</td>
+<td>永久代(方法区)的初始大小</td>
+</tr>
+<tr>
+<td>-XX:MaxPermSize （JDK1.8废除）</td>
+<td>永久代(方法区)的最大值</td>
+</tr>
+<tr>
+<td>-XX:+PrinGCDetails</td>
+<td>打印 GC 信息</td>
+</tr>
+<tr>
+<td>-XX:+HeapDumpOnOutOfMemoryError</td>
+<td>让虚拟机在发生内存溢出时 Dump 出当前的内存堆转储快照，以便分析用</td>
+</tr>
+<tr>
+<td>-XX:MaxMetaspaceSize</td>
+<td>限制元空间大小，默认情况下类的元空间分配由可用本机内存量决定</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>测试代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestLocalVar</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span>  <span class="keyword">void</span> <span class="title">localvarGC</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">byte</span>[] a = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">6</span>*<span class="number">1024</span>*<span class="number">1024</span>];</span><br><span class="line">		System.gc(); <span class="comment">// 由于a变量还在作用域中，所以垃圾回收不能回收空间</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">       <span class="comment">// 此时localVarGC方法执行完毕，栈帧被销毁，自然数组也失去引用，所以可以回收数组空间</span></span><br><span class="line">		TestLocalVar v = <span class="keyword">new</span> TestLocalVar();</span><br><span class="line">		v.localvarGC();</span><br><span class="line">		System.gc();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用-XX:+PrintGC来打印日志</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[GC (System.gc())  8806K-&gt;6768K(125952K), 0.0070835 secs]   //Major GC仅为新生代GC</span><br><span class="line">[Full GC (System.gc())  6768K-&gt;6658K(125952K), 0.0107015 secs]  //Full GC同时回收新生代、老年代及元空间(metaspace)</span><br><span class="line">[GC (System.gc())  7324K-&gt;6722K(125952K), 0.0007453 secs]</span><br><span class="line">[Full GC (System.gc())  6722K-&gt;514K(125952K), 0.0102179 secs]</span><br></pre></td></tr></table></figure>
+<p>数组占用空间为6MB，可见第一次（GC和Full GC为一次）垃圾回收并没有能处理</p>
+<p>第二次6722k-&gt;514k，回收6208k（约为6M），由此可见数组在第二次垃圾回收时被成功回收，当前可用堆空间总和为125952k(123M)</p>
+<hr>
+<p>使用-XX:+PrintGCDetails获得详细信息，标号符和分割线为方便观察，后期人为添加的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">1* [GC (System.gc()) [PSYoungGen: 8806K-&gt;616K(38400K)] 8806K-&gt;6760K(125952K), 0.0122872 secs] </span><br><span class="line"> [Times: user=0.00 sys=0.00, real=0.01 secs] </span><br><span class="line">2* [Full GC (System.gc()) [PSYoungGen: 616K-&gt;0K(38400K)] [ParOldGen: 6144K-&gt;6658K(87552K)] 6760K-&gt;6658K(125952K), [Metaspace: 2471K-&gt;2471K(1056768K)], 0.0126725 secs] [Times: user=0.03 sys=0.00, real=0.01 secs] </span><br><span class="line">--------------------------------------------------------------------------------------------</span><br><span class="line">3* [GC (System.gc()) [PSYoungGen: 0K-&gt;0K(38400K)] 6658K-&gt;6658K(125952K), 0.0006529 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] </span><br><span class="line">4* [Full GC (System.gc()) [PSYoungGen: 0K-&gt;0K(38400K)] [ParOldGen: 6658K-&gt;514K(87552K)] 6658K-&gt;514K(125952K), [Metaspace: 2471K-&gt;2471K(1056768K)], 0.0105661 secs] [Times: user=0.00 sys=0.00, real=0.01 secs] </span><br><span class="line">---------------------------------------------------------------------------------------------</span><br><span class="line">5* Heap</span><br><span class="line"> PSYoungGen      total 38400K, used 998K [0x00000000d5e00000, 0x00000000d8880000, 0x0000000100000000)</span><br><span class="line">  eden space 33280K, 3% used [0x00000000d5e00000,0x00000000d5ef9b70,0x00000000d7e80000)</span><br><span class="line">  from space 5120K, 0% used [0x00000000d8380000,0x00000000d8380000,0x00000000d8880000)</span><br><span class="line">  to   space 5120K, 0% used [0x00000000d7e80000,0x00000000d7e80000,0x00000000d8380000)</span><br><span class="line"> ParOldGen       total 87552K, used 514K [0x0000000081a00000, 0x0000000086f80000, 0x00000000d5e00000)</span><br><span class="line">  object space 87552K, 0% used [0x0000000081a00000,0x0000000081a80a08,0x0000000086f80000)</span><br><span class="line"> Metaspace       used 2480K, capacity 4486K, committed 4864K, reserved 1056768K</span><br><span class="line">  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K</span><br></pre></td></tr></table></figure>
+<p>1* 新生区回收效果（8806K-&gt;616K）整个堆（8806K-&gt;6760k）</p>
+<p>2* 同时回收新生代、老年代、和元空间</p>
+<p>新生区清空（616K-&gt;0K），老年区（6144K-&gt;6658K），整个堆（6760K-&gt;6658K），【这里总空间变化与新生区和老年区变化总量不相等，按道理应该相等的，有哪位读者知道原因，麻烦留下言】元空间不变</p>
+<p>User代表用户态CPU耗时，sys表示系统CPU耗时，real表示GC实际经历时间</p>
+<p>3和4类似，这里就不过多解释了</p>
+<p>5* 虚拟机会在推出前打印堆详细信息，描述了堆各个区间使用情况</p>
+<ul>
+<li><p>PSYoungGen:新生区总大小38400k，使用998k，[0x00000000d5e00000,0x00000000d5ef9b70,0x00000000d7e80000)分别表示新生代下界，当前上界和上界</p>
+<p>上界-下界：（0x00000000d7e80000-0x00000000d5e00000）/1024 = 33280k为eden大小（当前堆空间的理论可用最大值，新生对象总会放在eden中，所以并非真正总堆空间，真正堆空间也不是total=8755k,因为虚拟机同时只能使用from和to中的一个，所以系统分配的堆空间总大小其实是33280+5120*2）</p>
+<p>当前上界-下界：（0x00000000d5ef9b70-0x00000000d5e00000）/1024=997.18k等于已使用的空间</p>
+</li>
+</ul>
+<p>关于这部分空间的计算，参考<a href="http://www.blogjava.net/fancydeepin/archive/2013/09/29/jvm_heep.html" target="_blank" rel="noopener">http://www.blogjava.net/fancydeepin/archive/2013/09/29/jvm_heep.html</a></p>
+<ul>
+<li>ParOldGen类似</li>
+</ul>
+<hr>
+<h1 id="补充虚拟机相关设置"><a href="#补充虚拟机相关设置" class="headerlink" title="补充虚拟机相关设置"></a>补充虚拟机相关设置</h1><p>-XX:+PrintHeapAtGC在每次GC前后打印堆信息，获得更全面的堆信息</p>
+<p>-XX:+PrintGCTimeStamps，输出每次GC发生在虚拟机启动后的时间偏移量</p>
+<p>-XX:+PrintGCApplicationConcurrentTime打印应用程序的执行时间</p>
+<p>-XX:+PrintGCApplicationStoppedTime打印应用程序由于G而产生的停顿时间</p>
+<p>-XX:PrintReferenceGC跟踪系统内的软引用、弱引用和Finallize队列</p>
+<hr>
+<h1 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h1><p>默认情况下GC日志会在控制台输出，不利于分析及定位问题，虚拟机允许将GC日志以文件形式输出</p>
+<p>用-Xloggc:filepath指定</p>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2016/12/13/java/jvm/JVM堆空间结构及垃圾回收过程分析/">https://shinerio.cc/2016/12/13/java/jvm/JVM堆空间结构及垃圾回收过程分析/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/java/">java</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2016/12/13/java/jvm/java栈结构/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">java栈结构</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2016/12/13/java/jvm/关于JVM的常见错误/">
+        <span class="next-text nav-default">与JVM相关的错误</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2016/12/13/java/jvm/JVM堆空间结构及垃圾回收过程分析/';
+        this.page.identifier = '2016/12/13/java/jvm/JVM堆空间结构及垃圾回收过程分析/';
+        this.page.title = 'JVM堆空间结构及垃圾回收过程分析';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

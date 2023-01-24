@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="计算机网络（三）—— 网络的基本分类"><meta name="keywords" content="计算机网络, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2020/04/21/计算机网络/计算机网络（三）—— 网络的基本分类/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>计算机网络（三）—— 网络的基本分类 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">计算机网络（三）—— 网络的基本分类
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020-04-21
+        </span><span class="post-category">
+            <a href="/categories/计算机网络/">计算机网络</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-网络分类"><span class="toc-text">1. 网络分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-局域网技术"><span class="toc-text">2. 局域网技术</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-以太网"><span class="toc-text">2.1 以太网</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-1-分类"><span class="toc-text">2.1.1 分类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-2-网络结构"><span class="toc-text">2.1.2 网络结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-3-工作模式"><span class="toc-text">2.1.3 工作模式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-令牌环网"><span class="toc-text">2.2 令牌环网</span></a></li></ol></li></ol>
+    </div>
+  </div><div class="post-content"><p>本文主要介绍计算机网络的分类以及局域网技术。</p>
+<a id="more"></a>
+<h2 id="1-网络分类"><a href="#1-网络分类" class="headerlink" title="1. 网络分类"></a>1. 网络分类</h2><ul>
+<li><font color="red">地理位置</font>：<ol>
+<li>个域网（PAN，Personal Area Network）。个域网允许设备围绕一个人进行通信。一个常见的例子是计算机通过无线网络（蓝牙）与其外围设备（显示器、键盘、鼠标。打印机）连接。</li>
+<li>局域网（LAN，Local Area Network）。局域网是一种私有网络，一般在一座建筑物内或建筑物附近，如家庭、办公室或工厂。局域网被广泛用来连接个人计算机等电子设备，使它们能够共享资源（打印机）和交换信息。</li>
+<li>城域网（MAN，Metropolitan Area Network）。城域网的范围可覆盖一个城市。最有名的城域网例子是许多城市都有的有线电视网。</li>
+<li>广域网（WAN，Wide Area Network）。广域网的覆盖范围很大，可以跨越很大的地理区域，通常是一个国家，地区甚至大陆。</li>
+<li>互联网（internet）世界上存在着很多网络，它们常常使用不同的硬件和软件，将这些相互之间不同而且常常不兼容的网络连接起来的网络称为互联网。而全球范围内的<strong>因特网（Internet）</strong>常常用首字母大写来表示。</li>
+</ol>
+</li>
+<li><font color="red">网络拓扑结构</font>：<ol>
+<li>星型网络结构。星型网络结构是现在最常用的网络拓扑结构，在星型网络结构中各个计算机使用各自的线缆连接到网络中，因此如果一个站点出了问题，不会影响整个网络的运行。</li>
+<li>环型网络结构。这种结构中的传输媒体从一个端用户到另一个端用户，直到将所有的端用户连成环型。数据在环路中沿着一个方向在各个节点间传输，信息从一个节点传到另一个节点。这种结构显而易见消除了端用户通信时对中心系统的依赖性。</li>
+<li>总线型网络结构。在总线型网络结构中所有的站点共享一条数据通道。总线型网络安装简单方便，需要铺设的电缆最短，成本低，某个站点的故障一般不会影响整个网络，但介质的故障会导致网络瘫痪。总线网安全性低，监控比较困难，增加新站点也不如星型网容易。<br><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200425194342.png" alt></li>
+</ol>
+</li>
+<li><font color="red">传输媒介</font>：<ol>
+<li>有线网络。有线网指采用同轴电缆、双绞线、光纤等有线介质连接计算机的网络。</li>
+<li>无线网络。无线网络采用微波、红外线、无线电等电磁波作为传输介质。</li>
+</ol>
+</li>
+</ul>
+<h2 id="2-局域网技术"><a href="#2-局域网技术" class="headerlink" title="2. 局域网技术"></a>2. 局域网技术</h2><p>局域网技术包括以太网、令牌环网、FDDI网（Fiber Distributed Data Interface）、ATM网（Asynchronous Transfer Mode）。</p>
+<h3 id="2-1-以太网"><a href="#2-1-以太网" class="headerlink" title="2.1 以太网"></a>2.1 以太网</h3><p>以太网是当今现有局域网采用的最通用的通信协议标准。IEEE组织的IEEE 802.3标准制定了以太网的技术标准，它规定了包括物理层的连线、电子信号和介质访问层协议的内容。</p>
+<h4 id="2-1-1-分类"><a href="#2-1-1-分类" class="headerlink" title="2.1.1 分类"></a>2.1.1 分类</h4><p>以太网有两类：第一类是经典以太网，第二类是交换式以太网，使用交换机设备连接不同的计算机。经典以太网是以太网的原始形式，运行速度从3~10 Mbps不等；而交换式以太网正是广泛应用的以太网，可运行在100、1000和10000Mbps那样的高速率，分别以快速以太网、千兆以太网和万兆以太网的形式呈现。</p>
+<h4 id="2-1-2-网络结构"><a href="#2-1-2-网络结构" class="headerlink" title="2.1.2 网络结构"></a>2.1.2 网络结构</h4><p>以太网的标准拓扑结构为总线拓扑结构，但目前的快速以太网（<a href="https://baike.baidu.com/item/100BASE-T" target="_blank" rel="noopener">100BASE-T</a>、<a href="https://baike.baidu.com/item/1000BASE-T" target="_blank" rel="noopener">1000BASE-T</a>标准）为了减少冲突，将能提高的网络速度和使用效率最大化，使用集线器来进行网络连接和组织。如此一来，以太网的拓扑结构就成了星型；但在逻辑上，以太网仍然使用总线型拓扑和CSMA/CD的总线技术。</p>
+<p>CSMA/CD(Carrier Sense Multiple Access/Collision Detection，载波多重访问/碰撞检测）工作原理：</p>
+<ol>
+<li>【开始】如果线路空闲，则启动传输，否则跳转到第4步。</li>
+<li>【发送】如果检测到冲突，继续发送数据直到达到最小回报时间（min echo receive interval）以确保所有其他转发器和终端检测到冲突，而后跳转到第4步。</li>
+<li>【成功传输】向更高层的网络协议报告发送成功，退出传输模式。</li>
+<li>【线路繁忙】持续等待直到线路空闲。</li>
+<li>【线路空闲】在尚未达到最大尝试次数之前，每隔一段随机时间转到第1步重新尝试。</li>
+<li>【超过最大尝试传输次数】向更高层的网络协议报告发送失败，退出传输模式。</li>
+</ol>
+<p>因为所有的通信信号都在共享线路上传输，即使信息只是想发给其中的一个终端（destination），却会使用广播的形式，发送给线路上的所有计算机。在正常情况下，网络接口卡会滤掉不是发送给自己的信息，接收到目标地址是自己的信息时才会向CPU发出中断请求，除非网卡处于混杂模式（Promiscuous mode）。这种“一个说，大家听”的特质是共享介质以太网在安全上的弱点，因为以太网上的一个节点可以选择是否监听线路上传输的所有信息。共享电缆也意味着共享带宽，所以在某些情况下以太网的速度可能会非常慢，比如电源故障之后，当所有的网络终端都重新启动时。</p>
+<h4 id="2-1-3-工作模式"><a href="#2-1-3-工作模式" class="headerlink" title="2.1.3 工作模式"></a>2.1.3 工作模式</h4><p>以太网卡可以工作在两种模式下：半双工和全双工</p>
+<ul>
+<li><font color="red">半双工</font>：半双工传输模式实现以太网载波监听多路访问冲突检测。传统的共享LAN是在半双工下工作的，在同一时间只能传输单一方向的数据。当两个方向的数据同时传输时，就会产生冲突，这会降低以太网的效率。</li>
+<li><font color="red">全双工</font>：全双工传输是采用点对点连接，这种安排没有冲突，因为它们使用双绞线中两个独立的线路，这等于没有安装新的介质就提高了带宽（单行道变双行道）。在双全工模式下，冲突检测电路不可用，因此每个双全工连接只用一个端口，用于点对点连接。标准以太网的传输效率可达到50％～60％的带宽，双全工在两个方向上都提供100％的效率。</li>
+</ul>
+<h3 id="2-2-令牌环网"><a href="#2-2-令牌环网" class="headerlink" title="2.2 令牌环网"></a>2.2 令牌环网</h3><p>令牌环网是IBM公司于70年代发展的，现在这种网络比较少见。在老式的令牌环网中，数据传输速度为4Mbps或16Mbps，新型的快速令牌环网速度可达100Mbps。令牌环网的传输方法在物理上采用了星形拓扑结构，但逻辑上仍是环形拓扑结构。其通信传输介质可以是无屏蔽双绞线、屏蔽双绞线和光纤等。 结点间采用多站访问部件（Multistation Access Unit，MAU）连接在一起。MAU是一种专业化集线器，它是用来围绕工作站计算机的环路进行传输。由于数据包看起来像在环中传输，所以在工作站和MAU中没有终结器。在这种网络中，有一种专门的帧称为“令牌”，在环路上持续地传输来确定一个结点何时可以发送包。令牌为24位长，有3个8位的域，分别是首定界符（Start Delimiter，SD）、访问控制（Access Control，AC）和终定界符（End Delimiter，ED）。首定界符是一种与众不同的信号模式，作为一种非数据信号表现出来，用途是防止它被解释成其它东西。这种独特的8位组合只能被识别为帧首标识符（SOF）。由于目前以太网技术发展迅速，令牌网存在固有缺点，令牌在整个计算机局域网已不多见，原来提供令牌网设备的厂商多数也退出了市场，所以在目前局域网市场中令牌网可以说是“明日黄花”了。</p>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2020/04/21/计算机网络/计算机网络（三）—— 网络的基本分类/">https://shinerio.cc/2020/04/21/计算机网络/计算机网络（三）—— 网络的基本分类/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/计算机网络/">计算机网络</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2020/04/22/计算机网络/计算机网络（四）—— 数据链路层/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">计算机网络（四）—— 数据链路层</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2020/04/20/计算机网络/计算机网络（二）—— 性能指标/">
+        <span class="next-text nav-default">计算机网络（二）—— 性能指标</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2020/04/21/计算机网络/计算机网络（三）—— 网络的基本分类/';
+        this.page.identifier = '2020/04/21/计算机网络/计算机网络（三）—— 网络的基本分类/';
+        this.page.title = '计算机网络（三）—— 网络的基本分类';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

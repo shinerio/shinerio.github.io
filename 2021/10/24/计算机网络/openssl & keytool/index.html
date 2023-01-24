@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="openssl & keytool"><meta name="keywords" content="linux, 网络安全, 加密, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2021/10/24/计算机网络/openssl & keytool/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>openssl & keytool - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">openssl & keytool
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2021-10-24
+        </span><span class="post-category">
+            <a href="/categories/网络安全/">网络安全</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-常见文件格式"><span class="toc-text">1. 常见文件格式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-自签ssl证书"><span class="toc-text">2. 自签ssl证书</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-私钥加密"><span class="toc-text">2.1 私钥加密</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-1-创建加密的私钥"><span class="toc-text">2.1.1 创建加密的私钥</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-2-使用已有私钥创建ssl证书"><span class="toc-text">2.1.2 使用已有私钥创建ssl证书</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-1-3-直接创建有密码的ssl证书"><span class="toc-text">2.1.3 直接创建有密码的ssl证书</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-查看私钥明细"><span class="toc-text">2.2 查看私钥明细</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-转换命令"><span class="toc-text">2.3 转换命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-生成签名请求及CA-签名"><span class="toc-text">3. 生成签名请求及CA 签名</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1合成-pkcs-12-证书-含私钥"><span class="toc-text">3.1合成 pkcs#12 证书(含私钥)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-将证书和私钥-CA-证书-合成pkcs-12-证书"><span class="toc-text">3.2 将证书和私钥/CA 证书 合成pkcs#12 证书</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-pcks-12-提取PEM文件-含私钥"><span class="toc-text">3.3 pcks#12 提取PEM文件(含私钥)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-JKS"><span class="toc-text">4. JKS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-生成jks文件"><span class="toc-text">4.1 生成jks文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-列出keystore中的证书"><span class="toc-text">4.2 列出keystore中的证书</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-查看指定证书详情"><span class="toc-text">4.3 查看指定证书详情</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-删除指定证书"><span class="toc-text">4.4 删除指定证书</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-修改keystore密码"><span class="toc-text">4.5 修改keystore密码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-6-修改指定证书密码"><span class="toc-text">4.6 修改指定证书密码</span></a></li></ol></li></ol>
+    </div>
+  </div><div class="post-content"><p>openssl 是目前最流行的 SSL 密码库工具，其提供了一个通用、健壮、功能完备的工具套件，用以支持SSL/TLS 协议的实现。keytool可以用来管理秘钥和证书，并保存在keystore文件中。<br><a id="more"></a></p>
+<h2 id="1-常见文件格式"><a href="#1-常见文件格式" class="headerlink" title="1. 常见文件格式"></a>1. 常见文件格式</h2><ul>
+<li>.csr 证书签名请求。某些应用程序可以生成这些文件以提交给证书颁发机构。实际格式为PKCS10，它在RFC 2986中定义。它包括所请求证书的一些/全部密钥详细信息，例如主题，组织，状态，诸如此类，以及要签名的证书的公共密钥。这些由CA签名并返回证书。返回的证书是公用证书（包括公用密钥，但不包含专用密钥）</li>
+<li>.pem 在RFC 1421至1424中定义，这是一种容器格式，可以只包含公共证书（例如Apache安装和CA证书文件/etc/ssl/certs），或者可以包括完整的证书链，包括公共密钥，私钥和根证书</li>
+<li>.key 这是PEM格式的文件，仅包含特定证书的私钥。在Apache安装中，该位置通常位于中/etc/ssl/private。这些文件的权限非常重要，如果设置错误，某些程序将拒绝加载这些证书。</li>
+<li>.pkcs12 .pfx .p12 最初由RSA在“ 公钥密码标准”（缩写为PKCS）中定义，“ 12”变体最初由Microsoft增强，后来提交为RFC 7292。这是包含公共和私有证书对的密码容器格式。与.pem文件不同，此容器是完全加密的。Openssl可以使用公钥和私钥将其转换为.pem文件：openssl pkcs12 -in file-to-convert.p12 -out converted-file.pem -nodes</li>
+</ul>
+<p>除此之外，还有几种其他几种格式：</p>
+<ul>
+<li>.der-一种以二进制形式编码ASN.1语法的方法，.pem文件只是Base64编码的.der文件。OpenSSL可以将它们转换为.pem（openssl x509 -inform der -in to-convert.der -out converted.pem）。Windows将这些视为证书文件。默认情况下，Windows会将证书导出为扩展名为.DER格式的文件。</li>
+<li>.cert .cer .crt都是.pem（或很少是.der）格式的文件，具有不同的扩展名，Windows Explorer将其识别为证书，而.pem则不是。</li>
+<li>.p7b .keystore 在RFC 2315中定义为PKCS 7，这是Windows用于证书交换的一种格式。Java本身了解这些内容，因此通常将其.keystore用作扩展。与.pem样式证书不同，此格式具有定义的方式来包括证书路径证书。</li>
+<li>.crl-证书吊销列表。证书颁发机构产生这些证书是作为在到期之前取消对证书进行授权的一种方式。有时您可以从CA网站下载它们。</li>
+</ul>
+<h2 id="2-自签ssl证书"><a href="#2-自签ssl证书" class="headerlink" title="2. 自签ssl证书"></a>2. 自签ssl证书</h2><p>自签名SSL证书是由创建它的人而不是受信任的证书颁发机构签名的证书。自签名证书可以与受信任的CA签名SSL证书具有相同的加密级别。被任何浏览器识别为有效的自签名证书。如果您使用的是自签名证书，则网络浏览器将向访问者显示警告，提示该网站证书无法验证。<br>自签名证书主要用于测试目的或内部使用，不应该在暴露于Internet的生产系统中使用自签名证书。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">openssl req -newkey rsa:4096 \</span><br><span class="line">            -x509 \</span><br><span class="line">            -sha256 \</span><br><span class="line">            -days 3650 \</span><br><span class="line">            -nodes \</span><br><span class="line">            -out example.crt \</span><br><span class="line">            -keyout example.key \</span><br><span class="line">			-subj "/C=CN/ST=BEIJING/L=BEIJING/O=SHINERIO/OU=SHINERIO/CN=www.shinerio.cc"</span><br></pre></td></tr></table></figure>
+<ul>
+<li>-newkey rsa:4096 创建新的证书请求和4096位RSA密钥。默认值为2048位。</li>
+<li>-x509 创建X.509证书。</li>
+<li>-sha256 使用265位SHA（安全哈希算法）。</li>
+<li>-days 3650 认证证书的天数。 3650是10年。</li>
+<li>-nodes 创建没有密码的密钥。</li>
+<li>-out example.crt 指定新创建的证书的文件名。</li>
+<li>-keyout example.key 指定新创建的私钥的文件名。</li>
+<li>-subj 证书信息=<ul>
+<li>C= 国家/地区名称。 ISO的两个字母缩写。</li>
+<li>ST= 州或省名。</li>
+<li>L= 地区名称。您所在的城市的名称。</li>
+<li>O= 您组织的全名。</li>
+<li>OU= 组织单位。</li>
+<li>CN= 完全限定的域名。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>如上导出的example.crt即为证书(公钥)，.key为私钥公私钥都是明文存储的。</p>
+</blockquote>
+<h3 id="2-1-私钥加密"><a href="#2-1-私钥加密" class="headerlink" title="2.1 私钥加密"></a>2.1 私钥加密</h3><h4 id="2-1-1-创建加密的私钥"><a href="#2-1-1-创建加密的私钥" class="headerlink" title="2.1.1 创建加密的私钥"></a>2.1.1 创建加密的私钥</h4><p>openssl genrsa -des3 -out example.key 1024</p>
+<ul>
+<li>-des3:生成的密钥使用des3方式进行加密。</li>
+<li>-out private-rsa.key:将生成的私钥保存至example.key文件。</li>
+<li>1024为要生成的私钥的长度。</li>
+</ul>
+<h4 id="2-1-2-使用已有私钥创建ssl证书"><a href="#2-1-2-使用已有私钥创建ssl证书" class="headerlink" title="2.1.2 使用已有私钥创建ssl证书"></a>2.1.2 使用已有私钥创建ssl证书</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">openssl req -new \</span><br><span class="line">            -key example.key \</span><br><span class="line">            -x509 \</span><br><span class="line">            -sha256 \</span><br><span class="line">            -days 3650 \</span><br><span class="line">            -out example.crt \</span><br><span class="line">            -keyout example.key \</span><br><span class="line">			-subj "/C=CN/ST=BEIJING/L=BEIJING/O=SHINERIO/OU=SHINERIO/CN=www.shinerio.cc"</span><br></pre></td></tr></table></figure>
+<h5 id="2-1-3-直接创建有密码的ssl证书"><a href="#2-1-3-直接创建有密码的ssl证书" class="headerlink" title="2.1.3 直接创建有密码的ssl证书"></a>2.1.3 直接创建有密码的ssl证书</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">openssl req -newkey rsa:4096 \</span><br><span class="line">            -x509 \</span><br><span class="line">            -sha256 \</span><br><span class="line">            -days 3650 \</span><br><span class="line">            -out example.crt \</span><br><span class="line">            -keyout example.key \</span><br><span class="line">			-subj "/C=CN/ST=BEIJING/L=BEIJING/O=SHINERIO/OU=SHINERIO/CN=www.shinerio.cc"</span><br></pre></td></tr></table></figure>
+<h2 id="2-2-查看私钥明细"><a href="#2-2-查看私钥明细" class="headerlink" title="2.2 查看私钥明细"></a>2.2 查看私钥明细</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl rsa -in example.key -noout -text</span><br></pre></td></tr></table></figure>
+<h2 id="2-3-转换命令"><a href="#2-3-转换命令" class="headerlink" title="2.3 转换命令"></a>2.3 转换命令</h2><ul>
+<li>加密私钥转非加密</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl rsa -in example.key -passin pass:shinerio -out example_unencrypt.key</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>非加密私钥转加密</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl rsa -in example_unencrypt.key -aes256 -passout pass:shinerio -out example_encrypt.key</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改密码</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl rsa -in example.key -passin pass:shinerio -aes256 -passout pass:shinerio_new -out example.key</span><br></pre></td></tr></table></figure>
+<h2 id="3-生成签名请求及CA-签名"><a href="#3-生成签名请求及CA-签名" class="headerlink" title="3. 生成签名请求及CA 签名"></a>3. 生成签名请求及CA 签名</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -aes256 -passout pass:shinerio -out server.key 2048</span><br><span class="line">openssl req -new \</span><br><span class="line">                        -key server.key \</span><br><span class="line">						-passin pass:shinerio -out server.csr \</span><br><span class="line">			            -subj "/C=CN/ST=BEIJING/L=BEIJING/O=SHINERIO/OU=SHINERIO/CN=www.shinerio.cc"</span><br></pre></td></tr></table></figure>
+<p> 生成的 csr签名请求文件可提交至 CA进行签发。使用 CA 证书及CA密钥对请求签发证书进行签发，生成 x509证书</p>
+<p>openssl x509 -req -days 3650 -in server.csr -CA ca.crt -CAkey ca.key -passin pass:shinerio -CAcreateserial -out server.crt</p>
+<h3 id="3-1合成-pkcs-12-证书-含私钥"><a href="#3-1合成-pkcs-12-证书-含私钥" class="headerlink" title="3.1合成 pkcs#12 证书(含私钥)"></a>3.1合成 pkcs#12 证书(含私钥)</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl pkcs12 -export -in server.crt -inkey server.key -passin pass:shinerio -password pass:shinerio -out server.p12</span><br></pre></td></tr></table></figure>
+<h3 id="3-2-将证书和私钥-CA-证书-合成pkcs-12-证书"><a href="#3-2-将证书和私钥-CA-证书-合成pkcs-12-证书" class="headerlink" title="3.2 将证书和私钥/CA 证书 合成pkcs#12 证书"></a>3.2 将证书和私钥/CA 证书 合成pkcs#12 证书</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl pkcs12 -export -in server.crt -inkey server.key -passin pass:shinerio -chain -CAfile ca.crt -password pass:shinerio -out server-all.p12</span><br></pre></td></tr></table></figure>
+<p>其中-chain指示同时添加证书链，-CAfile 指定了CA证书，导出的p12文件将包含多个证书。(其他选项：-name可用于指定server证书别名；-caname用于指定ca证书别名)</p>
+<h3 id="3-3-pcks-12-提取PEM文件-含私钥"><a href="#3-3-pcks-12-提取PEM文件-含私钥" class="headerlink" title="3.3 pcks#12 提取PEM文件(含私钥)"></a>3.3 pcks#12 提取PEM文件(含私钥)</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl pkcs12 -in server.p12 -password pass:shinerio -passout pass:shinerio -out server.pem</span><br></pre></td></tr></table></figure>
+<p>其中-password 指定 p12文件的密码(导入导出)，-passout指输出私钥的加密密码(nodes为无加密)，导出的文件为pem格式，同时包含证书和私钥。</p>
+<ul>
+<li><p>仅提取私钥</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl pkcs12 -in server.p12 -password pass:shinerio -passout pass:shinerio -nocerts -out key.pem</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>仅提取证书(所有证书)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl pkcs12 -in server.p12 -password pass:shinerio -nokeys -out all_certs.pem</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>仅提取ca证书</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl pkcs12 -in server-all.p12 -password pass:shinerio -nokeys -cacerts -out cacert.pem</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>仅提取server证书</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl pkcs12 -in server-all.p12 -password pass:111111 -nokeys -clcerts -out srever.pem</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="4-JKS"><a href="#4-JKS" class="headerlink" title="4. JKS"></a>4. JKS</h2><p>JKS（Java Key Store）就是利用Java Keytool 工具生成的Keystore文件，JKS文件由公钥和密钥构成，其中的公钥就是我们所说的证书，即cer为后缀的文件，而私钥就是密钥，即以key为后缀的文件。</p>
+<h3 id="4-1-生成jks文件"><a href="#4-1-生成jks文件" class="headerlink" title="4.1 生成jks文件"></a>4.1 生成jks文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -genkeypair -keyalg rsa -keysize 2048 -storetype JKS -alias cert -keypass shinerio -validity 3650 -storepass shinerio -keystore D:/example.jks -dname "CN=shinerio.cc, OU=shinerio, O=shinerio, L=BEIJING, ST=BEIJING, C=CN"</span><br></pre></td></tr></table></figure>
+<p><strong>选项:</strong></p>
+<ul>
+<li>-alias <alias>                  要处理的条目的别名</alias></li>
+<li>-keyalg <keyalg>                密钥算法名称</keyalg></li>
+<li>-keysize <keysize>              密钥位大小</keysize></li>
+<li>-sigalg <sigalg>                签名算法名称</sigalg></li>
+<li>-destalias <destalias>          目标别名</destalias></li>
+<li>-dname <dname>                  唯一判别名</dname></li>
+<li>-startdate <startdate>          证书有效期开始日期/时间</startdate></li>
+<li>-ext <value>                    X.509 扩展</value></li>
+<li>-validity <valdays>             有效天数</valdays></li>
+<li>-keypass <arg>                  密钥口令</arg></li>
+<li>-keystore <keystore>            密钥库名称</keystore></li>
+<li>-storepass <arg>                密钥库口令</arg></li>
+<li>-storetype <storetype>          密钥库类型</storetype></li>
+<li>-providername <providername>    提供方名称</providername></li>
+<li>-providerclass <providerclass>  提供方类名</providerclass></li>
+<li>-providerarg <arg>              提供方参数</arg></li>
+<li>-providerpath <pathlist>        提供方类路径</pathlist></li>
+<li>-v                              详细输出</li>
+<li>-protected                      通过受保护的机制的口令</li>
+<li>-storepasswd  修改keystore密码</li>
+<li>-keypasswd   更改指定证书的密钥口令</li>
+</ul>
+<p>使用 “keytool -help” 获取所有可用命令</p>
+<h3 id="4-2-列出keystore中的证书"><a href="#4-2-列出keystore中的证书" class="headerlink" title="4.2 列出keystore中的证书"></a>4.2 列出keystore中的证书</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -list -v -keystore D:/example.jks -storepass shinerio</span><br></pre></td></tr></table></figure>
+<h3 id="4-3-查看指定证书详情"><a href="#4-3-查看指定证书详情" class="headerlink" title="4.3 查看指定证书详情"></a>4.3 查看指定证书详情</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -list -v -alias cert -keystore D:/example.jks -storepass shinerio</span><br></pre></td></tr></table></figure>
+<h3 id="4-4-删除指定证书"><a href="#4-4-删除指定证书" class="headerlink" title="4.4 删除指定证书"></a>4.4 删除指定证书</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -delete -keystore D:/example -alias cert -storepass shinerio</span><br></pre></td></tr></table></figure>
+<h3 id="4-5-修改keystore密码"><a href="#4-5-修改keystore密码" class="headerlink" title="4.5 修改keystore密码"></a>4.5 修改keystore密码</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -storepasswd -keystore D:/example.jks -storepass shinerio</span><br></pre></td></tr></table></figure>
+<h3 id="4-6-修改指定证书密码"><a href="#4-6-修改指定证书密码" class="headerlink" title="4.6 修改指定证书密码"></a>4.6 修改指定证书密码</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -keypasswd -alias cert -keystore D:/example.jks -storepass shinerio</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>如果 -storetype 为 PKCS12, 则不支持 -keypasswd 命令</p>
+</blockquote>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2021/10/24/计算机网络/openssl & keytool/">https://shinerio.cc/2021/10/24/计算机网络/openssl & keytool/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/linux/">linux</a>
+            <a href="/tags/网络安全/">网络安全</a>
+            <a href="/tags/加密/">加密</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2021/12/03/系统设计/分布式事务一致性/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">分布式事务一致性</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2021/10/24/计算机网络/linux命令之route/">
+        <span class="next-text nav-default">linux命令之route</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2021/10/24/计算机网络/openssl & keytool/';
+        this.page.identifier = '2021/10/24/计算机网络/openssl & keytool/';
+        this.page.title = 'openssl & keytool';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

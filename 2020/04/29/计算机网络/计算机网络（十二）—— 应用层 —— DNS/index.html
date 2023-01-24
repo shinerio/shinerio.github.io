@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="计算机网络（十二）—— 应用层 —— DNS"><meta name="keywords" content="计算机网络, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2020/04/29/计算机网络/计算机网络（十二）—— 应用层 —— DNS/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>计算机网络（十二）—— 应用层 —— DNS - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">计算机网络（十二）—— 应用层 —— DNS
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020-04-29
+        </span><span class="post-category">
+            <a href="/categories/计算机网络/">计算机网络</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-基本概念"><span class="toc-text">1. 基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-域名结构"><span class="toc-text">1.1 域名结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-CNAME和A记录"><span class="toc-text">1.2 CNAME和A记录</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-域名解析"><span class="toc-text">2. 域名解析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-域名服务器层次"><span class="toc-text">2.1 域名服务器层次</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-解析过程"><span class="toc-text">2.2 解析过程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-协议报文格式"><span class="toc-text">3. 协议报文格式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-头部"><span class="toc-text">3.1 头部</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-正文"><span class="toc-text">3.2 正文</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-wireshark抓包分析"><span class="toc-text">3.3 wireshark抓包分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-nslookup"><span class="toc-text">4. nslookup</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p>DNS域名解析服务采用C/S架构</p>
+<a id="more"></a>
+<h2 id="1-基本概念"><a href="#1-基本概念" class="headerlink" title="1. 基本概念"></a>1. 基本概念</h2><p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200424141937.png" alt></p>
+<h3 id="1-1-域名结构"><a href="#1-1-域名结构" class="headerlink" title="1.1 域名结构"></a>1.1 域名结构</h3><p>www.google.com    mail.google.com    scholar.google.com</p>
+<p>【顶级域名】： .com</p>
+<p>【二级域名】： google</p>
+<p>【三级域名】：www/mail/scholar</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200424142522.png" alt></p>
+<h3 id="1-2-CNAME和A记录"><a href="#1-2-CNAME和A记录" class="headerlink" title="1.2 CNAME和A记录"></a>1.2 CNAME和A记录</h3><p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200424152649.png" alt></p>
+<p>【A记录】：A记录是用来指定主机名（或域名）对应的IP地址记录。如设置二级域名shinerio.cc对应ip地址为185.199.111.153（gitpage服务器地址）等。当然，也可以为三级域名mail.shinerio.cc绑定对应ip地址。一个域名可以对应多条A记录，即对应多个ip地址，实现DNS负载均衡。</p>
+<blockquote>
+<p>主机记录类型有www,解析后域名为www.shinerio.cc。@，直接解析主域名shinerio.cc，相当于www.shinerio.cc。<em>，匹配所有域名\</em>.shinerio.cc，将所有shinerio.cc下的子域名指向同一服务器地址。mail，将域名解析为mail.shinerio.cc，通常用于解析邮箱服务器。</p>
+</blockquote>
+<p>【CNAME记录】：CNAME记录将多个名字映射到另外一个域名。如将shinerio.cc记录别名为shinerio.github.io，这样用shinerio.cc替代shinerio.github.io访问gitpage提供的个人博客主页。</p>
+<p>【比较】：</p>
+<ol>
+<li>使用CNAME记录可以很方便地变更IP地址。如果一台服务器有100个网站，每个网站有一个域名。如果使用A记录，那么服务器ip更改时，则需要修改100条A记录。如果使用CNAME指向同一域名，那么该台服务器变更IP时，只需要变更别名的A记录就可以。</li>
+<li>使用A记录，输入域名的时候可以用shinerio.cc代替www.shinerio.cc，</li>
+</ol>
+<h2 id="2-域名解析"><a href="#2-域名解析" class="headerlink" title="2. 域名解析"></a>2. 域名解析</h2><h3 id="2-1-域名服务器层次"><a href="#2-1-域名服务器层次" class="headerlink" title="2.1 域名服务器层次"></a>2.1 域名服务器层次</h3><p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200424144017.png" alt></p>
+<p>【根域名服务器】： 最高层次的域名服务器，也是最重要的域名服务器。全球有13个根域名服务器名称，并不是一个名字对应一台物理服务器的地址，一个根服务器的名字可以作为入口对应一组服务器集群来提供域名解析服务。</p>
+<ul>
+<li>a.root-servers.net.</li>
+<li>b.root-servers.net.</li>
+<li>c.root-servers.net.</li>
+<li>d.root-servers.net.</li>
+<li>e.root-servers.net.</li>
+<li>f.root-servers.net.</li>
+<li>g.root-servers.net.</li>
+<li>h.root-servers.net.</li>
+<li>i.root-servers.net.</li>
+<li>j.root-servers.net.</li>
+<li>k.root-servers.net.</li>
+<li>l.root-servers.net.</li>
+<li>m.root-servers.net.</li>
+</ul>
+<p>【顶级域名服务器】：主要负责管理在该顶级域名服务器注册的下一级域名(二级域名)。所有顶级域名服务器的名称和IP地址是在根服务器注册的，也就是说，根域名服务器知道所有的顶级域名服务器的名称和IP地址。</p>
+<p>【 权威域名服务器】：负责一个区的域名服务器，顶级域名服务器也可以算作是权威域名服务器，只不过由于其特殊性，我们专门把它划分为一类。因此权威域名服务器通常是指顶级域名以下的管理二级、三级、四级等域名的服务器。</p>
+<p>【本地域名服务器】：当一个主机(个人电脑)发出DNS请求时，查询请求就被发送到本地域名服务器，本地域名服务器负责回答这个查询，或者代替主机向域名空间中不同层次的权威域名服务器查询，再把查询的结果返回给主机。</p>
+<h3 id="2-2-解析过程"><a href="#2-2-解析过程" class="headerlink" title="2.2 解析过程"></a>2.2 解析过程</h3><p>DNS解析过程其实可以看做一个多岔树递归查询算法，从根节点出发，递归找下属域名服务器，直到解析成功。</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200424150647.png" alt></p>
+<h2 id="3-协议报文格式"><a href="#3-协议报文格式" class="headerlink" title="3. 协议报文格式"></a>3. 协议报文格式</h2><p>DNS采用UDP或TCP传输，主要是查看DNS报文首部中的标志字段。当客户端发出DNS查询请求，从服务器收到的响应报文中的TC（删减标志）比特被置为1时，表示应答总长度超过512字节，只返回前512个字节，这时DNS就需要使用TCP重发原来的查询请求。因为在UDP的应用程序中，其应用程序被限制在512个字节或更小，因此DNS报文穿数据流只能有512字节，而TCP能将用户的数据流分为一些报文段，因此TCP就能用多个报文段去传超过512字节的数据流或是任意长度的数据流。</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200424155506.png" alt></p>
+<h3 id="3-1-头部"><a href="#3-1-头部" class="headerlink" title="3.1 头部"></a>3.1 头部</h3><p>【会话标识】（2字节）：是DNS报文的ID标识，对于请求报文和其对应的应答报文，这个字段是相同的，通过它可以区分DNS应答报文是哪个请求的响应</p>
+<p>【标志】（2字节）：</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200424155715.png" alt></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>QR（bit）</td>
+<td>查询/响应标志，0为查询，1为响应</td>
+</tr>
+<tr>
+<td>opcode（4bit）</td>
+<td>0表示标准查询，1表示反向查询，2表示服务器状态请求</td>
+</tr>
+<tr>
+<td>AA（1bit）</td>
+<td>表示授权回答</td>
+</tr>
+<tr>
+<td>TC（1bit）</td>
+<td>表示可截断的</td>
+</tr>
+<tr>
+<td>RD（1bit）</td>
+<td>表示期望递归</td>
+</tr>
+<tr>
+<td>RA（1bit）</td>
+<td>表示可用递归</td>
+</tr>
+<tr>
+<td>rcode（4bit）</td>
+<td>表示返回码，0表示没有差错，3表示名字差错，2表示服务器错误（Server Failure）</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>【Questions】 （2字节）表示查询问题区域节的数量</p>
+<p>【Answers】（2字节）表示回答区域的数量</p>
+<p>【Authoritative namesversers】（2字节）表示授权区域的数量</p>
+<p>【Additional recoreds】（2字节）表示附加区域的数量</p>
+<h3 id="3-2-正文"><a href="#3-2-正文" class="headerlink" title="3.2 正文"></a>3.2 正文</h3><p>【Queries】</p>
+<p><img src="https://jocent.me/wp-content/uploads/2017/06/dns-package-quey.png" alt="img"></p>
+<ul>
+<li>NAME。长度不固定，且不使用填充字节，一般该字段表示的就是需要查询的域名（如果是反向查询，则为IP，反向查询即由IP地址反查域名），一般的格式如下图所示。</li>
+<li>查询类型，见下表。</li>
+<li>查询类。通常为0x0001，表明Internet数据</li>
+</ul>
+<div align="center">
+<img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200424163058.png" width="100%"><br>
+<sup><strong>Fig 1:</strong>NAME格式</sup>
+</div>
+
+<div align="center">
+<sup><strong>Tab 1:</strong>查询类型</sup>
+</div>
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>助记符</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>A</td>
+<td>由域名获得IPv4地址</td>
+</tr>
+<tr>
+<td>2</td>
+<td>NS</td>
+<td>查询域名服务器</td>
+</tr>
+<tr>
+<td>5</td>
+<td>CNAME</td>
+<td>查询规范名称</td>
+</tr>
+<tr>
+<td>6</td>
+<td>SOA</td>
+<td>开始授权</td>
+</tr>
+<tr>
+<td>11</td>
+<td>WKS</td>
+<td>熟知服务</td>
+</tr>
+<tr>
+<td>12</td>
+<td>PTR</td>
+<td>把IP地址转换成域名</td>
+</tr>
+<tr>
+<td>13</td>
+<td>HINFO</td>
+<td>主机信息</td>
+</tr>
+<tr>
+<td>15</td>
+<td>MX</td>
+<td>邮件交换</td>
+</tr>
+<tr>
+<td>28</td>
+<td>AAAA</td>
+<td>由域名获得IPv6地址</td>
+</tr>
+<tr>
+<td>252</td>
+<td>AXFR</td>
+<td>传送整个区的请求</td>
+</tr>
+<tr>
+<td>255</td>
+<td>ANY</td>
+<td>对所有记录的请求</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>【Answers,Authoritative namesversers,Additional recoreds】</p>
+<p>这三个部分格式一样，如下图所示。</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200424160818.png" alt></p>
+<ul>
+<li><font color="red">Name</font>。它的格式和Queries区域的查询名字字段是一样的。有一点不同就是，当报文中域名重复出现的时候，该字段使用2个字节的偏移指针来表示。比如，在资源记录中，域名通常是查询问题部分的域名的重复，因此用2字节的指针来表示，具体格式是最前面的两个高位是 11，用于识别指针。其余的14位从DNS报文的开始处计数（从0开始），指出该报文中的相应字节数。一个典型的例子，C00C(1100000000001100，12正好是头部的长度，其正好指向Queries区域的查询名字字段)。</li>
+<li><font color="red">生存时间</font>。以秒为单位，表示的是资源记录的生命周期，一般用于当地址解析程序取出资源记录后决定保存及使用缓存数据的时间，它同时也可以表明该资源记录的稳定程度，极为稳定的信息会被分配一个很大的值（比如86400，这是一天的秒数）。</li>
+<li><font color="red">data</font>。该字段是一个可变长字段，表示按照查询段的要求返回的相关资源记录的数据。可以是Address（表明查询报文想要的回应是一个IP地址）或者CNAME（表明查询报文想要的回应是一个规范主机名）等。</li>
+</ul>
+<h3 id="3-3-wireshark抓包分析"><a href="#3-3-wireshark抓包分析" class="headerlink" title="3.3 wireshark抓包分析"></a>3.3 wireshark抓包分析</h3><p>【请求报文】</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200424163208.png" alt></p>
+<p>【响应报文】</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200424163312.png" alt></p>
+<h2 id="4-nslookup"><a href="#4-nslookup" class="headerlink" title="4. nslookup"></a>4. nslookup</h2><p>使用<code>nslookup shinerio.cc</code>查询DNS</p>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2020/04/29/计算机网络/计算机网络（十二）—— 应用层 —— DNS/">https://shinerio.cc/2020/04/29/计算机网络/计算机网络（十二）—— 应用层 —— DNS/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/计算机网络/">计算机网络</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2020/04/30/计算机网络/计算机网络（十三）—— web访问全过程/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">计算机网络（十三）—— web访问全过程</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2020/04/28/计算机网络/计算机网络（十一）—— 应用层 —— DHCP/">
+        <span class="next-text nav-default">计算机网络（十一）—— 应用层 —— DHCP</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2020/04/29/计算机网络/计算机网络（十二）—— 应用层 —— DNS/';
+        this.page.identifier = '2020/04/29/计算机网络/计算机网络（十二）—— 应用层 —— DNS/';
+        this.page.title = '计算机网络（十二）—— 应用层 —— DNS';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

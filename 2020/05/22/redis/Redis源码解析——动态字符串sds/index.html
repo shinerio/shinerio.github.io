@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="Redis源码解析——动态字符串sds"><meta name="keywords" content="C/C++, Redis, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2020/05/22/redis/Redis源码解析——动态字符串sds/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>Redis源码解析——动态字符串sds - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">Redis源码解析——动态字符串sds
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020-05-22
+        </span><span class="post-category">
+            <a href="/categories/C-C/">C/C++</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-sds数据结构定义"><span class="toc-text">1. sds数据结构定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-sds创建函数"><span class="toc-text">2. sds创建函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-sds释放函数"><span class="toc-text">3. sds释放函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-sds扩容函数"><span class="toc-text">4. sds扩容函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-sds回收函数"><span class="toc-text">5. sds回收函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-sds拼接函数"><span class="toc-text">6. sds拼接函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-sds与C中字符串区别"><span class="toc-text">7. sds与C中字符串区别</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p>Redis没有使用C语言的字符串结构，而是自己设计了一个简单的动态字符串结构sds(simple dynamic string)。Redis中关于sds的实现主要在sds.c和sds.h中</p>
+<a id="more"></a>
+<h2 id="1-sds数据结构定义"><a href="#1-sds数据结构定义" class="headerlink" title="1. sds数据结构定义"></a>1. sds数据结构定义</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 类型别名，用于指向 sdshdr 的 buf 属性</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">char</span> *sds;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 保存字符串对象的结构</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sdshdr</span> &#123;</span></span><br><span class="line">    <span class="comment">// buf 中已占用空间的长度</span></span><br><span class="line">    <span class="keyword">int</span> len;</span><br><span class="line">    <span class="comment">// buf 中剩余可用空间的长度</span></span><br><span class="line">    <span class="keyword">int</span> <span class="built_in">free</span>;</span><br><span class="line">    <span class="comment">// 数据空间</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200522165735.png" alt></p>
+<p>buf[]为长度为0的数据，不占用内存，sizeof(struct sdshdr)返回8。使用char buf[]而不是char *buf，可以避免二次分配内存，同时buf[]不占用空间，也能节省内存。</p>
+<h2 id="2-sds创建函数"><a href="#2-sds创建函数" class="headerlink" title="2. sds创建函数"></a>2. sds创建函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">sds <span class="title">sdsnewlen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *init, <span class="keyword">size_t</span> initlen)</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sdshdr</span> *<span class="title">sh</span>;</span></span><br><span class="line">    <span class="comment">// 根据是否有初始化内容，选择适当的内存分配方式</span></span><br><span class="line">    <span class="comment">// T = O(N)</span></span><br><span class="line">    <span class="comment">// calloc()会对分配的空间做初始化工作（初始化为0），而malloc()不会</span></span><br><span class="line">    <span class="keyword">if</span> (init)</span><br><span class="line">        <span class="comment">// zmalloc 不初始化所分配的内存</span></span><br><span class="line">        sh = zmalloc(<span class="keyword">sizeof</span>(struct sdshdr) + initlen + <span class="number">1</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// zcalloc 将分配的内存全部初始化为0</span></span><br><span class="line">        sh = zcalloc(<span class="keyword">sizeof</span>(struct sdshdr) + initlen + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 内存分配失败，返回</span></span><br><span class="line">    <span class="keyword">if</span> (sh == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置初始化长度，sds长度没有计算'\0'</span></span><br><span class="line">    sh-&gt;len = initlen;</span><br><span class="line">    <span class="comment">// 新 sds 不预留任何空间</span></span><br><span class="line">    sh-&gt;<span class="built_in">free</span> = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 如果有指定初始化内容，将它们复制到 sdshdr 的 buf 中</span></span><br><span class="line">    <span class="comment">// T = O(N)</span></span><br><span class="line">    <span class="keyword">if</span> (initlen &amp;&amp; init)</span><br><span class="line">        <span class="built_in">memcpy</span>(sh-&gt;buf, init, initlen);</span><br><span class="line">    <span class="comment">// 以 \0 结尾</span></span><br><span class="line">    sh-&gt;buf[initlen] = <span class="string">'\0'</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回 buf 部分，而不是整个 sdshdr</span></span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">char</span> *) sh-&gt;buf;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-sds释放函数"><a href="#3-sds释放函数" class="headerlink" title="3. sds释放函数"></a>3. sds释放函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sdsfree</span><span class="params">(sds s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">//将sds指针前移sizeof(struct sdshdr)，得到真正分配内存地址</span></span><br><span class="line">    zfree(s - <span class="keyword">sizeof</span>(struct sdshdr));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-sds扩容函数"><a href="#4-sds扩容函数" class="headerlink" title="4. sds扩容函数"></a>4. sds扩容函数</h2><p> 对 sds 中 buf 的长度进行扩展，确保在函数执行之后，buf 至少会有 addlen + 1 长度的空余空间（额外的 1 字节是为 \0 准备的）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">sds <span class="title">sdsMakeRoomFor</span><span class="params">(sds s, <span class="keyword">size_t</span> addlen)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sdshdr</span> *<span class="title">sh</span>, *<span class="title">newsh</span>;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取s目前的空余空间长度</span></span><br><span class="line">    <span class="keyword">size_t</span> <span class="built_in">free</span> = sdsavail(s);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">size_t</span> len, newlen;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// s 目前的空余空间已经足够，无须再进行扩展，直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">free</span> &gt;= addlen) <span class="keyword">return</span> s;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取 s 目前已占用空间的长度</span></span><br><span class="line">    len = sdslen(s);</span><br><span class="line">    sh = (<span class="keyword">void</span> *) (s - (<span class="keyword">sizeof</span>(struct sdshdr)));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// s 最少需要的长度</span></span><br><span class="line">    newlen = (len + addlen);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 根据新长度，为 s 分配新空间所需的大小</span></span><br><span class="line">    <span class="keyword">if</span> (newlen &lt; SDS_MAX_PREALLOC) <span class="comment">//预分配内存最大为1MB</span></span><br><span class="line">        <span class="comment">// 如果新长度小于 SDS_MAX_PREALLOC </span></span><br><span class="line">        <span class="comment">// 那么为它分配两倍于所需长度的空间</span></span><br><span class="line">        newlen *= <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="comment">// 否则，分配长度为目前长度加上 SDS_MAX_PREALLOC</span></span><br><span class="line">        newlen += SDS_MAX_PREALLOC;</span><br><span class="line">    <span class="comment">// T = O(N)</span></span><br><span class="line">    newsh = zrealloc(sh, <span class="keyword">sizeof</span>(struct sdshdr) + newlen + <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 内存不足，分配失败，返回</span></span><br><span class="line">    <span class="keyword">if</span> (newsh == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 更新 sds 的空余长度</span></span><br><span class="line">    newsh-&gt;<span class="built_in">free</span> = newlen - len;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回 sds</span></span><br><span class="line">    <span class="keyword">return</span> newsh-&gt;buf;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="5-sds回收函数"><a href="#5-sds回收函数" class="headerlink" title="5. sds回收函数"></a>5. sds回收函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">sds <span class="title">sdsRemoveFreeSpace</span><span class="params">(sds s)</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sdshdr</span> *<span class="title">sh</span>;</span></span><br><span class="line"></span><br><span class="line">    sh = (<span class="keyword">void</span> *) (s - (<span class="keyword">sizeof</span>(struct sdshdr)));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 进行内存重分配，让 buf 的长度仅仅足够保存字符串内容</span></span><br><span class="line">    <span class="comment">// T = O(N)</span></span><br><span class="line">    sh = zrealloc(sh, <span class="keyword">sizeof</span>(struct sdshdr) + sh-&gt;len + <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 空余空间为 0</span></span><br><span class="line">    sh-&gt;<span class="built_in">free</span> = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> sh-&gt;buf;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="6-sds拼接函数"><a href="#6-sds拼接函数" class="headerlink" title="6. sds拼接函数"></a>6. sds拼接函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">sds <span class="title">sdscatlen</span><span class="params">(sds s, <span class="keyword">const</span> <span class="keyword">void</span> *t, <span class="keyword">size_t</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sdshdr</span> *<span class="title">sh</span>;</span></span><br><span class="line">    <span class="comment">// 原有字符串长度</span></span><br><span class="line">    <span class="keyword">size_t</span> curlen = sdslen(s);</span><br><span class="line">    <span class="comment">// 扩展 sds 空间</span></span><br><span class="line">    <span class="comment">// T = O(N)</span></span><br><span class="line">    <span class="comment">//由于预分配内存机制的存在，这里可能并没有进行实际内存分配</span></span><br><span class="line">    s = sdsMakeRoomFor(s, len);</span><br><span class="line">    <span class="comment">// 内存不足，直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (s == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 复制 t 中的内容到字符串后部</span></span><br><span class="line">    <span class="comment">// T = O(N)</span></span><br><span class="line">    sh = (<span class="keyword">void</span> *) (s - (<span class="keyword">sizeof</span>(struct sdshdr)));</span><br><span class="line">    <span class="built_in">memcpy</span>(s + curlen, t, len);</span><br><span class="line">    <span class="comment">// 更新属性</span></span><br><span class="line">    sh-&gt;len = curlen + len;</span><br><span class="line">    sh-&gt;<span class="built_in">free</span> = sh-&gt;<span class="built_in">free</span> - len;</span><br><span class="line">    <span class="comment">// 添加新结尾符号</span></span><br><span class="line">    s[curlen + len] = <span class="string">'\0'</span>;</span><br><span class="line">    <span class="comment">// 返回新 sds</span></span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="7-sds与C中字符串区别"><a href="#7-sds与C中字符串区别" class="headerlink" title="7. sds与C中字符串区别"></a>7. sds与C中字符串区别</h2><ul>
+<li>C语言使用长度N+1的字符数组表示长度为N的字符串，使用’\0’作为字符串的结尾</li>
+<li>C字符串不记录字符串长度，strlen操作复杂度为O(N)，而sds取长度操作为O(1)</li>
+<li>C语言字符串使用不当容易造成缓冲区溢出，而sds通过free变量控制。</li>
+<li>sds扩容是不是按照字符串所占用字节大小严格扩容的，而是会额外分配一些暂时使用不到的空间。通过这种策略可以一定程度上减少字符串增长所需的内存重分配次数。</li>
+<li>C语言字符串以’\o’结尾，字符串中不能含有空字符，sds通过len来判断字符串结尾，可以用来存一些具有特殊格式要求的二进制数据。</li>
+</ul>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2020/05/22/redis/Redis源码解析——动态字符串sds/">https://shinerio.cc/2020/05/22/redis/Redis源码解析——动态字符串sds/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/C-C/">C/C++</a>
+            <a href="/tags/Redis/">Redis</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2020/05/24/redis/Redis源码解析——字典dict/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Redis源码解析——字典dict</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2020/05/18/redis/Redis源码解析——redisObject/">
+        <span class="next-text nav-default">Redis源码解析——redisObject</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2020/05/22/redis/Redis源码解析——动态字符串sds/';
+        this.page.identifier = '2020/05/22/redis/Redis源码解析——动态字符串sds/';
+        this.page.title = 'Redis源码解析——动态字符串sds';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

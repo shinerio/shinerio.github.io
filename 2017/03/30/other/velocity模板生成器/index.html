@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="velocity模板生成器"><meta name="keywords" content="工具, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2017/03/30/other/velocity模板生成器/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>velocity模板生成器 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">velocity模板生成器
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-03-30
+        </span><span class="post-category">
+            <a href="/categories/other/">other</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Velocity简介"><span class="toc-text">Velocity简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Hello-Velocity"><span class="toc-text">Hello Velocity</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#语法介绍"><span class="toc-text">语法介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#变量"><span class="toc-text">变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#循环"><span class="toc-text">循环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#条件语句"><span class="toc-text">条件语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关系操作符"><span class="toc-text">关系操作符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#宏"><span class="toc-text">宏</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#parse和include"><span class="toc-text">parse和include</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#注释"><span class="toc-text">注释</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#其他运算"><span class="toc-text">其他运算</span></a></li></ol></li></ol>
+    </div>
+  </div><div class="post-content"><h1 id="Velocity简介"><a href="#Velocity简介" class="headerlink" title="Velocity简介"></a>Velocity简介</h1><p>Velocity 是一个基于 Java 的模板引擎框架，提供的模板语言可以使用在 Java 中定义的对象和变量上。Velocity 是 Apache 基金会的项目，开发的目标是分离 MVC 模式中的持久化层和业务层，是一种用来减少软件开发人员重复劳动的方法，让程序员将更多的精力放在业务逻辑以及其他更加具有创造力的工作上。</p>
+<a id="more"></a>
+<h1 id="Hello-Velocity"><a href="#Hello-Velocity" class="headerlink" title="Hello Velocity"></a>Hello Velocity</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloVelocity</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</span><br><span class="line">        VelocityEngine engine = <span class="keyword">new</span> VelocityEngine();</span><br><span class="line">        engine.setProperty(RuntimeConstants.RESOURCE_LOADER,<span class="string">"classpath"</span>);</span><br><span class="line">        engine.setProperty(<span class="string">"classpath.resource.loader.class"</span>, ClasspathResourceLoader.class.getName());</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            engine.init();</span><br><span class="line">            Template t = engine.getTemplate(<span class="string">"hellovelocity.vm"</span>);</span><br><span class="line">            VelocityContext context = <span class="keyword">new</span> VelocityContext();</span><br><span class="line">            context.put(<span class="string">"name"</span>, <span class="string">"Velocity"</span>);</span><br><span class="line">            Date date = <span class="keyword">new</span> Date();</span><br><span class="line">            DateFormat df = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy年-MM月-dd天-HH时-mm分"</span>);</span><br><span class="line">            context.put(<span class="string">"date"</span>,df.format(date));</span><br><span class="line">            List&lt;String&gt; temp = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">            temp.add(<span class="string">"1"</span>);</span><br><span class="line">            temp.add(<span class="string">"2"</span>);</span><br><span class="line">            context.put(<span class="string">"list"</span>,temp);</span><br><span class="line">            StringWriter sw  = <span class="keyword">new</span> StringWriter();</span><br><span class="line">            t.merge(context,sw);</span><br><span class="line">            System.out.print(sw.toString());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 HelloVelocity 的代码中，首先 new 了一个 VelocityEngine 类，这个类设置了 Velocity 使用的一些配置，在初始化引擎之后就可以读取 hellovelocity.vm 这个模板生成的 Template 这个类。之后的 VelocityContext 类是配置 Velocity 模板读取的内容。这个 context 可以存入任意类型的对象或者变量，让 template 来读取。这个操作就像是在使用 JSP 开发时，往 request 里面放入 key-value，让 JSP 读取一样。</p>
+<p>接下来就是写 hellovelocity.vm 文件了，这个文件实际定义了 Velocity 的输出内容和格式。hellovelocity.vm 的内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">welcome $name to velocity.com</span><br><span class="line">today is $date.</span><br><span class="line">#foreach ($l in $list)</span><br><span class="line">$l</span><br><span class="line">#end</span><br><span class="line">#set($Compliment=&quot;good!&quot;)</span><br><span class="line">$Compliment</span><br></pre></td></tr></table></figure>
+<p>输出结果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">welcome Velocity to velocity.com</span><br><span class="line">today is 2017年-03月-31天-15时-13分.</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">good!</span><br></pre></td></tr></table></figure>
+<h1 id="语法介绍"><a href="#语法介绍" class="headerlink" title="语法介绍"></a>语法介绍</h1><p>Velocity中关键字以#开头，而所有变量以$开头</p>
+<h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><p>变量的简略标记是有一个前导”$”字符后跟一个 VTL 标识符（Identifier.）组成。一个VTL 标识符必须以一个字母开始(a .. z或 A .. Z)。剩下的字符将由以下类型的字符组成：</p>
+<p>字母 (a .. z, A .. Z),数字 (0 .. 9),连字符(“-“),下划线 (“_”)</p>
+<ul>
+<li><p>变量定义</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">set($name=&quot;velocity&quot;)</span><br><span class="line">set($Name-single=&quot;velocity&quot;)</span><br><span class="line">set($name_single=&quot;velocity&quot;)</span><br><span class="line">st($name_f123=&quot;velocity&quot;)</span><br><span class="line">set($name123=&quot;velocity&quot;)</span><br></pre></td></tr></table></figure>
+<p>$name等将被解析为velocity</p>
+<p>当使用#set 指令时，括在双引号中的字面字符串将解析和重新解释，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#set( $directoryRoot = &quot;www&quot; )</span><br><span class="line">#set( $templateName = &quot;index.vm&quot; )</span><br><span class="line">#set( $template = &quot;$directoryRoot/$templateName&quot; )</span><br><span class="line">$template</span><br></pre></td></tr></table></figure>
+<p>输出将会是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">www/index.vm</span><br></pre></td></tr></table></figure>
+<p>然而，当字面字符串括在单引号中时，他将不被解析：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#set( $foo = &quot;bar&quot; )</span><br><span class="line">$foo</span><br><span class="line">#set( $blargh = &apos;$foo&apos; )</span><br><span class="line">$blargh</span><br></pre></td></tr></table></figure>
+<p>输出是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Bar</span><br><span class="line">$foo</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>变量的使用</p>
+<p>在模板文件中使用<code>$name</code> 或者<code>${name}</code> 来使用定义的变量。推荐使用<code>${name}</code>这种格式，因为在模板中同时可能定义了类似$name 和$names 的两个变量，如果不选用大括号的话，引擎就没有办法正确识别names 这个变量。</p>
+<p>对于一个复杂对象类型的变量，例如<code>$person</code>，可以使用<code>${person.name}</code> 来访问 person 的 name 属性。值得注意的是，这里的<code>${person.name}</code> 并不是直接访问 person 的 name 属性，而是访问 person 的 getName() 方法，所以<code>${person.name}</code> 和<code>${person.getName()}</code> 是一样的。</p>
+<p>使用<code>$!name</code>或者<code>$!{name}</code>,name为空时将会输出空字符串</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$foo</span><br><span class="line">$foo.getBar()</span><br><span class="line">## is the same as</span><br><span class="line">$foo.Bar</span><br><span class="line">$data.getUser(&quot;jon&quot;)</span><br><span class="line">## is the same as</span><br><span class="line">$data.User(&quot;jon&quot;)</span><br><span class="line">$data.getRequest().getServerName()</span><br><span class="line">## is the same as</span><br><span class="line">$data.Request.ServerName</span><br><span class="line">## is the same as</span><br><span class="line">$&#123;data.Request.ServerName&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>变量赋值</p>
+<p>在第一小点中，定义了一个变量，同时给这个变量赋了值。对于 Velocity 来说，变量是弱数据类型的，可以在赋了一个 String 给变量之后再赋一个数字或者数组给它。可以将以下六种数据类型赋给一个 Velocity 变量：变量引用, 字面字符串, 属性引用, 方法引用, 字面数字, 数组列表。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#set($foo = $bar)</span><br><span class="line">#set($foo =“hello”)</span><br><span class="line">#set($foo.name = $bar.name)</span><br><span class="line">#set($foo.name = $bar.getName($arg))</span><br><span class="line">#set($foo = 123)</span><br><span class="line">#set($foo = [“foo”,$bar])</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h3><p>类似于java中增强for循环</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#foreach($element in $list)</span><br><span class="line"> This is $element</span><br><span class="line"> $velocityCount</span><br><span class="line">#end</span><br></pre></td></tr></table></figure>
+<p>list中的元素会逐个赋值给element,velocity用来循环计数（从1开始）</p>
+<h3 id="条件语句"><a href="#条件语句" class="headerlink" title="条件语句"></a>条件语句</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#if(condition)</span><br><span class="line">...</span><br><span class="line">#elseif(condition)</span><br><span class="line">…</span><br><span class="line">#else</span><br><span class="line">…</span><br><span class="line">#end</span><br></pre></td></tr></table></figure>
+<p>注意else和if之间不存在空格</p>
+<h3 id="关系操作符"><a href="#关系操作符" class="headerlink" title="关系操作符"></a>关系操作符</h3><p>&amp;&amp;，||和！</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#if($case1 &amp;&amp; $case2)</span><br><span class="line">#end</span><br></pre></td></tr></table></figure>
+<h3 id="宏"><a href="#宏" class="headerlink" title="宏"></a>宏</h3><p>定义语法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#macro(macroName arg1 arg2 …)</span><br><span class="line">...</span><br><span class="line">#end</span><br></pre></td></tr></table></figure>
+<p>调用语法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#macroName(arg1 arg2 …)</span><br></pre></td></tr></table></figure>
+<p>举例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#macro(sayHello $name)</span><br><span class="line">hello $name</span><br><span class="line">#end</span><br><span class="line">#sayHello(“velocity”)</span><br></pre></td></tr></table></figure>
+<p>输出的结果为 hello velocity</p>
+<h3 id="parse和include"><a href="#parse和include" class="headerlink" title="parse和include"></a>parse和include</h3><p>#parse 和 #include 指令的功能都是在外部引用文件，而两者的区别是，#parse 会将引用的内容当成类似于源码文件，会将内容在引入的地方进行解析，#include 是将引入文件当成资源文件，会将引入内容原封不动地以文本输出。分别看以下例子：</p>
+<p>foo.vm 文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#set($name =“velocity”)</span><br></pre></td></tr></table></figure>
+<p>parse.vm：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#parse(“foo.vm”)</span><br></pre></td></tr></table></figure>
+<p>输出结果为：velocity</p>
+<p>include.vm：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#include(“foo.vm”)</span><br></pre></td></tr></table></figure>
+<p>输出结果为：#set($name =“velocity”)</p>
+<h3 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h3><ul>
+<li><p>单行注释</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">## This is a single line comment.</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>多行注释</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#*</span><br><span class="line">	This is a muti-line comment.</span><br><span class="line">	The velocity Templating Engine will ignore it.</span><br><span class="line">*#</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注释块，用来存储文档作者、版本信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#**</span><br><span class="line">This is a comment block </span><br><span class="line">information </span><br><span class="line">@author shinerio</span><br><span class="line">@version 1.0</span><br><span class="line">*#</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="其他运算"><a href="#其他运算" class="headerlink" title="其他运算"></a>其他运算</h3><p>Velocity 有一些内建的数学功能，可以使用set指令用在模版中。下面的共识分别演示了加减乘除运算：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#set( $foo = $bar + 3 )</span><br><span class="line">#set( $foo = $bar - 4 )</span><br><span class="line">#set( $foo = $bar * 6 )</span><br><span class="line">#set( $foo = $bar / 2 )</span><br></pre></td></tr></table></figure>
+<p>当进行除法运算时，结果将会是整数。When a division operation is performed, the result will be an integer. 余数则可以通过模(%)运算获得。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#set( $foo = $bar % 5 )</span><br></pre></td></tr></table></figure>
+<p>在Velocity 中，只有整数可以进行数学运算；如果执行非整数的数学运算，将被记录下来，并返回null 。</p>
+<blockquote>
+<p>参考文档：</p>
+<p><a href="https://www.ibm.com/developerworks/cn/java/j-lo-velocity1/" target="_blank" rel="noopener">参考文档1</a></p>
+<p><a href https: wizardforcel.gitbooks.io velocity-doc content 1.html>中文API</a></p>
+</blockquote>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2017/03/30/other/velocity模板生成器/">https://shinerio.cc/2017/03/30/other/velocity模板生成器/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/工具/">工具</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2017/03/31/algorithm/常见算法题/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">常见算法题</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2017/03/01/mathematics/四元数入门/">
+        <span class="next-text nav-default">四元数与欧拉角</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2017/03/30/other/velocity模板生成器/';
+        this.page.identifier = '2017/03/30/other/velocity模板生成器/';
+        this.page.title = 'velocity模板生成器';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

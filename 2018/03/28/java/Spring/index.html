@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="spring及相关框架介绍"><meta name="keywords" content="java, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2018/03/28/java/Spring/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>spring及相关框架介绍 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">spring及相关框架介绍
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-03-28
+        </span><span class="post-category">
+            <a href="/categories/java/">java</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring及相关框架介绍"><span class="toc-text">Spring及相关框架介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Spring框架"><span class="toc-text">Spring框架</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Spring-MVC框架"><span class="toc-text">Spring MVC框架</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Spring-AOP"><span class="toc-text">Spring AOP</span></a></li></ol></li></ol>
+    </div>
+  </div><div class="post-content"><h2 id="Spring及相关框架介绍"><a href="#Spring及相关框架介绍" class="headerlink" title="Spring及相关框架介绍"></a><strong>Spring及相关框架介绍</strong></h2><hr>
+<h4 id="Spring框架"><a href="#Spring框架" class="headerlink" title="Spring框架"></a><strong>Spring框架</strong></h4><p><strong>Spring</strong>是一个开发应用框架，具有<code>轻量级</code>、<code>非侵入式</code>、<code>一站式</code>、<code>模块化</code> 的特点，其目的是用于简化企业级应用程序开发。Spring框架图如下：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/788498-358a3764fcbca0e4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700" alt="Spring架构图"></p>
+<p>Core Container模块，包含spring-beans、spring-core、spring-context、spring-expression四个方面。</p>
+<ul>
+<li><strong>spring-core和spring-beans</strong>提供了框架的基础部分，包括反转控制和依赖注入功能。其中Bean Factory是容器核心，本质是“<strong>工厂设计模式</strong>”的实现，而且无需编程实现“单例设计模式”，单例完全由容器控制，而且提倡面向接口编程，而非面向实现编程；所有应用程序对象及对象间关系由框架管理，从而真正把你从程序逻辑中把维护对象之间的依赖关系提取出来，所有这些依赖关系都由BeanFactory来维护。</li>
+<li><strong>spring-context</strong>这个模块建立在core和bean模块提供坚实的基础上，集成Beans模块功能并添加资源绑定、数据验证、国际化<strong>、</strong>Java EE支持、容器生命周期、事件传播等；核心接口是ApplicationContext。</li>
+<li><strong>spring-expression</strong>提供强大的表达式语言支持，支持访问和修改属性值，方法调用，支持访问及修改数组、容器和索引器，命名变量，支持算数和逻辑运算，支持从Spring 容器获取Bean，它也支持列表投影、选择和一般的列表聚合等。</li>
+</ul>
+<p>AOP and Instrumentation模块，包含spring-aop、spring-instrument两个方面。</p>
+<ul>
+<li><strong>spring-aop</strong>Spring AOP模块提供了符合 <em>AOP Alliance</em>规范的面向方面的编程（aspect-oriented programming）实现，提供比如日志记录、权限控制、性能统计等通用功能和业务逻辑分离的技术，并且能动态的把这些功能添加到需要的代码中；这样各专其职，降低业务逻辑和通用功能的耦合。</li>
+<li><strong>spring-instrument</strong>在特定的应用程序服务器中支持类和类加载器的实现，比如Tomcat。</li>
+</ul>
+<p>Messaging，从Spring  Framework  4开始集成了MessageChannel, MessageHandler等，用于消息传递的基础。</p>
+<p>Data Access/Integration，包括了JDBC、ORM、OXM、JMS和事务管理。</p>
+<p>事务模块：该模块用于Spring管理事务，只要是Spring管理对象都能得到Spring管理事务的好处，无需在代码中进行事务控制了，而且支持编程和声明性的事物管理。</p>
+<ul>
+<li><strong>spring-jdbc</strong> 提供了一个JBDC的样例模板，使用这些模板能消除传统冗长的JDBC编码还有必须的事务控制，而且能享受到Spring管理事务的好处。</li>
+<li><strong>spring-orm</strong> 提供与流行的“对象-关系”映射框架的无缝集成，包括Hibernate、JPA、Ibatiss等。而且可以使用Spring事务管理，无需额外控制事务。</li>
+<li><strong>spring-oxm</strong> 提供了一个对Object/XML映射实现，将java对象映射成XML数据，或者将XML数据映射成java对象，Object/XML映射实现包括JAXB、Castor、XMLBeans和XStream。</li>
+<li><strong>spring-jms</strong> 用于JMS(Java Messaging Service)，提供一套 “消息生产者、消息消费者”模板用于更加简单的使用JMS，JMS用于用于在两个应用程序之间，或分布式系统中发送消息，进行异步通信。</li>
+</ul>
+<p>Web，包含了spring-web, spring-webmvc, spring-websocket, and spring-webmvc-portlet几个模块。</p>
+<ul>
+<li><strong>spring-web</strong> 提供了基础的web功能。例如多文件上传、集成IoC容器、远程过程访问（RMI、Hessian、Burlap）以及Web Service支持，并提供一个RestTemplate类来提供方便的Restful services访问。</li>
+<li><strong>spring-webmvc</strong> 提供了一个Spring MVC Web框架和REST Web服务的实现。Spring的MVC框架提供了领域模型代码和Web表单之间分离，并与Spring框架的所有其他功能集成。</li>
+<li><strong>spring-webmvc-portlet</strong> 提供了在Portlet环境中使用MVC实现，并且反映了spring-webmvc模块的功能。</li>
+</ul>
+<hr>
+<h4 id="Spring-MVC框架"><a href="#Spring-MVC框架" class="headerlink" title="Spring MVC框架"></a><strong>Spring MVC框架</strong></h4><p>Spring Web MVC是一种基于Java的实现了Web MVC设计模式的请求驱动类型的轻量级Web框架，即使用了MVC架构模式的思想，将web层进行职责解耦，基于请求驱动指的就是使用请求-响应模型。Spring MVC请求流程如下：</p>
+<p><img src="http://sishuok.com/forum/upload/2012/7/14/529024df9d2b0d1e62d8054a86d866c9__1.JPG" alt></p>
+<p>具体执行步骤如下：</p>
+<ol>
+<li>首先用户发送请求——&gt;前端控制器，前端控制器根据请求信息（如URL）来决定选择哪一个页面控制器进行处理并把请求委托给它，即以前的控制器的控制逻辑部分；上图中的1、2步骤；</li>
+<li>页面控制器接收到请求后，进行功能处理，首先需要收集和绑定请求参数到一个对象，这个对象在Spring Web MVC中叫命令对象，并进行验证，然后将命令对象委托给业务对象进行处理；处理完毕后返回一个ModelAndView（模型数据和逻辑视图名）；上图中的3、4、5步骤；</li>
+<li>前端控制器收回控制权，然后根据返回的逻辑视图名，选择相应的视图进行渲染，并把模型数据传入以便视图渲染；上图中的步骤6、7；</li>
+<li>前端控制器再次收回控制权，将响应返回给用户，上图中的步骤8；至此整个结束。</li>
+</ol>
+<p>相关的配置文件：</p>
+<p>前端控制器：<strong>web.xml</strong>，servlet-name——设置默认DispatcherServlet加载的自配置的Servlet，url-pattern——表示哪些请求交给Spring Web MVC处理， “/” 是用来定义默认servlet映射的</p>
+<p>委托请求：<strong>WEB-INF/xxxxx-servlet.xml</strong> ，配置HandlerMapping（表示将请求的URL和Bean名字映射）、HandlerAdapter（哪些Bean可以作为Spring Web MVC中的处理器）</p>
+<p>视图解析器/ViewResolver：<strong>WEB-INF/xxxxx-servlet.xml</strong>，InternalResourceViewResolver：用于支持Servlet、JSP视图解析；viewClass：JstlView表示JSP模板页面需要使用JSTL标签库，classpath中必须包含jstl的相关jar包；prefix和suffix：查找视图页面的前缀和后缀（前缀[逻辑视图名]后缀），比如传进来的逻辑视图名为hello，则该该jsp视图页面应该存放在“WEB-INF/jsp/hello.jsp”</p>
+<hr>
+<h4 id="Spring-AOP"><a href="#Spring-AOP" class="headerlink" title="Spring AOP"></a><strong>Spring AOP</strong></h4><p>AOP：Aspect-Oriented Programming 面对切片编程。AOP是OOP的补充。</p>
+<p>AOP的应用场景如下：</p>
+<ul>
+<li>事务处理</li>
+<li>日志处理</li>
+<li>异常处理</li>
+<li>权限控制</li>
+<li>系统性能监控</li>
+<li>其他</li>
+</ul>
+<p>Spring中AOP代理由Spring的IOC容器负责生成、管理，其依赖关系也由IOC容器负责管理。Spring创建代理的规则如下：</p>
+<ol>
+<li>默认使用<strong>Java动态代理</strong>来创建AOP代理，这样就可以为任何接口实例创建代理了</li>
+<li>当需要代理的类不是代理接口的时候，Spring会切换为使用<strong>CGLIB代理</strong>，也可强制使用CGLIB</li>
+</ol>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2018/03/28/java/Spring/">https://shinerio.cc/2018/03/28/java/Spring/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/java/">java</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2018/04/01/algorithm/动态查找树/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">动态查找树</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2018/01/28/algorithm/常见的排序算法/">
+        <span class="next-text nav-default">常见的排序算法</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2018/03/28/java/Spring/';
+        this.page.identifier = '2018/03/28/java/Spring/';
+        this.page.title = 'spring及相关框架介绍';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

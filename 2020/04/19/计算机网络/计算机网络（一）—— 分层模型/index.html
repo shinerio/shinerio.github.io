@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="计算机网络（一）—— 分层模型"><meta name="keywords" content="计算机网络, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2020/04/19/计算机网络/计算机网络（一）—— 分层模型/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>计算机网络（一）—— 分层模型 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">计算机网络（一）—— 分层模型
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020-04-19
+        </span><span class="post-category">
+            <a href="/categories/计算机网络/">计算机网络</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-引言"><span class="toc-text">1. 引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-OSI七层模型"><span class="toc-text">2. OSI七层模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-TCP-IP四层模型"><span class="toc-text">3. TCP/IP四层模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-封装与解封装"><span class="toc-text">4. 封装与解封装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-引用"><span class="toc-text">5. 引用</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p>计算机网络按照使用范围可以划分为个域网、局域网、城域网、广域网和互联网，其组成复杂，存在着大量诸如集线器、交换机、路由器、笔记本、手机等硬件。为了降低网络设计的复杂性，现阶段大部分网络都会形成一个层次栈结构，每一层都建立在其下一层的基础之上，向上一层提供特定服务。这种分层结构的概念其实和计算机领域的面向对象思想类似，每一层对内部状态和算法细节隐藏，对外暴露使用方式，实现层与层之间的解耦。</p>
+<a id="more"></a>
+<h2 id="1-引言"><a href="#1-引言" class="headerlink" title="1. 引言"></a>1. 引言</h2><p>计算机网络的体系有两种常见的体系结构：OSI七层模型以及TCP/IP四层模型。OSI（开放系统互连，Open System Interconnection）模型本身没有定义每一层服务和所有的协议，它只是指明了每一层应该做一些什么事情，而ISO（国际标准化组织，International Organization for Standardization）则为所有层都制定了相应的标准，但这些标准并不是属于参考模型本身，每个协议都是作为单独的国际标准发布的。TCP/IP参考模型以其最主要的两个协议命名，其设计的主要目标是为了保证在源机器和目标机器之间的一些及其或者传输线路突然不能工作，但源和目标机器还在运作的情况下，他们之间的连接维持不变。总的来说，OSI侧重抽象，强调功能是什么，而TCP/IP侧重实现，设计协议完成功能。</p>
+<h2 id="2-OSI七层模型"><a href="#2-OSI七层模型" class="headerlink" title="2. OSI七层模型"></a>2. OSI七层模型</h2><p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200423160451.png" alt></p>
+<ul>
+<li>物理层。物理层关注一条通信信道上传输原始0/1比特，主要涉及机械、电子和时序接口，典型问题包括用什么电子信号来表示1和0，一个比特持续多长时间，传输是否可以在两个方向上同时进行等（全双工/半双工/单工）。</li>
+<li>数据链路层。数据链路层主要任务是将一个原始的传输设施转变成一条没有漏检传输错误的线路。数据链路层通过<strong>数据帧</strong>的方式传输数据。</li>
+<li>网络层。网络层的主要功能是控制子网的运行，关键问题是如何将<strong>数据包</strong>从源端路由到接收方。</li>
+<li>传输层。传输层是真正的端到端的层。传输层不关注链路中间的节点，而在传输层之下的隔层，每一个协议涉及一台机器和与他直接相连的邻居。</li>
+<li>会话层。允许不同机器上的用户建立会话，包括对话控制、令牌管理以及同步功能</li>
+<li>表示层。表示层关注所传递信息的语法和语义，让具有不同内部数据表示法的计算机可以相互通信，约定同一种编码方式</li>
+<li>应用层。应用层直接面向用户，提供各种常用功能。</li>
+</ul>
+<h2 id="3-TCP-IP四层模型"><a href="#3-TCP-IP四层模型" class="headerlink" title="3. TCP/IP四层模型"></a>3. TCP/IP四层模型</h2><p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200423164013.png" alt></p>
+<h2 id="4-封装与解封装"><a href="#4-封装与解封装" class="headerlink" title="4. 封装与解封装"></a>4. 封装与解封装</h2><p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200423170304.png" alt></p>
+<p>实际使用中，我们常用5层混合模型。数据在网络中的传输过程需要经过各种不同层级设备，链路中每个设备节点需要通过封装与解封装来完成数据的传输和路由。</p>
+<h2 id="5-引用"><a href="#5-引用" class="headerlink" title="5. 引用"></a>5. 引用</h2><ol>
+<li><a href="https://www.jianshu.com/p/9f3e879a4c9c" target="_blank" rel="noopener">一篇文章带你熟悉 TCP/IP 协议（网络协议篇二）</a></li>
+<li>计算机网络. Andrew S. Tanenbaum, David J. Wetherall（严伟等译）.</li>
+</ol>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2020/04/19/计算机网络/计算机网络（一）—— 分层模型/">https://shinerio.cc/2020/04/19/计算机网络/计算机网络（一）—— 分层模型/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/计算机网络/">计算机网络</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2020/04/20/计算机网络/计算机网络（二）—— 性能指标/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">计算机网络（二）—— 性能指标</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2020/04/10/SDN/网络设备的三个平面/">
+        <span class="next-text nav-default">网络设备的三个平面</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2020/04/19/计算机网络/计算机网络（一）—— 分层模型/';
+        this.page.identifier = '2020/04/19/计算机网络/计算机网络（一）—— 分层模型/';
+        this.page.title = '计算机网络（一）—— 分层模型';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

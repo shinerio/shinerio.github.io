@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="Reactor编程（三）"><meta name="keywords" content="java, 异步编程, reactor, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2021/12/19/java/Reactor编程（三）/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>Reactor编程（三） - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">Reactor编程（三）
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2021-12-19
+        </span><span class="post-category">
+            <a href="/categories/异步编程/">异步编程</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#buffer"><span class="toc-text">buffer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#filter"><span class="toc-text">filter</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#window"><span class="toc-text">window</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reduce"><span class="toc-text">reduce</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#zipWith"><span class="toc-text">zipWith</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#take"><span class="toc-text">take</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#merge"><span class="toc-text">merge</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#map"><span class="toc-text">map</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#flatMap"><span class="toc-text">flatMap</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#concatMap"><span class="toc-text">concatMap</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#combineLatest"><span class="toc-text">combineLatest</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#concatWith"><span class="toc-text">concatWith</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#retry"><span class="toc-text">retry</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#log"><span class="toc-text">log</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p>在上一篇中，我们已经对reactor有了一个简单的认识，这篇我们将详细地介绍一些Reactor常见的operator。</p>
+<a id="more"></a>
+<h2 id="buffer"><a href="#buffer" class="headerlink" title="buffer"></a>buffer</h2><p>buffer操作符的作用是把当前流中的元素收集到集合中，并把集合对象作为流中的新元素。在进行收集时可以指定不同的条件：所包含的元素的最大数量或收集的时间间隔。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// buffer 20个，输出5 个包含 20 个元素的数组</span></span><br><span class="line">Flux.range(<span class="number">1</span>, <span class="number">100</span>).buffer(<span class="number">20</span>).subscribe(System.out::println);</span><br><span class="line"><span class="comment">// buffer1秒，输出2个包括10个元素的数组</span></span><br><span class="line">Flux.interval(Duration.ofMillis(<span class="number">100</span>)).buffer(Duration.ofMillis(<span class="number">1001</span>)).take(<span class="number">2</span>).subscribe(System.out::println);</span><br><span class="line"><span class="comment">// buffer 10个，500毫秒超时</span></span><br><span class="line">Flux.interval(Duration.ofMillis(<span class="number">100</span>)).bufferTimeout(<span class="number">10</span>, Duration.ofMillis(<span class="number">500</span>)).take(<span class="number">2</span>).subscribe(System.out::println);</span><br><span class="line"><span class="comment">// bufferUntil 会一直收集直到 Predicate 返回为 true。使得 Predicate 返回 true 的那个元素可以选择添加到当前集合或下一个集合中；</span></span><br><span class="line"><span class="comment">// 输出的是 5 个包含 2 个元素的数组</span></span><br><span class="line"><span class="comment">// 每当遇到一个偶数就会结束当前的收集</span></span><br><span class="line">Flux.range(<span class="number">1</span>, <span class="number">10</span>).bufferUntil(i -&gt; i % <span class="number">2</span> == <span class="number">0</span>).subscribe(System.out::println);</span><br><span class="line"><span class="comment">// bufferWhile 则只有当 Predicate 返回 true 时才会收集。一旦值为 false，会立即开始下一次收集。</span></span><br><span class="line"><span class="comment">// 输出的是 5 个包含 1 个元素的数组</span></span><br><span class="line"><span class="comment">// 数组里面包含的只有偶数</span></span><br><span class="line"> Flux.range(<span class="number">1</span>, <span class="number">10</span>).bufferWhile(i -&gt; i % <span class="number">2</span> == <span class="number">0</span>).subscribe(System.out::println);</span><br></pre></td></tr></table></figure>
+<p>// 第四行语句输出的是 5 个包含 1 个元素的数组</p>
+<h2 id="filter"><a href="#filter" class="headerlink" title="filter"></a>filter</h2><p>filter操作符对流中的元素进行过滤，只留下满足 Predicate 指定条件的元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//下面代码的输出的是 1 到 10 中的所有偶数。</span></span><br><span class="line">Flux.range(<span class="number">1</span>, <span class="number">10</span>).filter(i -&gt; i % <span class="number">2</span> == <span class="number">0</span>).subscribe(System.out::println);</span><br></pre></td></tr></table></figure>
+<h2 id="window"><a href="#window" class="headerlink" title="window"></a>window</h2><p>window操作符把流中的元素收集到另外的Flux 序列中。window操作符的作用类似于buffer，所不同的是window操作符是把当前流中的元素收集到另外的Flux序列中，因此返回值类型是 Flux<flux>。</flux></p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> Flux.range(<span class="number">1</span>, <span class="number">100</span>).window(<span class="number">20</span>).subscribe(item -&gt; &#123;</span><br><span class="line">    System.out.println(<span class="string">"buffer handle start"</span>);</span><br><span class="line">    item.subscribe(System.out::println);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">Flux.interval(Duration.ofMillis(<span class="number">100</span>)).window(Duration.ofMillis(<span class="number">1001</span>)).take(<span class="number">2</span>).subscribe(item -&gt; &#123;</span><br><span class="line">    System.out.println(<span class="string">"buffer handle begin"</span>);</span><br><span class="line">	item.subscribe(System.out::println);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="reduce"><a href="#reduce" class="headerlink" title="reduce"></a>reduce</h2><p>reduce和reduceWith操作符对流中包含的所有元素进行累积操作，得到一个包含计算结果的Mono序列。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//输出5050</span></span><br><span class="line">Flux.range(<span class="number">1</span>, <span class="number">100</span>).reduce(Integer::sum).subscribe(System.out::println);</span><br><span class="line"><span class="comment">//下面的示例代码中也是同样的相加操作，不过通过Supplier给出了初始值 100，所以结果为 5050 + 100 = 5150；</span></span><br><span class="line">Flux.range(<span class="number">1</span>, <span class="number">100</span>).reduceWith(() -&gt; <span class="number">100</span>, Integer::sum).subscribe(System.out::println);</span><br></pre></td></tr></table></figure>
+<h2 id="zipWith"><a href="#zipWith" class="headerlink" title="zipWith"></a>zipWith</h2><p>zipWith 操作符把当前流中的元素与另外一个流中的元素按照一对一的方式进行合并。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//合并时可以不做任何处理，由此得到的是一个元素类型为 Tuple2 的流；</span></span><br><span class="line">Flux&lt;Tuple2&lt;Integer, Integer&gt;&gt; tupleResults = Flux.range(<span class="number">1</span>, <span class="number">100</span>).zipWith(Flux.range(<span class="number">101</span>, <span class="number">100</span>));</span><br><span class="line">tupleResults.subscribe(t -&gt; System.out.println(t.getT1() + t.getT2()));</span><br><span class="line"><span class="comment">//zipWith 操作符也可以通过一个 BiFunction 函数对合并的元素进行处理，所得到的流的元素类型为该函数的返回值</span></span><br><span class="line">Flux.range(<span class="number">1</span>, <span class="number">100</span>).zipWith(Flux.range(<span class="number">101</span>, <span class="number">100</span>), Integer::sum).subscribe(System.out::println);</span><br></pre></td></tr></table></figure>
+<h2 id="take"><a href="#take" class="headerlink" title="take"></a>take</h2><p>take系列操作符用来从当前流中提取元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//取前10个，输出的是数字 1 到 10</span></span><br><span class="line">Flux.range(<span class="number">1</span>, <span class="number">1000</span>).take(<span class="number">10</span>).subscribe(System.out::println);</span><br><span class="line"><span class="comment">// 取最后10个，输出的是数字 991 到 1000</span></span><br><span class="line">Flux.range(<span class="number">1</span>, <span class="number">1000</span>).takeLast(<span class="number">10</span>).subscribe(System.out::println);</span><br><span class="line"><span class="comment">//提取元素直到 Predicate 返回 true（Predicate 返回 true 的元素也是包含在内的），输出的是数字 1 到 10</span></span><br><span class="line">Flux.range(<span class="number">1</span>, <span class="number">1000</span>).takeUntil(i -&gt; i == <span class="number">10</span>).subscribe(System.out::println);</span><br><span class="line"><span class="comment">//当 Predicate 返回 true 时才进行提取，输出的是数字 1 到 9</span></span><br><span class="line">Flux.range(<span class="number">1</span>, <span class="number">1000</span>).takeWhile(i -&gt; i &lt; <span class="number">10</span>).subscribe(System.out::println);</span><br><span class="line"><span class="comment">//提取元素直到另外一个流开始产生元素，输出的数字0到9</span></span><br><span class="line">Flux.interval(Duration.ofMillis(<span class="number">100</span>)).takeUntilOther(Flux.interval(Duration.ofMillis(<span class="number">1001</span>))).subscribe(System.out::println);</span><br></pre></td></tr></table></figure>
+<h2 id="merge"><a href="#merge" class="headerlink" title="merge"></a>merge</h2><p>merge和mergeSequential操作符用来把多个流合并成一个Flux序列。不同之处在于 ：</p>
+<ul>
+<li>merge按照所有流中元素的实际产生顺序来合并</li>
+<li>mergeSequential则按照所有流被订阅的顺序，以流为单位进行合并。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 输出00 11 22 33 44</span></span><br><span class="line">Flux.merge(Flux.interval(Duration.ofMillis(<span class="number">100</span>)).take(<span class="number">5</span>), Flux.interval(Duration.ofMillis(<span class="number">50</span>), Duration.ofMillis(<span class="number">100</span>)).take(<span class="number">5</span>))</span><br><span class="line">		.subscribe(System.out::println);</span><br><span class="line"><span class="comment">// 输出0 1 2 3 4 0 1 2 3 4</span></span><br><span class="line">Flux.mergeSequential(Flux.interval(Duration.ofMillis(<span class="number">100</span>)).take(<span class="number">5</span>), Flux.interval(Duration.ofMillis(<span class="number">50</span>), Duration.ofMillis(<span class="number">100</span>)).take(<span class="number">5</span>))</span><br><span class="line">		.subscribe(System.out::println);</span><br></pre></td></tr></table></figure>
+<h2 id="map"><a href="#map" class="headerlink" title="map"></a>map</h2><p>map操作用来将序列转换成另一个类型的序列。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//int类型转换成String类型</span></span><br><span class="line">Flux.range(<span class="number">1</span>, <span class="number">10</span>).map(v -&gt; <span class="string">"value is "</span> + v).subscribe(System.out::println);</span><br></pre></td></tr></table></figure>
+<h2 id="flatMap"><a href="#flatMap" class="headerlink" title="flatMap"></a>flatMap</h2><p>flatMap和flatMapSequential操作符把流中的每个元素转换成一个流，再把所有流中的元素进行合并。flatMapSequential和flatMap之间的区别与 mergeSequential 和 merge 之间的区别是一样的：</p>
+<ul>
+<li>flatMap 按照所有流中元素的实际产生顺序来合并。</li>
+<li>flatMapSequential 则按照所有流被订阅的顺序，以流为单位进行合并。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 输出0 1 0 2 1 2</span></span><br><span class="line">Flux.range(<span class="number">1</span>, <span class="number">2</span>).flatMap(v -&gt; Flux.interval(Duration.ofMillis(<span class="number">100L</span> * v)).take(<span class="number">3</span>)).subscribe(System.out::println);</span><br><span class="line">TimeUnit.SECONDS.sleep(<span class="number">4</span>);</span><br><span class="line"><span class="comment">// 输出0 1 2 0 1 2</span></span><br><span class="line">Flux.range(<span class="number">1</span>, <span class="number">2</span>).flatMapSequential(v -&gt; Flux.interval(Duration.ofMillis(<span class="number">100L</span> * v)).take(<span class="number">3</span>)).subscribe(System.out::println);</span><br><span class="line">TimeUnit.SECONDS.sleep(<span class="number">4</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="concatMap"><a href="#concatMap" class="headerlink" title="concatMap"></a>concatMap</h2><p>concatMap操作符的作用也是把流中的每个元素转换成一个流，再把所有流进行合并。与flatMap不同的是，concatMap会根据原始流中的元素顺序依次把转换之后的流进行合并；与flatMapSequential不同的是，concatMap对转换之后的流的订阅是动态进行的，而flatMapSequential在合并之前就已经订阅了所有的流。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//输出0 1 2 0 1 2</span></span><br><span class="line">Flux.range(<span class="number">1</span>, <span class="number">2</span>).concatMap(v -&gt; Flux.interval(Duration.ofMillis(<span class="number">100L</span> * v)).take(<span class="number">3</span>)).subscribe(System.out::println);</span><br><span class="line">TimeUnit.SECONDS.sleep(<span class="number">4</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="combineLatest"><a href="#combineLatest" class="headerlink" title="combineLatest"></a>combineLatest</h2><p>combineLatest操作符把所有流中的最新产生的元素合并成一个新的元素，作为返回结果流中的元素。只要其中任何一个流中产生了新的元素，合并操作就会被执行一次，结果流中就会产生新的元素。</p>
+<p>Flux.combineLatest(<br>        Arrays::toString,<br>        Flux.intervalMillis(100).take(5),<br>        Flux.intervalMillis(50, 100).take(5)<br>).toStream().forEach(System.out::println);</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//0  1 2</span></span><br><span class="line"><span class="comment">// 0    1   2</span></span><br><span class="line"><span class="comment">// 0 1 23   4</span></span><br><span class="line"><span class="comment">//输出0,1,2,3,4</span></span><br><span class="line">Flux.combineLatest(Flux.interval(Duration.ofMillis(<span class="number">100L</span>)).take(<span class="number">3</span>), Flux.interval(Duration.ofMillis(<span class="number">10L</span>), Duration.ofMillis(<span class="number">200L</span>)).take(<span class="number">3</span>), (v1, v2) -&gt; v1 + v2)</span><br><span class="line">		.subscribe(System.out::println);</span><br><span class="line">TimeUnit.SECONDS.sleep(<span class="number">4</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="concatWith"><a href="#concatWith" class="headerlink" title="concatWith"></a>concatWith</h2><p>将另一个流连接到当前流后面</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 输出0 1 2 0 1 2</span></span><br><span class="line">Flux.interval(Duration.ofMillis(<span class="number">100</span>)).take(<span class="number">3</span>).concatWith(Flux.interval(Duration.ofMillis(<span class="number">100</span>)).take(<span class="number">3</span>)).subscribe(System.out::println);</span><br></pre></td></tr></table></figure>
+<h2 id="retry"><a href="#retry" class="headerlink" title="retry"></a>retry</h2><p>当出现错误时，可以通过 retry 操作符来进行重试。重试的动作是通过重新订阅序列来实现的。在使用 retry 操作符时可以指定重试的次数。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//下面的代码指定了重试次数为 1，所输出的结果是 0 1 2 0 1 2和exception</span></span><br><span class="line">Flux.range(<span class="number">0</span>, <span class="number">3</span>)</span><br><span class="line">		.concatWith(Mono.error(<span class="keyword">new</span> IllegalStateException()))</span><br><span class="line">		.retry(<span class="number">1</span>)</span><br><span class="line">		.subscribe(System.out::println);</span><br></pre></td></tr></table></figure>
+<h2 id="log"><a href="#log" class="headerlink" title="log"></a>log</h2><p>log操作符将流相关的事件记录在日志中。下面的代码添加了 log 操作符并指定了日志分类的名称：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Flux.range(<span class="number">1</span>, <span class="number">2</span>).log(<span class="string">"Range Seq"</span>).subscribe(System.out::println);</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<blockquote>
+<p>22:16:12.950 [main] INFO Range Seq - | onSubscribe([Synchronous Fuseable] FluxRange.RangeSubscription)<br>22:16:12.952 [main] INFO Range Seq - | request(unbounded)<br>22:16:12.952 [main] INFO Range Seq - | onNext(1)<br>1<br>22:16:12.953 [main] INFO Range Seq - | onNext(2)<br>2<br>22:16:12.953 [main] INFO Range Seq - | onComplete()</p>
+</blockquote>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2021/12/19/java/Reactor编程（三）/">https://shinerio.cc/2021/12/19/java/Reactor编程（三）/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/java/">java</a>
+            <a href="/tags/异步编程/">异步编程</a>
+            <a href="/tags/reactor/">reactor</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2022/01/16/系统设计/基于Micrometer和Prometheus实现度量和监控的方案/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">基于Micrometer和Prometheus实现度量和监控的方案</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2021/12/18/java/Reactor编程（二）/">
+        <span class="next-text nav-default">Reactor编程（二）</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2021/12/19/java/Reactor编程（三）/';
+        this.page.identifier = '2021/12/19/java/Reactor编程（三）/';
+        this.page.title = 'Reactor编程（三）';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

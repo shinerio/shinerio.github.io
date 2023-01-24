@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="知识博客,生活感悟"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/page/2/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><section id="posts" class="posts"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title"><a class="post-link" href="/2021/12/14/java/CompletableFuture/">CompletableFuture</a>
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2021-12-14
+        </span><span class="post-category">
+            <a href="/categories/异步编程/">异步编程</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-content"><p>JAVA 5中引入了Future特性，可以获取异步执行结果。Future多用于使用线程池执行任务后获取任务结果，当我们submit一个callable的任务时可以获取一个Future对象，通过调用get()方法阻塞获得任务结果，或者通过轮训isDone()来判断任务是否执行完成。阻塞式的方式与异步的初衷相违背，而轮询的方式又会浪费CPU资源，通过观察者模式则可以实现在完成计算时通知订阅者。JAVA8引入了一系列优秀的特性，包括lambda表达式，steam流式操作，同时也引入了CompletableFuture来提供更优雅的异步编程手段。</p>
+          <div class="read-more">
+            <a href="/2021/12/14/java/CompletableFuture/" class="read-more-link">阅读更多</a>
+          </div>
+        </div></article>
+      <article class="post">
+    <header class="post-header">
+      <h1 class="post-title"><a class="post-link" href="/2021/12/03/系统设计/分布式事务一致性/">分布式事务一致性</a>
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2021-12-03
+        </span><span class="post-category">
+            <a href="/categories/系统设计/">系统设计</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-content"><p>本文在将分布式事务之前，会先回顾一下事务的一些基本概念，分布式事务本身与数据库事务的概念是一致的，需要满足事务的ACID原则。单体架构下，我们可以依赖数据库提供的事务能力保证；分布式架构下我们则需要保证一个请求在多个微服务调用链中，所有服务的数据要么全部成功，要么全部回滚，保证多节点数据一致性。分布式事务的实现有很多种方式，主要包括两阶段提交（2PC）、三阶段提交（3PC）、补偿事务（TCC）以及Paxos算法。</p>
+          <div class="read-more">
+            <a href="/2021/12/03/系统设计/分布式事务一致性/" class="read-more-link">阅读更多</a>
+          </div>
+        </div></article>
+      <article class="post">
+    <header class="post-header">
+      <h1 class="post-title"><a class="post-link" href="/2021/10/24/计算机网络/openssl & keytool/">openssl & keytool</a>
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2021-10-24
+        </span><span class="post-category">
+            <a href="/categories/网络安全/">网络安全</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-content"><p>openssl 是目前最流行的 SSL 密码库工具，其提供了一个通用、健壮、功能完备的工具套件，用以支持SSL/TLS 协议的实现。keytool可以用来管理秘钥和证书，并保存在keystore文件中。<br>
+          <div class="read-more">
+            <a href="/2021/10/24/计算机网络/openssl & keytool/" class="read-more-link">阅读更多</a>
+          </div>
+        </p></div></article>
+      <article class="post">
+    <header class="post-header">
+      <h1 class="post-title"><a class="post-link" href="/2021/10/24/计算机网络/linux命令之route/">linux命令之route</a>
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2021-10-24
+        </span><span class="post-category">
+            <a href="/categories/计算机网络/">计算机网络</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-content"><p>计算机或网络设置使用路由表用来计算数据包的下一跳。 route命令用来显示并设置Linux内核中的网络路由表，route命令设置的路由主要是静态路由。要实现两个不同的子网之间的通信，需要一台连接两个网络的路由器，或者同时位于两个网络的网关来实现。</p>
+          <div class="read-more">
+            <a href="/2021/10/24/计算机网络/linux命令之route/" class="read-more-link">阅读更多</a>
+          </div>
+        </div></article>
+      <article class="post">
+    <header class="post-header">
+      <h1 class="post-title"><a class="post-link" href="/2021/10/17/计算机网络/iptables/">iptables</a>
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2021-10-17
+        </span><span class="post-category">
+            <a href="/categories/计算机网络/">计算机网络</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-content"><p>iptables 是 Linux 防火墙工作在用户空间的管理工具，是 netfilter/iptablesIP 数据包过滤系统是一部分，用来设置、维护和检查 Linux 内核的 IP 数据包过滤规则。</p>
+          <div class="read-more">
+            <a href="/2021/10/17/计算机网络/iptables/" class="read-more-link">阅读更多</a>
+          </div>
+        </div></article>
+      <article class="post">
+    <header class="post-header">
+      <h1 class="post-title"><a class="post-link" href="/2020/08/09/计算机网络/tcpdump/">tcpdump</a>
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020-08-09
+        </span><span class="post-category">
+            <a href="/categories/计算机网络/">计算机网络</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-content"><p>tcpdump是一个优秀的网络分析工具，提供了强大且简单的接口。</p>
+          <div class="read-more">
+            <a href="/2020/08/09/计算机网络/tcpdump/" class="read-more-link">阅读更多</a>
+          </div>
+        </div></article>
+      <article class="post">
+    <header class="post-header">
+      <h1 class="post-title"><a class="post-link" href="/2020/06/03/redis/源码解析——压缩列表ziplist/">Redis源码解析——压缩列表ziplist</a>
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020-06-03
+        </span><span class="post-category">
+            <a href="/categories/C-C/">C/C++</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-content"><p>在Redis中，list有两种存储方式：双端链表（LinkedList）和压缩双端链表（ziplist）。双端链表即普通数据结构中遇到的，在adlist.h和adlist.c中实现。压缩双端链表在ziplist.h和ziplist.c实现。</p>
+          <div class="read-more">
+            <a href="/2020/06/03/redis/源码解析——压缩列表ziplist/" class="read-more-link">阅读更多</a>
+          </div>
+        </div></article>
+      <article class="post">
+    <header class="post-header">
+      <h1 class="post-title"><a class="post-link" href="/2020/05/24/redis/Redis源码解析——字典dict/">Redis源码解析——字典dict</a>
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020-05-24
+        </span><span class="post-category">
+            <a href="/categories/C-C/">C/C++</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-content"><p>Redis中有多个数据库，数据库采用的数据结构是哈希表，用以存储键值对。默认所有的客户端都使用第一个数据库，一个数据库对应一个哈希表。如果客户端有需要，可以使用select命令来选择不同的数据库。Redis在初始化服务器的时候就会初始化所有的数据集。Redis的字典采用哈希表作为底层结构，主要实现代码在dict.c和dict.h文件中。</p>
+          <div class="read-more">
+            <a href="/2020/05/24/redis/Redis源码解析——字典dict/" class="read-more-link">阅读更多</a>
+          </div>
+        </div></article>
+      <article class="post">
+    <header class="post-header">
+      <h1 class="post-title"><a class="post-link" href="/2020/05/22/redis/Redis源码解析——动态字符串sds/">Redis源码解析——动态字符串sds</a>
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020-05-22
+        </span><span class="post-category">
+            <a href="/categories/C-C/">C/C++</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-content"><p>Redis没有使用C语言的字符串结构，而是自己设计了一个简单的动态字符串结构sds(simple dynamic string)。Redis中关于sds的实现主要在sds.c和sds.h中</p>
+          <div class="read-more">
+            <a href="/2020/05/22/redis/Redis源码解析——动态字符串sds/" class="read-more-link">阅读更多</a>
+          </div>
+        </div></article>
+      <article class="post">
+    <header class="post-header">
+      <h1 class="post-title"><a class="post-link" href="/2020/05/18/redis/Redis源码解析——redisObject/">Redis源码解析——redisObject</a>
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020-05-18
+        </span><span class="post-category">
+            <a href="/categories/C-C/">C/C++</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-content"><p>redis是一个key-value存储系统，其中key类型一般为字符串，而value类型则为redis对象。Redis对象可以绑定各种类型的数据，如string、hash、list、set和zset。redisObejct在redis.h中定义。</p>
+          <div class="read-more">
+            <a href="/2020/05/18/redis/Redis源码解析——redisObject/" class="read-more-link">阅读更多</a>
+          </div>
+        </div></article>
+      <nav class="pagination"><a class="prev" href="/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text">上一页</span>
+      </a>
+    <a class="next" href="/page/3/">
+        <span class="next-text">下一页</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></section></div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="Redis源码解析——压缩列表ziplist"><meta name="keywords" content="C/C++, Redis, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2020/06/03/redis/源码解析——压缩列表ziplist/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>Redis源码解析——压缩列表ziplist - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">Redis源码解析——压缩列表ziplist
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020-06-03
+        </span><span class="post-category">
+            <a href="/categories/C-C/">C/C++</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-定义"><span class="toc-text">1. 定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-主要方法"><span class="toc-text">2. 主要方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-创建空ziplist"><span class="toc-text">2.1 创建空ziplist</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-插入节点"><span class="toc-text">2.2 插入节点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p>在Redis中，list有两种存储方式：双端链表（LinkedList）和压缩双端链表（ziplist）。双端链表即普通数据结构中遇到的，在adlist.h和adlist.c中实现。压缩双端链表在ziplist.h和ziplist.c实现。</p>
+<a id="more"></a>
+<h2 id="1-定义"><a href="#1-定义" class="headerlink" title="1. 定义"></a>1. 定义</h2><p>在redisObject一文中我们得知redis的hash底层存储可以使用ziplist和hashtable两种编码方式。当hash对象可以同时满足以下两个条件时，hash对象采样点ziplist编码。</p>
+<ul>
+<li>哈希对象保存的所有键值对的键和值的字符串长度都小于64字节</li>
+<li>哈希对象保存的键值对数量小于512个</li>
+</ul>
+<p>ziplist包括zip header、zip entry和zip end三部分组成，其存储格式可以用下图表示。</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200603160420.png" alt></p>
+<p>zip_bytes是zip list占用的空间，zip_tail是最后一个数据项的偏移地址，方便反向遍历链表。zip_length表示zip_entry的个数，zip_end为定值0xFF，占1字节。</p>
+<p>zip_entry的结构如下：</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200603160744.png" alt></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//保存 ziplist 节点信息的结构</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zlentry</span> &#123;</span></span><br><span class="line">    <span class="comment">// prevrawlen ：前置节点的长度</span></span><br><span class="line">    <span class="comment">// prevrawlensize ：编码 prevrawlen 所需的字节大小</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> prevrawlensize, prevrawlen;</span><br><span class="line">    <span class="comment">// len ：当前节点值的长度</span></span><br><span class="line">    <span class="comment">// lensize ：编码len所需的字节大小</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> lensize, len;</span><br><span class="line">    <span class="comment">// 当前节点 header 的大小</span></span><br><span class="line">    <span class="comment">// 等于 prevrawlensize + lensize</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> headersize;</span><br><span class="line">    <span class="comment">// 当前节点值所使用的编码类型</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> encoding;</span><br><span class="line">    <span class="comment">// 指向当前节点的指针</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> *p;</span><br><span class="line">&#125; zlentry;</span><br></pre></td></tr></table></figure>
+<div class="admonition warning"><p class="admonition-title">prevlen
+</p><p>ziplist在编码前置节点长度的时候，采用以下规则。1.如果前置节点的长度小于254字节，那么采用1个字节来保存这个长度值；2. 如果前置节点的长度大于254字节，则采用5个字节来保存这个长度值，其中，第一个字节被设置为0xFE(254)，用于表示该长度大于254字节，后面四个字节则用来存储前置节点的长度值。</p>
+</div>
+
+<p><strong>编码前置长度</strong></p>
+<ul>
+<li>如果前置节点的长度大于254字节，则采用5个字节来保存这个长度值，其中，第一个字节被设置为0xFE(254)，用于表示该长度大于254字节，后面四个字节则用来存储前置节点的长度值。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Encode the length of the previous entry and write it to "p". Return the</span></span><br><span class="line"><span class="comment"> * number of bytes needed to encode this length if "p" is NULL. </span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 对前置节点的长度 len 进行编码，并将它写入到 p 中，</span></span><br><span class="line"><span class="comment"> * 然后返回编码 len 所需的字节数量。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 如果 p 为 NULL ，那么不进行写入，仅返回编码 len 所需的字节数量。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * T = O(1)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">zipPrevEncodeLength</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">char</span> *p, <span class="keyword">unsigned</span> <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 仅返回编码 len 所需的字节数量</span></span><br><span class="line">    <span class="keyword">if</span> (p == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> (len &lt; ZIP_BIGLEN) ? <span class="number">1</span> : <span class="keyword">sizeof</span>(len)+<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 写入并返回编码 len 所需的字节数量</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 1 字节</span></span><br><span class="line">        <span class="keyword">if</span> (len &lt; ZIP_BIGLEN) &#123;</span><br><span class="line">            p[<span class="number">0</span>] = len;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 5 字节</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 添加 5 字节长度标识</span></span><br><span class="line">            p[<span class="number">0</span>] = ZIP_BIGLEN;</span><br><span class="line">            <span class="comment">// 写入编码</span></span><br><span class="line">            <span class="built_in">memcpy</span>(p+<span class="number">1</span>,&amp;len,<span class="keyword">sizeof</span>(len));</span><br><span class="line">            <span class="comment">// 如果有必要的话，进行大小端转换</span></span><br><span class="line">            memrev32ifbe(p+<span class="number">1</span>);</span><br><span class="line">            <span class="comment">// 返回编码长度</span></span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>+<span class="keyword">sizeof</span>(len);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>解码前置节点长度</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Decode the number of bytes required to store the length of the previous</span></span><br><span class="line"><span class="comment"> * element, from the perspective of the entry pointed to by 'ptr'. </span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 解码 ptr 指针，</span></span><br><span class="line"><span class="comment"> * 取出编码前置节点长度所需的字节数，并将它保存到 prevlensize 变量中。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * T = O(1)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIP_DECODE_PREVLENSIZE(ptr, prevlensize) do &#123;      \</span></span><br><span class="line">    <span class="keyword">if</span> ((ptr)[<span class="number">0</span>] &lt; ZIP_BIGLEN) &#123;                           \</span><br><span class="line">        (prevlensize) = <span class="number">1</span>;                                 \</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;                                               \</span><br><span class="line">        (prevlensize) = <span class="number">5</span>;                                 \</span><br><span class="line">    &#125;                                                      \</span><br><span class="line">&#125; <span class="keyword">while</span>(<span class="number">0</span>);</span><br><span class="line"><span class="comment">/* Decode the length of the previous element, from the perspective of the entry</span></span><br><span class="line"><span class="comment"> * pointed to by 'ptr'. </span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 解码 ptr 指针，</span></span><br><span class="line"><span class="comment"> * 取出编码前置节点长度所需的字节数，</span></span><br><span class="line"><span class="comment"> * 并将这个字节数保存到 prevlensize 中。</span></span><br><span class="line"><span class="comment"> * 然后根据 prevlensize ，从 ptr 中取出前置节点的长度值，</span></span><br><span class="line"><span class="comment"> * 并将这个长度值保存到 prevlen 变量中。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * T = O(1)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIP_DECODE_PREVLEN(ptr, prevlensize, prevlen) do &#123; \</span></span><br><span class="line">    <span class="comment">/* 先计算被编码长度值的字节数 */</span>                           \</span><br><span class="line">    ZIP_DECODE_PREVLENSIZE(ptr, prevlensize);             \</span><br><span class="line">    <span class="comment">/* 再根据编码字节数来取出长度值 */</span>                         \</span><br><span class="line">    <span class="keyword">if</span> ((prevlensize) == <span class="number">1</span>) &#123;                             \</span><br><span class="line">        (prevlen) = (ptr)[<span class="number">0</span>];                             \</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> ((prevlensize) == <span class="number">5</span>) &#123;                      \</span><br><span class="line">        assert(<span class="keyword">sizeof</span>((prevlensize)) == <span class="number">4</span>);               \</span><br><span class="line">        <span class="built_in">memcpy</span>(&amp;(prevlen), ((<span class="keyword">char</span>*)(ptr)) + <span class="number">1</span>, <span class="number">4</span>);        \</span><br><span class="line">        memrev32ifbe(&amp;prevlen);                           \</span><br><span class="line">    &#125;                                                     \</span><br><span class="line">&#125; <span class="keyword">while</span>(<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<p>在编码解码当前节点的长度，ziplist提供了zipEncodeLength和ZIP_DECODE_LENGTH这两个配套函数来完成。</p>
+<h2 id="2-主要方法"><a href="#2-主要方法" class="headerlink" title="2. 主要方法"></a>2. 主要方法</h2><h3 id="2-1-创建空ziplist"><a href="#2-1-创建空ziplist" class="headerlink" title="2.1 创建空ziplist"></a>2.1 创建空ziplist</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">char</span> *<span class="title">ziplistNew</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// ZIPLIST_HEADER_SIZE 是 ziplist 表头的大小</span></span><br><span class="line">    <span class="comment">//#define ZIPLIST_HEADER_SIZE (sizeof(uint32_t)*2+sizeof(uint16_t))</span></span><br><span class="line">    <span class="comment">// 1字节链表末端 ZIP_END 的大小</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> bytes = ZIPLIST_HEADER_SIZE+<span class="number">1</span>;</span><br><span class="line">    <span class="comment">// 为表头和表末端分配空间</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> *zl = zmalloc(bytes);</span><br><span class="line">    <span class="comment">// 初始化表属性</span></span><br><span class="line">    ZIPLIST_BYTES(zl) = intrev32ifbe(bytes);</span><br><span class="line">    ZIPLIST_TAIL_OFFSET(zl) = intrev32ifbe(ZIPLIST_HEADER_SIZE);</span><br><span class="line">    ZIPLIST_LENGTH(zl) = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 设置表末端</span></span><br><span class="line">    zl[bytes<span class="number">-1</span>] = ZIP_END;</span><br><span class="line">    <span class="keyword">return</span> zl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-2-插入节点"><a href="#2-2-插入节点" class="headerlink" title="2.2 插入节点"></a>2.2 插入节点</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 将长度为 slen 的字符串 s 推入到 zl 中。</span></span><br><span class="line"><span class="comment"> *  where 参数的值决定了推入的方向：</span></span><br><span class="line"><span class="comment"> * - 值为 ZIPLIST_HEAD 时，将新值推入到表头。</span></span><br><span class="line"><span class="comment"> * - 否则，将新值推入到表末端。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 函数的返回值为添加新值后的 ziplist 。</span></span><br><span class="line"><span class="comment"> * T = O(N^2)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">char</span> *<span class="title">ziplistPush</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">char</span> *zl, <span class="keyword">unsigned</span> <span class="keyword">char</span> *s, <span class="keyword">unsigned</span> <span class="keyword">int</span> slen, <span class="keyword">int</span> where)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 根据 where 参数的值，决定将值推入到表头还是表尾</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> *p;</span><br><span class="line">    <span class="comment">// ZIPLIST_ENTRY_HEAD和ZIPLIST_ENTRY_END通过宏定义计算分别指向第一个节点的其实位置和zip_end的起始位置</span></span><br><span class="line">    p = (where == ZIPLIST_HEAD) ? ZIPLIST_ENTRY_HEAD(zl) : ZIPLIST_ENTRY_END(zl);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回添加新值后的 ziplist</span></span><br><span class="line">    <span class="comment">// T = O(N^2)</span></span><br><span class="line">    <span class="keyword">return</span> __ziplistInsert(zl,p,s,slen);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> <span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 根据指针 p 所指定的位置，将长度为 slen 的字符串 s 插入到 zl 中。</span></span><br><span class="line"><span class="comment"> * 函数的返回值为完成插入操作之后的 ziplist</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * T = O(N^2)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> *__ziplistInsert(<span class="keyword">unsigned</span> <span class="keyword">char</span> *zl, <span class="keyword">unsigned</span> <span class="keyword">char</span> *p, <span class="keyword">unsigned</span> <span class="keyword">char</span> *s, <span class="keyword">unsigned</span> <span class="keyword">int</span> slen) &#123;</span><br><span class="line">    <span class="comment">// 记录当前 ziplist 的长度</span></span><br><span class="line">    <span class="keyword">size_t</span> curlen = intrev32ifbe(ZIPLIST_BYTES(zl)), reqlen, prevlen = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">size_t</span> offset;</span><br><span class="line">    <span class="keyword">int</span> nextdiff = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> encoding = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">long</span> value = <span class="number">123456789</span>; <span class="comment">/* initialized to avoid warning. Using a value that is easy to see if for some reason we use it uninitialized. */</span></span><br><span class="line">    zlentry entry, tail;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Find out prevlen for the entry that is inserted. */</span></span><br><span class="line">    <span class="keyword">if</span> (p[<span class="number">0</span>] != ZIP_END) &#123;</span><br><span class="line">        <span class="comment">// 如果 p[0] 不指向列表末端，说明列表非空，并且 p 正指向列表的其中一个节点</span></span><br><span class="line">        <span class="comment">// 那么取出 p 所指向节点的信息，并将它保存到 entry 结构中</span></span><br><span class="line">        <span class="comment">// 然后用 prevlen 变量记录前置节点的长度</span></span><br><span class="line">        <span class="comment">// （当插入新节点之后 p 所指向的节点就成了新节点的前置节点）</span></span><br><span class="line">        <span class="comment">// T = O(1)</span></span><br><span class="line">        entry = zipEntry(p);</span><br><span class="line">        prevlen = entry.prevrawlen;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 如果 p 指向表尾末端，那么程序需要检查列表是否为：</span></span><br><span class="line">        <span class="comment">// 1)如果 ptail 也指向 ZIP_END ，那么列表为空；</span></span><br><span class="line">        <span class="comment">// 2)如果列表不为空，那么 ptail 将指向列表的最后一个节点。</span></span><br><span class="line">        <span class="keyword">unsigned</span> <span class="keyword">char</span> *ptail = ZIPLIST_ENTRY_TAIL(zl);</span><br><span class="line">        <span class="keyword">if</span> (ptail[<span class="number">0</span>] != ZIP_END) &#123;</span><br><span class="line">            <span class="comment">// 表尾节点为新节点的前置节点</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">// 取出表尾节点的长度</span></span><br><span class="line">            <span class="comment">// T = O(1)</span></span><br><span class="line">            prevlen = zipRawEntryLength(ptail);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* See if the entry can be encoded */</span></span><br><span class="line">    <span class="comment">// 尝试看能否将输入字符串转换为整数，如果成功的话：</span></span><br><span class="line">    <span class="comment">// 1)value 将保存转换后的整数值</span></span><br><span class="line">    <span class="comment">// 2)encoding 则保存适用于 value 的编码方式</span></span><br><span class="line">    <span class="comment">// 无论使用什么编码， reqlen 都保存节点值的长度</span></span><br><span class="line">    <span class="comment">// T = O(N)</span></span><br><span class="line">    <span class="keyword">if</span> (zipTryEncoding(s,slen,&amp;value,&amp;encoding)) &#123;</span><br><span class="line">        <span class="comment">/* 'encoding' is set to the appropriate integer encoding */</span></span><br><span class="line">        reqlen = zipIntSize(encoding);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">/* 'encoding' is untouched, however zipEncodeLength will use the</span></span><br><span class="line"><span class="comment">         * string length to figure out how to encode it. */</span></span><br><span class="line">        reqlen = slen;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* We need space for both the length of the previous entry and</span></span><br><span class="line"><span class="comment">     * the length of the payload. */</span></span><br><span class="line">    <span class="comment">// 计算编码前置节点的长度所需的大小</span></span><br><span class="line">    <span class="comment">// T = O(1)</span></span><br><span class="line">    reqlen += zipPrevEncodeLength(<span class="literal">NULL</span>,prevlen);</span><br><span class="line">    <span class="comment">// 计算编码当前节点值所需的大小</span></span><br><span class="line">    <span class="comment">// T = O(1)</span></span><br><span class="line">    reqlen += zipEncodeLength(<span class="literal">NULL</span>,encoding,slen);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* When the insert position is not equal to the tail, we need to</span></span><br><span class="line"><span class="comment">     * make sure that the next entry can hold this entry's length in</span></span><br><span class="line"><span class="comment">     * its prevlen field. */</span></span><br><span class="line">    <span class="comment">// 只要新节点不是被添加到列表末端，</span></span><br><span class="line">    <span class="comment">// 那么程序就需要检查看 p 所指向的节点（的 header）能否编码新节点的长度。</span></span><br><span class="line">    <span class="comment">// nextdiff 保存了新旧编码之间的字节大小差，如果这个值大于 0 </span></span><br><span class="line">    <span class="comment">// 那么说明需要对 p 所指向的节点（的 header ）进行扩展</span></span><br><span class="line">    <span class="comment">// T = O(1)</span></span><br><span class="line">    nextdiff = (p[<span class="number">0</span>] != ZIP_END) ? zipPrevLenByteDiff(p,reqlen) : <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Store offset because a realloc may change the address of zl. */</span></span><br><span class="line">    <span class="comment">// 因为重分配空间可能会改变 zl 的地址</span></span><br><span class="line">    <span class="comment">// 所以在分配之前，需要记录 zl 到 p 的偏移量，然后在分配之后依靠偏移量还原 p </span></span><br><span class="line">    offset = p-zl;</span><br><span class="line">    <span class="comment">// curlen 是 ziplist 原来的长度</span></span><br><span class="line">    <span class="comment">// reqlen 是整个新节点的长度</span></span><br><span class="line">    <span class="comment">// nextdiff 是新节点的后继节点扩展 header 的长度（要么 0 字节，要么 4 个字节）</span></span><br><span class="line">    <span class="comment">// T = O(N)</span></span><br><span class="line">    zl = ziplistResize(zl,curlen+reqlen+nextdiff);</span><br><span class="line">    p = zl+offset;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Apply memory move when necessary and update tail offset. */</span></span><br><span class="line">    <span class="keyword">if</span> (p[<span class="number">0</span>] != ZIP_END) &#123;</span><br><span class="line">        <span class="comment">// 新元素之后还有节点，因为新元素的加入，需要对这些原有节点进行调整</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">/* Subtract one because of the ZIP_END bytes */</span></span><br><span class="line">        <span class="comment">// 移动现有元素，为新元素的插入空间腾出位置</span></span><br><span class="line">        <span class="comment">// T = O(N)</span></span><br><span class="line">        memmove(p+reqlen,p-nextdiff,curlen-offset<span class="number">-1</span>+nextdiff);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* Encode this entry's raw length in the next entry. */</span></span><br><span class="line">        <span class="comment">// 将新节点的长度编码至后置节点</span></span><br><span class="line">        <span class="comment">// p+reqlen 定位到后置节点</span></span><br><span class="line">        <span class="comment">// reqlen 是新节点的长度</span></span><br><span class="line">        <span class="comment">// T = O(1)</span></span><br><span class="line">        zipPrevEncodeLength(p+reqlen,reqlen);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* Update offset for tail */</span></span><br><span class="line">        <span class="comment">// 更新到达表尾的偏移量，将新节点的长度也算上</span></span><br><span class="line">        ZIPLIST_TAIL_OFFSET(zl) =</span><br><span class="line">            intrev32ifbe(intrev32ifbe(ZIPLIST_TAIL_OFFSET(zl))+reqlen);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* When the tail contains more than one entry, we need to take</span></span><br><span class="line"><span class="comment">         * "nextdiff" in account as well. Otherwise, a change in the</span></span><br><span class="line"><span class="comment">         * size of prevlen doesn't have an effect on the *tail* offset. */</span></span><br><span class="line">        <span class="comment">// 如果新节点的后面有多于一个节点</span></span><br><span class="line">        <span class="comment">// 那么程序需要将 nextdiff 记录的字节数也计算到表尾偏移量中</span></span><br><span class="line">        <span class="comment">// 这样才能让表尾偏移量正确对齐表尾节点</span></span><br><span class="line">        <span class="comment">// T = O(1)</span></span><br><span class="line">        tail = zipEntry(p+reqlen);</span><br><span class="line">        <span class="keyword">if</span> (p[reqlen+tail.headersize+tail.len] != ZIP_END) &#123;</span><br><span class="line">            ZIPLIST_TAIL_OFFSET(zl) =</span><br><span class="line">                intrev32ifbe(intrev32ifbe(ZIPLIST_TAIL_OFFSET(zl))+nextdiff);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">/* This element will be the new tail. */</span></span><br><span class="line">        <span class="comment">// 新元素是新的表尾节点</span></span><br><span class="line">        ZIPLIST_TAIL_OFFSET(zl) = intrev32ifbe(p-zl);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* When nextdiff != 0, the raw length of the next entry has changed, so</span></span><br><span class="line"><span class="comment">     * we need to cascade the update throughout the ziplist */</span></span><br><span class="line">    <span class="comment">// 当 nextdiff != 0 时，新节点的后继节点的（header 部分）长度已经被改变，</span></span><br><span class="line">    <span class="comment">// 所以需要级联地更新后续的节点</span></span><br><span class="line">    <span class="keyword">if</span> (nextdiff != <span class="number">0</span>) &#123;</span><br><span class="line">        offset = p-zl;</span><br><span class="line">        <span class="comment">// T  = O(N^2)</span></span><br><span class="line">        zl = __ziplistCascadeUpdate(zl,p+reqlen);</span><br><span class="line">        p = zl+offset;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Write the entry */</span></span><br><span class="line">    <span class="comment">// 一切搞定，将前置节点的长度写入新节点的 header</span></span><br><span class="line">    p += zipPrevEncodeLength(p,prevlen);</span><br><span class="line">    <span class="comment">// 将节点值的长度写入新节点的 header</span></span><br><span class="line">    p += zipEncodeLength(p,encoding,slen);</span><br><span class="line">    <span class="comment">// 写入节点值</span></span><br><span class="line">    <span class="keyword">if</span> (ZIP_IS_STR(encoding)) &#123;</span><br><span class="line">        <span class="comment">// T = O(N)</span></span><br><span class="line">        <span class="built_in">memcpy</span>(p,s,slen);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// T = O(1)</span></span><br><span class="line">        zipSaveInteger(p,value,encoding);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 更新列表的节点数量计数器</span></span><br><span class="line">    <span class="comment">// T = O(1)</span></span><br><span class="line">    ZIPLIST_INCR_LENGTH(zl,<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> zl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><p>压缩双链表以连续内存空间表示双链表，压缩双链表节省前驱和后驱指针的空间（共8B），这在小的list上，压缩效率是非常明显的，因为在一个普通的双链表中，前驱后驱指针在64位机器上需要分别占用8B</p>
+</li>
+<li><p>使用ziplist比hashtable更省内存，ziplist的连续内存可以利用cpu的缓存特性（hashtable是非线性的），某些情况下查找效率更高。</p>
+</li>
+</ul>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2020/06/03/redis/源码解析——压缩列表ziplist/">https://shinerio.cc/2020/06/03/redis/源码解析——压缩列表ziplist/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/C-C/">C/C++</a>
+            <a href="/tags/Redis/">Redis</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2020/08/09/计算机网络/tcpdump/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">tcpdump</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2020/05/24/redis/Redis源码解析——字典dict/">
+        <span class="next-text nav-default">Redis源码解析——字典dict</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2020/06/03/redis/源码解析——压缩列表ziplist/';
+        this.page.identifier = '2020/06/03/redis/源码解析——压缩列表ziplist/';
+        this.page.title = 'Redis源码解析——压缩列表ziplist';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

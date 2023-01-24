@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="知识博客,生活感悟"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/page/9/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><section id="posts" class="posts"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title"><a class="post-link" href="/2018/03/28/java/Spring/">spring及相关框架介绍</a>
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-03-28
+        </span><span class="post-category">
+            <a href="/categories/java/">java</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-content"><h2 id="Spring及相关框架介绍"><a href="#Spring及相关框架介绍" class="headerlink" title="Spring及相关框架介绍"></a><strong>Spring及相关框架介绍</strong></h2><hr>
+<h4 id="Spring框架"><a href="#Spring框架" class="headerlink" title="Spring框架"></a><strong>Spring框架</strong></h4><p><strong>Spring</strong>是一个开发应用框架，具有<code>轻量级</code>、<code>非侵入式</code>、<code>一站式</code>、<code>模块化</code> 的特点，其目的是用于简化企业级应用程序开发。Spring框架图如下：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/788498-358a3764fcbca0e4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700" alt="Spring架构图"></p>
+<p>Core Container模块，包含spring-beans、spring-core、spring-context、spring-expression四个方面。</p>
+<ul>
+<li><strong>spring-core和spring-beans</strong>提供了框架的基础部分，包括反转控制和依赖注入功能。其中Bean Factory是容器核心，本质是“<strong>工厂设计模式</strong>”的实现，而且无需编程实现“单例设计模式”，单例完全由容器控制，而且提倡面向接口编程，而非面向实现编程；所有应用程序对象及对象间关系由框架管理，从而真正把你从程序逻辑中把维护对象之间的依赖关系提取出来，所有这些依赖关系都由BeanFactory来维护。</li>
+<li><strong>spring-context</strong>这个模块建立在core和bean模块提供坚实的基础上，集成Beans模块功能并添加资源绑定、数据验证、国际化<strong>、</strong>Java EE支持、容器生命周期、事件传播等；核心接口是ApplicationContext。</li>
+<li><strong>spring-expression</strong>提供强大的表达式语言支持，支持访问和修改属性值，方法调用，支持访问及修改数组、容器和索引器，命名变量，支持算数和逻辑运算，支持从Spring 容器获取Bean，它也支持列表投影、选择和一般的列表聚合等。</li>
+</ul>
+<p>AOP and Instrumentation模块，包含spring-aop、spring-instrument两个方面。</p>
+<ul>
+<li><strong>spring-aop</strong>Spring AOP模块提供了符合 <em>AOP Alliance</em>规范的面向方面的编程（aspect-oriented programming）实现，提供比如日志记录、权限控制、性能统计等通用功能和业务逻辑分离的技术，并且能动态的把这些功能添加到需要的代码中；这样各专其职，降低业务逻辑和通用功能的耦合。</li>
+<li><strong>spring-instrument</strong>在特定的应用程序服务器中支持类和类加载器的实现，比如Tomcat。</li>
+</ul>
+<p>Messaging，从Spring  Framework  4开始集成了MessageChannel, MessageHandler等，用于消息传递的基础。</p>
+<p>Data Access/Integration，包括了JDBC、ORM、OXM、JMS和事务管理。</p>
+<p>事务模块：该模块用于Spring管理事务，只要是Spring管理对象都能得到Spring管理事务的好处，无需在代码中进行事务控制了，而且支持编程和声明性的事物管理。</p>
+<ul>
+<li><strong>spring-jdbc</strong> 提供了一个JBDC的样例模板，使用这些模板能消除传统冗长的JDBC编码还有必须的事务控制，而且能享受到Spring管理事务的好处。</li>
+<li><strong>spring-orm</strong> 提供与流行的“对象-关系”映射框架的无缝集成，包括Hibernate、JPA、Ibatiss等。而且可以使用Spring事务管理，无需额外控制事务。</li>
+<li><strong>spring-oxm</strong> 提供了一个对Object/XML映射实现，将java对象映射成XML数据，或者将XML数据映射成java对象，Object/XML映射实现包括JAXB、Castor、XMLBeans和XStream。</li>
+<li><strong>spring-jms</strong> 用于JMS(Java Messaging Service)，提供一套 “消息生产者、消息消费者”模板用于更加简单的使用JMS，JMS用于用于在两个应用程序之间，或分布式系统中发送消息，进行异步通信。</li>
+</ul>
+<p>Web，包含了spring-web, spring-webmvc, spring-websocket, and spring-webmvc-portlet几个模块。</p>
+<ul>
+<li><strong>spring-web</strong> 提供了基础的web功能。例如多文件上传、集成IoC容器、远程过程访问（RMI、Hessian、Burlap）以及Web Service支持，并提供一个RestTemplate类来提供方便的Restful services访问。</li>
+<li><strong>spring-webmvc</strong> 提供了一个Spring MVC Web框架和REST Web服务的实现。Spring的MVC框架提供了领域模型代码和Web表单之间分离，并与Spring框架的所有其他功能集成。</li>
+<li><strong>spring-webmvc-portlet</strong> 提供了在Portlet环境中使用MVC实现，并且反映了spring-webmvc模块的功能。</li>
+</ul>
+<hr>
+<h4 id="Spring-MVC框架"><a href="#Spring-MVC框架" class="headerlink" title="Spring MVC框架"></a><strong>Spring MVC框架</strong></h4><p>Spring Web MVC是一种基于Java的实现了Web MVC设计模式的请求驱动类型的轻量级Web框架，即使用了MVC架构模式的思想，将web层进行职责解耦，基于请求驱动指的就是使用请求-响应模型。Spring MVC请求流程如下：</p>
+<p><img src="http://sishuok.com/forum/upload/2012/7/14/529024df9d2b0d1e62d8054a86d866c9__1.JPG" alt></p>
+<p>具体执行步骤如下：</p>
+<ol>
+<li>首先用户发送请求——&gt;前端控制器，前端控制器根据请求信息（如URL）来决定选择哪一个页面控制器进行处理并把请求委托给它，即以前的控制器的控制逻辑部分；上图中的1、2步骤；</li>
+<li>页面控制器接收到请求后，进行功能处理，首先需要收集和绑定请求参数到一个对象，这个对象在Spring Web MVC中叫命令对象，并进行验证，然后将命令对象委托给业务对象进行处理；处理完毕后返回一个ModelAndView（模型数据和逻辑视图名）；上图中的3、4、5步骤；</li>
+<li>前端控制器收回控制权，然后根据返回的逻辑视图名，选择相应的视图进行渲染，并把模型数据传入以便视图渲染；上图中的步骤6、7；</li>
+<li>前端控制器再次收回控制权，将响应返回给用户，上图中的步骤8；至此整个结束。</li>
+</ol>
+<p>相关的配置文件：</p>
+<p>前端控制器：<strong>web.xml</strong>，servlet-name——设置默认DispatcherServlet加载的自配置的Servlet，url-pattern——表示哪些请求交给Spring Web MVC处理， “/” 是用来定义默认servlet映射的</p>
+<p>委托请求：<strong>WEB-INF/xxxxx-servlet.xml</strong> ，配置HandlerMapping（表示将请求的URL和Bean名字映射）、HandlerAdapter（哪些Bean可以作为Spring Web MVC中的处理器）</p>
+<p>视图解析器/ViewResolver：<strong>WEB-INF/xxxxx-servlet.xml</strong>，InternalResourceViewResolver：用于支持Servlet、JSP视图解析；viewClass：JstlView表示JSP模板页面需要使用JSTL标签库，classpath中必须包含jstl的相关jar包；prefix和suffix：查找视图页面的前缀和后缀（前缀[逻辑视图名]后缀），比如传进来的逻辑视图名为hello，则该该jsp视图页面应该存放在“WEB-INF/jsp/hello.jsp”</p>
+<hr>
+<h4 id="Spring-AOP"><a href="#Spring-AOP" class="headerlink" title="Spring AOP"></a><strong>Spring AOP</strong></h4><p>AOP：Aspect-Oriented Programming 面对切片编程。AOP是OOP的补充。</p>
+<p>AOP的应用场景如下：</p>
+<ul>
+<li>事务处理</li>
+<li>日志处理</li>
+<li>异常处理</li>
+<li>权限控制</li>
+<li>系统性能监控</li>
+<li>其他</li>
+</ul>
+<p>Spring中AOP代理由Spring的IOC容器负责生成、管理，其依赖关系也由IOC容器负责管理。Spring创建代理的规则如下：</p>
+<ol>
+<li>默认使用<strong>Java动态代理</strong>来创建AOP代理，这样就可以为任何接口实例创建代理了</li>
+<li>当需要代理的类不是代理接口的时候，Spring会切换为使用<strong>CGLIB代理</strong>，也可强制使用CGLIB</li>
+</ol>
+
+        </div></article>
+      <article class="post">
+    <header class="post-header">
+      <h1 class="post-title"><a class="post-link" href="/2018/01/28/algorithm/常见的排序算法/">常见的排序算法</a>
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-01-28
+        </span><span class="post-category">
+            <a href="/categories/java/">java</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-content"><h1 id="常见的排序算法"><a href="#常见的排序算法" class="headerlink" title="常见的排序算法"></a><strong>常见的排序算法</strong></h1><p><strong>冒泡排序、插入排序、选择排序、希尔排序、堆排序、归并排序、快速排序</strong></p>
+          <div class="read-more">
+            <a href="/2018/01/28/algorithm/常见的排序算法/" class="read-more-link">阅读更多</a>
+          </div>
+        </div></article>
+      <article class="post">
+    <header class="post-header">
+      <h1 class="post-title"><a class="post-link" href="/2017/08/21/疑难杂症/Jar冲突问题/">Jar冲突问题</a>
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-08-21
+        </span><span class="post-category">
+            <a href="/categories/疑难杂症/">疑难杂症</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-content"><p>两类问题，都会导致jvm加载不到正确的类，那么行为就和预期不一样</p>
+<ul>
+<li>第一类jar冲突问题<br>应用程序依赖的同一个jar包出现了多个不同的版本，并选择了错误的版本（某个类在这个版本中不存在或者类的行为不一致）导致JVM加载到了错误的类。</li>
+<li>第二类jar冲突问题<br>同样的类（类的全限定名完全一样）出现在多个jar中，即该类有多个版本，由于jar包加载先后顺序导致JVM加载了错误的版本</li>
+</ul>
+<h3 id="第一类jar包问题"><a href="#第一类jar包问题" class="headerlink" title="第一类jar包问题"></a>第一类jar包问题</h3><p>随着Jar包迭代升级，我们所依赖的开源的或公司内部的Jar包工具都会存在若干不同的版本，而版本升级自然就避免不了类的方法签名变更，甚至于类名的更替，而我们当前的应用程序往往依赖特定版本的某个类 <strong>M</strong> ，由于maven的传递依赖而导致同一个Jar包出现了多个版本，当maven的仲裁机制选择了错误的版本时，而恰好类 <strong>M</strong>在该版本中被去掉了，或者方法签名改了，导致应用程序因找不到所需的类 <strong>M</strong>或找不到类 <strong>M</strong>中的特定方法，就会出现第一类Jar冲突问题</p>
+<p>三个必要条件：</p>
+<ul>
+<li>由于maven的传递依赖导致依赖树中出现了同一个Jar包的多个版本</li>
+<li>该Jar包的多个版本之间存在接口差异，如类名更替，方法签名更替等，且应用程序依赖了其中有变更的类或方法</li>
+<li>maven的仲裁机制选择了错误的版本</li>
+</ul>
+<h3 id="第二类jar包问题"><a href="#第二类jar包问题" class="headerlink" title="第二类jar包问题"></a>第二类jar包问题</h3><p>　同样的类出现在了应用程序所依赖的两个及以上的不同Jar包中，这会导致什么问题呢？我们知道，同一个类加载器对于同一个类只会加载一次（多个不同类加载器就另说了，这也是解决Jar包冲突的一个思路，后面会谈到），那么当一个类出现在了多个Jar包中，假设有 <strong>A</strong> 、 <strong>B</strong> 、 <strong>C</strong> 等，由于Jar包依赖的路径长短、声明的先后顺序或文件系统的文件加载顺序等原因，类加载器首先从Jar包 <strong>A</strong> 中加载了该类后，就不会加载其余Jar包中的这个类了，那么问题来了：如果应用程序此时需要的是Jar包 <strong>B</strong> 中的类版本，并且该类在Jar包 <strong>A</strong> 和 <strong>B</strong> 中有差异（方法不同、成员不同等等），而JVM却加载了Jar包 <strong>A</strong> 的中的类版本，与期望不一致，自然就会出现各种诡异的问题。</p>
+<p>三个必要条件</p>
+<ul>
+<li>同一个类 <strong>M</strong> 出现在了多个依赖的Jar包中，为了叙述方便，假设还是两个： <strong>A</strong> 和 <strong>B</strong></li>
+<li>Jar包 <strong>A</strong> 和 <strong>B</strong> 中的该类 <strong>M</strong> 有差异，无论是方法签名不同也好，成员变量不同也好，只要可以造成实际加载的类的行为和期望不一致都行。如果说Jar包 <strong>A</strong> 和 <strong>B</strong> 中的该类完全一样，那么类加载器无论先加载哪个Jar包，得到的都是同样版本的类 <strong>M</strong> ，不会有任何影响，也就不会出现Jar包冲突带来的诡异问题。</li>
+<li>加载的类 <strong>M</strong> 不是所期望的版本，即加载了错误的Jar包</li>
+</ul>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><ul>
+<li>maven exclude排除jar，选择合适版本</li>
+<li>自定义类加载器，打破双亲委派模型(比较著名的是pandora)</li>
+</ul>
+
+        </div></article>
+      <article class="post">
+    <header class="post-header">
+      <h1 class="post-title"><a class="post-link" href="/2017/07/21/设计模式/单例模式与代理模式/">单例模式与代理模式</a>
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-07-21
+        </span><span class="post-category">
+            <a href="/categories/设计模式/">设计模式</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-content"><h2 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h2><p>保证一个类仅有一个实例，并且提供一个访问的全局访问点</p>
+<p>饿汉模式, 利用jvm的类加载机制提供了线程安全的保证，在类加载的时候就已经完成了对象的初始化。不能保证有其他方式导致类装载，从而没有实现懒加载。</p>
+          <div class="read-more">
+            <a href="/2017/07/21/设计模式/单例模式与代理模式/" class="read-more-link">阅读更多</a>
+          </div>
+        </div></article>
+      <article class="post">
+    <header class="post-header">
+      <h1 class="post-title"><a class="post-link" href="/2017/03/31/algorithm/常见算法题/">常见算法题</a>
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-03-31
+        </span><span class="post-category">
+            <a href="/categories/Algorithm/">Algorithm</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-content"><h1 id="查找最大子序列"><a href="#查找最大子序列" class="headerlink" title="查找最大子序列"></a>查找最大子序列</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 分析：一个最大子序列必然不可能以一个负数a[i]开头，否则子序列可以以a[i+1]开头</span></span><br><span class="line"><span class="comment"> * 推广，一个子序列比不可能以一个he为负数的子序列开头，否则这段子序列可以去除</span></span><br><span class="line"><span class="comment"> * 推论，一个最大子序列的任意子序列必然和为正，因此和为负的子序列可以舍弃</span></span><br><span class="line"><span class="comment"> * 推论，任意和不为负的子序列都可以作为最大子序列的前子序列</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">maxSubSequenceSum</span><span class="params">(<span class="keyword">int</span>[] a)</span></span>&#123;</span><br><span class="line">		<span class="keyword">int</span> maxSum = <span class="number">0</span>; <span class="keyword">int</span> thisSum = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;a.length;i++)&#123;</span><br><span class="line">			thisSum+=a[i];</span><br><span class="line">			<span class="keyword">if</span>(thisSum&gt;maxSum)&#123;        <span class="comment">//子序列不为负，可能成为最大子序列，比较并更新</span></span><br><span class="line">				maxSum = thisSum; </span><br><span class="line">			&#125;<span class="keyword">else</span> <span class="keyword">if</span>(thisSum&lt;<span class="number">0</span>)&#123;</span><br><span class="line">				thisSum = <span class="number">0</span>;      <span class="comment">//子序列和为负，不可能成为最大子序列的前子序列，舍弃</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> maxSum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <div class="read-more">
+            <a href="/2017/03/31/algorithm/常见算法题/" class="read-more-link">阅读更多</a>
+          </div>
+        </div></article>
+      <article class="post">
+    <header class="post-header">
+      <h1 class="post-title"><a class="post-link" href="/2017/03/30/other/velocity模板生成器/">velocity模板生成器</a>
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-03-30
+        </span><span class="post-category">
+            <a href="/categories/other/">other</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-content"><h1 id="Velocity简介"><a href="#Velocity简介" class="headerlink" title="Velocity简介"></a>Velocity简介</h1><p>Velocity 是一个基于 Java 的模板引擎框架，提供的模板语言可以使用在 Java 中定义的对象和变量上。Velocity 是 Apache 基金会的项目，开发的目标是分离 MVC 模式中的持久化层和业务层，是一种用来减少软件开发人员重复劳动的方法，让程序员将更多的精力放在业务逻辑以及其他更加具有创造力的工作上。</p>
+          <div class="read-more">
+            <a href="/2017/03/30/other/velocity模板生成器/" class="read-more-link">阅读更多</a>
+          </div>
+        </div></article>
+      <article class="post">
+    <header class="post-header">
+      <h1 class="post-title"><a class="post-link" href="/2017/03/01/mathematics/四元数入门/">四元数与欧拉角</a>
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-03-01
+        </span><span class="post-category">
+            <a href="/categories/mathematics/">mathematics</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-content"><h1 id="1-欧拉角-eulerianAngle"><a href="#1-欧拉角-eulerianAngle" class="headerlink" title="1.欧拉角(eulerianAngle)"></a>1.欧拉角(eulerianAngle)</h1><p>欧拉角用最简单的α，ψ，φ分别表示绕世界坐标系下x,y,z轴的旋转角度，绕x,y,z轴旋转的角度分别叫做pitch(俯仰角),yaw(偏航角),roll(翻滚角)</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/%E5%9F%BA%E7%A1%80%E6%95%B0%E5%AD%A6/eulerianAngle.png" alt></p>
+<h1 id="2-四元数-quaternion"><a href="#2-四元数-quaternion" class="headerlink" title="2.四元数(quaternion)"></a>2.四元数(quaternion)</h1><ul>
+<li><strong>定义</strong></li>
+</ul>
+<p>四元数使用了一个三维向量表示转轴和一个角度表示绕此旋转轴的旋转角度讲，即(x,y,z,w)</p>
+<p>w=cos(θ/2)</p>
+<p>x=ax*sin(θ/2)</p>
+<p>y=ay*sin(θ/2)</p>
+<p>z=az*sin(θ/2)</p>
+<p>其中ax,ay,az表示轴的矢量，θ为绕轴旋转角度</p>
+<ul>
+<li><p><strong>相关计算</strong></p>
+<p>q=w+x<strong>i</strong>+y<strong>j</strong>+z<strong>k</strong></p>
+<p>求模：|q|^2=w^2+x^2+y^2+z^2</p>
+<p>共轭：q<em>=w-x<strong>i</strong>-y<strong>j</strong>-z<em>*k</em></em></p>
+<p>求逆：q^-1=q*/|q|</p>
+</li>
+<li><p>用四元数旋转矢量</p>
+<p>给定一个矢量V，再给定一个旋转四元数q,让v按q旋转</p>
+<p>v=(x,y,z,0)</p>
+<p>v’=qvq^-1</p>
+</li>
+<li><p>四元数插值slerp(spherical linear interpolation)</p>
+<p>slerp(<strong>q0,q1,t</strong>)=<strong>q0*</strong>sin((1-t)θ)/sinθ+<strong>q1*</strong>sin(tθ)/sinθ</p>
+<p>其中θ=arcos(<strong>q0</strong>·<strong>q1</strong>)</p>
+</li>
+</ul>
+          <div class="read-more">
+            <a href="/2017/03/01/mathematics/四元数入门/" class="read-more-link">阅读更多</a>
+          </div>
+        </div></article>
+      <article class="post">
+    <header class="post-header">
+      <h1 class="post-title"><a class="post-link" href="/2016/12/31/other/pdf版笔记整理/">pdf版笔记整理</a>
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-12-31
+        </span><span class="post-category">
+            <a href="/categories/other/">other</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-content"><p><a href="https://shinerio.oss-cn-beijing.aliyuncs.com/document/java%E5%9F%BA%E7%A1%80-%E5%85%A5%E9%97%A8%E7%AF%87.pdf" target="_blank" rel="noopener">java基础-入门篇.pdf</a></p>
+<p><a href="https://shinerio.oss-cn-beijing.aliyuncs.com/document/java%20-%20%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1.pdf" target="_blank" rel="noopener">java - 面向对象.pdf</a></p>
+<p><a href="https://shinerio.oss-cn-beijing.aliyuncs.com/document/java%E9%9B%86%E5%90%88.pdf" target="_blank" rel="noopener">java集合.pdf</a></p>
+<p><a href="https://shinerio.oss-cn-beijing.aliyuncs.com/document/java%20SE%E4%B9%8B%E5%86%8D%E5%AD%A6.pdf" target="_blank" rel="noopener">java SE之再学.pdf</a></p>
+<p><a href="https://shinerio.oss-cn-beijing.aliyuncs.com/document/Java%E8%87%AA%E5%AD%A6%E4%B9%8B%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B.pdf" target="_blank" rel="noopener">Java自学之网络编程.pdf</a></p>
+<p><a href="https://shinerio.oss-cn-beijing.aliyuncs.com/document/Java%E8%87%AA%E5%AD%A6%E5%BF%83%E5%BE%97.pdf" target="_blank" rel="noopener">Java自学心得.pdf</a></p>
+<p><a href="https://shinerio.oss-cn-beijing.aliyuncs.com/document/%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99.pdf" target="_blank" rel="noopener">设计原则.pdf</a></p>
+<p><a href="https://shinerio.oss-cn-beijing.aliyuncs.com/document/java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.pdf" target="_blank" rel="noopener">java设计模式.pdf</a></p>
+<hr>
+<p><a href="https://shinerio.oss-cn-beijing.aliyuncs.com/document/Android%E5%85%A5%E9%97%A8-%E5%9F%BA%E7%A1%80%E7%AF%87.pdf" target="_blank" rel="noopener">Android入门-基础篇.pdf</a></p>
+<p><a href="https://shinerio.oss-cn-beijing.aliyuncs.com/document/Android%E5%BC%80%E5%8F%91-%E5%AE%9E%E6%88%98%E7%AF%87.pdf" target="_blank" rel="noopener">Android开发-实战篇.pdf</a></p>
+<p><a href="https://shinerio.oss-cn-beijing.aliyuncs.com/document/Android%E8%BF%9B%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%AF%87.pdf" target="_blank" rel="noopener">Android进阶-高级篇.pdf</a></p>
+<hr>
+<p><a href="https://shinerio.oss-cn-beijing.aliyuncs.com/document/JDBC.pdf" target="_blank" rel="noopener">JDBC.pdf</a></p>
+<p><a href="https://shinerio.oss-cn-beijing.aliyuncs.com/document/SpringMVC%E7%AC%94%E8%AE%B0.pdf" target="_blank" rel="noopener">SpringMVC笔记.pdf</a></p>
+<p><a href="https://shinerio.oss-cn-beijing.aliyuncs.com/document/ajax.pdf" target="_blank" rel="noopener">ajax.pdf</a></p>
+<hr>
+<p><a href="https://shinerio.oss-cn-beijing.aliyuncs.com/document/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%AC%94%E8%AE%B0.pdf" target="_blank" rel="noopener">微服务</a></p>
+<p><a href="https://shinerio.oss-cn-beijing.aliyuncs.com/document/%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9D%97.pdf" target="_blank" rel="noopener">权限控制</a></p>
+<p><a href="https://shinerio.oss-cn-beijing.aliyuncs.com/document/%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6.pdf" target="_blank" rel="noopener">流量控制</a></p>
+
+        </div></article>
+      <article class="post">
+    <header class="post-header">
+      <h1 class="post-title"><a class="post-link" href="/2016/12/25/java/jvm/深入class装载——实战运用/">深入class装载——实战运用（一）</a>
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-12-25
+        </span><span class="post-category">
+            <a href="/categories/JVM/">JVM</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-content"><h1 id="实例一-线程安全单例模式"><a href="#实例一-线程安全单例模式" class="headerlink" title="实例一(线程安全单例模式)"></a>实例一(线程安全单例模式)</h1><p>提起单例模式，你浅浅一笑，感觉手到擒来，这还不简单，大笔一挥</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleSingleton</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="title">SimpleSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> SimpleSingleton instance;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> SimpleSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(instance==<span class="keyword">null</span>)&#123;</span><br><span class="line">			instance = <span class="keyword">new</span> SimpleSingleton();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> instance;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>so easy！</p>
+<p>等等，难道你就没发现什么问题？</p>
+<p>这并不是个线程安全的方法，也就是会有多个线程同时进入if语句块。看到这，你心想，这还不简单，直接价格synchronized不就行了，没错，是这样的。</p>
+          <div class="read-more">
+            <a href="/2016/12/25/java/jvm/深入class装载——实战运用/" class="read-more-link">阅读更多</a>
+          </div>
+        </div></article>
+      <article class="post">
+    <header class="post-header">
+      <h1 class="post-title"><a class="post-link" href="/2016/12/25/java/jvm/Class装载/">Class装载</a>
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-12-25
+        </span><span class="post-category">
+            <a href="/categories/JVM/">JVM</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-content"><p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20190913194205.png" alt></p>
+<h1 id="类装载的条件"><a href="#类装载的条件" class="headerlink" title="类装载的条件"></a>类装载的条件</h1><p>Class只有在必须使用的时候才会被装载，Java虚拟机不会无条件地装载Class类型。Java虚拟机规定，一个类或者接口在初次”主动使用“前，必须要进行初始化。</p>
+<p>主动使用的几种情况：</p>
+<ul>
+<li>当创建一个类的实例时，比如使用new关键字，或者通过反射、克隆、反序列化</li>
+<li>当调用类的静态方法时</li>
+<li>当使用类或接口的静态字段时（final常量除外）</li>
+<li>当使用java.lang.reflect包中发的方法反射类的方法时</li>
+<li>当初始化子类时，要求先初始化父类</li>
+<li>作为启动虚拟机，含有main()方法的那个类</li>
+</ul>
+          <div class="read-more">
+            <a href="/2016/12/25/java/jvm/Class装载/" class="read-more-link">阅读更多</a>
+          </div>
+        </div></article>
+      <nav class="pagination"><a class="prev" href="/page/8/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text">上一页</span>
+      </a>
+    <a class="next" href="/page/10/">
+        <span class="next-text">下一页</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></section></div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

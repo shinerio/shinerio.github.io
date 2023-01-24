@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="Java程序员学C++"><meta name="keywords" content="C&C++, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2020/05/02/C&C++/Java程序员学C++/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>Java程序员学C++ - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">Java程序员学C++
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020-05-02
+        </span><span class="post-category">
+            <a href="/categories/C-C/">C&C++</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-基本数据类型"><span class="toc-text">1. 基本数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-变量初始化"><span class="toc-text">2. 变量初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-数组"><span class="toc-text">3. 数组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-String"><span class="toc-text">4. String</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-对象"><span class="toc-text">5. 对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-函数"><span class="toc-text">6. 函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-内存管理"><span class="toc-text">7. 内存管理</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p>C是一门面向过程的语言，C++是在C基础上发展的一门面向对象的语言，其语法特性留存有面向过程的痕迹，而Java则是一门为面向对象而生的语言，所有的功能实现思路都从对象的角度出发。本分主要列举了部分C/C++和Java之间一些语法和特性的不同。</p>
+<a id="more"></a>
+<h2 id="1-基本数据类型"><a href="#1-基本数据类型" class="headerlink" title="1. 基本数据类型"></a>1. 基本数据类型</h2><p>Java提供8种基本数据类型。byte(1字节)、short（2字节）、int（4字节）、long（8字节）、float（4字节）、double（8字节）、boolean、char（2字节）。Java变量使用前必须初始化，未初始化无法通过编译。</p>
+<p>C语言基本数据类型分为整数类型、浮点数类型，C++还包括了布尔类型。C编译器不会检查变量有没有初始化，未经初始化而使用的变量将会得到一个随机值（原本内存空间的值）。</p>
+<ul>
+<li>整数类型：char（1字节）、unsigned char（2字节）、signed char（1字节）、int（2或4字节）、unsigned int（2或4字节）、short（2字节）、unsigned short（2字节）、long（4字节）、unsigned long（4字节）</li>
+<li>浮点数类型：float（4字节）、double（8字节）、long double（16字节）</li>
+<li>布尔类型：bool（1字节）</li>
+</ul>
+<div class="admonition note"><p class="admonition-title">区别
+</p><p>在不同的平台，C所提供的数据类型的空间占用大小是不同的（在16位的机器上，int只占2个字节），而Java则在不同平台上表现一致性。C提供了unsigned类型（不能表示负数），可以提高存储数字的效率，但是一般情况下不建议使用，除非是在非常注重效率的场景。c提供的char的实现取决于编译器的实现，VC编译器、x86上的GCC都把char定义为signed char，而arm-linux-gcc却把char定义为 unsigned char，ASCII标准里定义的字符都是0~127，所以三种char类型都能存储得下。</p>
+</div>
+
+<h2 id="2-变量初始化"><a href="#2-变量初始化" class="headerlink" title="2. 变量初始化"></a>2. 变量初始化</h2><p>c和java的变量申明（初始化）类似，采用<code>TYPENAME VARIABLENAME [ = INITIALVALUE];</code>的形式。C不会检查变量有没有被初始化，如果使用一个未被初始化的变量，那么得到的是随机的结果（取决于程序使用的内存所存储的值）。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%d"</span>, a);</span><br><span class="line">&#125;  <span class="comment">//C中能够通过编译并执行，java不能通过编译</span></span><br></pre></td></tr></table></figure>
+<h2 id="3-数组"><a href="#3-数组" class="headerlink" title="3. 数组"></a>3. 数组</h2><p>Java中会检查数组使用是否越界，而C/C++并不会对任何越界行为进行检查，越界访问的数据将会是一个随机的值。</p>
+<h2 id="4-String"><a href="#4-String" class="headerlink" title="4. String"></a>4. String</h2><p>C中的string是用char数组表示的，C++提供了string类，用法与java相似。</p>
+<p>C中可以直接使用&gt;,&gt;=,==,&lt;=,&lt;等不等关系运算符来比较字符串，而java需要用compare方法和equals方法，java中使用==比较的是内存地址，而不是实际的string值。其实可以看出，java是纯面向对象的思想。</p>
+<h2 id="5-对象"><a href="#5-对象" class="headerlink" title="5. 对象"></a>5. 对象</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Person person;</span><br></pre></td></tr></table></figure>
+<p>C++中，如上的代码真正调用默认无参构造函数构造了一个对象，可以正常使用person对象，而Java中只是生成了一个Person类型的引用，使用person会产生NullPointerError。</p>
+<p>p1和p2都是Person类型的引用，代码<code>p1 = p2</code>在java中表示s的是p1和p2引用的是同一个对象，而C++则是用p2代表的对象新生成了一个p1对象，可以理解为java中调用了p2的clone函数。</p>
+<h2 id="6-函数"><a href="#6-函数" class="headerlink" title="6. 函数"></a>6. 函数</h2><p>Java的所有函数都必须属于一个类，而C/C++中的函数可以不属于任何一个类，这些函数可以理解为全局函数。</p>
+<p>JAVA中函数参数的传递分为两种，一种基本变量（int,double,String）是值传递，被调函数不会影响主调函数，另一种是对象传递，对象传递都是通过引用进行，被调函数对对象的修改会影响主调函数（因为实际是同一个对象）。</p>
+<p>C++中的函数参数默认情况下参数只是原对象的一个副本，被调函数的任何修改都不会影响主调函数，在通过&amp;或*获取获取对象引用或地址并用引用或指针接收的情况下，被调函数中操作的对象与主调函数一直，类似于Java中的引用传递。C++可以通过如下方式交换主调函数中两个int型变量的值，而这在java中不可能做到（基本变量属于值传递）。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(<span class="keyword">int</span>* i, <span class="keyword">int</span>* j)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> tmp = *i;</span><br><span class="line">    *i = *j;</span><br><span class="line">    *j = tmp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="7-内存管理"><a href="#7-内存管理" class="headerlink" title="7. 内存管理"></a>7. 内存管理</h2><p>C/C++中的内存由程序员管理，操作不当可能导致内存泄露或野指针。而Java中的内存管理有JVM运行，一个变量一旦不需要，只需要让其置空，JVM会通过垃圾回收线程处理。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//C/C++</span><br><span class="line">malloc、calloc、realloc分配内存，free释放后将指针置为NULL;</span><br><span class="line">new分配内存，通过delete或delete []释放内存后将指针置为NULL</span><br><span class="line">//Java</span><br><span class="line">直接将变量置为null;</span><br></pre></td></tr></table></figure>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2020/05/02/C&C++/Java程序员学C++/">https://shinerio.cc/2020/05/02/C&C++/Java程序员学C++/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/C-C/">C&C++</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2020/05/13/redis/Redis源码解析——总览/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Redis源码解析——总览</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2020/05/02/计算机网络/数据中心网络架构/">
+        <span class="next-text nav-default">数据中心网络架构</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2020/05/02/C&C++/Java程序员学C++/';
+        this.page.identifier = '2020/05/02/C&C++/Java程序员学C++/';
+        this.page.title = 'Java程序员学C++';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

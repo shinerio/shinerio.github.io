@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="Java命令行，垃圾回收，内存及工具概览"><meta name="keywords" content="java, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2016/12/18/java/jvm/Java命令行界面，垃圾回收，内存以及工具概览/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>Java命令行，垃圾回收，内存及工具概览 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">Java命令行，垃圾回收，内存及工具概览
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-12-18
+        </span><span class="post-category">
+            <a href="/categories/JVM/">JVM</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Java参数概述"><span class="toc-text">Java参数概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#日志方面更多的细节"><span class="toc-text">日志方面更多的细节</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p>看到一篇不错的外文博客，阅读的同时将其翻译以加深记忆，<a href="https://www.ctheu.com/2016/01/10/java-cli-gc-memory-and-tools-overview/" target="_blank" rel="noopener">传送门</a></p>
+<p>阅读本文的前提是你了解Java并且知道垃圾回收器对于新生代和老年代的处理。希望这篇博客能让你学到一些新的技巧。</p>
+<ul>
+<li>Java命令行可选项</li>
+<li>简要概括垃圾回收器及其日志</li>
+<li>内存管理和限制</li>
+<li>debug和剖析JVM的可视化工具</li>
+<li>JVM命令行工具</li>
+</ul>
+<p>环境如下：</p>
+<blockquote>
+<p>java version “1.8.0_66″<br>Java(TM) SE Runtime Environment (build 1.8.0_66-b18)<br>Java HotSpot(TM) 64-Bit Server VM (build 25.66-b18, mixed mode)# </p>
+</blockquote>
+<a id="more"></a>
+<h1 id="Java参数概述"><a href="#Java参数概述" class="headerlink" title="Java参数概述"></a>Java参数概述</h1><p>我将介绍一些最有用的用于获得更多关于ava运行时信息参数的设置</p>
+<ul>
+<li>-XX:+[option]    设置option选项</li>
+<li>-XX:+[option]    取消option选项</li>
+<li>-XX:[property]=    设置参数的值</li>
+</ul>
+<p>首先，JVM的默认可选项参数</p>
+<p>使用<code>java -XX:+PrintCommandLineFlags -version</code>获得</p>
+<p>-XX:InitialHeapSize=268055680 -XX:MaxHeapSize=4288890880 -XX:+PrintCommandLineFlags</p>
+<p>-XX:+UseCompressedClassPointers -XX:+UseCompressedOops </p>
+<p>-XX:-UseLargePagesIndividualAllocation</p>
+<p>-XX:+UseParallelGC</p>
+<ul>
+<li>-XX:IntialHeapSize=268055680,默认为RAM的1/64(简写-Xms)</li>
+<li>-XX:MaxHeapSize=4288890880默认为RAM的1/4(简写-Xmx)</li>
+<li>-XX:+UseParallelGC默认新生代使用ParallelGC回收器，老年代使用串行收集器</li>
+</ul>
+<p>使用-XX:+PrintFlagsFinal列出所有存在的参数配置以及他们的值，有上百之多。</p>
+<p>以下仅仅列出我们可以用来获取更多关于日志以及垃圾回收相关信息的参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">$ java -XX:+PrintFlagsFinal -version</span><br><span class="line">[Global flags]</span><br><span class="line">...</span><br><span class="line">bool PrintAdaptiveSizePolicy             = false      &#123;product&#125;</span><br><span class="line">bool PrintCMSInitiationStatistics        = false      &#123;product&#125;</span><br><span class="line">intx PrintCMSStatistics                  = 0          &#123;product&#125;</span><br><span class="line">bool PrintClassHistogram                 = false      &#123;manageable&#125;</span><br><span class="line">bool PrintClassHistogramAfterFullGC      = false      &#123;manageable&#125;</span><br><span class="line">bool PrintClassHistogramBeforeFullGC     = false      &#123;manageable&#125;</span><br><span class="line">bool PrintCodeCache                      = false      &#123;product&#125;</span><br><span class="line">bool PrintCodeCacheOnCompilation         = false      &#123;product&#125;</span><br><span class="line">bool PrintCommandLineFlags               = false      &#123;product&#125;</span><br><span class="line">bool PrintCompilation                    = false      &#123;product&#125;</span><br><span class="line">bool PrintConcurrentLocks                = false      &#123;manageable&#125;</span><br><span class="line">intx PrintFLSCensus                      = 0          &#123;product&#125;</span><br><span class="line">intx PrintFLSStatistics                  = 0          &#123;product&#125;</span><br><span class="line">bool PrintFlagsFinal                    := true       &#123;product&#125;</span><br><span class="line">bool PrintFlagsInitial                   = false      &#123;product&#125;</span><br><span class="line">bool PrintGC                             = false      &#123;manageable&#125;</span><br><span class="line">bool PrintGCApplicationConcurrentTime    = false      &#123;product&#125;</span><br><span class="line">bool PrintGCApplicationStoppedTime       = false      &#123;product&#125;</span><br><span class="line">bool PrintGCCause                        = true       &#123;product&#125;</span><br><span class="line">bool PrintGCDateStamps                   = false      &#123;manageable&#125;</span><br><span class="line">bool PrintGCDetails                      = false      &#123;manageable&#125;</span><br><span class="line">bool PrintGCID                           = false      &#123;manageable&#125;</span><br><span class="line">bool PrintGCTaskTimeStamps               = false      &#123;product&#125;</span><br><span class="line">bool PrintGCTimeStamps                   = false      &#123;manageable&#125;</span><br><span class="line">bool PrintHeapAtGC                       = false      &#123;product rw&#125;</span><br><span class="line">bool PrintHeapAtGCExtended               = false      &#123;product rw&#125;</span><br><span class="line">bool PrintHeapAtSIGBREAK                 = true       &#123;product&#125;</span><br><span class="line">bool PrintJNIGCStalls                    = false      &#123;product&#125;</span><br><span class="line">bool PrintJNIResolving                   = false      &#123;product&#125;</span><br><span class="line">bool PrintOldPLAB                        = false      &#123;product&#125;</span><br><span class="line">bool PrintOopAddress                     = false      &#123;product&#125;</span><br><span class="line">bool PrintPLAB                           = false      &#123;product&#125;</span><br><span class="line">bool PrintParallelOldGCPhaseTimes        = false      &#123;product&#125;</span><br><span class="line">bool PrintPromotionFailure               = false      &#123;product&#125;</span><br><span class="line">bool PrintReferenceGC                    = false      &#123;product&#125;</span><br><span class="line">bool PrintSafepointStatistics            = false      &#123;product&#125;</span><br><span class="line">intx PrintSafepointStatisticsCount       = 300        &#123;product&#125;</span><br><span class="line">intx PrintSafepointStatisticsTimeout     = -1         &#123;product&#125;</span><br><span class="line">bool PrintSharedArchiveAndExit           = false      &#123;product&#125;</span><br><span class="line">bool PrintSharedDictionary               = false      &#123;product&#125;</span><br><span class="line">bool PrintSharedSpaces                   = false      &#123;product&#125;</span><br><span class="line">bool PrintStringDeduplicationStatistics  = false      &#123;product&#125;</span><br><span class="line">bool PrintStringTableStatistics          = false      &#123;product&#125;</span><br><span class="line">bool PrintTLAB                           = false      &#123;product&#125;</span><br><span class="line">bool PrintTenuringDistribution           = false      &#123;product&#125;</span><br><span class="line">bool PrintTieredEvents                   = false      &#123;product&#125;</span><br><span class="line">bool PrintVMOptions                      = false      &#123;product&#125;</span><br><span class="line">bool PrintVMQWaitTime                    = false      &#123;product&#125;</span><br><span class="line">bool PrintWarnings                       = true       &#123;product&#125;</span><br><span class="line">...</span><br><span class="line">bool UseParNewGC                         = false      &#123;product&#125;</span><br><span class="line">bool UseParallelGC                      := true       &#123;product&#125;</span><br><span class="line">bool UseParallelOldGC                    = true       &#123;product&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>“:=”指默认值被你或者JVM工程重写了。</p>
+<p>更进一步，你可以知道任何JVM操控的参数的默认值</p>
+<p>例如，你可以通过<code>| grep NewSize</code>新生代大小</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">uintx MaxNewSize                       := 1430257664  &#123;product&#125;</span><br><span class="line">uintx NewSize                          := 89128960    &#123;product&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="日志方面更多的细节"><a href="#日志方面更多的细节" class="headerlink" title="日志方面更多的细节"></a>日志方面更多的细节</h1>
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2016/12/18/java/jvm/Java命令行界面，垃圾回收，内存以及工具概览/">https://shinerio.cc/2016/12/18/java/jvm/Java命令行界面，垃圾回收，内存以及工具概览/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/java/">java</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2016/12/25/java/jvm/Class装载/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Class装载</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2016/12/18/java/jvm/垃圾回收器/">
+        <span class="next-text nav-default">垃圾回收器</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2016/12/18/java/jvm/Java命令行界面，垃圾回收，内存以及工具概览/';
+        this.page.identifier = '2016/12/18/java/jvm/Java命令行界面，垃圾回收，内存以及工具概览/';
+        this.page.title = 'Java命令行，垃圾回收，内存及工具概览';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

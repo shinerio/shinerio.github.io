@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="常见算法题"><meta name="keywords" content="java, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2017/03/31/algorithm/常见算法题/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>常见算法题 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">常见算法题
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-03-31
+        </span><span class="post-category">
+            <a href="/categories/Algorithm/">Algorithm</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#查找最大子序列"><span class="toc-text">查找最大子序列</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#有序向量的唯一化（去除重复元素）"><span class="toc-text">有序向量的唯一化（去除重复元素）</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#有序向量查找（二分查找）"><span class="toc-text">有序向量查找（二分查找）</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#排序"><span class="toc-text">排序</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><h1 id="查找最大子序列"><a href="#查找最大子序列" class="headerlink" title="查找最大子序列"></a>查找最大子序列</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 分析：一个最大子序列必然不可能以一个负数a[i]开头，否则子序列可以以a[i+1]开头</span></span><br><span class="line"><span class="comment"> * 推广，一个子序列比不可能以一个he为负数的子序列开头，否则这段子序列可以去除</span></span><br><span class="line"><span class="comment"> * 推论，一个最大子序列的任意子序列必然和为正，因此和为负的子序列可以舍弃</span></span><br><span class="line"><span class="comment"> * 推论，任意和不为负的子序列都可以作为最大子序列的前子序列</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">maxSubSequenceSum</span><span class="params">(<span class="keyword">int</span>[] a)</span></span>&#123;</span><br><span class="line">		<span class="keyword">int</span> maxSum = <span class="number">0</span>; <span class="keyword">int</span> thisSum = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;a.length;i++)&#123;</span><br><span class="line">			thisSum+=a[i];</span><br><span class="line">			<span class="keyword">if</span>(thisSum&gt;maxSum)&#123;        <span class="comment">//子序列不为负，可能成为最大子序列，比较并更新</span></span><br><span class="line">				maxSum = thisSum; </span><br><span class="line">			&#125;<span class="keyword">else</span> <span class="keyword">if</span>(thisSum&lt;<span class="number">0</span>)&#123;</span><br><span class="line">				thisSum = <span class="number">0</span>;      <span class="comment">//子序列和为负，不可能成为最大子序列的前子序列，舍弃</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> maxSum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h1 id="有序向量的唯一化（去除重复元素）"><a href="#有序向量的唯一化（去除重复元素）" class="headerlink" title="有序向量的唯一化（去除重复元素）"></a>有序向量的唯一化（去除重复元素）</h1><p>低效方法：</p>
+<p>逐一比较相邻元素，删除重复中的后者。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeDuplicate</span><span class="params">(Vector&lt;Integer&gt; s)</span></span>&#123;</span><br><span class="line">		<span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">while</span>(i&lt;s.size()-<span class="number">1</span>)&#123;</span><br><span class="line">			<span class="keyword">if</span>(s.get(i).intValue()==s.get(i+<span class="number">1</span>).intValue())&#123;</span><br><span class="line">				s.remove(i+<span class="number">1</span>);</span><br><span class="line">				i++;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p>对于每一次remove操作都需要对后置位元素进行复制操作，最坏的情况是所有的元素都是相等的，那么时间复杂度将达到(n-2)+(n-3)+···+2+1=o(n^2)</p>
+<p>高效方法：</p>
+<p>逐一扫描，直至遇到不相同的元素，将其移至紧靠于前者后侧，然后删除多余元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeDuplicate</span><span class="params">(Vector&lt;Integer&gt; s)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i = <span class="number">0</span>,j = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(++j&lt;s.size())&#123;</span><br><span class="line">		<span class="keyword">if</span>(s.get(i).intValue()!=s.get(j).intValue())&#123;</span><br><span class="line">			s.set(++i, s.get(j));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	List&lt;Integer&gt; list = s.subList(<span class="number">0</span>, i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>时间复杂度为 3*(n-1) = o(n)</p>
+<p>由此可见，算法效率大大提升</p>
+<h1 id="有序向量查找（二分查找）"><a href="#有序向量查找（二分查找）" class="headerlink" title="有序向量查找（二分查找）"></a>有序向量查找（二分查找）</h1><p>优化，不一定以中点为划分，这里略</p>
+<h1 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h1><ul>
+<li>冒泡排序，时间复杂度o(n)</li>
+<li>归并排序</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">mergeSort</span><span class="params">(<span class="keyword">int</span>[] a, <span class="keyword">int</span> lo, <span class="keyword">int</span> hi)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (hi&lt;=lo)</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		<span class="keyword">int</span> mi = (lo + hi) / <span class="number">2</span>;</span><br><span class="line">		mergeSort(a, lo, mi);</span><br><span class="line">		mergeSort(a, mi+<span class="number">1</span>, hi);</span><br><span class="line">		merge(a, lo, mi, hi);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span>[] a, <span class="keyword">int</span> lo, <span class="keyword">int</span> mi, <span class="keyword">int</span> hi)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> c[] = <span class="keyword">new</span> <span class="keyword">int</span>[hi - lo + <span class="number">1</span>];</span><br><span class="line">	<span class="keyword">int</span> m = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = lo, j = mi+<span class="number">1</span>;!(i &gt; mi &amp;&amp; j &gt; hi);) &#123;</span><br><span class="line">		<span class="keyword">if</span> (i &gt; mi) &#123;</span><br><span class="line">			c[m++] = a[j++];</span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (j &gt; hi) &#123;</span><br><span class="line">			c[m++] = a[i++];</span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (a[i] &gt;= a[j]) &#123;</span><br><span class="line">			c[m++] = a[j++];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			c[m++] = a[i++];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, j = lo; i &lt; c.length;) &#123;</span><br><span class="line">		a[j++] = c[i++];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2017/03/31/algorithm/常见算法题/">https://shinerio.cc/2017/03/31/algorithm/常见算法题/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/java/">java</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2017/07/21/设计模式/单例模式与代理模式/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">单例模式与代理模式</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2017/03/30/other/velocity模板生成器/">
+        <span class="next-text nav-default">velocity模板生成器</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2017/03/31/algorithm/常见算法题/';
+        this.page.identifier = '2017/03/31/algorithm/常见算法题/';
+        this.page.title = '常见算法题';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

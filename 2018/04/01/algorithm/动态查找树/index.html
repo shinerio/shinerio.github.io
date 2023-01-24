@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="动态查找树"><meta name="keywords" content="java, shinerio's blog"><link rel="alternate" href="/atom.xml" title="shinerio's blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://shinerio.cc/2018/04/01/algorithm/动态查找树/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":true};
+</script>
+
+    <title>动态查找树 - shinerio's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">shinerio's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">shinerio's blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">动态查找树
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-04-01
+        </span><span class="post-category">
+            <a href="/categories/java/">java</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#动态查找树"><span class="toc-text">动态查找树</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#B-tree"><span class="toc-text">B-tree</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#B-tree-1"><span class="toc-text">B+-tree</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#B-tree-2"><span class="toc-text">B*-tree</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#红黑树"><span class="toc-text">红黑树</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#平衡二叉树"><span class="toc-text">平衡二叉树</span></a></li></ol></li></ol>
+    </div>
+  </div><div class="post-content"><h1 id="动态查找树"><a href="#动态查找树" class="headerlink" title="动态查找树"></a><strong>动态查找树</strong></h1><p>动态查找树主要有：二叉查找树（Binary Search Tree），平衡二叉查找树（Balanced Binary Search Tree），红黑树(Red-Black Tree )，B-tree/B+-tree/ B*-tree (B~Tree)平衡多路查找树</p>
+<hr>
+<h4 id="B-tree"><a href="#B-tree" class="headerlink" title="B-tree"></a><strong>B-tree</strong></h4><p>B 树是为了磁盘或其它存储设备而设计的一种多叉平衡查找树。与红黑树类似，但在降低磁盘I/0操作方面要更好一些。许多数据库系统都一般使用B树或者B树的各种变形结构。B树与红黑树最大的不同在于，B树的结点可以有许多子女，从几个到几千个。不过B树与红黑树一样，一棵含n个结点的B树的高度也为<code>O(lgn)</code>，但可能比一棵红黑树的高度小许多，因为它的分支因子比较大。</p>
+<p>B-Tree的结构可以如下表示：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="comment">/*文件数*/</span></span><br><span class="line">    <span class="keyword">int</span>  file_num;</span><br><span class="line">    <span class="comment">/*文件名(key)*/</span></span><br><span class="line">    <span class="keyword">char</span> * file_name[max_file_num];</span><br><span class="line">    <span class="comment">/*指向子节点的指针*/</span></span><br><span class="line">     BTNode * BTptr[max_file_num+<span class="number">1</span>];</span><br><span class="line">     <span class="comment">/*文件在硬盘中的存储位置*/</span></span><br><span class="line">     FILE_HARD_ADDR offset[max_file_num];</span><br><span class="line">&#125;BTNode;</span><br></pre></td></tr></table></figure>
+<p><img src="http://hi.csdn.net/attachment/201106/7/8394323_13074405906V6Q.jpg" alt></p>
+<p>比如利用上图模拟查找文件29的过程：</p>
+<ol>
+<li>根据根结点指针找到文件目录的根磁盘块1，将其中的信息导入内存。【磁盘IO操作 1次】</li>
+<li>此时内存中有两个文件名17、35和三个存储其他磁盘页面地址的数据。根据算法我们发现：17&lt;29&lt;35，因此我们找到指针p2。</li>
+<li>根据p2指针，我们定位到磁盘块3，并将其中的信息导入内存。【磁盘IO操作 2次】</li>
+<li>此时内存中有两个文件名26，30和三个存储其他磁盘页面地址的数据。根据算法我们发现：26&lt;29&lt;30，因此我们找到指针p2。</li>
+<li>根据p2指针，我们定位到磁盘块8，并将其中的信息导入内存。【磁盘IO操作 3次】</li>
+<li>此时内存中有两个文件名28，29。根据算法我们查找到文件名29，并定位了该文件内存的磁盘地址。</li>
+</ol>
+<p>分析上面的过程，发现需要<strong>3次磁盘IO操作和3次内存查找</strong>操作。关于内存中的文件名查找，由于是一个有序表结构，可以利用折半查找提高效率。至于IO操作是影响整个B树查找效率的决定因素。</p>
+<p>B树的插入：主要的是一个分裂操作</p>
+<p>B树的删除：情况比较多，略</p>
+<hr>
+<h4 id="B-tree-1"><a href="#B-tree-1" class="headerlink" title="B+-tree"></a><strong>B+-tree</strong></h4><p><img src="http://hi.csdn.net/attachment/201106/7/8394323_1307440587b6WG.jpg" alt></p>
+<p><strong>为什么说B+-tree比B 树更适合实际应用中操作系统的文件索引和数据库索引？</strong></p>
+<ol>
+<li>B+-tree的磁盘读写代价更低，B+-tree的非叶子节点并没有指向关键字具体信息的指针。因此其非叶子节点相对B 树更小，盘块所能容纳的关键字数量更多，一次性读入内存中的需要查找的关键字也就越多</li>
+<li>B+-tree的查询效率更加稳定，只有叶子节点存放了指向关键字具体信息的指针，每一次查找都需要从根节点走到叶子节点</li>
+<li>B+-tree有指向兄弟节点的指针，对于范围查找非常方便</li>
+</ol>
+<hr>
+<h4 id="B-tree-2"><a href="#B-tree-2" class="headerlink" title="B*-tree"></a><strong>B*-tree</strong></h4><p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20190830232124.png" alt></p>
+<p><code>B*-tree</code>是<code>B+-tree</code>的变体，在B+树的基础上(所有的叶子结点中包含了全部关键字的信息，及指向含有这些关键字记录的指针)，B<em>树中非根和非叶子结点再增加指向兄弟的指针；B</em>树定义了非叶子结点关键字个数至少为(2/3)*M，即块的最低使用率为2/3（代替B+树的1/2）</p>
+<p><strong>B*树分配新结点的概率比B+树要低，空间使用率更高</strong></p>
+<hr>
+<h4 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a><strong>红黑树</strong></h4><p>红黑树，本质上来说就是一棵<strong>二叉查找树</strong>，但它在二叉查找树的基础上增加了<strong>着色</strong>和相关的性质使得红黑树相对<strong>平衡</strong>，从而保证了红黑树的查找、插入、删除的时间复杂度最坏为O(log n)</p>
+<p>或者可以说：通过对任何一条从根到叶子的路径上各个结点着色方式的限制，红黑树确保没有一条路径会比其他路径长出俩倍，因而是接近平衡的。</p>
+<p>具有以下5条性质：</p>
+<ol>
+<li>每个结点要么是红的，要么是黑的。  </li>
+<li>根结点是黑的。  </li>
+<li>每个叶结点（叶结点即指树尾端NIL指针或NULL结点）是黑的。  </li>
+<li>如果一个结点是红的，那么它的俩个儿子都是黑的。  </li>
+<li>对于任一结点而言，其到叶结点树尾端NIL指针的每一条路径都包含相同数目的黑结点。</li>
+</ol>
+<p>树的左旋：</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20190830232200.png" alt></p>
+<p>树的右旋：</p>
+<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20190830232219.png" alt></p>
+<p>二叉查找树的插入：</p>
+<p>在二叉查找树中查找z待插入的位置，如果插入结点z小于当前遍历到的结点，则到当前结点的左子树中继续查找，如果z大于当前结点，则到当前结点的右子树中继续查找，找到待插入的位置，如果z依然比此刻遍历到的新的当前结点小，则z作为当前结点的左孩子，否则作为当前结点的右孩子。</p>
+<p><strong>红黑树的插入相当于在二叉查找树插入的基础上，为了重新恢复平衡，继续做了插入修复操作</strong></p>
+<p>插入过程：</p>
+<ul>
+<li>如果插入的是根结点，因为原树是空树，此情况只会违反性质2，所以直接把此结点涂为黑色。</li>
+<li>如果插入的结点的父结点是黑色，由于此不会违反性质2和性质4，红黑树没有被破坏，所以此时也是什么也不做。</li>
+<li><strong>插入修复情况1：</strong> 如果当前结点的父结点是红色且祖父结点的另一个子结点（叔叔结点）是红色<ul>
+<li><strong>对策：</strong> 将当前结点的父结点和叔叔结点涂黑，祖父结点涂红，把当前结点指向祖父结点，从新的当前结点重新开始算法</li>
+</ul>
+</li>
+<li><strong>插入修复情况2：</strong> 当前结点的父结点是红色,叔叔结点是黑色，当前结点是其父结点的右子<ul>
+<li><strong>对策：</strong> 当前结点的父结点做为新的当前结点，以新当前结点为支点左旋。即如下代码所示：</li>
+</ul>
+</li>
+<li><strong>插入修复情况3：</strong> 当前结点的父结点是红色,叔叔结点是黑色，当前结点是其父结点的左子<ul>
+<li><strong>对策：</strong> 父结点变为黑色，祖父结点变为红色，在祖父结点为支点右旋</li>
+</ul>
+</li>
+</ul>
+<p>删除过程：</p>
+<ul>
+<li>当前结点是红+黑色<ul>
+<li>解法，直接把当前结点染成黑色，结束此时红黑树性质全部恢复</li>
+</ul>
+</li>
+<li>当前结点是黑+黑且是根结点<ul>
+<li>解法：什么都不做，结束</li>
+</ul>
+</li>
+<li><strong>删除修复情况1：</strong> 当前结点是黑+黑且兄弟结点为红色(此时父结点和兄弟结点的子结点分为黑)<ul>
+<li>解法：把父结点染成红色，把兄弟结点染成黑色，之后重新进入算法</li>
+</ul>
+</li>
+<li><strong>删除修复情况2：</strong> 当前结点是黑加黑且兄弟是黑色且兄弟结点的两个子结点全为黑色<ul>
+<li>解法：把当前结点和兄弟结点中抽取一重黑色追加到父结点上，把父结点当成新的当前结点，重新进入算法</li>
+</ul>
+</li>
+<li><strong>删除修复情况3：</strong> 当前结点颜色是黑+黑，兄弟结点是黑色，兄弟的左子是红色，右子是黑色<ul>
+<li>解法：把兄弟结点染红，兄弟左子结点染黑，之后再在兄弟结点为支点解右旋，之后重新进入算法</li>
+</ul>
+</li>
+<li><strong>删除修复情况4：</strong> 当前结点颜色是黑-黑色，它的兄弟结点是黑色，但是兄弟结点的右子是红色，兄弟结点左子的颜色任意<ul>
+<li>解法：把兄弟结点染成当前结点父结点的颜色，把当前结点父结点染成黑色，兄弟结点右子染成黑色，之后以当前结点的父结点为支点进行左旋，此时算法结束</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="平衡二叉树"><a href="#平衡二叉树" class="headerlink" title="平衡二叉树"></a><strong>平衡二叉树</strong></h4><p>平衡二叉查找树，又称 AVL树。 它除了具备二叉查找树的基本特征之外，还具有一个非常重要的特点：它 的左子树和右子树都是平衡二叉树，且左子树和右子树的深度之差的绝对值（<strong>平衡因子</strong> ） 不超过1。 也就是说AVL树每个节点的平衡因子只可能是-1、0和1（左子树高度减去右子树高度）。</p>
+<p>比如空节点是-1，叶子节点是0，非叶子节点的height往根节点递增，比如在下图中认为树的高度为h=2</p>
+<p><img src="https://pic002.cnblogs.com/images/2012/214741/2012072218340434.png" alt></p>
+<p>有两种调整方法，<strong>左旋转</strong>和<strong>右旋转</strong></p>
+<p>平衡二叉树的性能优势：</p>
+<ul>
+<li>其查找的时间复杂度为O(logN)</li>
+</ul>
+<p>平衡二叉树的缺陷：</p>
+<ul>
+<li>动态插入和删除的代价也随之增加，此处比红黑树查</li>
+<li>树高高于多路查找树</li>
+<li>在大数据的查找环境下二叉查找树不再适用，应该使用多路查找树</li>
+</ul>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://shinerio.cc">shinerio</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://shinerio.cc/2018/04/01/algorithm/动态查找树/">https://shinerio.cc/2018/04/01/algorithm/动态查找树/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/java/">java</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2018/12/06/系统设计/服务器推技术/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">服务器推技术</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2018/03/28/java/Spring/">
+        <span class="next-text nav-default">spring及相关框架介绍</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:jstxzhangrui@163.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/shinerio" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2015 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">shinerio</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://shinerio.cc/2018/04/01/algorithm/动态查找树/';
+        this.page.identifier = '2018/04/01/algorithm/动态查找树/';
+        this.page.title = '动态查找树';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//shinerio.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>
