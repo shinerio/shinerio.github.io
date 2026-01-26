@@ -116,6 +116,52 @@ npm install
 npm run build
 ```
 
+### 本地预览
+生成博客后，你可以使用以下几种方法之一来启动本地服务器预览网站：
+
+#### 方法一：使用 http-server
+```bash
+# 全局安装 http-server
+npm install -g http-server
+
+# 进入输出目录并启动服务器（假设输出目录为 ./dist）
+cd dist
+http-server
+```
+
+#### 方法二：使用 live-server
+```bash
+# 全局安装 live-server
+npm install -g live-server
+
+# 进入输出目录并启动服务器
+cd dist
+live-server
+```
+
+#### 方法三：使用 Python
+如果你安装了 Python，可以使用内置的服务器：
+```bash
+# Python 3
+cd dist
+python -m http.server 8000
+
+# 或 Python 2
+cd dist
+python -m SimpleHTTPServer 8000
+```
+
+#### 方法四：使用 PHP
+如果你安装了 PHP，可以使用内置的服务器：
+```bash
+cd dist
+php -S localhost:8000
+```
+
+访问 `http://localhost:8000` 来查看你的博客网站。
+
+**注意**: 由于这是一个静态网站生成器，生成的网站是纯HTML/CSS/JS文件，因此需要通过Web服务器访问才能正确显示（直接在浏览器中打开HTML文件可能无法正常加载资源）。
+
 ### 运行测试
 ```bash
 npm test

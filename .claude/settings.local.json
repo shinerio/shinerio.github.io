@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm test)",
+      "Bash(npx jest src/core/__tests__/SearchEngine.test.ts)",
+      "Bash(npm run build)"
+    ]
+  }
+}
