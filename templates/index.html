@@ -1,0 +1,36 @@
+<section class="hero">
+    <div class="hero-content">
+        <h2 class="hero-title">欢迎来到我的博客</h2>
+        <p class="hero-subtitle">分享知识，记录思考，探索世界</p>
+    </div>
+</section>
+
+<section class="recent-articles">
+    <div class="section-header">
+        <h2 class="section-title">最新文章</h2>
+        <a href="articles.html" class="section-link">查看全部 →</a>
+    </div>
+    
+    <div class="article-grid">
+        {{recentArticles}}
+    </div>
+</section>
+
+<section class="featured-content">
+    <div class="featured-grid">
+        <div class="featured-item">
+            <h3>关于我</h3>
+            <p>热爱技术，喜欢分享，致力于创造有价值的内容。</p>
+        </div>
+        <div class="featured-item">
+            <h3>文章分类</h3>
+            <div class="tag-cloud">
+                {{popularTags}}
+            </div>
+        </div>
+        <div class="featured-item">
+            <h3>最近更新</h3>
+            <p>持续更新中，欢迎订阅获取最新内容。</p>
+        </div>
+    </div>
+</section>

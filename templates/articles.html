@@ -1,0 +1,32 @@
+<div class="page-header">
+    <h1 class="page-title">所有文章</h1>
+    <p class="page-subtitle">共 {{totalArticles}} 篇文章</p>
+</div>
+
+<div class="articles-filters">
+    <div class="filter-group">
+        <label for="sort-select">排序方式：</label>
+        <select id="sort-select" class="filter-select">
+            <option value="date-desc">最新发布</option>
+            <option value="date-asc">最早发布</option>
+            <option value="title-asc">标题 A-Z</option>
+            <option value="title-desc">标题 Z-A</option>
+        </select>
+    </div>
+    
+    <div class="filter-group">
+        <label for="tag-filter">标签筛选：</label>
+        <select id="tag-filter" class="filter-select">
+            <option value="">所有标签</option>
+            {{tagOptions}}
+        </select>
+    </div>
+</div>
+
+<div class="article-list">
+    {{articleList}}
+</div>
+
+<div class="pagination">
+    {{pagination}}
+</div>
