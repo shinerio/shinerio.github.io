@@ -70,10 +70,10 @@ export class MetadataParser {
     // 移除多余的空行
     content = content.replace(/\n\s*\n\s*\n/g, '\n\n');
     
-    // 处理Obsidian内部链接 [[link]] -> [link](link.html)
+    // 处理Obsidian内部链接 [[link]] -> <a href="link.html" class="internal-link">link</a>
     content = content.replace(/\[\[([^\]]+)\]\]/g, (match, linkText) => {
       const slug = this.createSlug(linkText);
-      return `[${linkText}](${slug}.html)`;
+      return `<a href="${slug}.html" class="internal-link">${linkText}</a>`;
     });
 
     // 处理Obsidian标签 #tag

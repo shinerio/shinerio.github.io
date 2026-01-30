@@ -8,6 +8,7 @@ import { BlogConfig, ConfigError } from '../../types';
 import { createTempDir, cleanupTempDir } from '../../test-setup';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import fc from 'fast-check';
 
 describe('ConfigManager', () => {
   let configManager: ConfigManager;
@@ -196,7 +197,7 @@ describe('ConfigManager', () => {
       config.siteTitle = 'Saved Blog';
 
       await configManager.saveConfig(config, configPath);
-      
+
       expect(await fs.pathExists(configPath)).toBe(true);
       const savedConfig = await fs.readJson(configPath);
       expect(savedConfig.siteTitle).toBe('Saved Blog');
@@ -207,8 +208,72 @@ describe('ConfigManager', () => {
       const config = configManager.createDefaultConfig();
 
       await configManager.saveConfig(config, configPath);
-      
+
       expect(await fs.pathExists(configPath)).toBe(true);
+    });
+  });
+
+  describe('Property Tests - Path Validation Consistency', () => {
+    it('should consistently validate non-empty paths', () => {
+      fc.assert(
+        fc.property(
+          fc.string().filter(str => str.length > 0 && !/\0/.test(str)), // Avoid null bytes which cause issues
+          (str) => {
+            const result = configManager.validatePath(str, 'read');
+            // For non-empty string paths, should either be valid or have a specific error message
+            // Empty path error should not occur for non-empty inputs
+            if (result.error === '路径不能为空') {
+              return false;
+            }
+            return true;
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+
+    it('should validate path type consistency (read vs write)', () => {
+      fc.assert(
+        fc.property(
+          fc.string({ minLength: 1, maxLength: 50 }).filter(str => /^[a-zA-Z0-9_-]+$/.test(str)),
+          (validPathComponent) => {
+            // Create a path that exists for testing
+            const testPath = path.join(tempDir, validPathComponent);
+
+            // Both read and write validation should not crash and should return consistent types
+            const readResult = configManager.validatePath(testPath, 'read');
+            const writeResult = configManager.validatePath(testPath, 'write');
+
+            // Both should return objects with isValid boolean and optional error string
+            return typeof readResult.isValid === 'boolean' &&
+                   (readResult.error === undefined || typeof readResult.error === 'string') &&
+                   typeof writeResult.isValid === 'boolean' &&
+                   (writeResult.error === undefined || typeof writeResult.error === 'string');
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+
+    it('should handle special characters in paths consistently', () => {
+      fc.assert(
+        fc.property(
+          fc.string({ minLength: 1, maxLength: 30 }).filter(str =>
+            !/[<>:"|?*]/.test(str) && // Avoid Windows forbidden chars
+            !/\0/.test(str) &&         // Avoid null bytes
+            str.trim() !== ''           // Avoid just whitespace
+          ),
+          (str) => {
+            const testPath = path.join(tempDir, str);
+            const result = configManager.validatePath(testPath, 'write');
+
+            // Result should be properly structured regardless of path content
+            return typeof result.isValid === 'boolean' &&
+                   (result.error === undefined || typeof result.error === 'string');
+          }
+        ),
+        { numRuns: 100 }
+      );
     });
   });
 });

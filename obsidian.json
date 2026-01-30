@@ -1,0 +1,9 @@
+{
+  "vaultPath": "../../obsidian/obsidian",
+  "outputPath": "./dist",
+  "siteTitle": "My Obsidian Blog",
+  "siteDescription": "A blog generated from Obsidian notes",
+  "author": "",
+  "theme": "auto",
+  "postsPerPage": 10
+}

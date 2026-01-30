@@ -160,10 +160,30 @@ export interface ProgressReport {
   message: string;
 }
 
+// 断点续传状态接口
+export interface BreakpointState {
+  stage: string;
+  progress: number;
+  timestamp: Date;
+  metadata?: Record<string, any>;
+}
+
+// 进度回调函数类型
+export type ProgressCallback = (report: ProgressReport) => void;
+
 // 错误处理器接口
 export interface ErrorHandler {
   handleConfigError(error: ConfigError): void;
   handleFileError(error: FileError): void;
   handleParseError(error: ParseError): void;
   handleGenerationError(error: GenerationError): void;
+
+  // 进度报告方法
+  reportProgress(report: ProgressReport): void;
+  subscribeProgress(callback: ProgressCallback): () => void; // 返回取消订阅函数
+
+  // 断点续传方法
+  saveBreakpoint(state: BreakpointState): Promise<void>;
+  loadBreakpoint(): Promise<BreakpointState | null>;
+  clearBreakpoint(): Promise<void>;
 }

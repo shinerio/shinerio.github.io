@@ -3,10 +3,22 @@
  * Error Handler for graceful error handling and recovery
  */
 
-import { ErrorHandler, ConfigError, FileError, ParseError, GenerationError } from '../types';
+import { ErrorHandler, ConfigError, FileError, ParseError, GenerationError, ProgressReport, BreakpointState, ProgressCallback } from '../types';
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import * as os from 'os';
 
 export class GracefulErrorHandler implements ErrorHandler {
   private errors: Array<{ type: string; error: Error; timestamp: Date }> = [];
+  private progressCallbacks: ProgressCallback[] = [];
+  private breakpointFilePath: string;
+
+  constructor(tempDirOverride?: string) {
+    // Use override directory if provided (for tests), otherwise use system temp
+    const tempDir = tempDirOverride || path.join(os.tmpdir(), `obsidian-blog-generator-${Date.now()}-${Math.random()}`);
+    fs.ensureDirSync(tempDir);
+    this.breakpointFilePath = path.join(tempDir, '.blog_generator_breakpoint.json');
+  }
 
   /**
    * 处理配置错误
@@ -57,12 +69,116 @@ export class GracefulErrorHandler implements ErrorHandler {
   }
 
   /**
+   * 报告进度
+   * Report progress to subscribers
+   */
+  reportProgress(report: ProgressReport): void {
+    console.log(`📊 [${report.stage}] ${report.current}/${report.total} - ${report.message}`);
+
+    // 调用所有进度回调函数
+    this.progressCallbacks.forEach(callback => {
+      try {
+        callback(report);
+      } catch (err) {
+        console.error('❌ 进度回调函数执行错误:', err);
+      }
+    });
+  }
+
+  /**
+   * 订阅进度更新
+   * Subscribe to progress updates
+   * @returns unsubscribe function
+   */
+  subscribeProgress(callback: ProgressCallback): () => void {
+    this.progressCallbacks.push(callback);
+
+    // 返回取消订阅函数
+    return () => {
+      const index = this.progressCallbacks.indexOf(callback);
+      if (index !== -1) {
+        this.progressCallbacks.splice(index, 1);
+      }
+    };
+  }
+
+  /**
+   * 保存断点状态
+   * Save checkpoint state to file
+   */
+  async saveBreakpoint(state: BreakpointState): Promise<void> {
+    try {
+      const stateToSave = {
+        ...state,
+        timestamp: state.timestamp.toISOString() // 将日期序列化为字符串
+      };
+
+      await fs.writeJson(this.breakpointFilePath, stateToSave, { encoding: 'utf-8' });
+      console.log(`💾 断点状态已保存: ${state.stage} (${state.progress}%)`);
+    } catch (error) {
+      console.error('❌ 保存断点状态失败:', error);
+      this.logError('BREAKPOINT_SAVE_ERROR', error as Error);
+    }
+  }
+
+  /**
+   * 加载断点状态
+   * Load checkpoint state from file
+   */
+  async loadBreakpoint(): Promise<BreakpointState | null> {
+    try {
+      if (await fs.pathExists(this.breakpointFilePath)) {
+        const stateData = await fs.readJson(this.breakpointFilePath);
+
+        return {
+          ...stateData,
+          timestamp: new Date(stateData.timestamp) // 将字符串反序列化为日期对象
+        };
+      }
+
+      return null;
+    } catch (error) {
+      console.error('❌ 加载断点状态失败:', error);
+      this.logError('BREAKPOINT_LOAD_ERROR', error as Error);
+      return null;
+    }
+  }
+
+  /**
+   * 清除断点状态
+   * Clear checkpoint state from file
+   */
+  async clearBreakpoint(): Promise<void> {
+    try {
+      if (await fs.pathExists(this.breakpointFilePath)) {
+        await fs.remove(this.breakpointFilePath);
+        console.log('🗑️  断点状态已清除');
+      }
+
+      // Also clean up the temp directory if it's empty
+      const tempDir = path.dirname(this.breakpointFilePath);
+      try {
+        const dirContents = await fs.readdir(tempDir);
+        if (dirContents.length === 0) {
+          await fs.remove(tempDir);
+        }
+      } catch (cleanupError: unknown) {
+        // If directory isn't empty or other issues, just continue
+        console.debug('临时目录清理时遇到问题（通常这没关系）:', (cleanupError as Error).message);
+      }
+    } catch (error) {
+      console.error('❌ 清除断点状态失败:', error);
+      this.logError('BREAKPOINT_CLEAR_ERROR', error as Error);
+    }
+  }
+
+  /**
    * 获取错误统计
    * Get error statistics
    */
   getErrorStats(): { total: number; byType: Record<string, number> } {
     const byType: Record<string, number> = {};
-    
+
     this.errors.forEach(({ type }) => {
       byType[type] = (byType[type] || 0) + 1;
     });
@@ -113,7 +229,7 @@ export class GracefulErrorHandler implements ErrorHandler {
     const stats = this.getErrorStats();
     let report = `\n📊 错误统计:\n`;
     report += `   总计: ${stats.total} 个错误\n`;
-    
+
     Object.entries(stats.byType).forEach(([type, count]) => {
       report += `   ${type}: ${count} 个\n`;
     });

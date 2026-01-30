@@ -7,6 +7,7 @@ import { FileScanner } from '../FileScanner';
 import { createTempDir, cleanupTempDir, createTestMarkdownFile } from '../../test-setup';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import fc from 'fast-check';
 
 describe('FileScanner', () => {
   let fileScanner: FileScanner;
@@ -132,6 +133,76 @@ describe('FileScanner', () => {
       
       expect(result.files).toHaveLength(0);
       expect(result.errors).toHaveLength(1);
+    });
+  });
+
+  describe('Property Tests - Markdown File Identification Completeness', () => {
+    it('should correctly identify all valid markdown extensions', () => {
+      fc.assert(
+        fc.property(
+          fc.string({ minLength: 1, maxLength: 50 }).filter(str => !str.includes('.') && !str.includes('/') && !str.includes('\\') && !str.includes(':') && !str.includes('*') && !str.includes('?') && !str.includes('"') && !str.includes('<') && !str.includes('>') && !str.includes('|')),
+          fc.constantFrom('.md', '.markdown'),
+          (fileNameBase, extension) => {
+            const fileName = fileNameBase + extension;
+            const upperCaseFileName = fileNameBase + extension.toUpperCase();
+
+            // Lowercase extension should be identified as markdown
+            expect(fileScanner.isMarkdownFile(fileName)).toBe(true);
+
+            // Uppercase extension should also be identified as markdown (case insensitive)
+            expect(fileScanner.isMarkdownFile(upperCaseFileName)).toBe(true);
+
+            // Files with other extensions should not be identified as markdown
+            expect(fileScanner.isMarkdownFile(fileNameBase + '.txt')).toBe(false);
+            expect(fileScanner.isMarkdownFile(fileNameBase + '.html')).toBe(false);
+            expect(fileScanner.isMarkdownFile(fileNameBase + '.pdf')).toBe(false);
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+
+    it('should correctly handle paths with directory structure', () => {
+      fc.assert(
+        fc.property(
+          fc.array(fc.string({ minLength: 1, maxLength: 20 }).filter(str => !str.includes('/') && !str.includes('\\') && !str.includes('.') && !str.includes(':') && !str.includes('*') && !str.includes('?') && !str.includes('"') && !str.includes('<') && !str.includes('>') && !str.includes('|'))),
+          fc.string({ minLength: 1, maxLength: 20 }).filter(str => !str.includes('.') && !str.includes('/') && !str.includes('\\')),
+          fc.constantFrom('.md', '.markdown'),
+          (dirs, fileNameBase, extension) => {
+            const filePath = path.join(...dirs, fileNameBase + extension);
+            const nonMarkdownPath = path.join(...dirs, fileNameBase + '.txt');
+
+            expect(fileScanner.isMarkdownFile(filePath)).toBe(true);
+            expect(fileScanner.isMarkdownFile(nonMarkdownPath)).toBe(false);
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+
+    it('should be consistent with case variations', () => {
+      fc.assert(
+        fc.property(
+          fc.string({ minLength: 1, maxLength: 30 }).filter(str => !str.includes('.') && !str.includes('/') && !str.includes('\\') && !str.includes(':') && !str.includes('*') && !str.includes('?') && !str.includes('"') && !str.includes('<') && !str.includes('>') && !str.includes('|') && str.length > 0),
+          (fileNameBase) => {
+            // All variations of markdown extensions should be recognized
+            expect(fileScanner.isMarkdownFile(fileNameBase + '.md')).toBe(true);
+            expect(fileScanner.isMarkdownFile(fileNameBase + '.MD')).toBe(true);
+            expect(fileScanner.isMarkdownFile(fileNameBase + '.Md')).toBe(true);
+            expect(fileScanner.isMarkdownFile(fileNameBase + '.mD')).toBe(true);
+
+            expect(fileScanner.isMarkdownFile(fileNameBase + '.markdown')).toBe(true);
+            expect(fileScanner.isMarkdownFile(fileNameBase + '.MARKDOWN')).toBe(true);
+            expect(fileScanner.isMarkdownFile(fileNameBase + '.Markdown')).toBe(true);
+            expect(fileScanner.isMarkdownFile(fileNameBase + '.MarkDown')).toBe(true);
+
+            // Non-markdown extensions should not be recognized
+            expect(fileScanner.isMarkdownFile(fileNameBase + '.txt')).toBe(false);
+            expect(fileScanner.isMarkdownFile(fileNameBase + '.TXT')).toBe(false);
+          }
+        ),
+        { numRuns: 100 }
+      );
     });
   });
 });

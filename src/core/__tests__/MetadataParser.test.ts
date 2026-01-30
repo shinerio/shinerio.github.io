@@ -6,6 +6,8 @@
 import { MetadataParser } from '../MetadataParser';
 import { createTempDir, cleanupTempDir, createTestMarkdownFile } from '../../test-setup';
 import * as path from 'path';
+import fc from 'fast-check';
+import * as fs from 'fs-extra';
 
 describe('MetadataParser', () => {
   let parser: MetadataParser;
@@ -82,8 +84,8 @@ describe('MetadataParser', () => {
 
       const result = await parser.parseFile(filePath);
 
-      expect(result.content).toContain('[Another Note](another-note.html)');
-      expect(result.content).toContain('[Some Other Note](some-other-note.html)');
+      expect(result.content).toContain('<a href="another-note.html" class="internal-link">Another Note</a>');
+      expect(result.content).toContain('<a href="some-other-note.html" class="internal-link">Some Other Note</a>');
     });
 
     it('should process Obsidian tags', async () => {
@@ -149,8 +151,8 @@ describe('MetadataParser', () => {
     it('should convert Obsidian links', () => {
       const content = 'Link to [[My Note]] and [[Another Note]].';
       const result = parser.processMarkdown(content);
-      expect(result).toContain('[My Note](my-note.html)');
-      expect(result).toContain('[Another Note](another-note.html)');
+      expect(result).toContain('<a href="my-note.html" class="internal-link">My Note</a>');
+      expect(result).toContain('<a href="another-note.html" class="internal-link">Another Note</a>');
     });
 
     it('should convert Obsidian tags', () => {
@@ -158,6 +160,111 @@ describe('MetadataParser', () => {
       const result = parser.processMarkdown(content);
       expect(result).toContain('<span class="tag">#important</span>');
       expect(result).toContain('<span class="tag">#todo</span>');
+    });
+  });
+
+  describe('Property Tests - Metadata Extraction Consistency', () => {
+    it('should consistently generate titles from filenames', () => {
+      fc.assert(
+        fc.property(
+          fc.string({ minLength: 1, maxLength: 30 }).filter(str =>
+            !str.includes('.') &&
+            !str.includes('/') &&
+            !str.includes('\\') &&
+            str.trim() !== ''
+          ),
+          (fileName) => {
+            // Replace hyphens and underscores with spaces, and capitalize first letter of each word
+            const expectedTitle = fileName
+              .replace(/[-_]/g, ' ')
+              .replace(/\b\w/g, l => l.toUpperCase());
+
+            const metadata = parser.extractFrontmatter({}, `/path/to/${fileName}.md`);
+
+            expect(metadata.title).toBe(expectedTitle);
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+
+    it('should handle various tag formats consistently', () => {
+      fc.assert(
+        fc.property(
+          fc.array(fc.string({ minLength: 1, maxLength: 20 }).filter(str => /^[a-zA-Z0-9\u4e00-\u9fa5_-]+$/.test(str))),
+          (tags) => {
+            // Test array format
+            const result1 = parser.extractFrontmatter({ tags }, '/path/file.md');
+            expect(result1.tags).toEqual(tags);
+
+            // Test comma-separated string format
+            if (tags.length > 0) {
+              const tagString = tags.join(', ');
+              const result2 = parser.extractFrontmatter({ tags: tagString }, '/path/file.md');
+              expect(result2.tags).toEqual(tags);
+            }
+
+            // Test fallback to 'tag' property
+            const result3 = parser.extractFrontmatter({ tag: tags }, '/path/file.md');
+            expect(result3.tags).toEqual(tags);
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+
+    it('should extract dates consistently', () => {
+      fc.assert(
+        fc.property(
+          fc.string().filter(str => {
+            const date = new Date(str);
+            return !isNaN(date.getTime()); // Valid date strings only
+          }),
+          (dateString) => {
+            const dateObj = new Date(dateString);
+
+            // Test 'date' field
+            const result1 = parser.extractFrontmatter({ date: dateString }, '/path/file.md');
+            expect(result1.date.getTime()).toBe(dateObj.getTime());
+
+            // Test 'created' field (fallback)
+            const result2 = parser.extractFrontmatter({ created: dateString }, '/path/file.md');
+            expect(result2.date.getTime()).toBe(dateObj.getTime());
+          }
+        ),
+        { numRuns: 50 }
+      );
+    });
+  });
+
+  describe('Property Tests - YAML Roundtrip Consistency', () => {
+    it('should process markdown content without losing essential content', () => {
+      fc.assert(
+        fc.property(
+          fc.string({ minLength: 10, maxLength: 200 }),
+          (originalContent) => {
+            // Process the content through the parser
+            const processed = parser.processMarkdown(originalContent);
+
+            // Ensure the content still contains the key elements
+            // We can't do exact equality because the processor removes extra blank lines
+            // and converts Obsidian-specific syntax, so we just ensure it's not empty
+            // and that certain transformations are applied consistently
+
+            expect(typeof processed).toBe('string');
+            expect(processed).toBeDefined();
+
+            // If original content was not empty, processed shouldn't be empty either
+            if (originalContent.trim() !== '') {
+              expect(processed.trim()).not.toBe('');
+            }
+
+            // Verify that multiple consecutive newlines are reduced to 2
+            expect(processed).not.toMatch(/\n\s*\n\s*\n\s*\n/);
+          }
+        ),
+        { numRuns: 100 }
+      );
     });
   });
 });

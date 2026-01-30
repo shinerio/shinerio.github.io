@@ -4,7 +4,7 @@
   "description": "将Obsidian笔记库转换为简约大气个人博客网站的工具",
   "main": "dist/index.js",
   "bin": {
-    "obsidian-blog": "dist/cli.js"
+    "obsidian-blog": "./dist/cli.js"
   },
   "scripts": {
     "build": "tsc",
@@ -32,7 +32,7 @@
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.0.0",
-    "fast-check": "^3.15.0",
+    "fast-check": "^3.23.2",
     "jest": "^29.5.0",
     "ts-jest": "^29.1.0",
     "typescript": "^5.0.0"

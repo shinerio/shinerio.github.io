@@ -5,6 +5,7 @@
 
 import { SearchEngine } from '../SearchEngine';
 import { ParsedArticle } from '../../types';
+import fc from 'fast-check';
 
 describe('SearchEngine', () => {
   let searchEngine: SearchEngine;
@@ -336,6 +337,262 @@ describe('SearchEngine', () => {
 
       expect(results).toHaveLength(1);
       expect(results[0].article.metadata.title).toContain('React');
+    });
+  });
+});
+
+describe('SearchEngine Property Tests', () => {
+  let searchEngine: SearchEngine;
+
+  beforeEach(() => {
+    searchEngine = new SearchEngine();
+  });
+
+  describe('Search Functionality Completeness', () => {
+    it('should handle various query strings without crashing', () => {
+      fc.assert(
+        fc.property(
+          fc.string({ minLength: 1, maxLength: 50 }),
+          fc.array(
+            fc.record({
+              title: fc.string({ minLength: 1, maxLength: 30 }).filter(str => str.trim() !== ''),
+              content: fc.string({ minLength: 10, maxLength: 200 }),
+              tags: fc.array(fc.string({ minLength: 1, maxLength: 20 }), { maxLength: 5 })
+            }),
+            { minLength: 1, maxLength: 10 }
+          ),
+          (query, articleData) => {
+            const articles: ParsedArticle[] = articleData.map((data, idx) => ({
+              metadata: {
+                title: data.title,
+                date: new Date('2023-01-01'),
+                tags: data.tags,
+                description: `Description for ${data.title}`,
+                draft: false,
+                slug: `article-${idx}`
+              },
+              content: data.content,
+              filePath: `/path/to/article-${idx}.md`,
+              wordCount: data.content.length
+            }));
+
+            const index = searchEngine.buildIndex(articles);
+            const results = searchEngine.search(query, index);
+
+            // Search should always return an array
+            expect(Array.isArray(results)).toBe(true);
+
+            // Each result should have proper structure
+            results.forEach(result => {
+              expect(result.article).toBeDefined();
+              expect(result.score).toBeGreaterThanOrEqual(0);
+              expect(Array.isArray(result.highlights)).toBe(true);
+            });
+          }
+        ),
+        { numRuns: 50 }
+      );
+    });
+
+    it('should return consistent results for same query and index', () => {
+      fc.assert(
+        fc.property(
+          fc.string({ minLength: 1, maxLength: 20 }).filter(str => str.trim() !== ''),
+          fc.array(
+            fc.record({
+              title: fc.string({ minLength: 1, maxLength: 30 }).filter(str => str.trim() !== ''),
+              content: fc.string({ minLength: 10, maxLength: 100 })
+            }),
+            { minLength: 1, maxLength: 5 }
+          ),
+          (query, articleData) => {
+            const articles: ParsedArticle[] = articleData.map((data, idx) => ({
+              metadata: {
+                title: data.title,
+                date: new Date('2023-01-01'),
+                tags: [`tag${idx}`],
+                description: `Description for ${data.title}`,
+                draft: false,
+                slug: `article-${idx}`
+              },
+              content: data.content,
+              filePath: `/path/to/article-${idx}.md`,
+              wordCount: data.content.length
+            }));
+
+            const index = searchEngine.buildIndex(articles);
+
+            // Run the same search twice and compare results
+            const results1 = searchEngine.search(query, index);
+            const results2 = searchEngine.search(query, index);
+
+            expect(results1).toEqual(results2);
+          }
+        ),
+        { numRuns: 30 }
+      );
+    });
+  });
+
+  describe('Search Result Highlighting Consistency', () => {
+    it('should generate valid highlights for search terms', () => {
+      fc.assert(
+        fc.property(
+          fc.string({ minLength: 1, maxLength: 15 }).filter(str =>
+            str.trim() !== '' && !/[.*+?^${}()|[\]\\]/.test(str) // Avoid regex special chars
+          ),
+          fc.string({ minLength: 20, maxLength: 200 }),
+          (queryTerm, content) => {
+            const articles: ParsedArticle[] = [{
+              metadata: {
+                title: `Article about ${queryTerm}`,
+                date: new Date('2023-01-01'),
+                tags: [queryTerm],
+                description: `Article about ${queryTerm}`,
+                draft: false,
+                slug: 'test-article'
+              },
+              content: `${content} ${queryTerm} more content`,
+              filePath: '/path/to/test.md',
+              wordCount: content.length
+            }];
+
+            const index = searchEngine.buildIndex(articles);
+            const results = searchEngine.search(queryTerm, index);
+
+            // If results exist, highlights should be properly formatted
+            results.forEach(result => {
+              result.highlights.forEach(highlight => {
+                // Highlights should be strings
+                expect(typeof highlight).toBe('string');
+
+                // If the highlight contains marks, they should be properly formatted
+                if (highlight.includes('<mark>')) {
+                  expect(highlight).toContain('</mark>');
+                }
+              });
+            });
+          }
+        ),
+        { numRuns: 50 }
+      );
+    });
+
+    it('should not generate negative scores', () => {
+      fc.assert(
+        fc.property(
+          fc.string({ minLength: 1, maxLength: 30 }),
+          fc.array(
+            fc.record({
+              title: fc.string({ minLength: 1, maxLength: 30 }).filter(str => str.trim() !== ''),
+              content: fc.string({ minLength: 10, maxLength: 100 })
+            }),
+            { minLength: 1, maxLength: 10 }
+          ),
+          (query, articleData) => {
+            const articles: ParsedArticle[] = articleData.map((data, idx) => ({
+              metadata: {
+                title: data.title,
+                date: new Date('2023-01-01'),
+                tags: [`tag${idx}`],
+                description: `Description for ${data.title}`,
+                draft: false,
+                slug: `article-${idx}`
+              },
+              content: data.content,
+              filePath: `/path/to/article-${idx}.md`,
+              wordCount: data.content.length
+            }));
+
+            const index = searchEngine.buildIndex(articles);
+            const results = searchEngine.search(query, index);
+
+            // All scores should be non-negative
+            results.forEach(result => {
+              expect(result.score).toBeGreaterThanOrEqual(0);
+            });
+          }
+        ),
+        { numRuns: 50 }
+      );
+    });
+  });
+
+  describe('Search Navigation Correctness', () => {
+    it('should maintain search result order by relevance score', () => {
+      fc.assert(
+        fc.property(
+          fc.string({ minLength: 1, maxLength: 20 }).filter(str => str.trim() !== ''),
+          fc.array(
+            fc.record({
+              title: fc.string({ minLength: 1, maxLength: 30 }).filter(str => str.trim() !== ''),
+              content: fc.string({ minLength: 10, maxLength: 100 })
+            }),
+            { minLength: 2, maxLength: 10 }
+          ),
+          (query, articleData) => {
+            const articles: ParsedArticle[] = articleData.map((data, idx) => ({
+              metadata: {
+                title: data.title,
+                date: new Date('2023-01-01'),
+                tags: [`tag${idx}`],
+                description: `Description for ${data.title}`,
+                draft: false,
+                slug: `article-${idx}`
+              },
+              content: `${data.content} ${query} additional ${query} terms`,
+              filePath: `/path/to/article-${idx}.md`,
+              wordCount: data.content.length
+            }));
+
+            const index = searchEngine.buildIndex(articles);
+            const results = searchEngine.search(query, index);
+
+            // Results should be ordered by score (descending)
+            for (let i = 0; i < results.length - 1; i++) {
+              expect(results[i].score).toBeGreaterThanOrEqual(results[i + 1].score);
+            }
+          }
+        ),
+        { numRuns: 30 }
+      );
+    });
+
+    it('should handle empty or whitespace-only queries', () => {
+      fc.assert(
+        fc.property(
+          fc.string({ maxLength: 10 }).filter(str => str.trim() === ''), // Strings with only whitespace or empty
+          fc.array(
+            fc.record({
+              title: fc.string({ minLength: 1, maxLength: 30 }).filter(str => str.trim() !== ''),
+              content: fc.string({ minLength: 10, maxLength: 100 })
+            }),
+            { minLength: 1, maxLength: 5 }
+          ),
+          (emptyQuery, articleData) => {
+            const articles: ParsedArticle[] = articleData.map((data, idx) => ({
+              metadata: {
+                title: data.title,
+                date: new Date('2023-01-01'),
+                tags: [`tag${idx}`],
+                description: `Description for ${data.title}`,
+                draft: false,
+                slug: `article-${idx}`
+              },
+              content: data.content,
+              filePath: `/path/to/article-${idx}.md`,
+              wordCount: data.content.length
+            }));
+
+            const index = searchEngine.buildIndex(articles);
+            const results = searchEngine.search(emptyQuery, index);
+
+            // Empty queries should return empty results
+            expect(results).toHaveLength(0);
+          }
+        ),
+        { numRuns: 20 }
+      );
     });
   });
 });

@@ -3,7 +3,36 @@
     "allow": [
       "Bash(npm test)",
       "Bash(npx jest src/core/__tests__/SearchEngine.test.ts)",
-      "Bash(npm run build)"
+      "Bash(npm run build)",
+      "Skill(opsx:new)",
+      "Bash(openspec new change \"beautify-blog-website\")",
+      "Bash(openspec status --change \"beautify-blog-website\")",
+      "Bash(openspec instructions proposal --change \"beautify-blog-website\")",
+      "Bash(openspec list --json)",
+      "Bash(openspec status --change \"beautify-blog-website\" --json)",
+      "Bash(openspec instructions proposal --change \"beautify-blog-website\" --json)",
+      "Bash(dir /s)",
+      "Bash(dir)",
+      "Bash(dir src /s)",
+      "Bash(powershell \"Get-ChildItem -Path ./src -Recurse\")",
+      "Bash(dir src)",
+      "Bash(dir srctypes)",
+      "Bash(dir \"src/types\")",
+      "Bash(node dist/cli.js --help)",
+      "Bash(node dist/cli.js generate --help)",
+      "Bash(node dist/cli.js init --help)",
+      "Bash(node dist/cli.js validate --help)",
+      "Bash(node dist/cli.js generate -c blog.config.json -v)",
+      "Bash(npx jest src/core/__tests__/ConfigManager.test.ts)",
+      "Bash(npx jest src/core/__tests__/FileScanner.test.ts)",
+      "Bash(npx jest src/core/__tests__/MetadataParser.test.ts)",
+      "Bash(npx jest src/core/__tests__/SiteGenerator.test.ts)",
+      "Bash(npx jest src/core/__tests__/ErrorHandler.test.ts)",
+      "Bash(npx jest src/__tests__/ArticleIndexing.test.ts)",
+      "Bash(npx jest src/__tests__/Integration.test.ts)",
+      "Bash(dir templates)",
+      "Bash(dir vault)",
+      "Bash(powershell \"Get-ChildItem -Path . -Recurse | Select-Object -Property FullName | Out-String -Width 1000\")"
     ]
   }
 }
