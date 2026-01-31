@@ -32,7 +32,16 @@
       "Bash(npx jest src/__tests__/Integration.test.ts)",
       "Bash(dir templates)",
       "Bash(dir vault)",
-      "Bash(powershell \"Get-ChildItem -Path . -Recurse | Select-Object -Property FullName | Out-String -Width 1000\")"
+      "Bash(powershell \"Get-ChildItem -Path . -Recurse | Select-Object -Property FullName | Out-String -Width 1000\")",
+      "Bash(openspec instructions design --change \"beautify-blog-website\" --json)",
+      "Bash(openspec instructions specs --change \"beautify-blog-website\" --json)",
+      "Bash(openspec instructions tasks --change \"beautify-blog-website\" --json)",
+      "Bash(npm test src/core/__tests__/MetadataParser.test.ts)",
+      "Bash(npx tsc --noEmit src/core/__tests__/MetadataParser.test.ts)",
+      "Bash(npx tsc --noEmit src/core/__tests__/MetadataParser.test.ts --listFiles)",
+      "Bash(node -e \"\nconst fs = require\\(''fs''\\);\nconst content = fs.readFileSync\\(''src/core/__tests__/MetadataParser.test.ts'', ''utf8''\\);\nlet braceCount = 0;\nfor \\(let i = 0; i < content.length; i++\\) {\n  if \\(content[i] === ''{''\\) braceCount++;\n  else if \\(content[i] === ''}''\\) braceCount--;\n}\nconsole.log\\(''Brace balance:'', braceCount\\);\n\")",
+      "Bash(powershell \"Get-Date -Format ''yyyy-MM-dd''\")",
+      "Bash(mv openspec/changes/add-missing-unit-tests-for-metadataparser openspec/changes/archive/2026-01-31-add-missing-unit-tests-for-metadataparser)"
     ]
   }
 }

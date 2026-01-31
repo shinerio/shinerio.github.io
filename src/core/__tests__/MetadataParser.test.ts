@@ -8,6 +8,7 @@ import { createTempDir, cleanupTempDir, createTestMarkdownFile } from '../../tes
 import * as path from 'path';
 import fc from 'fast-check';
 import * as fs from 'fs-extra';
+import { ParseError } from '../../types';
 
 describe('MetadataParser', () => {
   let parser: MetadataParser;
@@ -265,6 +266,249 @@ describe('MetadataParser', () => {
         ),
         { numRuns: 100 }
       );
+    });
+  });
+
+  describe('calculateWordCount', () => {
+    it('should count English words correctly', () => {
+      const content = 'Hello world this is a test';
+      const count = (parser as any)['calculateWordCount'](content);
+      expect(count).toBe(6);
+    });
+
+    it('should count mixed English words and Chinese characters', () => {
+      const content = 'Hello 世界 this 是 test 测试';
+      const result = (parser as any)['calculateWordCount'](content);
+      // Chinese characters: 世, 界, 是, 测, 试 = 5 chars
+      // English words: Hello, this, test = 3 words
+      // Total: 5 + 3 = 8
+      expect(result).toBe(8);
+    });
+
+    it('should exclude code blocks from word count', () => {
+      const content = `Here is some text with code.
+
+\`\`\`javascript
+function hello() {
+  return "world";
+}
+\`\`\`
+
+And more text here.`;
+      const count = (parser as any)['calculateWordCount'](content);
+      expect(count).toBeLessThan(20); // Should be much less due to code block exclusion
+    });
+
+    it('should exclude inline code from word count', () => {
+      const content = 'This has `inline code` and regular text';
+      const count = (parser as any)['calculateWordCount'](content);
+      expect(count).toBe(5); // "This", "has", "and", "regular", "text" = 5 (inline code stripped)
+    });
+
+    it('should handle empty content', () => {
+      const count = (parser as any)['calculateWordCount']('');
+      expect(count).toBe(0);
+    });
+
+    it('should handle only whitespace', () => {
+      const count = (parser as any)['calculateWordCount']('   \n\n\t   ');
+      expect(count).toBe(0);
+    });
+
+    describe('Property Tests - Word Count', () => {
+      it('should handle various content lengths consistently', () => {
+        const testCases = [
+          '',
+          'short',
+          'this is a longer sentence with multiple words',
+          'a very long sentence with many words that exceed normal limits for testing purposes',
+          'hello world',
+          'test test test test test'
+        ];
+
+        testCases.forEach(content => {
+          const result = (parser as any)['calculateWordCount'](content);
+          expect(result).toBeGreaterThanOrEqual(0);
+
+          // Basic consistency: word count should be deterministic
+          const result2 = (parser as any)['calculateWordCount'](content);
+          expect(result).toBe(result2);
+        });
+      });
+
+      it('should handle mixed English and Chinese content', () => {
+        const testCases = [
+          'hello 世界',
+          'test 测试',
+          'article 文章 标题',
+          'mixed 中文 english 内容 content',
+          '你好 world'
+        ];
+
+        testCases.forEach(mixedContent => {
+          const result = (parser as any)['calculateWordCount'](mixedContent);
+          expect(result).toBeGreaterThanOrEqual(0);
+
+          // Word count should not decrease when adding content
+          if (mixedContent.trim()) {
+            const extendedContent = mixedContent + ' additional text';
+            const extendedResult = (parser as any)['calculateWordCount'](extendedContent);
+            expect(extendedResult).toBeGreaterThanOrEqual(result);
+          }
+        });
+      });
+    });
+  });
+
+  describe('createSlug', () => {
+    it('should convert spaces to hyphens', () => {
+      const result = (parser as any)['createSlug']('Hello World Article');
+      expect(result).toBe('hello-world-article');
+    });
+
+    it('should handle special characters', () => {
+      const result = (parser as any)['createSlug']('Article: With! Special@ Characters#');
+      expect(result).toBe('article-with-special-characters'); // Special chars removed, spaces to hyphens
+    });
+
+    it('should handle underscores', () => {
+      const result = (parser as any)['createSlug']('my_article_title');
+      expect(result).toBe('my-article-title');
+    });
+
+    it('should handle mixed case', () => {
+      const result = (parser as any)['createSlug']('MyCamelCaseArticle');
+      expect(result).toBe('mycamelcasearticle'); // Lowercased
+    });
+
+    it('should handle numbers', () => {
+      const result = (parser as any)['createSlug']('Article2023WithNumbers');
+      expect(result).toBe('article2023withnumbers');
+    });
+
+    it('should remove leading and trailing spaces', () => {
+      const result = (parser as any)['createSlug']('  hello world  ');
+      expect(result).toBe('hello-world');
+    });
+
+    it('should remove leading and trailing hyphens', () => {
+      const result = (parser as any)['createSlug']('-hello-world-');
+      expect(result).toBe('hello-world');
+    });
+
+    it('should handle empty input', () => {
+      const result = (parser as any)['createSlug']('');
+      expect(result).toBe('');
+    });
+
+    it('should handle only special characters', () => {
+      const result = (parser as any)['createSlug']('!@#$%^&*()');
+      expect(result).toBe(''); // All special characters removed
+    });
+
+    it('should preserve Chinese characters', () => {
+      const result = (parser as any)['createSlug']('我的文章标题');
+      expect(result).toBe('我的文章标题'); // Chinese characters should be preserved
+    });
+
+    it('should handle mixed Chinese and English', () => {
+      const result = (parser as any)['createSlug']('My 测试 Article');
+      expect(result).toBe('my-测试-article');
+    });
+
+    it('should handle Chinese with spaces', () => {
+      const result = (parser as any)['createSlug']('我的 文章 标题');
+      expect(result).toBe('我的-文章-标题');
+    });
+
+    describe('Property Tests - Slug Creation', () => {
+      it('should handle various inputs consistently', () => {
+        const testCases = [
+          '',
+          'simple',
+          'hello world',
+          'article-title',
+          'My Camel Case Article',
+          'special!@#$%characters',
+          'mixed 中文 content',
+          '123456789',
+          'spaces   multiple   spaces',
+          'hyphens---multiple---hyphens'
+        ];
+
+        testCases.forEach(input => {
+          const result = (parser as any)['createSlug'](input);
+
+          // Result should always be a string
+          expect(typeof result).toBe('string');
+
+          // Result should not contain special characters (except hyphens and allowed Chinese chars)
+          expect(result).not.toMatch(/[^\w\u4e00-\u9fa5\s-]/);
+
+          // Result should be lowercased
+          expect(result).toBe(result.toLowerCase());
+
+          // Result should not have leading or trailing hyphens after processing
+          expect(result.startsWith('-')).toBe(false);
+          expect(result.endsWith('-')).toBe(false);
+
+          // Consecutive spaces should be normalized to single hyphen
+          expect(result).not.toMatch(/--+/);
+        });
+      });
+
+      it('should handle mixed English and Chinese consistently', () => {
+        const testCases = [
+          'hello 世界',
+          'my 测试 article',
+          'title 文章',
+          'test 测试 content 内容',
+          'mixed 英文 english 内容'
+        ];
+
+        testCases.forEach(mixedInput => {
+          const result = (parser as any)['createSlug'](mixedInput);
+
+          // Result should be a valid slug
+          expect(typeof result).toBe('string');
+
+          // Should not contain special characters
+          expect(result).not.toMatch(/[^\w\u4e00-\u9fa5\s-]/);
+
+          // Should be consistent
+          const result2 = (parser as any)['createSlug'](mixedInput);
+          expect(result).toBe(result2);
+        });
+      });
+    });
+  });
+
+  describe('Error Handling', () => {
+    it('should handle file read errors', async () => {
+      const readFileSpy = jest.spyOn(fs, 'readFile').mockImplementation(() => {
+        return Promise.reject(new Error('File not found')) as any;
+      });
+
+      await expect(parser.parseFile('/nonexistent/file.md')).rejects.toThrow(ParseError);
+      await expect(parser.parseFile('/nonexistent/file.md')).rejects.toMatchObject({
+        message: expect.stringContaining('File not found'),
+        filePath: '/nonexistent/file.md'
+      });
+
+      readFileSpy.mockRestore();
+    });
+
+    it('should handle gray-matter parsing errors', async () => {
+      const readFileSpy = jest.spyOn(fs, 'readFile').mockImplementation(() => {
+        return Promise.resolve(Buffer.from('invalid content', 'utf-8')) as any;
+      });
+
+      await expect(parser.parseFile('/path/to/invalid/file.md')).rejects.toThrow(ParseError);
+      await expect(parser.parseFile('/path/to/invalid/file.md')).rejects.toMatchObject({
+        filePath: '/path/to/invalid/file.md'
+      });
+
+      readFileSpy.mockRestore();
     });
   });
 });

@@ -52,3 +52,5 @@ output/
 
 # Jest cache
 .jest/
+
+nul
