@@ -41,7 +41,17 @@
       "Bash(npx tsc --noEmit src/core/__tests__/MetadataParser.test.ts --listFiles)",
       "Bash(node -e \"\nconst fs = require\\(''fs''\\);\nconst content = fs.readFileSync\\(''src/core/__tests__/MetadataParser.test.ts'', ''utf8''\\);\nlet braceCount = 0;\nfor \\(let i = 0; i < content.length; i++\\) {\n  if \\(content[i] === ''{''\\) braceCount++;\n  else if \\(content[i] === ''}''\\) braceCount--;\n}\nconsole.log\\(''Brace balance:'', braceCount\\);\n\")",
       "Bash(powershell \"Get-Date -Format ''yyyy-MM-dd''\")",
-      "Bash(mv openspec/changes/add-missing-unit-tests-for-metadataparser openspec/changes/archive/2026-01-31-add-missing-unit-tests-for-metadataparser)"
+      "Bash(mv openspec/changes/add-missing-unit-tests-for-metadataparser openspec/changes/archive/2026-01-31-add-missing-unit-tests-for-metadataparser)",
+      "mcp__github__create_repository",
+      "Bash(git remote set-url origin https://github.com/shinerio/obsidian_blog.git)",
+      "Bash(git push -u origin master)",
+      "Bash(openspec instructions proposal --change \"beautify-blog-website-with-tech-theme\" --json)",
+      "Bash(openspec status --change \"beautify-blog-website-with-tech-theme\")",
+      "Bash(openspec status --change \"beautify-blog-website-with-tech-theme\" --json)",
+      "Bash(openspec instructions design --change \"beautify-blog-website-with-tech-theme\" --json)",
+      "Bash(openspec instructions specs --change \"beautify-blog-website-with-tech-theme\" --json)",
+      "Bash(openspec instructions tasks --change \"beautify-blog-website-with-tech-theme\" --json)",
+      "Bash(openspec instructions apply --change \"beautify-blog-website-with-tech-theme\" --json)"
     ]
   }
 }

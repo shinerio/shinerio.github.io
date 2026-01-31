@@ -4,21 +4,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}} - {{siteTitle}}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
 </head>
-<body class="{{bodyClass}}">
-    <header>
-        <nav>
-            <a href="index.html" class="{{homeActive}}">Home</a>
-            <a href="articles.html" class="{{articlesActive}}">Articles</a>
-            <a href="search.html" class="{{searchActive}}">Search</a>
-        </nav>
-    </header>
-    <main>
-        {{{content}}}
-    </main>
-    <footer>
-        <p>&copy; {{currentYear}} {{author}}. All rights reserved.</p>
-    </footer>
+<body class="{{bodyClass}}" id="theme-body">
+    <div class="page-wrapper">
+        <header class="page-header">
+            <div class="container">
+                <nav class="page-nav">
+                    <div class="nav-links">
+                        <a href="index.html" class="nav-link {{homeActive}}">Home</a>
+                        <a href="articles.html" class="nav-link {{articlesActive}}">Articles</a>
+                        <a href="search.html" class="nav-link {{searchActive}}">Search</a>
+                    </div>
+                    <div class="theme-toggle-container">
+                        <button id="theme-toggle" aria-label="Toggle dark mode" class="theme-toggle-btn">
+                            <span class="sun-icon">☀️</span>
+                            <span class="moon-icon">🌙</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <main class="page-main">
+            <div class="container">
+                {{{content}}}
+            </div>
+        </main>
+        <footer class="page-footer">
+            <div class="container">
+                <p>&copy; {{currentYear}} {{author}}. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Theme switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.getElementById('theme-body');
+
+            // Check for saved theme preference or respect OS preference
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+            // Set initial theme
+            if (savedTheme === 'dark' || (!savedTheme && prefersDarkScheme.matches)) {
+                body.setAttribute('data-theme', 'dark');
+            } else {
+                body.removeAttribute('data-theme'); // light theme
+            }
+
+            // Toggle theme function
+            function toggleTheme() {
+                if (body.getAttribute('data-theme') === 'dark') {
+                    body.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    body.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                }
+            }
+
+            // Add event listener to theme toggle button
+            themeToggle.addEventListener('click', toggleTheme);
+
+            // Listen for OS theme changes
+            prefersDarkScheme.addEventListener('change', function(e) {
+                if (!localStorage.getItem('theme')) {
+                    if (e.matches) {
+                        body.setAttribute('data-theme', 'dark');
+                    } else {
+                        body.removeAttribute('data-theme');
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
