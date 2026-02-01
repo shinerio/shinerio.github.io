@@ -31,6 +31,3 @@
 - [x] 5.2 Update any other components that interact with the search functionality
 - [x] 5.3 Run full test suite to ensure no regressions
 - [x] 5.4 Verify that search functionality works as expected in generated sites
-- [ ] 5.2 Update any other components that interact with the search functionality
-- [ ] 5.3 Run full test suite to ensure no regressions
-- [ ] 5.4 Verify that search functionality works as expected in generated sites
