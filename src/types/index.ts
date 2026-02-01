@@ -101,10 +101,16 @@ export interface TagInfo {
   articles: Article[];
 }
 
+// 搜索索引条目
+export interface SearchIndexEntry {
+  articleIndex: number;
+  weight: number;
+}
+
 // 搜索索引
 export interface SearchIndex {
   articles: SearchableArticle[];
-  index: Map<string, number[]>;
+  index: Map<string, SearchIndexEntry[]>;
 }
 
 // 可搜索的文章
@@ -116,11 +122,19 @@ export interface SearchableArticle {
   slug: string;
 }
 
+// 搜索匹配位置信息
+export interface SearchMatchLocation {
+  inTitle: boolean;
+  inContent: boolean;
+  inTags: boolean;
+}
+
 // 搜索结果
 export interface SearchResult {
   article: ParsedArticle;
   score: number;
   highlights: string[];
+  matchLocations?: SearchMatchLocation; // Optional field indicating where matches occurred
 }
 
 // 错误类型定义

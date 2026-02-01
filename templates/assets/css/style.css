@@ -314,6 +314,13 @@
     font-size: var(--font-size-sm);
 }
 
+.no-results {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--color-text-tertiary);
+    font-style: italic;
+}
+
 /* Reset and base styles */
 * {
     box-sizing: border-box;

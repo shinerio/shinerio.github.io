@@ -235,9 +235,12 @@ describe('Article Indexing Completeness Tests', () => {
                 expect(typeof word).toBe('string');
                 expect(Array.isArray(refs)).toBe(true);
                 refs.forEach(ref => {
-                  expect(Number.isInteger(ref)).toBe(true);
-                  expect(ref >= 0).toBe(true);
-                  expect(ref < searchIndex.articles.length).toBe(true);
+                  expect(typeof ref).toBe('object');
+                  expect(Number.isInteger(ref.articleIndex)).toBe(true);
+                  expect(Number.isInteger(ref.weight)).toBe(true);
+                  expect(ref.articleIndex >= 0).toBe(true);
+                  expect(ref.articleIndex < searchIndex.articles.length).toBe(true);
+                  expect(ref.weight > 0).toBe(true); // Weight should be positive
                 });
                 totalWordReferences += refs.length;
               });

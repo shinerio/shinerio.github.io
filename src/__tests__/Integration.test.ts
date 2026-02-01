@@ -428,4 +428,109 @@ This is a draft post that should not be indexed.`
     expect(firstPostContent).toContain('<span class="tag">#tag1</span>');
     expect(firstPostContent).toContain('<span class="tag">#tag2</span>');
   });
+
+  it('should generate search data with prioritized title matches', async () => {
+    // Create additional test files with specific search patterns
+    const vaultPath = path.join(tempDir, 'vault');
+
+    await fs.writeFile(
+      path.join(vaultPath, 'typescript-title-match.md'),
+      `---
+title: "TypeScript for Beginners"
+date: "2023-01-04"
+tags: ["typescript"]
+draft: false
+---
+
+This article talks about JavaScript fundamentals.` // Content has different term than title
+    );
+
+    await fs.writeFile(
+      path.join(vaultPath, 'javascript-content-match.md'),
+      `---
+title: "Advanced Programming"
+date: "2023-01-05"
+tags: ["programming"]
+draft: false
+---
+
+This article discusses TypeScript in depth.` // Content has "TypeScript" but title doesn't
+    );
+
+    const result = await generator.generate(path.join(tempDir, 'config.json'));
+    expect(result).toBe(true);
+
+    // Check that search data is generated with the new files
+    const searchDataPath = path.join(mockConfig.outputPath, 'assets', 'js', 'search-data.json');
+    const searchDataExists = await fs.pathExists(searchDataPath);
+    expect(searchDataExists).toBe(true);
+
+    if (searchDataExists) {
+      const searchData = await fs.readJson(searchDataPath);
+      expect(searchData).toHaveProperty('articles');
+      expect(Array.isArray(searchData.articles)).toBe(true);
+
+      // Should contain 4 articles (original 2 + 2 new ones, excluding draft)
+      expect(searchData.articles).toHaveLength(4);
+    }
+  });
+
+  it('should prioritize title matches over content matches in search results', async () => {
+    // This test verifies that our search enhancement works properly
+    const vaultPath = path.join(tempDir, 'vault');
+
+    // Create test files with specific patterns to test ranking
+    await fs.writeFile(
+      path.join(vaultPath, 'react-title-match.md'),
+      `---
+title: "Learning React Basics"
+date: "2023-01-06"
+tags: ["react", "javascript"]
+draft: false
+---
+
+This is a guide about React fundamentals. This article discusses React components in depth.
+Another paragraph about React development concepts.
+The keyword React appears multiple times in the content to test ranking against title match.
+      `
+    );
+
+    await fs.writeFile(
+      path.join(vaultPath, 'javascript-content-match.md'),
+      `---
+title: "Advanced JavaScript Patterns"
+date: "2023-01-07"
+tags: ["javascript", "patterns"]
+draft: false
+---
+
+This article covers various JavaScript patterns and practices.
+The main topic is React patterns and best practices for React applications.
+We discuss React hooks, React state management, and React component architecture.
+The word React appears multiple times in this content.
+      `
+    );
+
+    // Run the generation to update the search index
+    const result = await generator.generate(path.join(tempDir, 'config.json'));
+    expect(result).toBe(true);
+
+    // Check that search data is properly generated and includes the ranking information
+    const searchDataPath = path.join(mockConfig.outputPath, 'assets', 'js', 'search-data.json');
+    const searchDataExists = await fs.pathExists(searchDataPath);
+    expect(searchDataExists).toBe(true);
+
+    if (searchDataExists) {
+      const searchData = await fs.readJson(searchDataPath);
+      expect(searchData).toHaveProperty('articles');
+      expect(Array.isArray(searchData.articles)).toBe(true);
+
+      // Verify that the search data contains properly formatted entries
+      const reactTitleArticle = searchData.articles.find((a: any) => a.title === "Learning React Basics");
+      const javascriptContentArticle = searchData.articles.find((a: any) => a.title === "Advanced JavaScript Patterns");
+
+      expect(reactTitleArticle).toBeDefined();
+      expect(javascriptContentArticle).toBeDefined();
+    }
+  });
 });

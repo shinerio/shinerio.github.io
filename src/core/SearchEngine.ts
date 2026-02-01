@@ -1,9 +1,10 @@
 /**
  * 搜索引擎
  * Search Engine for building search index and providing search functionality
+ * Enhanced to support weighted scoring: title matches (weight 3), tag matches (weight 2), content matches (weight 1)
  */
 
-import { SearchIndex, SearchableArticle, SearchResult, ParsedArticle } from '../types';
+import { SearchIndex, SearchableArticle, SearchResult, ParsedArticle, SearchMatchLocation } from '../types';
 
 export class SearchEngine {
   // 存储原始文章数据的映射，用于搜索结果
@@ -22,10 +23,10 @@ export class SearchEngine {
       .map(article => {
         const id = this.generateId(article.filePath);
         const slug = article.metadata.slug || this.createSlug(article.metadata.title);
-        
+
         // 存储原始文章数据
         this.articleMap.set(id, article);
-        
+
         return {
           id,
           title: article.metadata.title,
@@ -35,19 +36,94 @@ export class SearchEngine {
         };
       });
 
-    const index = new Map<string, number[]>();
+    // 创建分开的索引：标题权重更高
+    const titleIndex = new Map<string, number[]>();
+    const contentIndex = new Map<string, number[]>();
+    const tagIndex = new Map<string, number[]>();
 
     // 为每篇文章建立索引
     searchableArticles.forEach((article, articleIndex) => {
-      const words = this.extractWords(article.title + ' ' + article.content + ' ' + article.tags.join(' '));
-      
-      words.forEach(word => {
-        if (!index.has(word)) {
-          index.set(word, []);
+      // 标题索引（权重更高）
+      const titleWords = this.extractWords(article.title);
+      titleWords.forEach(word => {
+        if (!titleIndex.has(word)) {
+          titleIndex.set(word, []);
         }
-        const articleIndices = index.get(word)!;
+        const articleIndices = titleIndex.get(word)!;
         if (!articleIndices.includes(articleIndex)) {
           articleIndices.push(articleIndex);
+        }
+      });
+
+      // 内容索引（权重较低）
+      const contentWords = this.extractWords(article.content);
+      contentWords.forEach(word => {
+        if (!contentIndex.has(word)) {
+          contentIndex.set(word, []);
+        }
+        const articleIndices = contentIndex.get(word)!;
+        if (!articleIndices.includes(articleIndex)) {
+          articleIndices.push(articleIndex);
+        }
+      });
+
+      // 标签索引（权重中等）
+      const tagWords = this.extractWords(article.tags.join(' '));
+      tagWords.forEach(word => {
+        if (!tagIndex.has(word)) {
+          tagIndex.set(word, []);
+        }
+        const articleIndices = tagIndex.get(word)!;
+        if (!articleIndices.includes(articleIndex)) {
+          articleIndices.push(articleIndex);
+        }
+      });
+    });
+
+    // 将分开的索引整合为一个索引结构
+    const index = new Map<string, Array<{articleIndex: number, weight: number}>>();
+
+    // 处理标题索引（权重为3）
+    titleIndex.forEach((articleIndices, word) => {
+      if (!index.has(word)) {
+        index.set(word, []);
+      }
+      const wordData = index.get(word)!;
+      articleIndices.forEach(articleIndex => {
+        wordData.push({ articleIndex, weight: 3 }); // 标题权重最高
+      });
+    });
+
+    // 处理内容索引（权重为1）
+    contentIndex.forEach((articleIndices, word) => {
+      if (!index.has(word)) {
+        index.set(word, []);
+      }
+      const wordData = index.get(word)!;
+      articleIndices.forEach(articleIndex => {
+        // 检查是否已经在索引中（来自标题），如果是，则只增加权重
+        const existing = wordData.find(data => data.articleIndex === articleIndex);
+        if (existing) {
+          existing.weight += 1; // 标题+内容匹配，权重更高
+        } else {
+          wordData.push({ articleIndex, weight: 1 }); // 仅内容权重
+        }
+      });
+    });
+
+    // 处理标签索引（权重为2）
+    tagIndex.forEach((articleIndices, word) => {
+      if (!index.has(word)) {
+        index.set(word, []);
+      }
+      const wordData = index.get(word)!;
+      articleIndices.forEach(articleIndex => {
+        // 检查是否已经存在，如果存在则增加权重
+        const existing = wordData.find(data => data.articleIndex === articleIndex);
+        if (existing) {
+          existing.weight += 2; // 已有标题或内容匹配，再加标签权重
+        } else {
+          wordData.push({ articleIndex, weight: 2 }); // 仅标签权重
         }
       });
     });
@@ -68,18 +144,37 @@ export class SearchEngine {
     }
 
     const queryWords = this.extractWords(query);
-    const articleScores = new Map<number, { score: number; matchedWords: string[] }>();
+    const articleScores = new Map<number, { score: number; matchedWords: string[]; matchLocations: SearchMatchLocation }>();
 
     // 计算每篇文章的相关性分数
     queryWords.forEach(word => {
-      const articleIndices = searchIndex.index.get(word) || [];
-      articleIndices.forEach(articleIndex => {
-        const current = articleScores.get(articleIndex) || { score: 0, matchedWords: [] };
-        current.score += 1;
+      const articleWeightData = searchIndex.index.get(word) || [];
+      articleWeightData.forEach(data => {
+        const current = articleScores.get(data.articleIndex) || {
+          score: 0,
+          matchedWords: [],
+          matchLocations: { inTitle: false, inContent: false, inTags: false }
+        };
+        current.score += data.weight; // 使用权重计算分数
         if (!current.matchedWords.includes(word)) {
           current.matchedWords.push(word);
         }
-        articleScores.set(articleIndex, current);
+
+        // Determine where the match occurred based on weight
+        if (data.weight === 3) {
+          current.matchLocations.inTitle = true;
+        } else if (data.weight === 2) {
+          current.matchLocations.inTags = true;
+        } else if (data.weight === 1) {
+          current.matchLocations.inContent = true;
+        } else if (data.weight > 3) {
+          // If weight is greater than 3, it's a combination match (title + content or title + tag or all three)
+          if (data.weight >= 3) current.matchLocations.inTitle = true;
+          if (data.weight >= 2) current.matchLocations.inTags = true;
+          if (data.weight >= 1) current.matchLocations.inContent = true;
+        }
+
+        articleScores.set(data.articleIndex, current);
       });
     });
 
@@ -94,7 +189,8 @@ export class SearchEngine {
           results.push({
             article: originalArticle,
             score: scoreData.score,
-            highlights: this.generateHighlights(searchableArticle, scoreData.matchedWords)
+            highlights: this.generateHighlights(searchableArticle, scoreData.matchedWords),
+            matchLocations: scoreData.matchLocations
           });
         }
       }
@@ -169,32 +265,55 @@ export class SearchEngine {
    */
   private generateHighlights(article: SearchableArticle, queryWords: string[]): string[] {
     const highlights: string[] = [];
-    const content = article.title + ' ' + article.content;
-    
+
     queryWords.forEach(word => {
-      // 为中文和英文分别处理高亮
-      const chineseRegex = new RegExp(`(.{0,20})(${this.escapeRegex(word)})(.{0,20})`, 'gi');
-      const englishRegex = new RegExp(`(.{0,30})\\b(${this.escapeRegex(word)})\\b(.{0,30})`, 'gi');
-      
-      let matches = content.match(chineseRegex);
-      if (!matches) {
-        matches = content.match(englishRegex);
-      }
-      
-      if (matches) {
-        // 取前2个匹配项，并添加高亮标记
-        const highlightedMatches = matches.slice(0, 2).map(match => {
-          return match.replace(
-            new RegExp(`(${this.escapeRegex(word)})`, 'gi'),
-            '<mark>$1</mark>'
-          );
-        });
-        highlights.push(...highlightedMatches);
-      }
+      // 分别在标题和内容中查找匹配
+      const titleMatches = this.findMatchesInText(article.title, word, 30);
+      const contentMatches = this.findMatchesInText(article.content, word, 50);
+
+      // 添加标题匹配（优先级更高）
+      titleMatches.forEach(match => {
+        highlights.push(`<strong>[TITLE]</strong> ${match}`);
+      });
+
+      // 添加内容匹配
+      contentMatches.forEach(match => {
+        highlights.push(`<em>[CONTENT]</em> ${match}`);
+      });
     });
 
     // 去重并限制数量
     return [...new Set(highlights)].slice(0, 3);
+  }
+
+  /**
+   * 在文本中查找匹配项
+   * Find matches in text and return highlighted snippets
+   */
+  private findMatchesInText(text: string, word: string, contextLength: number): string[] {
+    const matches: string[] = [];
+
+    // 为中文和英文分别处理高亮
+    const chineseRegex = new RegExp(`(.{0,${contextLength}})(${this.escapeRegex(word)})(.{0,${contextLength}})`, 'gi');
+    const englishRegex = new RegExp(`(.{0,${contextLength}})\\b(${this.escapeRegex(word)})\\b(.{0,${contextLength}})`, 'gi');
+
+    let matchResults = text.match(chineseRegex);
+    if (!matchResults) {
+      matchResults = text.match(englishRegex);
+    }
+
+    if (matchResults) {
+      // 取前几个匹配项，并添加高亮标记
+      const limitedMatches = matchResults.slice(0, 2);
+      limitedMatches.forEach(match => {
+        matches.push(match.replace(
+          new RegExp(`(${this.escapeRegex(word)})`, 'gi'),
+          '<mark>$1</mark>'
+        ));
+      });
+    }
+
+    return matches;
   }
 
   /**

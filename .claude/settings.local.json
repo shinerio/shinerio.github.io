@@ -56,7 +56,14 @@
       "Bash(npm run test -- --testNamePattern=\"SiteGenerator\")",
       "Bash(node test_curly_braces_fix.js)",
       "Bash(del test_curly_braces_fix.js)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(npx openspec instructions design --change \"fix-search-functionality\")",
+      "Bash(openspec status --change \"fix-search-funtionality\" --json)",
+      "Bash(openspec status --change \"fix-search-functionality\" --json)",
+      "Bash(openspec instructions apply --change \"fix-search-functionality\" --json)",
+      "Bash(npm test -- --testNamePattern=\"SearchEngine Validation Tests\")",
+      "Bash(npm test -- src/core/__tests__/SearchEngine.test.ts --testNamePattern=\"Chinese\")",
+      "Bash(npm test -- src/core/__tests__/SearchEngineValidation.test.ts)"
     ]
   }
 }

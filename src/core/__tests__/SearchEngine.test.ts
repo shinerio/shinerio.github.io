@@ -594,5 +594,118 @@ describe('SearchEngine Property Tests', () => {
         { numRuns: 20 }
       );
     });
+
+    it('should prioritize title matches over content matches in search results', () => {
+      const articles: ParsedArticle[] = [
+        {
+          metadata: {
+            title: 'Understanding React Components',
+            date: new Date('2023-01-01'),
+            tags: ['react'],
+            description: 'Learning React components',
+            draft: false
+          },
+          content: 'This article explains how to use components in React development.',
+          filePath: '/path/to/react-components.md',
+          wordCount: 15
+        },
+        {
+          metadata: {
+            title: 'JavaScript Fundamentals',
+            date: new Date('2023-01-02'),
+            tags: ['javascript'],
+            description: 'Basic JavaScript concepts',
+            draft: false
+          },
+          content: 'This article discusses React components in detail.',
+          filePath: '/path/to/js-fundamentals.md',
+          wordCount: 12
+        }
+      ];
+
+      const index = searchEngine.buildIndex(articles);
+      const results = searchEngine.search('React', index);
+
+      // The article with "React" in the title should rank higher than the one with "React" in content
+      expect(results).toHaveLength(2);
+      expect(results[0].article.metadata.title).toBe('Understanding React Components'); // Title match
+      expect(results[1].article.metadata.title).toBe('JavaScript Fundamentals'); // Content match
+      expect(results[0].score > results[1].score).toBe(true);
+    });
+
+    it('should properly indicate match locations in search results', () => {
+      const articles: ParsedArticle[] = [
+        {
+          metadata: {
+            title: 'TypeScript Guide',
+            date: new Date('2023-01-01'),
+            tags: ['typescript', 'guide'],
+            description: 'TypeScript guide',
+            draft: false
+          },
+          content: 'This is a comprehensive guide about TypeScript.',
+          filePath: '/path/to/typescript-guide.md',
+          wordCount: 10
+        }
+      ];
+
+      const index = searchEngine.buildIndex(articles);
+      const results = searchEngine.search('TypeScript', index);
+
+      expect(results).toHaveLength(1);
+      const result = results[0];
+
+      // Should have match location information
+      expect(result.matchLocations).toBeDefined();
+      expect(result.matchLocations!.inTitle).toBe(true); // Should match in title
+      expect(result.matchLocations!.inContent).toBe(true); // Should also match in content
+    });
+  });
+});
+
+describe('Search Performance Tests', () => {
+  let searchEngine: SearchEngine;
+
+  beforeEach(() => {
+    searchEngine = new SearchEngine();
+  });
+
+  it('should maintain reasonable performance with larger datasets', () => {
+    // Create a moderately sized dataset to test performance
+    const articles: ParsedArticle[] = Array.from({ length: 100 }, (_, idx) => ({
+      metadata: {
+        title: `Article ${idx} about TypeScript and JavaScript`,
+        date: new Date('2023-01-01'),
+        tags: ['javascript', 'typescript', 'programming'].slice(0, Math.floor(Math.random() * 3) + 1),
+        description: `Description for article ${idx}`,
+        draft: false,
+        slug: `article-${idx}`
+      },
+      content: `This is the content for article ${idx}. It discusses TypeScript and JavaScript development.
+                JavaScript and TypeScript are both important technologies in modern web development.
+                This content has repeated terms to test the search functionality thoroughly.`,
+      filePath: `/path/to/article-${idx}.md`,
+      wordCount: 50
+    }));
+
+    // Measure buildIndex performance
+    const startTime = Date.now(); // Using Date.now() instead of performance.now() for broader compatibility
+    const index = searchEngine.buildIndex(articles);
+    const buildIndexTime = Date.now() - startTime;
+
+    // Indexing should complete in reasonable time (less than 2 seconds for 100 articles)
+    expect(buildIndexTime).toBeLessThan(2000);
+
+    // Measure search performance
+    const searchStartTime = Date.now();
+    const results = searchEngine.search('TypeScript', index);
+    const searchTime = Date.now() - searchStartTime;
+
+    // Search should be fast (less than 200ms for 100 articles)
+    expect(searchTime).toBeLessThan(200);
+
+    // Should return reasonable number of results
+    expect(results.length).toBeGreaterThan(0);
+    expect(results.length).toBeLessThanOrEqual(100);
   });
 });
