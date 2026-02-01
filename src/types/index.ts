@@ -15,6 +15,7 @@ export interface BlogConfig {
   theme: 'light' | 'dark' | 'auto';
   postsPerPage: number;
   blacklist?: string[]; // Array of file/folder paths to exclude from processing
+  customDomain?: string; // Custom domain for GitHub Pages deployment
 }
 
 // 配置验证结果

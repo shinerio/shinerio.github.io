@@ -65,6 +65,7 @@ deploy.bat [-c config_file] [-d deploy_method]
 | `theme` | string | `"auto"` | 主题 (`light`/`dark`/`auto`) |
 | `postsPerPage` | number | `10` | 每页显示的文章数量 |
 | `blacklist` | string[] | `[]` | 排除的文件/目录路径数组，支持通配符模式 |
+| `customDomain` | string | `undefined` | GitHub Pages 自定义域名配置 |
 
 ## 配置文件格式
 配置文件是一个 JSON 文件，具有以下结构：
@@ -78,6 +79,7 @@ deploy.bat [-c config_file] [-d deploy_method]
   "author": "",
   "theme": "auto",
   "postsPerPage": 10,
+  "customDomain": "your-domain.com",
   "blacklist": [
     "drafts/",
     "temp/",

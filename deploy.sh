@@ -115,6 +115,17 @@ case $DEPLOY_METHOD in
             npx obsidian-blog generate -c "$CONFIG_FILE" -v
         fi
 
+        # Create CNAME file if customDomain is specified in config
+        if command -v node >/dev/null 2>&1; then
+            CUSTOM_DOMAIN=$(node -p "require('$CONFIG_FILE').customDomain || ''" 2>/dev/null)
+            if [[ -n "$CUSTOM_DOMAIN" && "$CUSTOM_DOMAIN" != "null" && "$CUSTOM_DOMAIN" != "undefined" ]]; then
+                echo "🌐 Creating CNAME file for custom domain: $CUSTOM_DOMAIN"
+                echo "$CUSTOM_DOMAIN" > dist/CNAME
+            fi
+        else
+            echo "⚠️ Node.js not found, skipping CNAME file creation"
+        fi
+
         # Deploy to GitHub Pages
         gh-pages -d dist -b gh-pages -m "Deploy blog [skip ci]"
         echo "✅ Deployed to GitHub Pages!"

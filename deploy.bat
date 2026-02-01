@@ -111,6 +111,15 @@ if errorlevel 1 (
     call npm install -g gh-pages
 )
 
+REM Create CNAME file if customDomain is specified in config
+for /f "delims=" %%i in ('node -p "require('%CONFIG_FILE%').customDomain || ''" 2^>nul') do set CUSTOM_DOMAIN=%%i
+if defined CUSTOM_DOMAIN (
+    if not "!CUSTOM_DOMAIN!"=="" (
+        echo.🌐 Creating CNAME file for custom domain: !CUSTOM_DOMAIN!
+        echo.!CUSTOM_DOMAIN! > dist\CNAME
+    )
+)
+
 REM Deploy to GitHub Pages
 call gh-pages -d dist -b gh-pages -m "Deploy blog [skip ci]"
 if errorlevel 1 (
