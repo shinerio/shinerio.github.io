@@ -51,7 +51,12 @@
       "Bash(openspec instructions design --change \"beautify-blog-website-with-tech-theme\" --json)",
       "Bash(openspec instructions specs --change \"beautify-blog-website-with-tech-theme\" --json)",
       "Bash(openspec instructions tasks --change \"beautify-blog-website-with-tech-theme\" --json)",
-      "Bash(openspec instructions apply --change \"beautify-blog-website-with-tech-theme\" --json)"
+      "Bash(openspec instructions apply --change \"beautify-blog-website-with-tech-theme\" --json)",
+      "Bash(find templates/ -name \"*.html\" -exec head -20 {} ;)",
+      "Bash(npm run test -- --testNamePattern=\"SiteGenerator\")",
+      "Bash(node test_curly_braces_fix.js)",
+      "Bash(del test_curly_braces_fix.js)",
+      "Bash(npm run lint)"
     ]
   }
 }

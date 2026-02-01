@@ -310,19 +310,8 @@ export class SiteGenerator {
    */
   private renderTemplate(template: string, data: Record<string, any>): string {
     let result = template;
-    
-    // 简单的模板替换
-    for (const [key, value] of Object.entries(data)) {
-      const regex = new RegExp(`{{${key}}}`, 'g');
-      result = result.replace(regex, String(value || ''));
-    }
-    
-    // 处理条件语句 {{#if condition}}...{{/if}}
-    result = result.replace(/{{#if\s+(\w+)}}([\s\S]*?){{\/if}}/g, (match, condition, content) => {
-      return data[condition] ? content : '';
-    });
-    
-    // 处理循环语句 {{#each array}}...{{/each}}
+
+    // 处理循环语句 {{#each array}}...{{/each}} (需要在普通变量替换之前处理嵌套内容)
     result = result.replace(/{{#each\s+(\w+)}}([\s\S]*?){{\/each}}/g, (match, arrayName, itemTemplate) => {
       const array = data[arrayName];
       if (Array.isArray(array)) {
@@ -330,7 +319,8 @@ export class SiteGenerator {
           let itemHtml = itemTemplate;
           if (typeof item === 'object') {
             for (const [key, value] of Object.entries(item)) {
-              itemHtml = itemHtml.replace(new RegExp(`{{${key}}}`, 'g'), String(value || ''));
+              const regex = new RegExp(`{{${key}}}`, 'g');
+              itemHtml = itemHtml.replace(regex, String(value || ''));
             }
           } else {
             itemHtml = itemHtml.replace(/{{this}}/g, String(item));
@@ -340,7 +330,54 @@ export class SiteGenerator {
       }
       return '';
     });
-    
+
+    // 处理条件语句 {{#if condition}}...{{/if}} (同样在普通变量替换之前处理)
+    result = result.replace(/{{#if\s+(\w+)}}([\s\S]*?){{\/if}}/g, (match, condition, content) => {
+      return data[condition] ? content : '';
+    });
+
+    // 简单的模板替换 (处理最终值，应在复杂结构之后)
+    for (const [key, value] of Object.entries(data)) {
+      const regex = new RegExp(`{{${key}}}`, 'g');
+      result = result.replace(regex, String(value || ''));
+    }
+
+    // 处理三重括号 {{{content}}} 用于输出未转义内容 (必须在普通变量替换之前处理)
+    result = result.replace(/\{\{\{(\w+)\}\}\}/g, (match, key) => {
+      if (data.hasOwnProperty(key)) {
+        return String(data[key]);
+      }
+      // 如果键不存在，不替换而是保持原样，让后续处理处理
+      return match;
+    });
+
+    // 处理双大括号 {{content}} 用于转义输出 (必须在普通变量替换之前处理)
+    result = result.replace(/\{\{(\w+)\}\}/g, (match, key) => {
+      if (data.hasOwnProperty(key)) {
+        // 对内容进行HTML转义以防止XSS
+        const value = String(data[key] || '');
+        return value
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#x27;');
+      }
+      return match; // 如果键不存在，保持原始标记不变
+    });
+
+    // 最后处理简单变量替换 {{key}} (针对对象的属性)
+    for (const [key, value] of Object.entries(data)) {
+      const regex = new RegExp(`{{${key}}}`, 'g');
+      result = result.replace(regex, String(value || ''));
+    }
+
+    // 清理未处理的模板标记，但要小心不要移除过多内容
+    result = result.replace(/\{\{[^{}]*\}\}/g, '');
+
+    // 修剪结果
+    result = result.trim();
+
     return result;
   }
 
