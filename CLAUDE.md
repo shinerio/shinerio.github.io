@@ -83,4 +83,9 @@ npm start
 
 ## 测试
 
-测试位于 `src/__tests__/` 中，使用 Jest 和 ts-jest。测试设置文件为 `src/test-setup.ts`。
+测试文件现在统一组织在 `test/` 目录中，按测试类型分类：
+- `test/unit/` - 单元测试
+- `test/integration/` - 集成测试
+- `test/setup/` - 测试配置和设置文件
+
+原始的测试相关文件已经迁移至新的目录结构中以保持更好的组织性。
