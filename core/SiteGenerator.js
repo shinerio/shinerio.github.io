@@ -150,6 +150,16 @@ class SiteGenerator {
             .filter(article => !article.isDraft)
             .sort((a, b) => b.date.getTime() - a.date.getTime());
         const layoutTemplate = await this.loadTemplate('layout.html');
+        // Serialize article data for client-side filtering
+        const articleData = publishedArticles.map(article => ({
+            id: article.id,
+            title: article.title,
+            date: article.date.toISOString(),
+            tags: article.tags,
+            readingTime: article.readingTime,
+            slug: article.slug,
+            description: article.description
+        }));
         const content = `
       <div class="articles-filters">
         <div class="filter-group">
@@ -159,6 +169,8 @@ class SiteGenerator {
             <option value="date-asc">最早发布</option>
             <option value="title-asc">标题 A-Z</option>
             <option value="title-desc">标题 Z-A</option>
+            <option value="readtime-asc">阅读时间 (短至长)</option>
+            <option value="readtime-desc">阅读时间 (长至短)</option>
           </select>
         </div>
         <div class="filter-group">
@@ -186,7 +198,12 @@ class SiteGenerator {
             currentYear: new Date().getFullYear(),
             author: options.config.author || options.config.siteTitle,
             content,
-            additionalHead: ''
+            additionalHead: `
+        <script type="application/json" id="article-data" style="display:none">
+          ${JSON.stringify(articleData)}
+        </script>
+        <script src="assets/js/articles-filters.js"></script>
+      `
         });
         await fs.writeFile(path.join(outputPath, 'articles.html'), html);
     }
