@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<h1>1. 生产可靠</h1>
+        <h1>1. 生产可靠</h1>
 <p>为保证Producer发送的数据，能可靠地发送到指定的Topic，Topic的每个Partition收到Producer发送的数据后，都需要向Producer发送ACK（ACKnowledge 确认收到）。如果Producer收到ACK，就会进行下一轮的发送，否则重新发送数据。<br><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/202410131811443.png" alt="image.png"></p>
 <h2>1.1. 副本同步策略</h2>
 <p>何时发送ACK？确保有Follower与Leader同步完成，Leader再发送ACK，这样才能保证Leader挂掉之后，能在Follower中选举出新的Leader而不丢数据。多少个Follower同步完成后发送 ACK？全部Follower同步完成，再发送ACK。<br><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/202410131812226.png" alt="image.png"><br>采用第二种方案，所有Follower完成同步，Producer才能继续发送数据，设想有一个Follower因为某种原因出现故障，那Leader就要一直等到它完成同步。这个问题怎么解决？Leader维护了一个动态的in-sync replica set（ISR）：和Leader保持同步的Follower集合。当ISR集合中的Follower完成数据的同步之后，Leader 就会给 Follower 发送 ACK。如果 Follower 长时间未向 Leader 同步数据，则该 Follower 将被踢出 ISR 集合，该时间阈值由<code>replica.lag.time.max.ms</code>参数设定。Leader发生故障后，就会从ISR中选举出新的 Leader。</p>
@@ -147,7 +147,7 @@
 <li><strong>胜出通知</strong><br> 被选为新Coordinator的Broker会收到来自Zookeeper的通知,它会创建<code>${COORDINATOR_TYPE}/controller_epoch</code>持久节点，并写入自己的BrokerID和纪元值(epoch)，其它Broker发现这个节点后就知道新Coordinator是谁了。</li>
 <li><strong>Coordinator上线</strong><br> 新选举产生的Coordinator会先从Zookeeper获取所需的元数据信息,如分区副本分配方案等。之后它会开始发送请求给各个Broker，接管整个集群的协调工作。<br><a href="https://developer.aliyun.com/article/1479596">https://developer.aliyun.com/article/1479596</a></li>
 </ol>
-}
+
     </section>
 </article>
             </div>

@@ -43,7 +43,7 @@
         </div>
     </header>
     <section class="content">
-        {<h1>1. 背景</h1>
+        <h1>1. 背景</h1>
 <p><code>IPv4</code>地址使用4个字节进行存储，最多能够提供<code>2^32</code>个<code>IPv4</code>地址。随着互联网尤其是物联网的发展，全球<code>IPv4</code>地址早已不够用，因此人们发明了<code>NAT</code>（网络地址转换）来缓解这个问题。</p>
 <p>简单来说，国际互联网组织划分了三个网络地址段作为内部网络本地通信使用，分别是<code>10.0.0.0/8</code>,<code>172.16.0.0/12</code>,<code>192.168.0.0/16</code>。大部分内部机器都使用这些网段中的私有<code>IP</code>地址，如果它们需要访问公网服务，那么则需要经过<code>NAT</code>。</p>
 <ul>
@@ -140,7 +140,7 @@
 <li><code>NAT</code>不能实现对通信双方的全透明，因为上层协议可能在传输的数据包中携带<code>IP</code>和端口信息（需要<code>NAT ALG</code>）</li>
 <li>应用层需保持<code>UDP</code>会话连接，而由于<code>NAT</code>资源有限，所以<code>UDP</code>的会话会很快被回收（以便端口重用）。由于UDP是无连接的，<code>UDP</code>层应用需要在无数据传输、但需要保持连接时通过<code>heartbeat</code>的方式保持会话不过期。</li>
 </ul>
-}
+
     </section>
 </article>
             </div>

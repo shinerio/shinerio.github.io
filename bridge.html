@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<h1>1. 常见命令</h1>
+        <h1>1. 常见命令</h1>
 <pre><code class="language-shell">brctl add br0
 brctl addif br0 ethx
 brctl showmacs br0
@@ -57,7 +57,7 @@ brctl show br0
 <li><strong>INPUT 链</strong>：如果包的目的IP是网桥所在主机自身的 IP 地址，且主机开启了<code>iptables</code>的INPUT链规则，那么这些包会经过INPUT链进行规则匹配。例如，当你在网桥上设置了IP地址，并且希望允许或拒绝特定源IP对该网桥 IP 的访问，就可以通过 INPUT 链规则来实现。假设网桥<code>br0</code>的 IP 为<code>192.168.1.1</code>，若 INPUT 链有规则<code>iptables -A INPUT -i br0 -p tcp --dport 80 -j DROP</code>，则从<code>br0</code>进入且目的端口为80的TCP包会被丢弃。</li>
 <li><strong>FORWARD 链</strong>：对于通过网桥转发的包（即源IP和目的IP都不是网桥所在主机的 IP），如果主机充当路由器功能且<code>iptables</code>的FORWARD链开启规则，这些包会经过 FORWARD 链。比如，在一个双网卡主机中，一个网卡连接外网，另一个网卡通过网桥连接内网，当内网主机访问外网时，数据包会经过网桥转发，此时若FORWARD链设置了<code>iptables -A FORWARD -i br0 -o eth0 -j ACCEPT</code>，则从<code>br0</code>进入并从<code>eth0</code>出去的包会被允许通过。</li>
 </ul>
-}
+
     </section>
 </article>
             </div>

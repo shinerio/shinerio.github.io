@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<p>go1.7加入了一个新的标准库context，用来简化对于处理单个请求的多个goroutine之间与请求域的数据、取消信号、截止时间等相关操作，这些操作可能涉及多个API调用。</p>
+        <p>go1.7加入了一个新的标准库context，用来简化对于处理单个请求的多个goroutine之间与请求域的数据、取消信号、截止时间等相关操作，这些操作可能涉及多个API调用。</p>
 <p>&lt;span style=&quot;background:<span class="tag">#fff88f</span>&quot;&gt;当一个上下文被取消时，它派生的所有上下文也被取消</span>。当context生命周期结束时，可以从<code>ctx.Done()</code>管道接收消息，子协程可以判断后进行相应处理。</p>
 <pre><code class="language-go">func TestContext(t *testing.T) {  
     parentCtx := context.Background()  
@@ -119,7 +119,7 @@
 <li>父context不能获取子context新加的value（每新加一个value就会生成一个新的context）</li>
 <li>父 Context中某个键对应的值被修改了，子Context可以获取到最新的值。这是因为 Context 中存储的值是通过引用来传递的，而不是通过值传递的方式。当我们使用 <code>context.WithValue</code> 函数创建一个新的子 Context 时，实际上是创建了一个新的 Context 对象，该对象包含了父 Context 中所有键值对的引用。建议context中存储不可变的对象，如果需要变，则可以通过全局变量控制。</li>
 </ul>
-}
+
     </section>
 </article>
             </div>

@@ -39,13 +39,13 @@
         </div>
     </header>
     <section class="content">
-        {<h1>1. 常用运维sql</h1>
+        <h1>1. 常用运维sql</h1>
 <pre><code class="language-sql"># 查询单表实际占用物理空间
 select pg_size_pretty(pg_total_relation_size(&#39;table_name&#39;));
 # 查询单表的最大表页
 select max(ctid) from table_name;
 </code></pre>
-}
+
     </section>
 </article>
             </div>

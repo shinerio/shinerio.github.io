@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<p>在<a href="nat-overview.html" class="internal-link">NAT Overview</a>一文中，我们介绍了在linux下通过iptables实现NAT功能的命令及原理。本文以容器为例，进行几个简单的实验来进一步了解linux下NAT的实现过程和应用。</p>
+        <p>在<a href="nat-overview.html" class="internal-link">NAT Overview</a>一文中，我们介绍了在linux下通过iptables实现NAT功能的命令及原理。本文以容器为例，进行几个简单的实验来进一步了解linux下NAT的实现过程和应用。</p>
 <h1>1. nat在容器中的应用</h1>
 <h2>1.1. SNAT</h2>
 <p>linux下一个最典型的NAT应用就是docker容器借助宿主机网络访问外网，执行<code>iptables -t nat -nvL</code>可以看到如下输出：</p>
@@ -118,7 +118,7 @@ listening on docker0, link-type EN10MB (Ethernet), capture size 262144 bytes
 15:22:07.374070 02:42:d5:35:3a:3c &gt; 02:42:ac:11:00:02, ethertype IPv4 (0x0800), length 66: 114.246.99.100.60677 &gt; 172.17.0.2.8000: Flags [F.], seq 84, ack 521, win 2048, options [nop,nop,TS val 3976681774 ecr 2686974184], length 0
 15:22:07.374090 02:42:ac:11:00:02 &gt; 02:42:d5:35:3a:3c, ethertype IPv4 (0x0800), length 66: 172.17.0.2.8000 &gt; 114.246.99.100.60677: Flags [.], ack 85, win 29, options [nop,nop,TS val 2686974482 ecr 3976681774], length 0
 </code></pre>
-}
+
     </section>
 </article>
             </div>

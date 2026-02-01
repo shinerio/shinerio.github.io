@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<h1>1. 起源</h1>
+        <h1>1. 起源</h1>
 <p><code>TCP</code>连接有长连接和短连接之分。短连接环境下，数据交互完毕后，主动释放连接。长连接环境下，双方建立交互的连接并不是一直存在数据交互，有些连接会在数据交互完毕后，主动释放连接，而有些不会，那么在长时间无数据交互的时间段内，交互双方都有可能出现：</p>
 <ol>
 <li>主机突然掉电、死机、异常重启</li>
@@ -66,7 +66,7 @@ net.ipv4.tcp_keepalive_probes = 3
 
 sysctl -p
 </code></pre>
-}
+
     </section>
 </article>
             </div>

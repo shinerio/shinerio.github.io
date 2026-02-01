@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<pre><code class="language-shell">ip netns add net0
+        <pre><code class="language-shell">ip netns add net0
 </code></pre>
 <p>可以创建<strong>一个完全隔离的新网络环境</strong>，这个环境包括一个独立的网卡空间，路由表，ARP表，ip地址表，iptables，ebtables等等。总之，与网络有关的组件都是独立的。</p>
 <pre><code class="language-shell">ip netns list
@@ -142,7 +142,7 @@ rtt min/avg/max/mdev = 0.020/0.021/0.024/0.005 ms
 <p>在bridge中创建并且设置br设备<br>ip netns <strong>exec</strong> bridge brctl addbr br  <br>ip netns <strong>exec</strong> bridge ip link <strong>set</strong> dev br up  <br>ip netns <strong>exec</strong> bridge ip link <strong>set</strong> dev bridge-net0 up  <br>ip netns <strong>exec</strong> bridge ip link <strong>set</strong> dev bridge-net1 up  <br>ip netns <strong>exec</strong> bridge brctl addif br bridge-net0<br>ip netns <strong>exec</strong> bridge brctl addif br bridge-net1<br><br>先在bridge的命名空间新建一个网桥，名字叫br，然后在bridge的空间新建两个dev：<strong>bridge-net0</strong>和<strong>bridge-net1</strong>，然后将两个dev添加到网桥br中。<br><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images20250114221924595.png" alt="image.png"></p>
 <p>然后配置两个虚拟环境的网卡<br>ip netns <strong>exec</strong> net0 ip link <strong>set</strong> dev net0-bridge up  <br>ip netns <strong>exec</strong> net0 ip address add 10.0.1.1/24 dev net0-bridge<br>ip netns <strong>exec</strong> net1 ip link <strong>set</strong> dev net1-bridge up  <br>ip netns <strong>exec</strong> net1 ip address add 10.0.1.2/24 dev net1-bridge|</p>
 <p>测试<br>ip netns <strong>exec</strong> net0 ping -c 3 10.0.1.2PING 10.0.1.2 (10.0.1.2) 56(84) bytes of data.  <br>64 bytes from 10.0.1.2: icmp_req=1 ttl=64 time=0.121 ms64 bytes from 10.0.1.2: icmp_req=2 ttl=64 time=0.072 ms64 bytes from 10.0.1.2: icmp_req=3 ttl=64 time=0.069 ms <br>--- 10.0.1.2 ping statistics ---3 packets transmitted, 3 received, 0% packet loss, time 1999ms  <br>rtt min/avg/max/mdev = 0.069/0.087/0.121/0.025 ms|</p>
-}
+
     </section>
 </article>
             </div>

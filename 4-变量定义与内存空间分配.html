@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<p>C++ 中定义变量时，即使不进行初始化，内存空间通常也会被分配，不过不同类型的变量在分配内存空间的时机和默认初始值方面存在差异。</p>
+        <p>C++ 中定义变量时，即使不进行初始化，内存空间通常也会被分配，不过不同类型的变量在分配内存空间的时机和默认初始值方面存在差异。</p>
 <h1>1. 局部变量（自动存储期）</h1>
 <p>局部变量一般定义在函数内部或者代码块内部，具有自动存储期。当程序执行到定义局部变量的语句时，会立即为其分配内存空间，但不会自动初始化，该内存空间会保留之前存储的 “垃圾值”。</p>
 <pre><code class="language-c++">&lt;span class=&quot;tag&quot;&gt;#include&lt;/span&gt; &lt;iostream&gt;
@@ -93,7 +93,7 @@ int main() {
 }
 </code></pre>
 <p>在上述代码中，<code>new int</code> 执行时在堆上为 <code>dynamicVar</code> 分配内存，由于未初始化，其指向的内存中的值是不确定的。</p>
-}
+
     </section>
 </article>
             </div>

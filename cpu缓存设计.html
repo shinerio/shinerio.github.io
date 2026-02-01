@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<h1>1. 缓存</h1>
+        <h1>1. 缓存</h1>
 <p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/202502012201874.png" alt="image.png"><br>Cache Memory也被称为Cache，是存储器子系统的组成部分，存放着程序经常使用的指令和数据，这就是Cache的传统定义。从广义的角度上看，Cache是快设备为了缓解访问慢设备延时的预留的Buffer，从而可以在掩盖访问延时的同时，尽可能地提高数据传输率。 快和慢是一个相对概念，与微架构(Microarchitecture)中的 L1/L2/L3 Cache相比， DDR内存是一个慢速设备；在磁盘 I/O 系统中，DDR确是快速设备，在磁盘I/O系统中，仍在使用DDR内存作为磁介质的Cache。在一个<a href="https://zhida.zhihu.com/search?content_id=176854366&content_type=Article&match_order=2&q=%E5%BE%AE%E6%9E%B6%E6%9E%84&zd_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ6aGlkYV9zZXJ2ZXIiLCJleHAiOjE3Mzg1OTA0NTUsInEiOiLlvq7mnrbmnoQiLCJ6aGlkYV9zb3VyY2UiOiJlbnRpdHkiLCJjb250ZW50X2lkIjoxNzY4NTQzNjYsImNvbnRlbnRfdHlwZSI6IkFydGljbGUiLCJtYXRjaF9vcmRlciI6MiwiemRfdG9rZW4iOm51bGx9.pXrpPTnTBsbUSfy2_OYfLNj9VxGaNEihgFX_nbOzc3k&zhida_source=entity">微架构</a>中，除了有L1/L2/L3 Cache之外，用于<a href="https://zhida.zhihu.com/search?content_id=176854366&content_type=Article&match_order=1&q=%E8%99%9A%E5%AE%9E%E5%9C%B0%E5%9D%80&zd_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ6aGlkYV9zZXJ2ZXIiLCJleHAiOjE3Mzg1OTA0NTUsInEiOiLomZrlrp7lnLDlnYAiLCJ6aGlkYV9zb3VyY2UiOiJlbnRpdHkiLCJjb250ZW50X2lkIjoxNzY4NTQzNjYsImNvbnRlbnRfdHlwZSI6IkFydGljbGUiLCJtYXRjaF9vcmRlciI6MSwiemRfdG9rZW4iOm51bGx9.V5T6uK0yGiBpj_piBLr4xttZvMOPty35tGGXAgL_mOM&zhida_source=entity">虚实地址</a>转换的各级TLB， MOB( Memory Ordering Buffers)、在指令流水线中的ROB，Register File和BTB等等也是一种Cache。我们这里的Cache，是狭义 Cache，是CPU流水线和主存储器的 L1/L2/L3 Cache。<br><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/202502012151163.png" alt="image.png"><br>L1，L2，L3 指的都是CPU的缓存，比内存快，但是很昂贵，所以用作缓存，CPU查找数据的时候首先在L1，然后看L2，如果还没有，就到内存查找一些服务器还有L3 Cache，目的也是提高速度。<br><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/202502012201274.png" alt="image.png"></p>
 <p>L1 cache、L2 cache、L3 cache 速度快，主要和其与 CPU 的距离、存储容量、制造工艺及数据预取机制有关：</p>
 <ul>
@@ -230,7 +230,7 @@ int atomic_cas(int* ptr, int expect, int new_val) {
 </ul>
 <h4>1.5.5.3. 无锁编程</h4>
 <p>基于原子操作和内存屏障实现数据结构（如无锁队列），避免锁竞争。</p>
-}
+
     </section>
 </article>
             </div>

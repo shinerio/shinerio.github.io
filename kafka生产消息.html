@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<h1>1. kafka获取partition对应节点</h1>
+        <h1>1. kafka获取partition对应节点</h1>
 <p><strong>通过元数据获取</strong></p>
 <ul>
 <li>Kafka producer 在启动时会向 Kafka 集群中的任意一个 broker（通常是配置中的 bootstrap.servers 列表中的一个）发送元数据请求（Metadata Request）。这个请求用于获取集群的元数据信息，包括主题（topic）的分区（partition）分布情况以及每个 broker 的相关信息。</li>
@@ -68,7 +68,7 @@
 <li>headers：array 类型，Nullable。</li>
 </ul>
 <p>①指明 Partition 的情况下，直接将给定的 Value 作为 Partition 的值。<br>②没有指明 Partition 但有 Key 的情况下，将 Key 的 Hash 值与分区数取余得到 Partition 值。<br>③既没有 Partition 有没有 Key 的情况下，第一次调用时随机生成一个整数（后面每次调用都在这个整数上自增），将这个值与可用的分区数取余，得到 Partition 值，也就是常说的 Round-Robin 轮询算法。</p>
-}
+
     </section>
 </article>
             </div>

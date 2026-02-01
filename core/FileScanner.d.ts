@@ -6,10 +6,15 @@ import { ScanResult, FileStats } from '../types';
 export declare class FileScanner {
     private static readonly MARKDOWN_EXTENSIONS;
     /**
+     * 检查路径是否在黑名单中
+     * Check if a path matches any of the blacklist patterns
+     */
+    private matchesBlacklist;
+    /**
      * 扫描vault目录
      * Scan vault directory for markdown files
      */
-    scanVault(vaultPath: string): Promise<ScanResult>;
+    scanVault(vaultPath: string, blacklist?: string[]): Promise<ScanResult>;
     /**
      * 递归扫描目录
      * Recursively scan directory

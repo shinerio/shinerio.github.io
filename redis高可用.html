@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<h1>1. master和slave数据复制机制</h1>
+        <h1>1. master和slave数据复制机制</h1>
 <p>在Redis集群模式下，Master和Slave之间<strong>默认采用异步复制</strong></p>
 <ul>
 <li>客户端向Master写入数据后，Master立即返回成功响应，无需等待Slave确认。</li>
@@ -86,7 +86,7 @@ min-replicas-max-lag 10
 <li><strong>可用性权衡</strong>：强制同步会导致单个节点故障影响整个集群写入，违背高可用设计原则。</li>
 <li><strong>异步复制优先</strong>：集群默认采用异步复制，追求高性能和可用性。</li>
 </ol>
-}
+
     </section>
 </article>
             </div>

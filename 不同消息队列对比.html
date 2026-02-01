@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/202410131751148.png" alt="image.png"></p>
+        <p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/202410131751148.png" alt="image.png"></p>
 <ul>
 <li>RocketMQ 的存储结构相对较为灵活，可以针对不同的场景进行优化。它采用了单一的 commitlog 文件来顺序存储所有消息，然后通过索引文件快速定位特定topic的消息。这种设计使得在处理大量 topic 时，存储资源的分配更加高效。每个topic都对应独立索引文件，加上page cache机制，所以读的性能也不差。</li>
 </ul>
@@ -53,7 +53,7 @@
 </ul>
 <p>Pulsar 采用计算存储层分离架构。计算层的 Broker 节点是对等且无状态的，可以快速扩展；存储层使用BookKeeper作为节点，同样节点对等。这种分离架构支持计算和存储层各自独立扩展。<br><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/202410132224101.png" alt="image.png"><br>其次，Pulsar 的各个节点都是轻量化的，在出现故障和宕机时可以快速恢复。一般情况下可以通过快速上下线来解决某个节点机器的问题。同时 Broker 层可以作为 BookKeeper 层的容错层，可以防止故障直接传导至用户端。</p>
 <p><a href="https://www.infoq.cn/article/zynhqsxpd0n7vwhcubtt">构建下一代万亿级云原生消息架构：Apache Pulsar 在 vivo 的探索与实践_大数据_陈建波_InfoQ精选文章</a></p>
-}
+
     </section>
 </article>
             </div>

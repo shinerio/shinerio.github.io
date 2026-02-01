@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/202502012204187.png" alt="image.png"></p>
+        <p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/202502012204187.png" alt="image.png"></p>
 <h1>1. 主频</h1>
 <p>CPU 主频，即CPU的时钟频率，是衡量 CPU 运算速度的重要指标，以下从其定义、工作原理及与性能的关系等方面进行具体解释。</p>
 <ul>
@@ -96,7 +96,7 @@
 </blockquote>
 <h1>3. 程序计数器（PC）</h1>
 <p>程序计数器（Program Counter）是用来存储下一条指令所在单元的地址。程序执行时，PC的初值为程序<strong>第一条指令</strong>的地址，在顺序执行程序时，控制器首先按程序计数器所指出的指令地址从内存中取出一条指令，然后分析和执行该指令，同时将PC的值加1指向下一条要执行的指令。可根据一个示例来看一下程序计数器的执行过程：<br><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/202502012213320.png" alt="image.png"><br>这是一段进行相加的操作，程序启动，在经过编译解析后会由操作系统把硬盘中的程序复制到内存中，示例中的程序将123和456执行相加操作，并将结果输出到显示屏上。由于使用机器语言难以描述，所以这里经过翻译后的结果，实际上每个指令和数据都可能分布在不同的地址上，但为了方便说明，把组成每一条的内存和数据放在一个内存地址上。<br>地址0100是程序运行的起始位置。Windows等操作系统把程序从硬盘复制到内存后，会将程序计数器作为设定为起始位置0100，然后执行程序，每执行一条指令后，程序计数器的数据会增加1（或者直接指向下一条指令的地址），然后，CPU就会根据程序计数器的数值，从内存中读取命令并执行，也就是说，程序计数器控制程序的流程。</p>
-}
+
     </section>
 </article>
             </div>

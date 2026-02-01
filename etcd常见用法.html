@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<h1>1. 数据put和get</h1>
+        <h1>1. 数据put和get</h1>
 <h2>1.1. 设置key和value</h2>
 <pre><code class="language-shell">etcdctl put /app &quot;myapp&quot;
 etcdctl put /app/config/database/host &quot;127.0.0.1&quot;
@@ -103,7 +103,7 @@ found 2 leases
 <pre><code class="language-bash">etcdctl lease revoke 694d95c322cd3623
 </code></pre>
 <p>执行该命令后，与该租约关联的所有键值对都会被删除。</p>
-}
+
     </section>
 </article>
             </div>

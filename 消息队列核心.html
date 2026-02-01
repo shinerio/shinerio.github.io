@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<ul>
+        <ul>
 <li>为什么需要消息队列</li>
 <li>消息队列的核心设计和使用</li>
 <li>深入消息队列高性能原理</li>
@@ -167,7 +167,7 @@ try {
 <h4>3.4.3.2. 方案二</h4>
 <p>事务消息适用于异步更新的场景，对数据的实时性要求不高的地方，主要目的是为了解决消息生产者和消息消费者的数据一致性问题。使用消息队列MQ的时候，我们可以采用write ahead和write done的方式来保证事务的一致性。开启事务之前，先发送write ahead消息，告知消息消费者事务开启，随后生产者执行事务，并发送write done消息，如果write done消息发送成功，则可能保证消息消费者能够正确拿到消息，如果write done消息发送失败，则需要消息消费者根据ahead消息维护一个定时器，在超时后通过生产者提供的接口进行资源的反差，确认生产者的事务是否执行成功，并执行相应的消费或放弃操作。这里需要保证ahead消息中包括能够确认资源唯一性的键，通常使用资源主键替代。</p>
 <p><img src="https://raw.githubusercontent.com/shinerio/shinerio.github.io/blog-images/%E5%B0%8F%E4%B9%A6%E5%8C%A0/1638512362859.png" alt=""></p>
-}
+
     </section>
 </article>
             </div>

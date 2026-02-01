@@ -12,6 +12,7 @@ export interface BlogConfig {
     author: string;
     theme: 'light' | 'dark' | 'auto';
     postsPerPage: number;
+    blacklist?: string[];
 }
 export interface ValidationResult {
     isValid: boolean;

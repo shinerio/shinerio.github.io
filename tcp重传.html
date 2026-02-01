@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<h1>1. tcp超时重传</h1>
+        <h1>1. tcp超时重传</h1>
 <p>重传机制的其中一个方式，就是在发送数据时，设定一个定时器，当超过指定的时间后，没有收到对方的<code>ACK</code>确认应答报文，就会重发该数据，也就是我们常说的<strong>超时重传</strong>。</p>
 <p>TCP 会在以下两种情况发生超时重传：</p>
 <ul>
@@ -201,7 +201,7 @@ setsockopt(sockfd, IPPROTO_TCP, TCP_USER_TIMEOUT, &amp;timeout, sizeof(timeout))
 <p>主要用于检测网络异常导致的对端无响应情况，特别是在长连接应用中，可以更早地检测到连接断开，而不是一直等待TCP的默认重传机制耗尽，在java应用中可以通过设置<a href="数据库关键配置1-sockettimeoutsockettimeout.html" class="internal-link">数据库关键配置<span class="tag">#1</span>. socketTimeout|socketTimeout</a>控制。</p>
 <h1>6. ref</h1>
 <p><a href="https://www.cnblogs.com/zafu/p/18266870">tcp重传时间 tcp_retries2 tcp 重传机制</a></p>
-}
+
     </section>
 </article>
             </div>

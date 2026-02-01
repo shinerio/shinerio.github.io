@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<h1>1. pipeline</h1>
+        <h1>1. pipeline</h1>
 <p>Redis执行一条命令需要经历以下过程：<code>发送命令</code>、<code>命令排队</code>、<code>命令执行</code>、<code>结果响应</code>。由于Redis本身是基于<code>Request/Response</code>协议（停等机制）的，虽然Redis已经提供了像 <code>mget</code> 、<code>mset</code> 这种批量的命令，但是如果某些操作根本就不支持或没有批量的操作或者需要连续执行好几个不同命令，那我们就只能一条一条地执行命令，每执行一条命令都要消耗请求与响应的时间，性能就会大大损耗。Redis中通过<code>Pipeline</code>机制能改善上面这类问题，<strong>它能将一组Redis 命令进行组装，通过一次传输给 Redis 并返回结果集</strong>。<br><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory20250507220852.png" alt="image.png"><br>pipeline的方式相对于非pipeline的方式在执行多条命令的情况下性能会显著提升，网络环境越差，执行命令数量越多，提升越大，可以通过如下测试查看</p>
 <pre><code class="language-python">import redis
 import time
@@ -568,7 +568,7 @@ XINFO GROUPS mystream
 </ol>
 </blockquote>
 <p>这一机制需要应用程序层面实现，Redis自身不会自动检测故障或重新分配消息。系统需要设计专门的监控和恢复组件来处理这些情况，确保消息不会因消费者故障而丢失。</p>
-}
+
     </section>
 </article>
             </div>

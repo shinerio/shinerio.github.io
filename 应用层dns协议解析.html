@@ -41,7 +41,7 @@
         </div>
     </header>
     <section class="content">
-        {<p><code>DNS</code>（Domain Name System）域名解析服务采用<code>C/S</code>架构，是一个应用层协议。<code>DNS</code>的作用是将人类可读的域名（如：<a href="http://www.shinerio.cc%EF%BC%89">www.shinerio.cc）</a> 转换为机器可读的 IP 地址（如：1111.111.111.111）。当前，对于每一级域名长度的限制是63个字符，域名总长度则不能超过253个字符。<code>DNS</code>协议建立在<code>UDP</code>或<code>TCP</code>协议之上，默认使用53号端口。客户端默认通过UDP协议进行通信，但是由于广域网中不适合传输过大的<code>UDP</code>数据包，因此规定当报文长度超过了512字节时，应转换为使用<code>TCP</code>协议进行数据传输。此时可能会出现如下的两种情况：</p>
+        <p><code>DNS</code>（Domain Name System）域名解析服务采用<code>C/S</code>架构，是一个应用层协议。<code>DNS</code>的作用是将人类可读的域名（如：<a href="http://www.shinerio.cc%EF%BC%89">www.shinerio.cc）</a> 转换为机器可读的 IP 地址（如：1111.111.111.111）。当前，对于每一级域名长度的限制是63个字符，域名总长度则不能超过253个字符。<code>DNS</code>协议建立在<code>UDP</code>或<code>TCP</code>协议之上，默认使用53号端口。客户端默认通过UDP协议进行通信，但是由于广域网中不适合传输过大的<code>UDP</code>数据包，因此规定当报文长度超过了512字节时，应转换为使用<code>TCP</code>协议进行数据传输。此时可能会出现如下的两种情况：</p>
 <ul>
 <li>客户端认为<code>UDP</code>响应包长度可能超过512字节，主动使用<code>TCP</code>协议</li>
 <li>客户端使用UDP协议发送DNS请求，服务端发现响应报文超过了 512 字节，在截断的<code>UDP</code>响应报文中将<code>TC</code>设置为1，以通知客户端该报文已经被截断，客户端收到之后再发起一次<code>TCP</code>请求（该特性通常也被安全厂商作为一种有效防御<code>DNS Query Flood</code>攻击的手段）</li>
@@ -295,7 +295,7 @@ if __name__ == &quot;__main__&quot;:
         tcp_dns_query(domain, dns_server)
 </code></pre>
 <p>!<a href="dns-over-tcppcapng.html" class="internal-link">dns_over_tcp.pcapng</a><br><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images20241229214126094.png" alt="image.png"></p>
-}
+
     </section>
 </article>
             </div>

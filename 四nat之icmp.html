@@ -43,7 +43,7 @@
         </div>
     </header>
     <section class="content">
-        {<p><code>PING</code>报文没有类似于<code>TCP</code>或<code>UDP</code>的端口信息，而正常NAT为了内网的安全性和IP地址的高利用率，一般都使用了五元组来匹配NAT会话。为了对ICMP的请求报文进行NAT映射，又要确保网络的安全性，只允许合法的ICMP响应报文进入内网，就必须对其进行特殊的处理。</p>
+        <p><code>PING</code>报文没有类似于<code>TCP</code>或<code>UDP</code>的端口信息，而正常NAT为了内网的安全性和IP地址的高利用率，一般都使用了五元组来匹配NAT会话。为了对ICMP的请求报文进行NAT映射，又要确保网络的安全性，只允许合法的ICMP响应报文进入内网，就必须对其进行特殊的处理。</p>
 <!--more-->
 
 <h1>1. ICMP请求和应答报文</h1>
@@ -62,7 +62,7 @@ downKey=(externalIp,0,transitIp,icmp_id,protocol)
 <li>替换icmp内层ip报文，源地址替换为原始报文ip，源端口替换为原始报文端口。<br><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/icmp%E5%B7%AE%E9%94%99%E6%8A%A5%E6%96%87_NAT%E5%90%8E.jpg" alt=""></li>
 </ol>
 <p>同时收到ICMP差错报文后可以对NAT会话进行加速老化，节省NAT设备的资源。</p>
-}
+
     </section>
 </article>
             </div>

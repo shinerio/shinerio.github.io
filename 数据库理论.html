@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<h1>1. 三大范式</h1>
+        <h1>1. 三大范式</h1>
 <ul>
 <li>第一范式（1NF)<br>  保证列的<strong>原子性</strong>，一张表的某个列不能有多个值，不能出现重复列。实际操作中我们可能会违反这个约束，如将列值存成一个json字典，但是我们一定要保证这些值至少是一起读或写的，不存在经常部分更新的场景。</li>
 <li>第二范式（2NF）：<br>  <strong>取消部分依赖</strong>，表中的每个字段都与主键相关，而不能只与主键的某一部分相关（主要针对联合主键而言）。也就是说在一个数据库表中，一个表中只能保存一种数据，不可以把多种数据保存在同一张数据库表中。比如订单表中可以用订单id编号和商品编号做联合主键，这时候表中的商品价格就是部分依赖，其只依赖于商品编号。</li>
@@ -51,7 +51,7 @@
 <li>DDL（data definition language）：<br>  DDL比DML要多，主要的命令有CREATE、ALTER、DROP等。DDL主要是用在定义或改变表的结构，数据类型，表之间的链接和约束等初始化工作上，他们大多在建立表或软件版本更新时使用。</li>
 <li>DCL（data control language）：<br>  DCL是数据库控制功能，用来设置或更改数据库用户或角色权限的语句，包括grant,deny,revoke等语句。在默认状态下，只有sysadmin,dbcreator,db_owner或db_securityadmin等人员才有权力执行。</li>
 </ul>
-}
+
     </section>
 </article>
             </div>

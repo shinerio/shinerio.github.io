@@ -41,7 +41,7 @@
         </div>
     </header>
     <section class="content">
-        {<p>互联网控制消息协议（Internet Control Message Protocol，ICMP）是TCP/IP协议族的核心协议之一，用于IP协议中发送控制消息，提供可能发生在通信环境中的各种问题反馈。通过这些消息，使管理者可以对所发生的的问题作出诊断，然后采取适当的措施解决。ICMP可以简单认为是网络环境的DEBUG工具。</p>
+        <p>互联网控制消息协议（Internet Control Message Protocol，ICMP）是TCP/IP协议族的核心协议之一，用于IP协议中发送控制消息，提供可能发生在通信环境中的各种问题反馈。通过这些消息，使管理者可以对所发生的的问题作出诊断，然后采取适当的措施解决。ICMP可以简单认为是网络环境的DEBUG工具。</p>
 <!--more-->
 
 <h1>1. ICMP报文格式</h1>
@@ -183,7 +183,7 @@ Request timeout for icmp_seq 1
 <blockquote>
 <p>源主机如何知道UDP到没到达目的主机呢？这就涉及一个技巧的问题，普通的网络程序只监控少数的几个号码较小的端口，比如说80，23等等。而traceroute发送的是端口号&gt;30000的UDP报，所以到达目的主机的时候，目的主机只能发送一个端口不可达的ICMP数据报给主机。由此，源主机就可以知道数据包到达了目标主机。</p>
 </blockquote>
-}
+
     </section>
 </article>
             </div>

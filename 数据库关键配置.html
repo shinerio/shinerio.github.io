@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<h1>1. socketTimeout</h1>
+        <h1>1. socketTimeout</h1>
 <p>未配置socketTimeout时，应用不会超时，会永远等待。当出现网络隔离故障时，服务端访问数据库的连接会hang住，导致需要等到tcp重传失败或者keepalive失败才会断开连接，故障时间会非常长。</p>
 <p>数据库连接池中的连接可能处于如下两种状态</p>
 <ul>
@@ -78,7 +78,7 @@
 </ul>
 <h1>3. loginTimeout</h1>
 <p>数据库用户成功登录到数据库服务器的超时时间，一定要保证$connectTimeout &lt; loginTimeout &lt; getConnectionTimeout$</p>
-}
+
     </section>
 </article>
             </div>

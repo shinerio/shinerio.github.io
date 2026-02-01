@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<h1>1. MLFQ（Multi-Level Feedback Queue）</h1>
+        <h1>1. MLFQ（Multi-Level Feedback Queue）</h1>
 <ul>
 <li>系统中存在多个就绪队列，每个队列有不同的优先级，高优先级队列中的进程会优先获得 CPU 执行。</li>
 <li>进程在队列之间可以移动，根据其行为（如 CPU 占用时间、I/O 操作等）动态调整优先级。</li>
@@ -63,7 +63,7 @@
 <li>如果一个进程在等待 I/O 完成后回到就绪队列，可以将其优先级提高。</li>
 <li>如果一个进程长时间没有获得 CPU 时间，可以将其优先级提高。<br>升级规则的目的是为了提高交互式任务的响应速度，并避免长任务被“饿死”。</li>
 </ol>
-}
+
     </section>
 </article>
             </div>

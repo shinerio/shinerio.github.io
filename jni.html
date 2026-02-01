@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<p><code>System.loadLibrary(&quot;native_memory_utils&quot;)</code> 会在<code>java.library.path</code>指定的所有目录下查找名为 libnative_memory_utils.so（Linux）或 native_memory_utils.dll（Windows）的文件。</p>
+        <p><code>System.loadLibrary(&quot;native_memory_utils&quot;)</code> 会在<code>java.library.path</code>指定的所有目录下查找名为 libnative_memory_utils.so（Linux）或 native_memory_utils.dll（Windows）的文件。</p>
 <blockquote>
 <p>[!note]<br>在 Linux 下，文件名必须是 libnative_memory_utils.so，不能省略 lib 前缀。</p>
 </blockquote>
@@ -101,7 +101,7 @@ JNIEXPORT void JNICALL Java_com_example_demo_NativeMemoryUtils_freeMemory
 </ul>
 <h1>3. 匹配逻辑</h1>
 <p>不要直接写绝对路径，System.loadLibrary 只接受库名，不接受路径。如natvie_memory_utils对应libnative_memory_utils.so</p>
-}
+
     </section>
 </article>
             </div>

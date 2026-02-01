@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<p>kubernetes中的基本概念和术语大多是围绕资源对象来说的，而资源对象在总体上可以分为以下两类：<br>（1）某种资源的对象，例如节点（Node），Pod，服务（Service），存储卷（Volume）<br>（2）与资源对象相关的事物与动作，例如标签（Label）、注解（Annotation）、命名空间（namespace）、部署（Deployment）、HPA(Horizontal Pod Autoscaling，Pod水平自动伸缩)、PVC(dynamically provisioned claim)</p>
+        <p>kubernetes中的基本概念和术语大多是围绕资源对象来说的，而资源对象在总体上可以分为以下两类：<br>（1）某种资源的对象，例如节点（Node），Pod，服务（Service），存储卷（Volume）<br>（2）与资源对象相关的事物与动作，例如标签（Label）、注解（Annotation）、命名空间（namespace）、部署（Deployment）、HPA(Horizontal Pod Autoscaling，Pod水平自动伸缩)、PVC(dynamically provisioned claim)</p>
 <h1>1. 资源对象通用属性</h1>
 <p>版本：版本信息里面包括了此对象所属的资源组<br>类型（Kind）：定义资源对象类型<br>元数据：</p>
 <ul>
@@ -90,7 +90,7 @@
 <h3>2.2.3. PodIP,NodeIP,ClusterIP</h3>
 <p>NodeIP是k8s集群中的每个节点的物理网卡的IP地址，是一个真实存在的物理网络，所有属于这个物理网络的主机（不管这个主机在不在k8s集群内）都可以直接通信。因此，k8s集群外的节点访问k8s集群内的某个节点的TCP/IP服务时，都必须通过NodeIP通信。<br>PodIP是每个POD的IP地址，在使用Docker作为容器支持引擎的情况下，是Docker Engine根据docker0网桥的IP地址段进行分配的，通常是一个虚拟二层网络。K8s集群里面的Pod容器是可以互相访问的，借助了NodeIP构建了虚拟二层网络。<br>在k8s集群里，service的clusterIP地址属于集群内的地址，无法在集群外直接使用这个地址，k8s引入了NodePort的概念，在每个Node上为需要外部访问的service开启一个对应的TCP监听端口，外部系统使用任意一个Node的IP+NodePort即可访问此服务。如果集群中存在多个Node情况，则需要外挂一个负载均衡器，这个负载均衡器一般独立于k8s集群之外，通过是一个硬件的负载均衡器或者软件实现的haproxy或nginx。NodePort功能强大，但每个Service都需要在Node上独占一个端口，而端口是有限的物理资源，于是引入了ingress来让多个service复用端口。<br>每个service都会分配一个clusterIp，clusterIp的负载均衡是源端负载均衡，在client所在Node上通过iptables或ipvs选择后端pod。</p>
 <h3>2.2.4. service和pod关系</h3>
-}
+
     </section>
 </article>
             </div>

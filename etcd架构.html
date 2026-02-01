@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<p>etcd 集群通过Raft算法实现了 <strong>“动态主从 + 分布式共识”</strong> 的架构，确保数据强一致性和高可用性。etcd 集群在同一时刻<strong>只能有一个主节点（Leader）</strong>，且<strong>写操作必须由该主节点处理</strong>，但读操作可以从任意节点执行。etcd集群中的节点在正常运行时通过Raft算法动态选举 “领导者（Leader）”，其他节点为 “跟随者（Follower）</p>
+        <p>etcd 集群通过Raft算法实现了 <strong>“动态主从 + 分布式共识”</strong> 的架构，确保数据强一致性和高可用性。etcd 集群在同一时刻<strong>只能有一个主节点（Leader）</strong>，且<strong>写操作必须由该主节点处理</strong>，但读操作可以从任意节点执行。etcd集群中的节点在正常运行时通过Raft算法动态选举 “领导者（Leader）”，其他节点为 “跟随者（Follower）</p>
 <h1>1. 节点角色与职责</h1>
 <h2>1.1. Leader 节点</h2>
 <ul>
@@ -59,7 +59,7 @@
 <li>Leader 将写日志持久化后，向至少半数以上节点（如3节点集群需2个节点）发送日志复制请求。</li>
 <li>当收到半数以上节点的确认后，Leader 提交日志并返回客户端成功。</li>
 </ol>
-}
+
     </section>
 </article>
             </div>

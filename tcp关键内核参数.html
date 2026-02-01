@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<h1>1. tcp_syn_retries</h1>
+        <h1>1. tcp_syn_retries</h1>
 <p>这个参数值设置的是client发送SYN如果server端不回复的话，&lt;font color=&quot;<span class="tag">#ff0000</span>&quot;&gt;重传SYN的次数</font>。对我们的直接影响就是connet建立连接时的超时时间。当然Java通过一些C原生系统调用的组合使得我们可以进行超时时间的设置。在Linux里面默认设置是5，下面给出建议值3和默认值5之间的超时时间。</p>
 <table>
 <thead>
@@ -155,7 +155,7 @@ tcp_tw_reuse并没办法解决，如果第四次挥手的ACK报文丢失了，�
 [Linux上TCP的几个内核参数调优](https://www.cnblogs.com/alchemystar/p/13175276.html)
 https://xiaolincoding.com/network/3_tcp/tcp_tw_reuse_close.html&lt;span class=&quot;tag&quot;&gt;#tcp-tw-reuse-&lt;/span&gt;%E6%98%AF%E4%BB%80%E4%B9%88
 </code></pre>
-}
+
     </section>
 </article>
             </div>

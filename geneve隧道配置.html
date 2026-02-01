@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<h1>1. geneve协议格式</h1>
+        <h1>1. geneve协议格式</h1>
 <p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images20250106234908676.png" alt="image.png"><br>GENEVE与VXLAN类似，仍然是Ethernet over UDP，也就是用UDP封装Ethernet。VXLAN header是固定长度的（8个字节，其中包含24bit VNI），与VXLAN不同的是，GENEVE header中增加了TLV（Type-Length-Value），由8个字节的固定长度和0~252个字节变长的TLV组成。GENEVE header中的TLV代表了可扩展的元数据。<br><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images20250107000425787.png" alt="image.png"></p>
 <ul>
 <li>Version（2bit）：目前是0</li>
@@ -342,7 +342,7 @@ arp -s 169.254.175.253 1e:53:8a:c3:1a:be
 <ol>
 <li>要配置好回程路由，否则会认为回程不可达，不会发送arp响应</li>
 </ol>
-}
+
     </section>
 </article>
             </div>

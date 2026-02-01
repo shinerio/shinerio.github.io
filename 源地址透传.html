@@ -39,7 +39,7 @@
         </div>
     </header>
     <section class="content">
-        {<h1>1. TOA(TCP Option Address)</h1>
+        <h1>1. TOA(TCP Option Address)</h1>
 <p><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/tcp%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F.png" alt="image.png"><br>TOA将源地址放在<code>tcp option</code>字段中。option字段最长40字节，每个选项由三部分组成：op-kind、op-length、op-data，我们最常见的MSS字段就是在option里。目前option使用的op-kind并不多，我们只需要构建一个不冲突的op-kind就可以把clientIP填充进去。IPv4 地址占用 4 个字节，<a href="https://so.csdn.net/so/search?q=IPv6&spm=1001.2101.3001.7020">IPv6</a> 占用 16 字节，填充到 option 中是没有问题的，toa格式如下：</p>
 <pre><code class="language-txt">+----------+----------+--------------------+
 |  opcode  |  opsize  |         port       |
@@ -75,7 +75,7 @@
 |                value                     |
 +------------------------------------------+
 </code></pre>
-}
+
     </section>
 </article>
             </div>

@@ -43,7 +43,7 @@
         </div>
     </header>
     <section class="content">
-        {<p>我们知道传输层的任意一条流都是通过两个<code>socket</code>建立的，<code>socket</code>由<code>(ip,port,protocol)</code>组成，因此一条流可以用五元组<code>(srcIp,srcPort,dstIp,dstPort,protocol)</code>表示。这个五元组中的任意一个元素都不能改变，否则就是另外一条流了。对于服务端来说，<code>srcIp</code>和<code>srcPort</code>中任意一个变了，就意味着一个新的接入连接；而对于客户端来说，<code>dstIp</code>和<code>dstPort</code>中任意一个发生变化，访问的就是一个新的服务，比如通常<code>80</code>是一个<code>http server</code>服务，<code>5432</code>是一个<code>postgresql</code>数据库的服务端口。</p>
+        <p>我们知道传输层的任意一条流都是通过两个<code>socket</code>建立的，<code>socket</code>由<code>(ip,port,protocol)</code>组成，因此一条流可以用五元组<code>(srcIp,srcPort,dstIp,dstPort,protocol)</code>表示。这个五元组中的任意一个元素都不能改变，否则就是另外一条流了。对于服务端来说，<code>srcIp</code>和<code>srcPort</code>中任意一个变了，就意味着一个新的接入连接；而对于客户端来说，<code>dstIp</code>和<code>dstPort</code>中任意一个发生变化，访问的就是一个新的服务，比如通常<code>80</code>是一个<code>http server</code>服务，<code>5432</code>是一个<code>postgresql</code>数据库的服务端口。</p>
 <p><code>NAT</code>是用来做地址转换的，为了保证一条流五元组的一致性，我们需要保证<code>NAT</code>前和<code>NAT</code>后的IP、端口以及协议在一条流的整个生命周期都不变。为了保证这种不变性，我们需要维持一种<code>NAT</code>映射关系，我们把这个映射关系称之为<code>NAT</code>会话(session)。对于<code>SNAT</code>而言，<code>transtitIp</code>是被多个内网主机共享的，这个映射关系不能是永久的，否则就变成了内网<code>(internalIp,internalPort)</code>和<code>(transitIp,transitPort)</code>是<code>1:1</code>关系， <code>(transitIp,transitPort)</code>的组合关系很快便会出现耗尽的情况。因此对于<code>SNAT</code>而言，会话的另一个重要属性就是会话超时时间。而对于<code>DNAT</code>而言，由于内网是服务端，对外应该暴露固定的<code>transitIp</code>和<code>transitPort</code>，且需要被映射到内网特定的某个主机提供的某个特定服务，即一组固定的<code>internalIp</code>和<code>internalPort</code>。这个映射关系是不随着外网的<code>externalIp</code>和<code>externalPort</code>改变而改变的，因此这种会话一般是永久性的。<code>DNAT</code>的会话是固定映射的，很好理解，因此下文我们讨论的会话主要是针对<code>SNAT</code>而言。</p>
 <!--more-->
 
@@ -176,7 +176,7 @@ time_total: 75.007882
 <p><code>TCP</code>通过四次挥手来完成连接的释放，因此我们可以维护<code>TCP状态机</code>，当收到第二个<code>FIN</code>报文后又收到<code>ACK</code>报文（即<code>LAST_ACK</code>），代表<code>TCP</code>挥手完成，此时只需要等待<code>2MSL</code>后即可释放会话（在被动方没有收到ACK报文的情况下，主动端可以有机会重发）。</p>
 <h3>2.3.3. TCP RST</h3>
 <p><code>RST</code>用于复位因某种原因引起出现的错误连接，也用来拒绝非法数据和请求。发送<code>RST</code>报文通常意味着发生了某些错误，接收端不必回<code>ACK</code>，因此<code>RST</code>报文也代表着会话的结束。<code>NAT</code>设备收到<code>RST</code>报文后也需要等待<code>2MSL</code>后释放会话（在<code>RST</code>未被对端收到的情况下，对端还有机会通过业务报文再次触发<code>RST</code>）。</p>
-}
+
     </section>
 </article>
             </div>
