@@ -110,6 +110,7 @@ if errorlevel 1 (
     echo.📦 Installing gh-pages...
     call npm install -g gh-pages
 )
+
 REM Deploy to GitHub Pages
 call gh-pages -d dist -b gh-pages -m "Deploy blog [skip ci]"
 if errorlevel 1 (

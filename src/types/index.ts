@@ -7,6 +7,8 @@
 export interface BlogConfig {
   vaultPath: string;
   outputPath: string;
+  backupPath?: string;
+  backupMode?: boolean;
   siteTitle: string;
   siteDescription: string;
   author: string;

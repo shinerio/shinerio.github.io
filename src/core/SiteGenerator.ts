@@ -3,7 +3,7 @@
  * Site Generator for creating HTML pages and static assets
  */
 
-import { GenerationOptions, Article, ParsedArticle, GenerationError } from '../types';
+import { GenerationOptions, Article, ParsedArticle, GenerationError, BlogConfig } from '../types';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import { marked } from 'marked';
@@ -24,19 +24,26 @@ export class SiteGenerator {
   async generateSite(options: GenerationOptions): Promise<void> {
     try {
       // 确保输出目录存在
-      await fs.ensureDir(options.outputPath);
+      let outputPath = options.outputPath;
+
+      // 如果启用了备份模式，则将内容输出到备份子目录
+      if (options.config.backupMode && options.config.backupPath) {
+        outputPath = path.join(options.outputPath, options.config.backupPath);
+      }
+
+      await fs.ensureDir(outputPath);
 
       // 转换文章数据
       const articles = this.convertToArticles(options.articles);
 
       // 生成各种页面
-      await this.generateHomePage(articles, options);
-      await this.generateArticleList(articles, options);
-      await this.generateArticlePages(articles, options);
-      await this.generateSearchPage(options);
-      
+      await this.generateHomePage(articles, options, outputPath);
+      await this.generateArticleList(articles, options, outputPath);
+      await this.generateArticlePages(articles, options, outputPath);
+      await this.generateSearchPage(options, outputPath);
+
       // 复制静态资源
-      await this.copyStaticAssets(options.outputPath);
+      await this.copyStaticAssets(outputPath);
 
     } catch (error) {
       throw new GenerationError(
@@ -49,20 +56,20 @@ export class SiteGenerator {
    * 生成首页
    * Generate home page
    */
-  async generateHomePage(articles: Article[], options: GenerationOptions): Promise<void> {
+  async generateHomePage(articles: Article[], options: GenerationOptions, outputPath: string): Promise<void> {
     const recentArticles = articles
       .filter(article => !article.isDraft)
       .sort((a, b) => b.date.getTime() - a.date.getTime())
       .slice(0, 5);
 
     const layoutTemplate = await this.loadTemplate('layout.html');
-    
+
     const content = `
       <section class="hero">
         <h1 class="hero-title">${options.config.siteTitle}</h1>
         <p class="hero-subtitle">${options.config.siteDescription}</p>
       </section>
-      
+
       <section class="recent-articles">
         <div class="section-header">
           <h2 class="section-title">最新文章</h2>
@@ -72,7 +79,7 @@ export class SiteGenerator {
           ${recentArticles.map(article => this.renderArticleCard(article)).join('')}
         </div>
       </section>
-      
+
       <section class="featured-content">
         <div class="featured-grid">
           <div class="featured-item">
@@ -82,7 +89,7 @@ export class SiteGenerator {
           <div class="featured-item">
             <h3>标签云</h3>
             <div class="tag-cloud">
-              ${this.getPopularTags(articles).slice(0, 10).map(tag => 
+              ${this.getPopularTags(articles).slice(0, 10).map(tag =>
                 `<span class="tag">#${tag.name}</span>`
               ).join('')}
             </div>
@@ -94,7 +101,7 @@ export class SiteGenerator {
         </div>
       </section>
     `;
-    
+
     const html = this.renderTemplate(layoutTemplate, {
       title: '首页',
       siteTitle: options.config.siteTitle,
@@ -109,21 +116,21 @@ export class SiteGenerator {
       content,
       additionalHead: ''
     });
-    
-    await fs.writeFile(path.join(options.outputPath, 'index.html'), html);
+
+    await fs.writeFile(path.join(outputPath, 'index.html'), html);
   }
 
   /**
    * 生成文章列表页
    * Generate article list page
    */
-  async generateArticleList(articles: Article[], options: GenerationOptions): Promise<void> {
+  async generateArticleList(articles: Article[], options: GenerationOptions, outputPath: string): Promise<void> {
     const publishedArticles = articles
       .filter(article => !article.isDraft)
       .sort((a, b) => b.date.getTime() - a.date.getTime());
 
     const layoutTemplate = await this.loadTemplate('layout.html');
-    
+
     const content = `
       <div class="articles-filters">
         <div class="filter-group">
@@ -139,18 +146,18 @@ export class SiteGenerator {
           <label for="tag-filter">标签筛选:</label>
           <select id="tag-filter" class="filter-select">
             <option value="">所有标签</option>
-            ${this.getPopularTags(articles).map(tag => 
+            ${this.getPopularTags(articles).map(tag =>
               `<option value="${tag.name}">#${tag.name} (${tag.count})</option>`
             ).join('')}
           </select>
         </div>
       </div>
-      
+
       <div class="article-list">
         ${publishedArticles.map(article => this.renderArticleListItem(article)).join('')}
       </div>
     `;
-    
+
     const html = this.renderTemplate(layoutTemplate, {
       title: '文章列表',
       siteTitle: options.config.siteTitle,
@@ -165,20 +172,20 @@ export class SiteGenerator {
       content,
       additionalHead: ''
     });
-    
-    await fs.writeFile(path.join(options.outputPath, 'articles.html'), html);
+
+    await fs.writeFile(path.join(outputPath, 'articles.html'), html);
   }
 
   /**
    * 生成搜索页面
    * Generate search page
    */
-  async generateSearchPage(options: GenerationOptions): Promise<void> {
+  async generateSearchPage(options: GenerationOptions, outputPath: string): Promise<void> {
     const layoutTemplate = await this.loadTemplate('layout.html');
     const searchTemplate = await this.loadTemplate('search.html');
-    
+
     const content = this.renderTemplate(searchTemplate, {});
-    
+
     const html = this.renderTemplate(layoutTemplate, {
       title: '搜索',
       siteTitle: options.config.siteTitle,
@@ -193,18 +200,18 @@ export class SiteGenerator {
       content,
       additionalHead: ''
     });
-    
-    await fs.writeFile(path.join(options.outputPath, 'search.html'), html);
+
+    await fs.writeFile(path.join(outputPath, 'search.html'), html);
   }
-  async generateArticlePages(articles: Article[], options: GenerationOptions): Promise<void> {
+  async generateArticlePages(articles: Article[], options: GenerationOptions, outputPath: string): Promise<void> {
     const layoutTemplate = await this.loadTemplate('layout.html');
     const articleTemplate = await this.loadTemplate('article.html');
-    
+
     for (const article of articles) {
       if (!article.isDraft) {
         // 处理文章内容中的Obsidian链接
         const processedContent = this.processObsidianLinks(article.htmlContent, articles);
-        
+
         const content = this.renderTemplate(articleTemplate, {
           title: article.title,
           content: processedContent,
@@ -216,7 +223,7 @@ export class SiteGenerator {
           tableOfContents: this.generateTableOfContents(article.htmlContent),
           relatedArticles: this.getRelatedArticles(article, articles).slice(0, 3)
         });
-        
+
         const html = this.renderTemplate(layoutTemplate, {
           title: article.title,
           siteTitle: options.config.siteTitle,
@@ -235,8 +242,8 @@ export class SiteGenerator {
 <meta property="article:published_time" content="${article.date.toISOString()}">
 <meta property="article:author" content="${options.config.author || options.config.siteTitle}">`
         });
-        
-        await fs.writeFile(path.join(options.outputPath, `${article.slug}.html`), html);
+
+        await fs.writeFile(path.join(outputPath, `${article.slug}.html`), html);
       }
     }
   }

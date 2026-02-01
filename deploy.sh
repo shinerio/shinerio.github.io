@@ -88,6 +88,33 @@ case $DEPLOY_METHOD in
             npm install -g gh-pages
         fi
 
+        # First, generate blog normally for main site if backup mode is disabled
+        if [[ ! -f "$CONFIG_FILE" ]]; then
+            echo "⚠️  Config file not found, creating with default settings"
+            npx obsidian-blog init -o "$CONFIG_FILE"
+        fi
+
+        # Determine if we should backup the current content first
+        if jq -e '.backupMode // false' "$CONFIG_FILE" >/dev/null 2>&1; then
+            echo "🔄 Backup mode enabled, generating content to backup subdirectory..."
+
+            # Create temporary config with backup settings
+            TEMP_CONFIG=$(mktemp)
+            cp "$CONFIG_FILE" "$TEMP_CONFIG"
+
+            # Modify the config to enable backup mode
+            jq '.backupMode = true' "$CONFIG_FILE" > "$TEMP_CONFIG" && mv "$TEMP_CONFIG" "$CONFIG_FILE"
+
+            # Generate the content to backup location
+            npx obsidian-blog generate -c "$CONFIG_FILE" -v
+
+            # Restore original config
+            jq '.backupMode = false' "$CONFIG_FILE" > "$TEMP_CONFIG" && mv "$TEMP_CONFIG" "$CONFIG_FILE"
+        else
+            # Generate normally
+            npx obsidian-blog generate -c "$CONFIG_FILE" -v
+        fi
+
         # Deploy to GitHub Pages
         gh-pages -d dist -b gh-pages -m "Deploy blog [skip ci]"
         echo "✅ Deployed to GitHub Pages!"

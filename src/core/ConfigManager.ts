@@ -87,6 +87,14 @@ export class ConfigManager {
       errors.push('postsPerPage 必须大于 0');
     }
 
+    // 验证备份路径（如果启用备份模式）
+    if (config.backupMode && config.backupPath) {
+      const pathValidation = this.validatePath(config.backupPath, 'write');
+      if (!pathValidation.isValid) {
+        errors.push(pathValidation.error!);
+      }
+    }
+
     return {
       isValid: errors.length === 0,
       errors,
@@ -102,6 +110,8 @@ export class ConfigManager {
     return {
       vaultPath: './vault',
       outputPath: './dist',
+      backupPath: 'backup',
+      backupMode: false,
       siteTitle: 'My Obsidian Blog',
       siteDescription: 'A blog generated from Obsidian notes',
       author: '',

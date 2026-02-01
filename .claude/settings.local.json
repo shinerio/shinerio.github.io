@@ -65,7 +65,10 @@
       "Bash(npm test -- src/core/__tests__/SearchEngine.test.ts --testNamePattern=\"Chinese\")",
       "Bash(npm test -- src/core/__tests__/SearchEngineValidation.test.ts)",
       "Bash(openspec new change \"split-search-modules\")",
-      "Bash(openspec status --change \"split-search-modules\")"
+      "Bash(openspec status --change \"split-search-modules\")",
+      "Bash(git push origin :gh-pages)",
+      "Bash(npx gh-pages -d dist -b gh-pages -m \"Deploy blog [skip ci]\" -f)",
+      "Bash(chmod +x deploy.sh)"
     ]
   }
 }
