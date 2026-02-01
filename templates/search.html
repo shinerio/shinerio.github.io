@@ -1,7 +1,21 @@
 <section class="search-section fade-in">
     <h1 class="search-title">Search Articles</h1>
-    <div class="search-container">
+    <div class="search-controls">
         <input type="text" id="search-input" class="search-input" placeholder="Search articles..." autocomplete="off">
+        <div class="search-options">
+            <label class="radio-option">
+                <input type="radio" name="search-type" value="all" checked>
+                <span class="radio-text">Title & Content</span>
+            </label>
+            <label class="radio-option">
+                <input type="radio" name="search-type" value="title">
+                <span class="radio-text">Title Only</span>
+            </label>
+            <label class="radio-option">
+                <input type="radio" name="search-type" value="content">
+                <span class="radio-text">Content Only</span>
+            </label>
+        </div>
         <button id="search-button" class="search-button" aria-label="Search">
             <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>

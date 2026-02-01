@@ -63,7 +63,9 @@
       "Bash(openspec instructions apply --change \"fix-search-functionality\" --json)",
       "Bash(npm test -- --testNamePattern=\"SearchEngine Validation Tests\")",
       "Bash(npm test -- src/core/__tests__/SearchEngine.test.ts --testNamePattern=\"Chinese\")",
-      "Bash(npm test -- src/core/__tests__/SearchEngineValidation.test.ts)"
+      "Bash(npm test -- src/core/__tests__/SearchEngineValidation.test.ts)",
+      "Bash(openspec new change \"split-search-modules\")",
+      "Bash(openspec status --change \"split-search-modules\")"
     ]
   }
 }

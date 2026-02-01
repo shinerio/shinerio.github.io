@@ -11,7 +11,8 @@ export { ConfigManager } from './core/ConfigManager';
 export { FileScanner } from './core/FileScanner';
 export { MetadataParser } from './core/MetadataParser';
 export { SiteGenerator } from './core/SiteGenerator';
-export { SearchEngine } from './core/SearchEngine';
+export { SearchEngine } from './core/SearchEngine';  // Keep for backward compatibility
+export { SearchCoordinator } from './core/SearchCoordinator';  // New export
 export { GracefulErrorHandler } from './core/ErrorHandler';
 
 // 导入核心组件用于内部使用
@@ -19,7 +20,7 @@ import { ConfigManager } from './core/ConfigManager';
 import { FileScanner } from './core/FileScanner';
 import { MetadataParser } from './core/MetadataParser';
 import { SiteGenerator } from './core/SiteGenerator';
-import { SearchEngine } from './core/SearchEngine';
+import { SearchCoordinator } from './core/SearchCoordinator';  // Changed import
 import { GracefulErrorHandler } from './core/ErrorHandler';
 import { ConfigError, GenerationError, FileError, ParseError, ProgressReport, BreakpointState, ScanResult } from './types';
 
@@ -32,7 +33,7 @@ export class ObsidianBlogGenerator {
   private fileScanner: FileScanner;
   private metadataParser: MetadataParser;
   private siteGenerator: SiteGenerator;
-  private searchEngine: SearchEngine;
+  private searchEngine: SearchCoordinator;  // Changed type
   private errorHandler: GracefulErrorHandler;
 
   constructor() {
@@ -40,7 +41,7 @@ export class ObsidianBlogGenerator {
     this.fileScanner = new FileScanner();
     this.metadataParser = new MetadataParser();
     this.siteGenerator = new SiteGenerator();
-    this.searchEngine = new SearchEngine();
+    this.searchEngine = new SearchCoordinator();  // Changed instantiation
     this.errorHandler = new GracefulErrorHandler(); // No temp dir override in production
   }
 
