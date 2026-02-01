@@ -5,7 +5,7 @@
 
 import { ConfigManager } from '../ConfigManager';
 import { BlogConfig, ConfigError } from '../../types';
-import { createTempDir, cleanupTempDir } from '../../test-setup';
+import { createTempDir, cleanupTempDir } from '../../../test/setup/test-setup';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import fc from 'fast-check';
@@ -104,6 +104,75 @@ describe('ConfigManager', () => {
       const result = configManager.validateConfig(config);
       expect(result.isValid).toBe(false);
       expect(result.errors).toContain('postsPerPage 必须大于 0');
+    });
+
+    it('should validate blacklist configuration properly', () => {
+      const config = {
+        vaultPath: tempDir,
+        outputPath: './dist',
+        siteTitle: 'Test Blog',
+        siteDescription: 'Test Description',
+        author: 'Test Author',
+        theme: 'light' as const,
+        postsPerPage: 5,
+        blacklist: ['*.tmp.md', 'drafts/', 'private/']
+      };
+
+      const result = configManager.validateConfig(config);
+      expect(result.isValid).toBe(true);
+      expect(result.errors).toHaveLength(0);
+    });
+
+    it('should reject blacklist with invalid entries', () => {
+      const config = {
+        vaultPath: tempDir,
+        outputPath: './dist',
+        siteTitle: 'Test Blog',
+        siteDescription: 'Test Description',
+        author: 'Test Author',
+        theme: 'light' as const,
+        postsPerPage: 5,
+        blacklist: ['valid-pattern.md', '', '../forbidden']
+      };
+
+      const result = configManager.validateConfig(config);
+      expect(result.isValid).toBe(false);
+      expect(result.errors).toContain('blacklist[1] 不能是空字符串');
+      expect(result.errors).toContain('blacklist[2] 包含非法路径遍历模式 \'../\'');
+    });
+
+    it('should allow empty blacklist array', () => {
+      const config = {
+        vaultPath: tempDir,
+        outputPath: './dist',
+        siteTitle: 'Test Blog',
+        siteDescription: 'Test Description',
+        author: 'Test Author',
+        theme: 'light' as const,
+        postsPerPage: 5,
+        blacklist: []
+      };
+
+      const result = configManager.validateConfig(config);
+      expect(result.isValid).toBe(true);
+      expect(result.errors).toHaveLength(0);
+    });
+
+    it('should allow undefined blacklist', () => {
+      const config = {
+        vaultPath: tempDir,
+        outputPath: './dist',
+        siteTitle: 'Test Blog',
+        siteDescription: 'Test Description',
+        author: 'Test Author',
+        theme: 'light' as const,
+        postsPerPage: 5
+        // No blacklist property
+      };
+
+      const result = configManager.validateConfig(config);
+      expect(result.isValid).toBe(true);
+      expect(result.errors).toHaveLength(0);
     });
   });
 

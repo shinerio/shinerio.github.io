@@ -87,7 +87,7 @@ export class ObsidianBlogGenerator {
       // 2. 扫描文件
       this.errorHandler.reportProgress({ stage: 'SCANNING', current: 2, total: 6, message: '扫描Markdown文件...' });
       console.log('🔍 扫描Markdown文件...');
-      const scanResult: ScanResult = await this.fileScanner.scanVault(config.vaultPath);
+      const scanResult: ScanResult = await this.fileScanner.scanVault(config.vaultPath, config.blacklist || []);
       console.log(`   找到 ${scanResult.files.length} 个文件`);
 
       if (scanResult.errors.length > 0) {

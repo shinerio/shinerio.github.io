@@ -1,0 +1,11 @@
+{
+  "articles": [
+    {
+      "id": "test-vault\\general\\post3",
+      "title": "General Post",
+      "content": "General Post This is a post that should NOT be blacklisted.",
+      "tags": [],
+      "slug": "post3"
+    }
+  ]
+}

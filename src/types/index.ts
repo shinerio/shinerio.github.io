@@ -14,6 +14,7 @@ export interface BlogConfig {
   author: string;
   theme: 'light' | 'dark' | 'auto';
   postsPerPage: number;
+  blacklist?: string[]; // Array of file/folder paths to exclude from processing
 }
 
 // 配置验证结果

@@ -1,0 +1,14 @@
+{
+  "vaultPath": "./test-vault",
+  "outputPath": "./test-output-relative",
+  "siteTitle": "Test Blog",
+  "siteDescription": "Test Description",
+  "author": "Test Author",
+  "theme": "auto",
+  "postsPerPage": 10,
+  "blacklist": [
+    "**/life/**",
+    "**/travel/**",
+    "上海迪士尼.md"
+  ]
+}

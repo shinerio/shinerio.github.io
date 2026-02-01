@@ -64,6 +64,7 @@ deploy.bat [-c config_file] [-d deploy_method]
 | `author` | string | `""` | 作者名称 |
 | `theme` | string | `"auto"` | 主题 (`light`/`dark`/`auto`) |
 | `postsPerPage` | number | `10` | 每页显示的文章数量 |
+| `blacklist` | string[] | `[]` | 排除的文件/目录路径数组，支持通配符模式 |
 
 ## 配置文件格式
 配置文件是一个 JSON 文件，具有以下结构：
@@ -76,9 +77,24 @@ deploy.bat [-c config_file] [-d deploy_method]
   "siteDescription": "从 Obsidian 笔记生成的博客",
   "author": "",
   "theme": "auto",
-  "postsPerPage": 10
+  "postsPerPage": 10,
+  "blacklist": [
+    "drafts/",
+    "temp/",
+    "*.tmp.md",
+    "secret-notes/personal-diary.md",
+    "**/private/**"
+  ]
 }
 ```
+
+### 黑名单配置说明
+`blacklist` 选项允许您指定不想包含在生成的博客中的文件或目录：
+
+- `"*.tmp.md"` - 排除所有以 `.tmp.md` 结尾的文件
+- `"drafts/"` - 排除整个 drafts 目录及其所有内容
+- `"**/private/**"` - 排除任意深度的 private 目录
+- `"secret-notes/note.md"` - 排除特定文件
 
 ## 许可证
 

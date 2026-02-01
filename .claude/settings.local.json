@@ -68,7 +68,18 @@
       "Bash(openspec status --change \"split-search-modules\")",
       "Bash(git push origin :gh-pages)",
       "Bash(npx gh-pages -d dist -b gh-pages -m \"Deploy blog [skip ci]\" -f)",
-      "Bash(chmod +x deploy.sh)"
+      "Bash(chmod +x deploy.sh)",
+      "Bash(.specify/scripts/powershell/create-new-feature.ps1 -Json \"增加一个黑名单配置项，数组形式，可以指定文件或文件夹，黑名单里面的文件或文件夹下所有文件不发布、部署\" --number 1 --short-name \"blacklist-config\" \"Add blacklist configuration for files and folders\")",
+      "Bash(git checkout -b 1-blacklist-config)",
+      "Bash(.specify/scripts/powershell/setup-plan.ps1 -Json)",
+      "Bash(npx jest ./src/core/__tests__/FileScanner.test.ts --passWithNoTests)",
+      "Bash(npx jest src/core/__tests__/FileScanner.test.ts --verbose)",
+      "Bash(npx jest test/integration/blacklist-patterns.test.ts --verbose)",
+      "Bash(npx jest src/core/__tests__/ConfigManager.test.ts --verbose)",
+      "Bash(npx ts-node src/cli.ts generate -c test-blacklist-config.json)",
+      "Bash(npx ts-node src/cli.ts generate -c test-relative-config.json)",
+      "Bash(ls -la *.config.json blog.config.json)",
+      "Bash(npx ts-node src/cli.ts generate)"
     ]
   }
 }

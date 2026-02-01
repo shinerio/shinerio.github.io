@@ -3,18 +3,65 @@
  * File Scanner for discovering markdown files in Obsidian vault
  */
 
-import { ScanResult, ScanError, FileStats, FileError } from '../types';
+import { ScanResult, ScanError, FileStats, FileError, BlogConfig } from '../types';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import { minimatch } from 'minimatch';
 
 export class FileScanner {
   private static readonly MARKDOWN_EXTENSIONS = ['.md', '.markdown'];
 
   /**
+   * 检查路径是否在黑名单中
+   * Check if a path matches any of the blacklist patterns
+   */
+  private matchesBlacklist(filePath: string, blacklist: string[], vaultPath: string): boolean {
+    if (!blacklist || blacklist.length === 0) {
+      return false;
+    }
+
+    // Convert both paths to absolute paths before computing relative path
+    // This ensures correct matching even when vaultPath is a relative path
+    const absoluteFilePath = path.resolve(filePath);
+    const absoluteVaultPath = path.resolve(vaultPath);
+    // Convert the file path to be relative to the vault for comparison
+    const relativePath = path.relative(absoluteVaultPath, absoluteFilePath).replace(/\\/g, '/');
+
+    for (const pattern of blacklist) {
+      if (typeof pattern !== 'string') {
+        console.warn(`Invalid blacklist pattern (not a string): ${pattern}`);
+        continue;
+      }
+
+      try {
+        // Check if the path matches the pattern - using case-insensitive matching
+        if (minimatch(relativePath, pattern, { dot: true, nocase: true })) {
+          return true;
+        }
+
+        // Also check if the path is within a blacklisted directory
+        // For patterns ending with '/', treat as directory
+        if (pattern.endsWith('/')) {
+          const normalizedPattern = pattern.slice(0, -1); // Remove trailing slash
+          if (minimatch(relativePath, normalizedPattern + '/**', { dot: true, nocase: true }) ||
+              minimatch(relativePath, normalizedPattern + '/*', { dot: true, nocase: true })) {
+            return true;
+          }
+        }
+      } catch (error) {
+        // If pattern is invalid, we log a warning but continue processing
+        console.warn(`Invalid blacklist pattern: ${pattern}`, error);
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * 扫描vault目录
    * Scan vault directory for markdown files
    */
-  async scanVault(vaultPath: string): Promise<ScanResult> {
+  async scanVault(vaultPath: string, blacklist: string[] = []): Promise<ScanResult> {
     const result: ScanResult = {
       files: [],
       errors: [],
@@ -31,7 +78,7 @@ export class FileScanner {
         throw new FileError(`Vault路径不是目录: ${vaultPath}`, vaultPath);
       }
 
-      await this.scanDirectory(vaultPath, result);
+      await this.scanDirectory(vaultPath, result, blacklist, vaultPath);
     } catch (error) {
       if (error instanceof FileError) {
         result.errors.push({
@@ -55,7 +102,12 @@ export class FileScanner {
    * 递归扫描目录
    * Recursively scan directory
    */
-  private async scanDirectory(dirPath: string, result: ScanResult): Promise<void> {
+  private async scanDirectory(dirPath: string, result: ScanResult, blacklist: string[], vaultPath: string): Promise<void> {
+    // Check if the current directory is blacklisted
+    if (this.matchesBlacklist(dirPath, blacklist, vaultPath)) {
+      return; // Skip this entire directory if it matches any blacklist pattern
+    }
+
     try {
       const entries = await fs.readdir(dirPath, { withFileTypes: true });
 
@@ -64,11 +116,11 @@ export class FileScanner {
 
         try {
           if (entry.isDirectory()) {
-            // 跳过隐藏目录和特殊目录
-            if (!entry.name.startsWith('.') && entry.name !== 'node_modules') {
-              await this.scanDirectory(fullPath, result);
+            // 跳过隐藏目录和特殊目录, but also check if it's blacklisted
+            if (!entry.name.startsWith('.') && entry.name !== 'node_modules' && !this.matchesBlacklist(fullPath, blacklist, vaultPath)) {
+              await this.scanDirectory(fullPath, result, blacklist, vaultPath);
             }
-          } else if (entry.isFile() && this.isMarkdownFile(fullPath)) {
+          } else if (entry.isFile() && this.isMarkdownFile(fullPath) && !this.matchesBlacklist(fullPath, blacklist, vaultPath)) {
             const stats = await this.getFileStats(fullPath);
             result.files.push(fullPath);
             result.totalSize += stats.size;

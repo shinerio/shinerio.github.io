@@ -1,0 +1,16 @@
+{
+  "vaultPath": "./vault",
+  "outputPath": "./dist",
+  "siteTitle": "My Obsidian Blog",
+  "siteDescription": "A blog generated from Obsidian notes",
+  "author": "Jane Doe",
+  "theme": "auto",
+  "postsPerPage": 10,
+  "blacklist": [
+    "drafts/",
+    "temp/",
+    "*.tmp.md",
+    "secret-notes/personal-diary.md",
+    "**/private/**"
+  ]
+}

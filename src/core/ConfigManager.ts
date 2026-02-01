@@ -95,6 +95,24 @@ export class ConfigManager {
       }
     }
 
+    // 验证黑名单配置
+    if (config.blacklist !== undefined) {
+      if (!Array.isArray(config.blacklist)) {
+        errors.push('blacklist 必须是一个字符串数组');
+      } else {
+        for (let i = 0; i < config.blacklist.length; i++) {
+          const item = config.blacklist[i];
+          if (typeof item !== 'string') {
+            errors.push(`blacklist[${i}] 必须是字符串`);
+          } else if (item === '') {
+            errors.push(`blacklist[${i}] 不能是空字符串`);
+          } else if (item.includes('../')) {
+            errors.push(`blacklist[${i}] 包含非法路径遍历模式 '../'`);
+          }
+        }
+      }
+    }
+
     return {
       isValid: errors.length === 0,
       errors,
