@@ -26,3 +26,10 @@ The SearchCoordinator SHALL maintain the same external interface as the original
 #### Scenario: Preserving external API
 - **WHEN** existing code calls the SearchCoordinator using the original SearchEngine interface
 - **THEN** the call SHALL succeed without modification to the calling code
+
+### Requirement: Preserve existing search functionality
+The fix SHALL not break existing search behaviors for title-only or combined searches.
+
+#### Scenario: Combined search still works
+- **WHEN** user performs a combined title and content search
+- **THEN** system returns results based on both title and content matching as before

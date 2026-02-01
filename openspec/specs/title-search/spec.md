@@ -26,3 +26,10 @@ The TitleSearchEngine SHALL generate search result highlights that indicate when
 #### Scenario: Creating title search highlights
 - **WHEN** the TitleSearchEngine creates highlights for search results
 - **THEN** it SHALL mark title matches distinctly to indicate they came from the title search
+
+### Requirement: Preserve existing search functionality
+The fix SHALL not break existing search behaviors for title-only or combined searches.
+
+#### Scenario: Title-only search still works
+- **WHEN** user performs a title-only search
+- **THEN** system returns results based on title matching as before

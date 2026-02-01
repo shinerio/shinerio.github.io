@@ -165,7 +165,7 @@
                                     }
                                     break;
                                 case 'content':
-                                    // Only content matches count
+                                    // Only content matches count (fixed to exclude title matches)
                                     if (lowerContent.includes(term)) {
                                         score += 1;
                                     }

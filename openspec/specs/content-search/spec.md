@@ -26,3 +26,14 @@ The ContentSearchEngine SHALL generate search result highlights that indicate wh
 #### Scenario: Creating content search highlights
 - **WHEN** the ContentSearchEngine creates highlights for search results
 - **THEN** it SHALL mark content matches distinctly to indicate they came from the content search
+
+### Requirement: Correct content-only search matching
+When performing content-only searches, the system SHALL match against the actual content of articles rather than against their titles.
+
+#### Scenario: Content-only search matches content
+- **WHEN** user performs a content-only search for a term that exists in article content but not in the title
+- **THEN** the system returns articles containing that term in their content
+
+#### Scenario: Content-only search excludes title matches
+- **WHEN** user performs a content-only search for a term that exists only in article titles
+- **THEN** the system excludes those articles from results
