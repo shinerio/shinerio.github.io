@@ -81,7 +81,15 @@
       "Bash(ls -la *.config.json blog.config.json)",
       "Bash(npx ts-node src/cli.ts generate)",
       "Bash(npx tsc --noEmit)",
-      "Bash(ls -la *.md)"
+      "Bash(ls -la *.md)",
+      "Bash(git fetch --all --prune)",
+      "Bash(npm start -- generate)",
+      "Bash(dir templatesassets)",
+      "Bash(dir \"templates\\\\assets\")",
+      "Bash(dir \"templates\\\\assets\\\\js\")",
+      "Bash(dir specs)",
+      "Bash(dir specs002-articles-page-fix)",
+      "Bash(dir \"specs\\\\002-articles-page-fix\")"
     ]
   }
 }
