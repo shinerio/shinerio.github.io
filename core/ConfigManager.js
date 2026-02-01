@@ -139,6 +139,19 @@ class ConfigManager {
                 }
             }
         }
+        // 验证自定义域名格式
+        if (config.customDomain) {
+            if (typeof config.customDomain !== 'string' || config.customDomain.trim() === '') {
+                errors.push('customDomain 必须是非空字符串');
+            }
+            else {
+                // 简单验证域名格式
+                const domainRegex = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](\.[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9])*$/;
+                if (!domainRegex.test(config.customDomain)) {
+                    errors.push('customDomain 格式不正确');
+                }
+            }
+        }
         return {
             isValid: errors.length === 0,
             errors,
@@ -159,7 +172,8 @@ class ConfigManager {
             siteDescription: 'A blog generated from Obsidian notes',
             author: '',
             theme: 'auto',
-            postsPerPage: 10
+            postsPerPage: 10,
+            customDomain: undefined
         };
     }
     /**

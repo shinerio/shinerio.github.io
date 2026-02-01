@@ -2,7 +2,7 @@
  * 网站生成器
  * Site Generator for creating HTML pages and static assets
  */
-import { GenerationOptions, Article } from '../types';
+import { GenerationOptions, Article, BlogConfig } from '../types';
 export declare class SiteGenerator {
     private templateCache;
     /**
@@ -101,5 +101,10 @@ export declare class SiteGenerator {
      * Format date for display
      */
     private formatDate;
+    /**
+     * 生成CNAME文件
+     * Generate CNAME file for custom domain
+     */
+    generateCnameFile(config: BlogConfig, outputPath: string): Promise<void>;
 }
 //# sourceMappingURL=SiteGenerator.d.ts.map

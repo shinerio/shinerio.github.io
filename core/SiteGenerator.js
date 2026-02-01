@@ -73,6 +73,8 @@ class SiteGenerator {
             await this.generateSearchPage(options, outputPath);
             // 复制静态资源
             await this.copyStaticAssets(outputPath);
+            // 生成CNAME文件（如果配置了自定义域名）
+            await this.generateCnameFile(options.config, outputPath);
         }
         catch (error) {
             throw new types_1.GenerationError(`网站生成失败: ${error instanceof Error ? error.message : String(error)}`);
@@ -535,6 +537,16 @@ class SiteGenerator {
             month: 'long',
             day: 'numeric'
         });
+    }
+    /**
+     * 生成CNAME文件
+     * Generate CNAME file for custom domain
+     */
+    async generateCnameFile(config, outputPath) {
+        if (config.customDomain && config.customDomain.trim()) {
+            const cnamePath = path.join(outputPath, 'CNAME');
+            await fs.writeFile(cnamePath, config.customDomain.trim());
+        }
     }
 }
 exports.SiteGenerator = SiteGenerator;

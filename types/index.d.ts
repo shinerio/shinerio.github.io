@@ -13,6 +13,7 @@ export interface BlogConfig {
     theme: 'light' | 'dark' | 'auto';
     postsPerPage: number;
     blacklist?: string[];
+    customDomain?: string;
 }
 export interface ValidationResult {
     isValid: boolean;
