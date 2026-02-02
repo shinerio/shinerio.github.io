@@ -68,41 +68,45 @@ export class SiteGenerator {
     const layoutTemplate = await this.loadTemplate('layout.html');
 
     const content = `
-      <section class="hero">
-        <h1 class="hero-title">${options.config.siteTitle}</h1>
-        <p class="hero-subtitle">${options.config.siteDescription}</p>
-      </section>
+      <div class="home-layout">
+        <main class="home-main">
+          <section class="hero">
+            <h1 class="hero-title">${options.config.siteTitle}</h1>
+            <p class="hero-subtitle">${options.config.siteDescription}</p>
+          </section>
 
-      <section class="recent-articles">
-        <div class="section-header">
-          <h2 class="section-title">最新文章</h2>
-          <a href="articles.html" class="section-link">查看全部 →</a>
-        </div>
-        <div class="article-grid">
-          ${recentArticles.map(article => this.renderArticleCard(article)).join('')}
-        </div>
-      </section>
+          <section class="recent-articles">
+            <div class="section-header">
+              <h2 class="section-title">最新文章</h2>
+              <a href="articles.html" class="section-link">查看全部 →</a>
+            </div>
+            <div class="article-grid">
+              ${recentArticles.map(article => this.renderArticleCard(article)).join('')}
+            </div>
+          </section>
+        </main>
 
-      <section class="featured-content">
-        <div class="featured-grid">
-          <div class="featured-item">
+        <aside class="sidebar">
+          <div class="sidebar-widget">
             <h3>文章总数</h3>
-            <p>${articles.filter(a => !a.isDraft).length}</p>
+            <p class="article-count">${articles.filter(a => !a.isDraft).length}</p>
           </div>
-          <div class="featured-item">
+
+          <div class="sidebar-widget">
             <h3>标签云</h3>
             <div class="tag-cloud">
-              ${this.getPopularTags(articles).slice(0, 10).map(tag =>
-                `<span class="tag">#${tag.name}</span>`
+              ${this.getPopularTags(articles).slice(0, 15).map(tag =>
+                `<span class="tag">#${tag.name} (${tag.count})</span>`
               ).join('')}
             </div>
           </div>
-          <div class="featured-item">
+
+          <div class="sidebar-widget">
             <h3>最近更新</h3>
-            <p>${this.formatDate(new Date())}</p>
+            <p class="last-update">${this.formatDate(new Date())}</p>
           </div>
-        </div>
-      </section>
+        </aside>
+      </div>
     `;
 
     const html = this.renderTemplate(layoutTemplate, {

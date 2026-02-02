@@ -1,0 +1,8 @@
+# Change Definition for Adding Home Page Sidebar
+name = "add-home-sidebar"
+title = "Add sidebar functionality to home page"
+status = "draft"
+created = 2026-02-02
+
+[meta]
+description = "Move article totals, tag cloud, and recent updates from bottom of home page to a sidebar while preserving existing content layout"

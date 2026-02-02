@@ -1,0 +1,10 @@
+{
+  "vaultPath": "./test/fixtures/vault",
+  "outputPath": "./test/output",
+  "siteTitle": "Test Blog",
+  "siteDescription": "A test blog for verifying sidebar functionality",
+  "author": "Test Author",
+  "perPage": 5,
+  "theme": "auto",
+  "customDomain": ""
+}
