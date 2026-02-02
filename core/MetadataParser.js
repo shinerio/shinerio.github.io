@@ -78,7 +78,8 @@ class MetadataParser {
         let defaultDate;
         try {
             const stats = fs.statSync(filePath);
-            defaultDate = stats.mtime;
+            // 使用文件创建时间，如果创建时间不可用则使用修改时间
+            defaultDate = stats.birthtime && stats.birthtime.getTime() > 0 ? stats.birthtime : stats.mtime;
         }
         catch {
             defaultDate = new Date();

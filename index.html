@@ -45,43 +45,43 @@
         <div class="article-grid">
           
     <div class="article-card">
-        <h3><a href="业务偶现超时.html">业务偶现超时</a></h3>
-        <p class="article-excerpt">1. 现象 客户A通过NAT网关访问客户B业务偶现超时。 2. 抓包分析 中间设备抓包发现，服务端主动断链，发送FIN报文并收到ACK报文完成两次挥手，但客户端并没有随之进行被动关闭，直到约20秒后发出rst报文，在此期间连接一直处于半关闭状态。而NAT网关fin超时时间为5秒，此时会话已经老化，再...</p>
+        <h3><a href="时间轮.html">时间轮</a></h3>
+        <p class="article-excerpt">时间轮(Timing Wheel)是George Varghese和Tony Lauck在1996年的论文]https://www.cse.wustl.edu/cdgill/courses/cs6874/TimingWheels.ppt)实现的，是一种实现延迟功能（定时器）的精妙的高级算法，其算法应...</p>
         <div class="article-meta">
-            <time datetime="2026-02-01T16:40:22.616Z">2026年2月2日</time>
+            <time datetime="2026-02-01T16:32:51.784Z">2026年2月2日</time>
+            <span class="reading-time">15 分钟</span>
+        </div>
+    </div>
+    <div class="article-card">
+        <h3><a href="openspec.html">Openspec</a></h3>
+        <p class="article-excerpt">A "change" in 是一个“承载着围绕一项工作所进行的所有思考和规划的“集合。文件夹位于，包含proposal, specs, design, tasks。 工作流程 目录结构 - - 这是最重要的目录，存储了系统当前是如何运行的完整描述。 - 按domain组织：为了防止单个文档过大，它按...</p>
+        <div class="article-meta">
+            <time datetime="2026-01-31T12:42:21.345Z">2026年1月31日</time>
+            <span class="reading-time">3 分钟</span>
+        </div>
+    </div>
+    <div class="article-card">
+        <h3><a href="claudemd.html">Claudemd</a></h3>
+        <p class="article-excerpt">| 类型 | 位置 | 范围 | 版本控制 | 典型用途 | | ------ | ----------------------- | ---- | ----- | ------ | | 全局 | | 所有项目 | 不共享 | 个人编码偏好 | | 项目 | | 当前项目 | 共享给团队 | 团队规...</p>
+        <div class="article-meta">
+            <time datetime="2026-01-30T15:47:54.754Z">2026年1月30日</time>
             <span class="reading-time">2 分钟</span>
         </div>
     </div>
     <div class="article-card">
-        <h3><a href="tcp异常断链.html">Tcp异常断链</a></h3>
-        <p class="article-excerpt">1. 现象 客服访问建行业务偶现超时。 建行server端主动发起断链，发送fin报文，客户B收到后回ACK报文，进入fin-wait-2状态 客户B服务端前设置有防火墙，fin状态下设置10秒超时，客户B超时后的rst报文被防火墙丢了，建行server无法收到rst报文，导致一直处于fin-wai...</p>
+        <h3><a href="sddspec-driven-develop.html">SDD（Spec Driven Develop）</a></h3>
+        <p class="article-excerpt">Kiro的spec流程被设计为三个步骤：需求 (requirements.md) → 设计 (design.md) → 任务 (tasks.md)。每个工作流步骤都由一个Markdown文档表示，Kiro会引导你达成这三个步骤。 1. 需求文档 它被构建为一个需求列表 1. 每个需求代表一个“用户故...</p>
         <div class="article-meta">
-            <time datetime="2026-02-01T16:40:22.615Z">2026年2月2日</time>
+            <time datetime="2026-01-26T15:52:58.830Z">2026年1月26日</time>
             <span class="reading-time">1 分钟</span>
         </div>
     </div>
     <div class="article-card">
-        <h3><a href="效率工具.html">效率工具</a></h3>
-        <p class="article-excerpt">1. windows命令行代理 2. git代理 也可以直接编辑/.gitconfig文件 3. windows配置beyondcompare作为gitdiff 修改.gitconfig配置文件 4. 删除重复文件</p>
+        <h3><a href="run-code.html">Run Code</a></h3>
+        <p class="article-excerpt">runcode是一个来自veadk库的内置工具，它提供了一个安全的代码执行沙箱功能。这个工具允许AI Agent运行用户请求的代码片段（主要是 Python3），并返回执行结果。该工具通过字节跳动云服务的API在远程安全环境中执行代码，并具有会话管理和身份验证功能。 1. 工作原理 1.1. 工具注...</p>
         <div class="article-meta">
-            <time datetime="2026-02-01T16:40:22.612Z">2026年2月2日</time>
-            <span class="reading-time">1 分钟</span>
-        </div>
-    </div>
-    <div class="article-card">
-        <h3><a href="quantumult-x.html">Quantumult X</a></h3>
-        <p class="article-excerpt">1. 参考配置 https://raw.githubusercontent.com/limbopro/Profiles4limbo/main/full.conf 2. 规则仓库 https://github.com/blackmatrix7/iosrulescript/tree/master 3. ...</p>
-        <div class="article-meta">
-            <time datetime="2026-02-01T16:40:22.611Z">2026年2月2日</time>
-            <span class="reading-time">14 分钟</span>
-        </div>
-    </div>
-    <div class="article-card">
-        <h3><a href="代理.html">代理</a></h3>
-        <p class="article-excerpt">ssh代理</p>
-        <div class="article-meta">
-            <time datetime="2026-02-01T16:40:22.611Z">2026年2月2日</time>
-            <span class="reading-time">1 分钟</span>
+            <time datetime="2026-01-25T13:59:16.511Z">2026年1月25日</time>
+            <span class="reading-time">3 分钟</span>
         </div>
     </div>
         </div>
