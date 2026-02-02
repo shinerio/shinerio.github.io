@@ -516,6 +516,71 @@ body {
     margin: var(--spacing-lg) 0;
 }
 
+/* Layout for home page with sidebar */
+.home-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+    margin: 0 auto;
+    max-width: var(--container-max-width);
+}
+
+.home-main {
+    min-width: 0; /* Prevent grid items from overflowing */
+}
+
+.sidebar {
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--color-border);
+    align-self: start; /* Align to top of grid */
+}
+
+.sidebar-widget {
+    margin-bottom: var(--spacing-xl);
+}
+
+.sidebar-widget h3 {
+    margin-top: 0;
+    margin-bottom: var(--spacing-md);
+    color: var(--color-accent-primary);
+    font-size: var(--font-size-lg);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--spacing-sm);
+}
+
+.sidebar-widget .article-count {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--color-accent-primary);
+    margin: 0;
+}
+
+.sidebar-widget .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+}
+
+.sidebar-widget .tag {
+    background-color: var(--color-bg-tertiary);
+    padding: calc(var(--spacing-xs) * 0.5) var(--spacing-sm);
+    border-radius: var(--radius-lg);
+    font-size: 0.875rem;
+    border: 1px solid var(--color-border);
+    transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    font-family: var(--font-body);
+    font-weight: 500;
+    letter-spacing: var(--letter-spacing-body);
+}
+
+.sidebar-widget .last-update {
+    font-style: italic;
+    color: var(--color-text-secondary);
+    margin: 0;
+}
+
 .article-card {
     background: var(--color-card-bg);
     border: 1px solid var(--color-card-border);
@@ -900,6 +965,11 @@ li {
     h1 { font-size: var(--font-size-4xl); }
     h2 { font-size: var(--font-size-3xl); }
 
+    /* On small screens, keep sidebar below main content */
+    .home-layout {
+        grid-template-columns: 1fr;
+    }
+
     /* Increase line height slightly for better readability on medium screens */
     p, li, h1, h2, h3, h4, h5, h6 {
         line-height: calc(var(--line-height-base) * 1.05);
@@ -927,6 +997,15 @@ li {
     h2 { font-size: 2rem; }
     h3 { font-size: 1.5rem; }
 
+    /* Home page sidebar layout */
+    .home-layout {
+        grid-template-columns: 1fr 300px; /* Main content, sidebar */
+    }
+
+    .sidebar {
+        height: fit-content;
+    }
+
     /* Optimize typography for tablets */
     body {
         font-size: 1.05rem;
@@ -945,6 +1024,11 @@ li {
 
     .page-nav {
         gap: var(--spacing-xl);
+    }
+
+    /* Enhance sidebar layout for larger screens */
+    .home-layout {
+        grid-template-columns: 1fr 320px; /* Main content, sidebar */
     }
 
     /* Further optimize for larger screens */
@@ -967,6 +1051,11 @@ li {
 
     .articles-grid {
         grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* Optimize sidebar for extra large screens */
+    .home-layout {
+        grid-template-columns: 1fr 350px; /* Main content, sidebar */
     }
 
     h1 { font-size: 3rem; }
@@ -996,6 +1085,12 @@ li {
     .articles-grid {
         grid-template-columns: 1fr;
         gap: var(--spacing-md);
+    }
+
+    /* Stack sidebar below main content on extra small screens */
+    .home-layout {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
     }
 
     .page-header,
