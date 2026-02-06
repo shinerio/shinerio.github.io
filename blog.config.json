@@ -1,0 +1,10 @@
+{
+  "vaultPath": "../../obsidian/obsidian",
+  "outputPath": "./dist",
+  "siteTitle": "Shinerio's Blog",
+  "siteDescription": "Code flows with ease, and life unfolds in beauty",
+  "author": "Shinerio",
+  "perPage": 5,
+  "theme": "auto",
+  "customDomain": "shinerio.site"
+}

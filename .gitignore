@@ -46,7 +46,6 @@ temp/
 .tmp/
 
 # Blog configuration and output
-blog.config.json
 vault/
 output/
 
