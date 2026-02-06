@@ -1620,6 +1620,16 @@
       "slug": "bgp"
     },
     {
+      "id": "..\\..\\obsidian\\obsidian\\Tech\\Network\\路由协议\\BGP\\BGP协议优先级",
+      "title": "BGP协议优先级",
+      "content": "1. 核心逻辑 1.1. “大”即是好的（高优先级） Weight 和 Local Preference：这两个属性是管理员手动干预的首选。数值设置得越大，代表你越“偏好”这条路径。 1.2. “短/小”即是好的（低开销） - AS-Path 长度：这体现了 BGP 的路径矢量特性，跳数越少代表路径越简洁。 - MED 和 IGP Metric：这两个属于“开销”范畴，类似于路费，自然是越便宜越好",
+      "tags": [
+        "network",
+        "bgp"
+      ],
+      "slug": "bgp协议优先级"
+    },
+    {
       "id": "..\\..\\obsidian\\obsidian\\Tech\\Network\\路由协议\\BGP\\BGP基础概念",
       "title": "BGP基础概念",
       "content": "1. AS - OSPF、IS-IS等IGP路由协议在组织机构网络内部广泛应用，随着网络规模扩大，网络中路由数量不断增长，IGP已无法管理大规模网络，AS的概念由此诞生。 - AS指的是在同一个组织管理下，使用统一选路策略的设备集合。 > [!question] 不同的AS之间需要进行通信，在AS之间应该使用何种路由协议进行路由的传递？ 2. 什么是BGP BGP（Border Gateway P",

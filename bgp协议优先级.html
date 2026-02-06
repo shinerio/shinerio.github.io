@@ -3,20 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>首页 - Shinerio's Blog</title>
+    <title>BGP协议优先级 - Shinerio's Blog</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
-    
+    <meta property="og:title" content="BGP协议优先级">
+<meta property="og:description" content="1. 核心逻辑 1.1. “大”即是好的（高优先级） Weight 和 Local Preference：这两个属性是管理员手动干预的首选。数值设置得越大，代表你越“偏好”这条路径。 1.2. “短/小”即是好的（低开销） - AS-Path 长度：这体现了 BGP 的路径矢量特性，跳数越少代表路径...">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-02-06T00:00:00.000Z">
+<meta property="article:author" content="Shinerio">
 </head>
-<body class="home-page" id="theme-body">
+<body class="article-page" id="theme-body">
     <div class="page-wrapper">
         <header class="page-header">
             <div class="container">
                 <nav class="page-nav">
                     <div class="nav-links">
-                        <a href="index.html" class="nav-link active">Home</a>
+                        <a href="index.html" class="nav-link ">Home</a>
                         <a href="articles.html" class="nav-link ">Articles</a>
                         <a href="search.html" class="nav-link ">Search</a>
                     </div>
@@ -31,85 +35,230 @@
         </header>
         <main class="page-main">
             <div class="container">
-                
-      <div class="home-layout">
-        <main class="home-main">
-          <section class="hero">
-            <h1 class="hero-title">Shinerio's Blog</h1>
-            <p class="hero-subtitle">Code flows with ease, and life unfolds in beauty</p>
-          </section>
+                <article>
+    <header>
+        <h1>BGP协议优先级</h1>
+        <time datetime="2026-02-06T00:00:00.000Z">2026年2月6日</time>
+        <div class="tags">
+            
+            <span class="tag">network</span>
+            
+            <span class="tag">bgp</span>
+            
+        </div>
+    </header>
+    <section class="content">
+        <h1>1. 核心逻辑</h1>
+<h2>1.1. “大”即是好的（高优先级）</h2>
+<p><strong>Weight</strong> 和 <strong>Local Preference</strong>：这两个属性是管理员手动干预的首选。数值设置得越大，代表你越“偏好”这条路径。</p>
+<h2>1.2. “短/小”即是好的（低开销）</h2>
+<ul>
+<li><strong>AS-Path 长度</strong>：这体现了 BGP 的路径矢量特性，跳数越少代表路径越简洁。</li>
+<li><strong>MED</strong> 和 <strong>IGP Metric</strong>：这两个属于“开销”范畴，类似于路费，自然是越便宜越好。</li>
+</ul>
+<h2>1.3. 信任源判定（Origin &amp; Neighbor 类型）</h2>
+<ul>
+<li><strong>Origin</strong>: 内部生成的路由（IGP）比外部（Incomplete）的路由更可信。</li>
+<li><strong>Neighbor</strong>: BGP 默认认为直接从别的自治系统（EBGP）学来的信息，比通过家里人（IBGP）传话学来的信息更直接、更及时。</li>
+</ul>
+<h1>2. 获胜规则</h1>
+<table>
+<thead>
+<tr>
+<th><strong>优先级</strong></th>
+<th><strong>属性名称</strong></th>
+<th><strong>传播范围</strong></th>
+<th><strong>优先级判定规则</strong></th>
+<th><strong>传播规则与限制</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Weight (权重)</td>
+<td>仅限本地</td>
+<td>值越大越优先</td>
+<td><strong>从不传播</strong>。只在收到路由的路由器本地生效，甚至不会传给同一个 AS 内的邻居。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Local Preference</td>
+<td>AS 内传播</td>
+<td>值越大越优先</td>
+<td><strong>仅在 IBGP 邻居间传递</strong>。用于告知本 AS 内部如何出站。<strong>不传给 EBGP 邻居</strong>。</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Local Originated</td>
+<td>会传播</td>
+<td>本地生成 &gt; 邻居通告</td>
+<td>本路由器手动通告的路由（如 <code>network</code> 或 <code>import-route</code> 命令产生的）优先级大于BGP邻居学习到的</td>
+</tr>
+<tr>
+<td>4</td>
+<td>AS-Path</td>
+<td>跨 AS 传播</td>
+<td>长度越短越优先</td>
+<td><strong>传给 EBGP 时增加本地 AS 号</strong>；传给 IBGP 时不改变。用于防环和路径控制。</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Origin (起源)</td>
+<td>跨 AS 传播</td>
+<td>IGP &gt; EGP &gt; Incomplete</td>
+<td><strong>一直跟随路由条目传播</strong>，直到路由失效。IBGP和EBGP邻居都会收到。</td>
+</tr>
+<tr>
+<td>6</td>
+<td>MED</td>
+<td>跨 AS 传播</td>
+<td>值越小越优先</td>
+<td><strong>仅传给直接相邻的 AS</strong>。默认情况下，邻居 AS 收到后<strong>不会再传给它的第三方 AS</strong>（即只传一跳 AS）。</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Neighbor 类型</td>
+<td>不直接传播</td>
+<td>EBGP &gt; IBGP</td>
+<td>这是一个比较行为，不是属性。指路由是从 EBGP 还是 IBGP 获取的。</td>
+</tr>
+<tr>
+<td>8</td>
+<td>IGP Metric</td>
+<td>仅限本地</td>
+<td>值越小越优先</td>
+<td>指本地到下一跳的 Cost 值，不作为 BGP 属性传播。</td>
+</tr>
+<tr>
+<td>9</td>
+<td>EBGP Oldest Path</td>
+<td>——</td>
+<td>最早优先</td>
+<td>为了<strong>网络稳定性</strong>设计的规则。如果两条路完全一样好，BGP 会倾向于保持现状，不轻易切换到新上线的路，以避免路由翻滚。</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Router ID</td>
+<td>跨 AS 传播</td>
+<td>值越小越优先</td>
+<td>作为 Originator_ID 或路径标识跟随传播，直到路由被重新通告。</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Cluster List</td>
+<td>AS 内传播</td>
+<td>长度越短越优先</td>
+<td><strong>仅在路由反射器（RR）环境传播</strong>。用于在 AS 内部防止反射环路。</td>
+</tr>
+</tbody></table>
+<h1>3. 详细介绍</h1>
+<h2>3.1. Weight</h2>
+<p>weight支持精确匹配和前缀匹配两种</p>
+<h3>3.1.1. 精确匹配 (Exact Match)</h3>
+<p>如果只希望对某一个特定的子网设置 Weight，不包含它的子网。</p>
+<ul>
+<li><strong>配置方式</strong>：不加任何掩码范围限制。</li>
+<li><strong>示例</strong>：<code>ip prefix-list ONLY_WEB permit 10.1.1.0/24</code></li>
+<li><strong>效果</strong>：<ul>
+<li><code>10.1.1.0/24</code> —— <strong>匹配</strong>（Weight 会被修改）</li>
+<li><code>10.1.1.0/25</code> —— <strong>不匹配</strong>（保持默认 Weight）</li>
+</ul>
+</li>
+</ul>
+<h3>3.1.2. 模糊匹配/范围匹配 (Range Match)</h3>
+<p>如果希望对一组连续的网段，或者某个大类下的所有子网统一设置 Weight，可以使用 <code>le</code>（小于等于）或 <code>ge</code>（大于等于）。</p>
+<ul>
+<li><strong>配置方式</strong>：使用 <code>le</code> 或 <code>ge</code> 参数。</li>
+<li><strong>示例</strong>：<code>ip prefix-list BRANCHES permit 10.1.0.0/16 le 32</code></li>
+<li><strong>效果</strong>：<ul>
+<li>只要是以 <code>10.1</code> 开头的任何路由（掩码在 16 到 32 位之间），统统都会被<strong>匹配</strong>。</li>
+</ul>
+</li>
+</ul>
+<h3>3.1.3. “全部匹配” (Any)</h3>
+<p>有时候可能想把某个邻居传来的所有路由权重都调高。</p>
+<ul>
+<li><strong>配置方式</strong>：<ul>
+<li><strong>方法 A</strong>：直接在 <code>neighbor</code> 命令后加 <code>weight</code>（无需匹配工具）。</li>
+<li><strong>方法 B</strong>：在 Prefix-list 中使用 <code>0.0.0.0/0 le 32</code>。</li>
+</ul>
+</li>
+</ul>
+<h2>3.2. local preference</h2>
+<p>在 BGP（边界网关协议）中，<strong>Local Preference (本地优先级)</strong> 是一个非常重要的属性，用于告知 AS（自治系统）内部的路由器，在<strong>有多个出口可以到达同一目的地时，哪条路径是优先的</strong>。它的核心特点是：<strong>仅在 AS 内部传播，不会传递给 EBGP 邻居。</strong> 数值越高越优先（默认值通常为 100）。</p>
+<h3>3.2.1. 定义策略</h3>
+<p>假设有两个ISP邻居（ISP_A 和 ISP_B），我们希望优先走ISP_A，则可以创建一个 route-map，将来自 ISP_A 的所有路由优先级设为 200（默认是 100）。</p>
+<h3>3.2.2. 应用到特定邻居</h3>
+<p>将该策略应用在与该邻居相连的<strong>in</strong>方向。这意味着：“只要是这个邻居告诉我的路由，我都给它标记上更高的优先级”。</p>
+<blockquote>
+<p>[!tip]<br>同时连接专线和VPN时，我们可以通过local_preference设置专线优先级更高，只有在专线失效的时候才用VPN</p>
+</blockquote>
+<h2>3.3. origin</h2>
+<p>在 BGP 中，<strong>Origin（起源）</strong> 属性反映了路由<strong>最初是如何进入BGP路由表</strong>的。简单来说，Origin 的生成取决于你在配置 BGP 时使用了哪条命令。</p>
+<h3>3.3.1. 生成 IGP (i) 属性</h3>
+<p>这是优先级最高的起源属性。它代表该路由是“根正苗红”地通过 BGP 宣告进来的。</p>
+<ul>
+<li><strong>生成方式</strong>：使用 <code>network</code> 命令手动宣告。</li>
+<li><strong>背后的逻辑</strong>：当你执行 <code>network 192.168.1.0 mask 255.255.255.0</code> 时，BGP 进程会去路由表里检查是否存在这条路由。如果有，它就会生成一条 Origin 属性为 <strong>i</strong> 的 BGP 路由。</li>
+</ul>
+<h3>3.3.2. 生成 Incomplete (?) 属性</h3>
+<p>这是优先级最低的起源属性。它代表路由的来源“不明确”或来自外部协议。</p>
+<ul>
+<li><strong>生成方式</strong>：使用 <code>redistribute</code> 命令。</li>
+<li><strong>背后的逻辑</strong>：当你把其他协议（如 OSPF、静态路由、直连路由）重发布到 BGP 时，BGP 无法确切知道这些路由最初是怎么产生的，因此会打上一个“问号”标签。例如： <code>redistribute static</code> 或 <code>redistribute ospf 1</code>。</li>
+</ul>
+<h3>3.3.3. 生成 EGP (e) 属性 (已过时)</h3>
+<ul>
+<li><strong>生成方式</strong>：通过旧式的 EGP 协议引入。</li>
+<li><strong>现状</strong>：现代互联网早已全面使用 BGP 替代了 EGP 协议，因此在现网中几乎看不到 Origin 为 <code>e</code> 的路由。</li>
+</ul>
+<h3>3.3.4. 特殊情况：汇总路由 (Aggregate)</h3>
+<p>当你对路由进行汇总（聚合）时，Origin 的生成逻辑会变得有趣：</p>
+<ul>
+<li><strong>命令</strong>：<code>aggregate-address 10.0.0.0 255.255.0.0</code></li>
+<li><strong>Origin 判定</strong>：<ul>
+<li>如果被汇总的所有明细路由 Origin 都是 <code>i</code>，那么汇总后的路由 Origin 也是 <code>i</code>。</li>
+<li>但如果明细路由中只要有一条是 <code>?</code>，比如有一条是通过 <code>redistribute</code> 进来的），那么汇总后的路由 Origin 就会变成 <code>?</code>。</li>
+</ul>
+</li>
+</ul>
+<h2>3.4. ecmp</h2>
+<p>BGP 默认是<strong>不</strong>进行负载均衡（ECMP）的，它默认只会选出<strong>一条</strong> Best Path。要形成BGP的ECMP（等价多路径），必须同时满足“人工开启”和“属性一致”两个层面的条件。ECMP 发生的时机是在比较完 <strong>IGP Metric (第 8 条)</strong> 之后，比较 <strong>Router ID (第 10 条)</strong> 之前。</p>
+<h3>3.4.1. 核心前提：开“开关”</h3>
+<p>BGP 协议设计的初衷是防环和策略控制，而不是负载均衡。默认情况下，即使有多条一模一样的优秀路径，BGP 也会强行通过 Router ID 把它们比个高下，只留一条。要启用 ECMP，必须在 BGP 配置中显式指定允许安装多条路径：</p>
+<ul>
+<li><strong>命令示例</strong>：<code>maximum-paths [number]</code> (针对 EBGP) 或 <code>maximum-paths ibgp [number]</code> (针对 IBGP)。</li>
+</ul>
+<h3>3.4.2. 硬性条件：前 8 项属性必须“完全一致”</h3>
+<p>当开关打开后，BGP 路由器会检查多条路径。只有当以下属性<strong>全部相同</strong>时，才会认为它们是“Equal Cost”的，进而形成 ECMP。</p>
+<ol>
+<li><strong>Weight</strong> (权重)：必须相同。</li>
+<li><strong>Local Preference</strong>：必须相同。</li>
+<li><strong>Local Originated</strong> (本地生成)：必须相同（要么都是本地产生的，要么都不是）。</li>
+<li><strong>AS-Path</strong>：<ul>
+<li><strong>长度</strong>：必须相同。</li>
+<li><strong>内容</strong>：默认情况下，AS 号的序列也必须完全一致（即经过的路径要一模一样）。</li>
+</ul>
+</li>
+<li><strong>Origin</strong> (起源)：必须相同（都是 IGP 或都是 Incomplete）。</li>
+<li><strong>MED</strong>：必须相同。</li>
+<li><strong>Neighbor 类型</strong>：必须相同（都是 EBGP 或都是 IBGP，很少有设备支持 EBGP 和 IBGP 混合负载均衡）。</li>
+<li><strong>IGP Metric</strong> (内部开销)：<strong>这一步很关键</strong>。到达 BGP 下一跳（Next Hop）的 IGP 代价必须相同。<br><strong>👉 结论</strong>：只有当这 8 项比完还分不出胜负，且 <code>maximum-paths</code> &gt; 1 时，选路过程<strong>中止</strong>，这几条路由同时进入路由表。<strong>Router ID 和 Cluster List 将不再被比较。</strong></li>
+</ol>
+<h3>3.4.3. 特殊场景：AS-Path 的“松弛” (Multipath Relax)</h3>
+<p>在很多现代数据中心网络（特别是 Clos/Leaf-Spine 架构）中，我们希望在两条物理链路（连接不同的上游 AS）之间做负载均衡。</p>
+<ul>
+<li><strong>问题</strong>：默认规则要求 AS-Path 内容必须完全一致。如果连接了两个不同的 ISP（比如 AS 65001 和 AS 65002），虽然 AS-Path 长度都是 1，但因为 AS 号不同，默认无法形成 ECMP。</li>
+<li><strong>解决</strong>：配置 <code>bgp bestpath as-path multipath-relax</code>（不同厂商命令略有差异）。</li>
+<li><strong>效果</strong>：BGP 忽略 AS 号的具体内容，<strong>只比较长度</strong>。只要长度一致，就允许负载均衡。</li>
+</ul>
+<h1>4. 使用技巧</h1>
+<h2>4.1. 控制流量“出去”</h2>
+<p>修改本地路由器的 <strong>Local Preference</strong>。</p>
+<h2>4.2. 控制流量“进来”</h2>
+<p>修改发给对方的 <strong>AS-Path</strong>或 <strong>MED</strong>。BGP默认认为经过的自治系统（AS）越少，延迟和风险越低。但在现代网络设计中，管理员经常通过<strong>AS-Path Prepending</strong>（在路径中重复添加自己的 AS 号）来人为“变长”某条路径，从而降低其优先级，实现流量切换。</p>
 
-          <section class="recent-articles">
-            <div class="section-header">
-              <h2 class="section-title">最新文章</h2>
-              <a href="articles.html" class="section-link">查看全部 →</a>
-            </div>
-            <div class="article-grid">
-              
-    <div class="article-card">
-        <h3><a href="bgp协议优先级.html">BGP协议优先级</a></h3>
-        <p class="article-excerpt">1. 核心逻辑 1.1. “大”即是好的（高优先级） Weight 和 Local Preference：这两个属性是管理员手动干预的首选。数值设置得越大，代表你越“偏好”这条路径。 1.2. “短/小”即是好的（低开销） - AS-Path 长度：这体现了 BGP 的路径矢量特性，跳数越少代表路径...</p>
-        <div class="article-meta">
-            <time datetime="2026-02-06T00:00:00.000Z">2026年2月6日</time>
-            <span class="reading-time">13 分钟</span>
-        </div>
-    </div>
-    <div class="article-card">
-        <h3><a href="openspec.html">Openspec</a></h3>
-        <p class="article-excerpt">A "change" in 是一个“承载着围绕一项工作所进行的所有思考和规划的“集合。文件夹位于，包含proposal, specs, design, tasks。 工作流程 目录结构 - - 这是最重要的目录，存储了系统当前是如何运行的完整描述。 - 按domain组织：为了防止单个文档过大，它按...</p>
-        <div class="article-meta">
-            <time datetime="2026-01-31T12:51:29.000Z">2026年1月31日</time>
-            <span class="reading-time">3 分钟</span>
-        </div>
-    </div>
-    <div class="article-card">
-        <h3><a href="claudemd.html">Claudemd</a></h3>
-        <p class="article-excerpt">| 类型 | 位置 | 范围 | 版本控制 | 典型用途 | | ------ | ----------------------- | ---- | ----- | ------ | | 全局 | | 所有项目 | 不共享 | 个人编码偏好 | | 项目 | | 当前项目 | 共享给团队 | 团队规...</p>
-        <div class="article-meta">
-            <time datetime="2026-01-30T15:58:18.000Z">2026年1月30日</time>
-            <span class="reading-time">2 分钟</span>
-        </div>
-    </div>
-    <div class="article-card">
-        <h3><a href="sddspec-driven-develop.html">SDD（Spec Driven Develop）</a></h3>
-        <p class="article-excerpt">Kiro的spec流程被设计为三个步骤：需求 (requirements.md) → 设计 (design.md) → 任务 (tasks.md)。每个工作流步骤都由一个Markdown文档表示，Kiro会引导你达成这三个步骤。 1. 需求文档 它被构建为一个需求列表 1. 每个需求代表一个“用户故...</p>
-        <div class="article-meta">
-            <time datetime="2026-01-26T15:59:13.000Z">2026年1月26日</time>
-            <span class="reading-time">1 分钟</span>
-        </div>
-    </div>
-    <div class="article-card">
-        <h3><a href="run-code.html">Run Code</a></h3>
-        <p class="article-excerpt">runcode是一个来自veadk库的内置工具，它提供了一个安全的代码执行沙箱功能。这个工具允许AI Agent运行用户请求的代码片段（主要是 Python3），并返回执行结果。该工具通过字节跳动云服务的API在远程安全环境中执行代码，并具有会话管理和身份验证功能。 1. 工作原理 1.1. 工具注...</p>
-        <div class="article-meta">
-            <time datetime="2026-01-25T13:59:16.511Z">2026年1月25日</time>
-            <span class="reading-time">3 分钟</span>
-        </div>
-    </div>
-            </div>
-          </section>
-        </main>
-
-        <aside class="sidebar">
-          <div class="sidebar-widget">
-            <h3>文章总数</h3>
-            <p class="article-count">302</p>
-          </div>
-
-          <div class="sidebar-widget">
-            <h3>标签云</h3>
-            <div class="tag-cloud">
-              <span class="tag">#network (13)</span><span class="tag">#excalidraw (8)</span><span class="tag">#计算机网络 (7)</span><span class="tag">#linux (5)</span><span class="tag">#nat (4)</span><span class="tag">#protocol (1)</span><span class="tag">#database (1)</span><span class="tag">#dcn (1)</span><span class="tag">#交换机 (1)</span><span class="tag">#NAT (1)</span><span class="tag">#bgp (1)</span><span class="tag">#thread (1)</span><span class="tag">#网络安全 (1)</span><span class="tag">#加密 (1)</span><span class="tag">#obsidian (1)</span>
-            </div>
-          </div>
-
-          <div class="sidebar-widget">
-            <h3>最近更新</h3>
-            <p class="last-update">2026年2月6日</p>
-          </div>
-        </aside>
-      </div>
-    
+    </section>
+</article>
             </div>
         </main>
         <footer class="page-footer">
