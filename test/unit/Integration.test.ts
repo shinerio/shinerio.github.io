@@ -3,9 +3,9 @@
  * Testing the complete end-to-end generation flow
  */
 
-import { ObsidianBlogGenerator } from '../index';
-import { ConfigManager } from '../core/ConfigManager';
-import { BlogConfig } from '../types';
+import { ObsidianBlogGenerator } from '../../src/index';
+import { ConfigManager } from '../../src/core/ConfigManager';
+import { BlogConfig } from '../../src/types';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as os from 'os';

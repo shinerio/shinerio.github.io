@@ -3,14 +3,14 @@
  * Testing the completeness and correctness of article indexing functionality
  */
 
-import { ObsidianBlogGenerator } from '../index';
-import { ConfigManager } from '../core/ConfigManager';
-import { FileScanner } from '../core/FileScanner';
-import { MetadataParser } from '../core/MetadataParser';
-import { SiteGenerator } from '../core/SiteGenerator';
-import { SearchEngine } from '../core/SearchEngine';
-import { GracefulErrorHandler } from '../core/ErrorHandler';
-import { BlogConfig, ParsedArticle } from '../types';
+import { ObsidianBlogGenerator } from '../../src/index';
+import { ConfigManager } from '../../src/core/ConfigManager';
+import { FileScanner } from '../../src/core/FileScanner';
+import { MetadataParser } from '../../src/core/MetadataParser';
+import { SiteGenerator } from '../../src/core/SiteGenerator';
+import { SearchEngine } from '../../src/core/SearchEngine';
+import { GracefulErrorHandler } from '../../src/core/ErrorHandler';
+import { BlogConfig, ParsedArticle } from '../../src/types';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as os from 'os';
@@ -75,7 +75,7 @@ describe('Article Indexing Completeness Tests', () => {
               const searchIndex = searchEngine.buildIndex(articles);
 
               // Check that all non-draft articles are in the index
-              const indexedTitles = searchIndex.articles.map(a => a.title);
+              const indexedTitles = searchIndex.articles.map((a: any) => a.title);
 
               // Every expected title should be in the index
               expectedIndexedTitles.forEach(title => {
@@ -217,8 +217,8 @@ describe('Article Indexing Completeness Tests', () => {
               expect(searchIndex.index).toBeDefined();
               expect(searchIndex.index instanceof Map).toBe(true);
 
-              // Each article in the index should have a valid structure
-              searchIndex.articles.forEach(article => {
+              // Each indexed article should have a valid structure
+              searchIndex.articles.forEach((article: any) => {
                 expect(article.id).toBeDefined();
                 expect(typeof article.id).toBe('string');
                 expect(article.title).toBeDefined();
@@ -231,10 +231,10 @@ describe('Article Indexing Completeness Tests', () => {
 
               // The index map should have keys that correspond to words in the content
               let totalWordReferences = 0;
-              searchIndex.index.forEach((refs, word) => {
+              searchIndex.index.forEach((refs: any, word: any) => {
                 expect(typeof word).toBe('string');
                 expect(Array.isArray(refs)).toBe(true);
-                refs.forEach(ref => {
+                refs.forEach((ref: any) => {
                   expect(typeof ref).toBe('object');
                   expect(Number.isInteger(ref.articleIndex)).toBe(true);
                   expect(Number.isInteger(ref.weight)).toBe(true);

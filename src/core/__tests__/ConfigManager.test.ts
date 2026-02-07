@@ -5,7 +5,7 @@
 
 import { ConfigManager } from '../ConfigManager';
 import { BlogConfig, ConfigError } from '../../types';
-import { createTempDir, cleanupTempDir } from '../../../test/setup/test-setup';
+import { createTempDir, cleanupTempDir } from '../../../test-setup';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import fc from 'fast-check';

@@ -235,7 +235,13 @@ describe('GracefulErrorHandler Property Tests', () => {
   afterEach(async () => {
     // Restore original cwd method
     jest.restoreAllMocks();
-    await fs.remove(tempDir);
+    // Wait a bit to ensure any pending async operations complete
+    await new Promise(resolve => setTimeout(resolve, 10));
+    try {
+      await fs.remove(tempDir);
+    } catch (err) {
+      // Ignore errors if temp directory is already removed
+    }
   });
 
   describe('Error Recovery Capability', () => {

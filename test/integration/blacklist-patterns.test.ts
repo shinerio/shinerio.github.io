@@ -6,7 +6,7 @@
 import { ObsidianBlogGenerator } from '../../src';
 import { ConfigManager } from '../../src/core/ConfigManager';
 import { FileScanner } from '../../src/core/FileScanner';
-import { createTempDir, cleanupTempDir, createTestMarkdownFile } from '../setup/test-setup';
+import { createTempDir, cleanupTempDir, createTestMarkdownFile } from '../../test-setup';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 

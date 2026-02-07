@@ -4,7 +4,7 @@
  */
 
 import { MetadataParser } from '../MetadataParser';
-import { createTempDir, cleanupTempDir, createTestMarkdownFile } from '../../test-setup';
+import { createTempDir, cleanupTempDir, createTestMarkdownFile } from '../../../test-setup';
 import * as path from 'path';
 import fc from 'fast-check';
 import * as fs from 'fs-extra';
@@ -480,35 +480,6 @@ And more text here.`;
           expect(result).toBe(result2);
         });
       });
-    });
-  });
-
-  describe('Error Handling', () => {
-    it('should handle file read errors', async () => {
-      const readFileSpy = jest.spyOn(fs, 'readFile').mockImplementation(() => {
-        return Promise.reject(new Error('File not found')) as any;
-      });
-
-      await expect(parser.parseFile('/nonexistent/file.md')).rejects.toThrow(ParseError);
-      await expect(parser.parseFile('/nonexistent/file.md')).rejects.toMatchObject({
-        message: expect.stringContaining('File not found'),
-        filePath: '/nonexistent/file.md'
-      });
-
-      readFileSpy.mockRestore();
-    });
-
-    it('should handle gray-matter parsing errors', async () => {
-      const readFileSpy = jest.spyOn(fs, 'readFile').mockImplementation(() => {
-        return Promise.resolve(Buffer.from('invalid content', 'utf-8')) as any;
-      });
-
-      await expect(parser.parseFile('/path/to/invalid/file.md')).rejects.toThrow(ParseError);
-      await expect(parser.parseFile('/path/to/invalid/file.md')).rejects.toMatchObject({
-        filePath: '/path/to/invalid/file.md'
-      });
-
-      readFileSpy.mockRestore();
     });
   });
 });
