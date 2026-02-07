@@ -84,7 +84,7 @@ export class SiteGenerator {
         </div>
 
         <div class="sidebar-widget">
-          <h3>标签云</h3>
+          <h3>标签</h3>
           <div class="tag-cloud">
             ${this.getPopularTags(articles).slice(0, 15).map(tag =>
               `<span class="tag">#${tag.name} (${tag.count})</span>`
