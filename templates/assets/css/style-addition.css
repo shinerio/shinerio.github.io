@@ -1,47 +1,7 @@
-/* Ensure flexbox layout for the main content area holding sidebar and content */
-body.home-page main.page-main {
-    display: flex !important;
-    gap: var(--spacing-lg) !important;
-    flex-wrap: nowrap !important;
-}
+/* Additional layout overrides - sidebar is now fixed positioned */
 
-/* Ensure the sidebar stays on the left with fixed width */
-body.home-page main.page-main > complementary,
-body.home-page main.page-main > aside.sidebar {
-    flex: 0 0 280px;
-    display: block;
-    position: sticky;
-    top: 0;
-    height: fit-content;
-}
-
-/* Ensure main content area takes the remaining space */
-body.home-page main.page-main > main:not(.page-main),
+/* Home layout takes full remaining space */
 body.home-page main.page-main > div.home-layout {
     flex: 1;
     min-width: 0;
-}
-
-/* On mobile, stack sidebar and content vertically */
-@media (max-width: 767px) {
-    body.home-page main.page-main {
-        flex-direction: column !important;
-    }
-
-    body.home-page main.page-main > complementary,
-    body.home-page main.page-main > aside.sidebar {
-        flex: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        z-index: 1000;
-        transform: translateX(-100%);
-        background-color: var(--color-bg-primary);
-    }
-
-    body.home-page main.page-main > complementary.active,
-    body.home-page main.page-main > aside.sidebar.active {
-        transform: translateX(0);
-    }
 }

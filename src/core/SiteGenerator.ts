@@ -70,12 +70,6 @@ export class SiteGenerator {
     const author = options.config.author || options.config.siteTitle;
 
     const content = `
-      <button class="sidebar-toggle" aria-label="Toggle sidebar">
-        <span class="sidebar-toggle-icon"></span>
-      </button>
-
-      <div class="sidebar-overlay"></div>
-
       <aside class="sidebar">
         <div class="sidebar-profile">
           <img src="./assets/images/avatar.png" alt="avatar" class="sidebar-avatar">
@@ -83,9 +77,10 @@ export class SiteGenerator {
           <p class="sidebar-slogan">${options.config.siteDescription}</p>
         </div>
 
-        <div class="sidebar-widget">
-          <h3>文章总数</h3>
-          <p class="article-count">${articles.filter(a => !a.isDraft).length}</p>
+        <div class="sidebar-stats">
+          <span>文章: ${articles.filter(a => !a.isDraft).length}</span>
+          <span class="stats-dot">·</span>
+          <span>更新: ${this.formatDate(new Date())}</span>
         </div>
 
         <div class="sidebar-widget">
@@ -95,11 +90,6 @@ export class SiteGenerator {
               `<span class="tag">#${tag.name} (${tag.count})</span>`
             ).join('')}
           </div>
-        </div>
-
-        <div class="sidebar-widget">
-          <h3>最近更新</h3>
-          <p class="last-update">${this.formatDate(new Date())}</p>
         </div>
       </aside>
 
