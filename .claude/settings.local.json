@@ -104,7 +104,13 @@
       "Bash(npx jest --passWithNoTests)",
       "Bash(npx jest --passWithNoTests --verbose)",
       "Bash(findstr /i \"test suites tests snapshots\")",
-      "Bash(npx jest test/unit/ConfigManager.test.ts test/unit/FileScanner.test.ts test/unit/ErrorHandler.test.ts --verbose)"
+      "Bash(npx jest test/unit/ConfigManager.test.ts test/unit/FileScanner.test.ts test/unit/ErrorHandler.test.ts --verbose)",
+      "Bash(find . -name \"*.html\" -exec grep -l \"sidebar\" {} ;)",
+      "mcp__chrome-devtools__new_page",
+      "mcp__chrome-devtools__take_snapshot",
+      "Bash(powershell -Command \"Get-Content C:\\\\workspace\\\\code\\\\shinerio.github.io\\\\templates\\\\assets\\\\css\\\\style.css | Select-Object -Last 5\")",
+      "Bash(powershell -Command \"$content = Get-Content C:\\\\workspace\\\\code\\\\shinerio.github.io\\\\templates\\\\assets\\\\css\\\\style.css; $additionalCSS = @\\('''', ''/* Ensure flexbox layout for the main content area holding sidebar and content */'', ''body.home-page main.page-main {'', ''    display: flex !important;'', ''    gap: var\\(--spacing-lg\\) !important;'', ''    flex-wrap: nowrap !important;'', ''}'', '''', ''/* Ensure the sidebar stays on the left with fixed width */'', ''body.home-page main.page-main > complementary,'', ''body.home-page main.page-main > aside.sidebar {'', ''    flex: 0 0 280px;'', ''    display: block;'', ''    position: sticky;'', ''    top: 0;'', ''    height: fit-content;'', ''}'', '''', ''/* Ensure main content area takes the remaining space */'', ''body.home-page main.page-main > main:not\\(.page-main\\),'', ''body.home-page main.page-main > div.home-layout {'', ''    flex: 1;'', ''    min-width: 0;'', ''}'', '''', ''/* On mobile, stack sidebar and content vertically */'', ''@media \\(max-width: 767px\\) {'', ''    body.home-page main.page-main {'', ''        flex-direction: column !important;'', ''    }'', '''', ''    body.home-page main.page-main > complementary,'', ''    body.home-page main.page-main > aside.sidebar {'', ''        flex: none;'', ''        position: fixed;'', ''        top: 0;'', ''        left: 0;'', ''        height: 100vh;'', ''        z-index: 1000;'', ''        transform: translateX\\(-100%\\);'', ''        background-color: var\\(--color-bg-primary\\);'', ''    }'', '''', ''    body.home-page main.page-main > complementary.active,'', ''    body.home-page main.page-main > aside.sidebar.active {'', ''        transform: translateX\\(0\\);'', ''    }'', ''}''\\); $newContent = $content + $additionalCSS; Set-Content -Path ''C:\\\\workspace\\\\code\\\\shinerio.github.io\\\\templates\\\\assets\\\\css\\\\style.css'' -Value $newContent\")",
+      "Bash(powershell -Command \"Add-Content -Path ''C:\\\\workspace\\\\code\\\\shinerio.github.io\\\\templates\\\\assets\\\\css\\\\style.css'' -Value \\(Get-Content ''C:\\\\workspace\\\\code\\\\shinerio.github.io\\\\templates\\\\assets\\\\css\\\\style-addition.css''\\)\")"
     ]
   }
 }

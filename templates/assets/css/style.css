@@ -399,6 +399,14 @@ body {
     max-width: var(--container-max-width);
     margin: 0 auto;
     padding: 0 var(--spacing-md);
+    width: 100%;
+}
+
+/* Special container layout for home page with sidebar */
+body.home-page .container {
+    display: flex;
+    gap: var(--spacing-lg);
+    flex-wrap: nowrap; /* Prevent wrapping on larger screens */
 }
 
 /* Grid/Flexbox layout for the page structure */
@@ -516,30 +524,31 @@ body {
     margin: var(--spacing-lg) 0;
 }
 
-/* Layout for home page with sidebar */
+/* Layout for home page with sidebar - This div should flex with the sidebar */
 .home-layout {
-    display: block;
-    margin: 0 auto;
-    max-width: var(--container-max-width);
+    flex: 1; /* Take remaining space next to sidebar */
+    min-width: 0; /* Prevent grid items from overflowing */
+    width: 100%; /* Take available width */
 }
 
 .home-main {
-    min-width: 0; /* Prevent grid items from overflowing */
+    width: 100%; /* Ensure it takes full width of its container */
 }
 
-/* Fixed sidebar navigation */
+/* Sidebar navigation - integrated with page content */
 .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
     width: 280px;
-    height: 100vh;
+    max-width: 100%; /* Ensure it fits on smaller screens */
     background-color: var(--color-bg-secondary);
     border-right: 1px solid var(--color-border);
     padding: var(--spacing-lg);
-    overflow-y: auto;
+    flex-shrink: 0;
     z-index: 1000;
-    transition: transform var(--transition-normal), background-color var(--transition-normal), border-color var(--transition-normal);
+    transition: background-color var(--transition-normal), border-color var(--transition-normal);
+    order: 0; /* Ensure sidebar comes first in visual order */
+    position: sticky; /* Keep sidebar in view when scrolling */
+    top: 0;
+    height: 100vh; /* Full height on desktop */
 }
 
 /* Sidebar profile section */
@@ -1119,19 +1128,21 @@ li {
     h2 { font-size: 2rem; }
     h3 { font-size: 1.5rem; }
 
-    /* Home page: offset content for fixed sidebar */
+    /* No need to offset content since sidebar is part of document flow */
     body.home-page .page-header,
     body.home-page .page-main,
     body.home-page .page-footer {
-        margin-left: 280px;
+        margin-left: 0;
     }
 
+    /* The flex container handles the sidebar positioning */
+    body.home-page .container {
+        flex-wrap: nowrap; /* Prevent wrapping on larger screens */
+    }
+
+    /* Ensure sidebar is always visible on desktop */
     .sidebar {
-        transform: translateX(0);
-    }
-
-    .sidebar-toggle {
-        display: none !important;
+        display: block !important;
     }
 
     /* Optimize typography for tablets */
@@ -1206,8 +1217,27 @@ li {
     }
 
     /* Sidebar hidden on small screens */
-    .home-layout {
-        margin-left: 0;
+    body.home-page .container {
+        flex-direction: column; /* Stack sidebar and content vertically on small screens */
+    }
+
+    .sidebar {
+        display: none; /* Hide sidebar by default on small screens */
+    }
+
+    .sidebar.active {
+        display: block; /* Show sidebar when toggled */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px;
+        height: 100vh;
+        z-index: 1000;
+        transform: translateX(-100%);
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
     }
 
     .page-header,
@@ -1233,12 +1263,26 @@ li {
 
 /* Mobile sidebar behavior (< 768px) */
 @media (max-width: 767px) {
+    /* For mobile, the sidebar container becomes flex to handle toggle */
+    body.home-page .container {
+        flex-direction: column; /* Stack sidebar and content vertically on small screens */
+    }
+
     .sidebar {
+        display: none; /* Hide sidebar by default on mobile */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px;
+        height: 100vh;
+        z-index: 1000;
         transform: translateX(-100%);
+        background-color: var(--color-bg-primary); /* Ensure proper background when fixed */
     }
 
     .sidebar.active {
         transform: translateX(0);
+        display: block;
     }
 
     .sidebar-toggle {
@@ -1252,6 +1296,103 @@ li {
     }
 
     body.home-page .page-header {
-        padding-left: calc(var(--spacing-md) + 48px);
+        padding-left: calc(var(--spacing-md) + 48px); /* Account for the toggle button */
+    }
+
+    /* Adjust home layout to take full width when sidebar is hidden */
+    .home-layout {
+        max-width: 100%; /* Take full width when sidebar is hidden */
+    }
+}
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: calc(var(--breakpoint-sm) - 1px)) {
+    .page-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+
+    .nav-links {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: var(--spacing-xs);
+    }
+
+    .articles-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+
+    /* Sidebar hidden on small screens */
+    body.home-page .container {
+        flex-direction: column; /* Stack sidebar and content vertically on small screens */
+    }
+
+    .page-header,
+    .page-main,
+    .page-footer {
+        padding-left: var(--spacing-sm);
+        padding-right: var(--spacing-sm);
+    }
+
+    h1 { font-size: var(--font-size-2xl); }
+    h2 { font-size: var(--font-size-xl); }
+    h3 { font-size: var(--font-size-lg); }
+
+    /* Adjust for better readability on small screens */
+    body {
+        font-size: 0.95rem;
+    }
+
+    p, li {
+        line-height: var(--line-height-base);
+    }
+}/* Ensure flexbox layout for the main content area holding sidebar and content */
+body.home-page main.page-main {
+    display: flex !important;
+    gap: var(--spacing-lg) !important;
+    flex-wrap: nowrap !important;
+}
+
+/* Ensure the sidebar stays on the left with fixed width */
+body.home-page main.page-main > complementary,
+body.home-page main.page-main > aside.sidebar {
+    flex: 0 0 280px;
+    display: block;
+    position: sticky;
+    top: 0;
+    height: fit-content;
+}
+
+/* Ensure main content area takes the remaining space */
+body.home-page main.page-main > main:not(.page-main),
+body.home-page main.page-main > div.home-layout {
+    flex: 1;
+    min-width: 0;
+}
+
+/* On mobile, stack sidebar and content vertically */
+@media (max-width: 767px) {
+    body.home-page main.page-main {
+        flex-direction: column !important;
+    }
+
+    body.home-page main.page-main > complementary,
+    body.home-page main.page-main > aside.sidebar {
+        flex: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 1000;
+        transform: translateX(-100%);
+        background-color: var(--color-bg-primary);
+    }
+
+    body.home-page main.page-main > complementary.active,
+    body.home-page main.page-main > aside.sidebar.active {
+        transform: translateX(0);
     }
 }
