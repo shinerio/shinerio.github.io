@@ -92,7 +92,19 @@
       "Bash(dir \"specs\\\\002-articles-page-fix\")",
       "Bash(findstr \"Test Suites: Tests:\")",
       "Bash(ls -la test-*.json)",
-      "Bash(npm run test)"
+      "Bash(npm run test)",
+      "Bash(git add .gitignore)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nClean up temporary files and update gitignore\n\nRemoved temporary directories and files generated during testing:\n- dist/ directory with generated blog files\n- src/temp-prop-test-* directories\n- test-output and test-output-relative directories\n- Added patterns to .gitignore for temporary directories\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(npx jest --verbose --passWithNoTests)",
+      "Bash(npx jest test/unit/ErrorHandler.test.ts --passWithNoTests)",
+      "Bash(npx jest test/unit/FileScanner.test.ts --passWithNoTests)",
+      "Bash(npx jest --passWithNoTests --silent)",
+      "Bash(npx jest test/unit/FileScanner.test.ts --verbose --passWithNoTests)",
+      "Bash(npx jest test/unit/FileScanner.test.ts test/unit/ErrorHandler.test.ts test/unit/ArticleIndexing.test.ts --passWithNoTests)",
+      "Bash(npx jest --passWithNoTests)",
+      "Bash(npx jest --passWithNoTests --verbose)",
+      "Bash(findstr /i \"test suites tests snapshots\")",
+      "Bash(npx jest test/unit/ConfigManager.test.ts test/unit/FileScanner.test.ts test/unit/ErrorHandler.test.ts --verbose)"
     ]
   }
 }

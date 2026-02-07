@@ -113,6 +113,10 @@ export class GracefulErrorHandler implements ErrorHandler {
         timestamp: state.timestamp.toISOString() // 将日期序列化为字符串
       };
 
+      // Ensure the directory exists before writing the file
+      const tempDir = path.dirname(this.breakpointFilePath);
+      await fs.ensureDir(tempDir);
+
       await fs.writeJson(this.breakpointFilePath, stateToSave, { encoding: 'utf-8' });
       console.log(`💾 断点状态已保存: ${state.stage} (${state.progress}%)`);
     } catch (error) {
@@ -158,9 +162,11 @@ export class GracefulErrorHandler implements ErrorHandler {
       // Also clean up the temp directory if it's empty
       const tempDir = path.dirname(this.breakpointFilePath);
       try {
-        const dirContents = await fs.readdir(tempDir);
-        if (dirContents.length === 0) {
-          await fs.remove(tempDir);
+        if (await fs.pathExists(tempDir)) { // Check if directory still exists
+          const dirContents = await fs.readdir(tempDir);
+          if (dirContents.length === 0) {
+            await fs.remove(tempDir);
+          }
         }
       } catch (cleanupError: unknown) {
         // If directory isn't empty or other issues, just continue
