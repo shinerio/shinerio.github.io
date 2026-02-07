@@ -402,11 +402,11 @@ body {
     width: 100%;
 }
 
-/* Special container layout for home page with sidebar */
-body.home-page .container {
+/* Special container layout for home page main content (sidebar + articles) */
+body.home-page .page-main > .container {
     display: flex;
     gap: var(--spacing-lg);
-    flex-wrap: nowrap; /* Prevent wrapping on larger screens */
+    flex-wrap: nowrap;
 }
 
 /* Grid/Flexbox layout for the page structure */
