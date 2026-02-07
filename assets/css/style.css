@@ -563,6 +563,12 @@ body.home-page.sidebar-collapsed .sidebar {
     height: 100vh;
     overflow-y: auto;
     box-shadow: 1px 0 8px rgba(0, 0, 0, 0.04);
+    /* Safari-specific fixes for fixed positioning */
+    -webkit-overflow-scrolling: touch;
+    -webkit-backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
 }
 
 /* Sidebar profile section */
@@ -1285,22 +1291,42 @@ li {
     /* No body padding on mobile - sidebar is overlay */
     body.home-page {
         padding-left: 0;
+        /* Improve scrolling performance on Safari */
+        -webkit-overflow-scrolling: touch;
     }
 
     .sidebar {
         display: none;
         transform: translateX(-100%);
+        -webkit-transform: translateX(-100%);
         background-color: var(--color-bg-primary);
+        /* Safari-specific fixes for fixed positioning */
+        -webkit-backface-visibility: hidden;
+        -webkit-perspective: 1000;
+        will-change: transform;
+        /* Ensure smooth animations */
+        -webkit-transform-style: preserve-3d;
     }
 
     .sidebar.active {
         display: block;
         transform: translateX(0);
+        -webkit-transform: translateX(0);
+        /* Ensure proper rendering in Safari */
+        -webkit-backface-visibility: hidden;
+        -webkit-perspective: 1000;
+        -webkit-transform-style: preserve-3d;
     }
 
     /* Adjust home layout to take full width when sidebar is hidden */
     .home-layout {
         max-width: 100%;
+    }
+
+    /* Improve touch behavior on Safari */
+    .sidebar-toggle {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
     }
 }
 
