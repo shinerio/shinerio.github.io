@@ -12,19 +12,23 @@
 <meta property="og:description" content="1. 双机冷备 2. 双机热备 双机热备可以极大地提升NAT服务的可靠性和承载能力，但是两台NAT设备上的NAT配置也需要完全相同。这样就会出现一个问题：如果两个NAT设备分别将两条不同的流映射到相同的公网地址，并且端口也相同的话，势必会造成表项的混乱，所以我们引入了优先级的概念。 在双机热备的环境...">
 <meta property="og:type" content="article">
 <meta property="article:published_time" content="2025-09-17T13:31:12.000Z">
-<meta property="article:author" content="Shinerio">
+<meta property="article:author" content="shinerio">
 </head>
 <body class="article-page" id="theme-body">
     <div class="page-wrapper">
+        <div class="sidebar-overlay"></div>
         <header class="page-header">
             <div class="container">
                 <nav class="page-nav">
                     <div class="nav-links">
+                        <button class="sidebar-toggle" aria-label="Toggle sidebar">
+                            <span class="sidebar-toggle-icon"></span>
+                        </button>
                         <a href="index.html" class="nav-link ">Home</a>
                         <a href="articles.html" class="nav-link ">Articles</a>
                         <a href="search.html" class="nav-link ">Search</a>
                     </div>
-                    <div class="theme-toggle-container">
+                    <div class="nav-actions">
                         <button id="theme-toggle" aria-label="Toggle dark mode" class="theme-toggle-btn">
                             <span class="sun-icon">☀️</span>
                             <span class="moon-icon">🌙</span>
@@ -60,7 +64,7 @@
         </main>
         <footer class="page-footer">
             <div class="container">
-                <p>&copy; 2026 Shinerio. All rights reserved.</p>
+                <p>&copy; 2026 shinerio. All rights reserved.</p>
             </div>
         </footer>
     </div>
@@ -106,6 +110,47 @@
                     }
                 }
             });
+
+            // Sidebar toggle (desktop + mobile)
+            const sidebarToggle = document.querySelector('.sidebar-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarOverlay = document.querySelector('.sidebar-overlay');
+
+            if (sidebarToggle && sidebar) {
+                // Desktop: restore saved collapse state
+                const isMobile = () => window.innerWidth < 768;
+                if (!isMobile() && localStorage.getItem('sidebar-collapsed') === 'true') {
+                    document.body.classList.add('sidebar-collapsed');
+                }
+
+                sidebarToggle.addEventListener('click', function() {
+                    if (isMobile()) {
+                        // Mobile: overlay drawer behavior
+                        sidebar.classList.toggle('active');
+                        if (sidebarOverlay) sidebarOverlay.classList.toggle('active');
+                    } else {
+                        // Desktop: collapse/expand with body offset
+                        document.body.classList.toggle('sidebar-collapsed');
+                        localStorage.setItem('sidebar-collapsed',
+                            document.body.classList.contains('sidebar-collapsed'));
+                    }
+                });
+
+                if (sidebarOverlay) {
+                    sidebarOverlay.addEventListener('click', function() {
+                        sidebar.classList.remove('active');
+                        sidebarOverlay.classList.remove('active');
+                    });
+                }
+
+                // Reset mobile state on resize to desktop
+                window.addEventListener('resize', function() {
+                    if (!isMobile()) {
+                        sidebar.classList.remove('active');
+                        if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+                    }
+                });
+            }
 
             // Search functionality
             const searchInput = document.getElementById('search-input');

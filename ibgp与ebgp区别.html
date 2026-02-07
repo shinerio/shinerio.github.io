@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ibgp与Ebgp区别 - Shinerio's Blog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <meta property="og:title" content="Ibgp与Ebgp区别">
+<meta property="og:description" content="1. 使用场景 eBGP主要用于： - 不同运营商/组织之间交换路由，例如中国电信与中国联通的互联互通 - 企业多归属（multihoming）接入多个 ISP - IXP（互联网交换点）中各参与方之间的路由交换 iBGP 主要用于： - 在一个大型 AS 内部传递从 eBGP 学到的外部路由信息，...">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-02-07T14:16:23.418Z">
+<meta property="article:author" content="shinerio">
+</head>
+<body class="article-page" id="theme-body">
+    <div class="page-wrapper">
+        <div class="sidebar-overlay"></div>
+        <header class="page-header">
+            <div class="container">
+                <nav class="page-nav">
+                    <div class="nav-links">
+                        <button class="sidebar-toggle" aria-label="Toggle sidebar">
+                            <span class="sidebar-toggle-icon"></span>
+                        </button>
+                        <a href="index.html" class="nav-link ">Home</a>
+                        <a href="articles.html" class="nav-link ">Articles</a>
+                        <a href="search.html" class="nav-link ">Search</a>
+                    </div>
+                    <div class="nav-actions">
+                        <button id="theme-toggle" aria-label="Toggle dark mode" class="theme-toggle-btn">
+                            <span class="sun-icon">☀️</span>
+                            <span class="moon-icon">🌙</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <main class="page-main">
+            <div class="container">
+                <article>
+    <header>
+        <h1>Ibgp与Ebgp区别</h1>
+        <time datetime="2026-02-07T14:16:23.418Z">2026年2月7日</time>
+        <div class="tags">
+            
+            <span class="tag">network</span>
+            
+            <span class="tag">bgp</span>
+            
+        </div>
+    </header>
+    <section class="content">
+        <h1>1. 使用场景</h1>
+<p><strong>eBGP</strong>主要用于：</p>
+<ul>
+<li>不同运营商/组织之间交换路由，例如中国电信与中国联通的互联互通</li>
+<li>企业多归属（multihoming）接入多个 ISP</li>
+<li>IXP（互联网交换点）中各参与方之间的路由交换<br><strong>iBGP</strong> 主要用于：</li>
+<li>在一个大型 AS 内部传递从 eBGP 学到的外部路由信息，使 AS 内所有边界路由器共享一致的路由视图</li>
+<li>大型 ISP 或企业骨干网内部，配合 IGP（OSPF/IS-IS）协同工作</li>
+<li>通常与路由反射器（Route Reflector）或联邦（Confederation）配合部署，解决全互联的扩展性问题</li>
+</ul>
+<h1>2. 关键原理与行为差异</h1>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>eBGP</th>
+<th>iBGP</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>定义</strong></td>
+<td>运行在<strong>不同</strong> AS 之间的 BGP</td>
+<td>运行在<strong>同一个</strong> AS 内部的 BGP</td>
+</tr>
+<tr>
+<td><strong>主要目的</strong></td>
+<td>对外<strong>交换</strong>路由（AS 之间传递信息）</td>
+<td>对内统一认知，<strong>承载</strong>路由（在AS内部传递外部路由）</td>
+</tr>
+<tr>
+<td><strong>TTL 默认值</strong></td>
+<td>1（邻居通常直连）</td>
+<td>255（可以跨多跳建立）</td>
+</tr>
+<tr>
+<td><strong>AS-PATH 行为</strong></td>
+<td>发送路由时<strong>添加本地 AS 号</strong>（也用于防环）</td>
+<td>不修改 AS-PATH</td>
+</tr>
+<tr>
+<td><strong>防环机制</strong></td>
+<td>收到路由后检查AS-PATH，若包含自己的AS号则丢弃</td>
+<td><strong>水平分割规则</strong>：从 iBGP邻居学到的路由<strong>不再传给其他 iBGP 邻居</strong>。逻辑上要求全互联（Full-Mesh），路由不需要二次传播。</td>
+</tr>
+<tr>
+<td><strong>Next-Hop 行为</strong></td>
+<td>默认改为自身接口地址</td>
+<td>默认<strong>不改变</strong> next-hop（保留 eBGP 邻居的地址），通常需要手动 <code>next-hop-self</code></td>
+</tr>
+<tr>
+<td><strong>邻居关系要求</strong></td>
+<td>一般直连，或用 <code>ebgp-multihop</code></td>
+<td>逻辑上需要<strong>全互联（full-mesh）</strong>，否则需要 RR 或联邦</td>
+</tr>
+<tr>
+<td><strong>AD（管理距离）</strong></td>
+<td>20（更优先）</td>
+<td>200（较低优先级）</td>
+</tr>
+<tr>
+<td><strong>MED 属性</strong></td>
+<td>跨AS传递，用于影响入站流量</td>
+<td>在AS内部传递，保持一致</td>
+</tr>
+<tr>
+<td><strong>Local Preference</strong></td>
+<td>不跨 AS 传递</td>
+<td>在 iBGP 之间传递，用于 AS 内部选路</td>
+</tr>
+</tbody></table>
+<h1>3. 核心原理总结</h1>
+<ol>
+<li><strong>eBGP 的防环靠 AS-PATH</strong>：路由每经过一个 AS 就追加该 AS 号，若收到包含自身 AS 号的路由则拒绝，天然防止环路。</li>
+<li><strong>iBGP 的防环靠水平分割</strong>：因为 iBGP 不修改 AS-PATH（AS 号相同，无法靠 AS-PATH 检测环路），所以规定 iBGP 学到的路由不能再转发给其他 iBGP 邻居。这个规则直接导致了<strong>全互联要求</strong>——每台路由器必须和 AS 内所有其他 BGP 路由器建立 iBGP 邻居，否则路由无法传播到所有节点。</li>
+<li><strong>全互联的扩展性问题</strong>：N 台路由器需要 N×(N-1)/2 条 iBGP 会话，因此实际部署中几乎都使用路由反射器（RR）或 BGP 联邦（Confederation）来减少会话数量。</li>
+<li><strong>Next-Hop 的协作逻辑</strong>：iBGP 不改 next-hop，意味着 AS 内部路由器必须通过 IGP 能到达该 next-hop 地址，否则路由不可用。这就是 BGP 和 IGP 必须协同工作的原因</li>
+</ol>
+
+    </section>
+</article>
+            </div>
+        </main>
+        <footer class="page-footer">
+            <div class="container">
+                <p>&copy; 2026 shinerio. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Theme switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.getElementById('theme-body');
+
+            // Check for saved theme preference or respect OS preference
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+            // Set initial theme
+            if (savedTheme === 'dark' || (!savedTheme && prefersDarkScheme.matches)) {
+                body.setAttribute('data-theme', 'dark');
+            } else {
+                body.removeAttribute('data-theme'); // light theme
+            }
+
+            // Toggle theme function
+            function toggleTheme() {
+                if (body.getAttribute('data-theme') === 'dark') {
+                    body.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    body.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                }
+            }
+
+            // Add event listener to theme toggle button
+            themeToggle.addEventListener('click', toggleTheme);
+
+            // Listen for OS theme changes
+            prefersDarkScheme.addEventListener('change', function(e) {
+                if (!localStorage.getItem('theme')) {
+                    if (e.matches) {
+                        body.setAttribute('data-theme', 'dark');
+                    } else {
+                        body.removeAttribute('data-theme');
+                    }
+                }
+            });
+
+            // Sidebar toggle (desktop + mobile)
+            const sidebarToggle = document.querySelector('.sidebar-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarOverlay = document.querySelector('.sidebar-overlay');
+
+            if (sidebarToggle && sidebar) {
+                // Desktop: restore saved collapse state
+                const isMobile = () => window.innerWidth < 768;
+                if (!isMobile() && localStorage.getItem('sidebar-collapsed') === 'true') {
+                    document.body.classList.add('sidebar-collapsed');
+                }
+
+                sidebarToggle.addEventListener('click', function() {
+                    if (isMobile()) {
+                        // Mobile: overlay drawer behavior
+                        sidebar.classList.toggle('active');
+                        if (sidebarOverlay) sidebarOverlay.classList.toggle('active');
+                    } else {
+                        // Desktop: collapse/expand with body offset
+                        document.body.classList.toggle('sidebar-collapsed');
+                        localStorage.setItem('sidebar-collapsed',
+                            document.body.classList.contains('sidebar-collapsed'));
+                    }
+                });
+
+                if (sidebarOverlay) {
+                    sidebarOverlay.addEventListener('click', function() {
+                        sidebar.classList.remove('active');
+                        sidebarOverlay.classList.remove('active');
+                    });
+                }
+
+                // Reset mobile state on resize to desktop
+                window.addEventListener('resize', function() {
+                    if (!isMobile()) {
+                        sidebar.classList.remove('active');
+                        if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+                    }
+                });
+            }
+
+            // Search functionality
+            const searchInput = document.getElementById('search-input');
+            const searchButton = document.getElementById('search-button');
+            const searchResults = document.getElementById('search-results');
+            const searchSuggestions = document.getElementById('search-suggestions');
+            const searchTypeRadios = document.querySelectorAll('input[name="search-type"]');
+
+            if (searchInput && searchButton) {
+                let searchData = null;
+
+                // Load search data
+                async function loadSearchData() {
+                    try {
+                        const response = await fetch('./assets/js/search-data.json');
+                        if (response.ok) {
+                            searchData = await response.json();
+                        } else {
+                            console.error('Failed to load search data:', response.status);
+                        }
+                    } catch (error) {
+                        console.error('Error loading search data:', error);
+                    }
+                }
+
+                // Initialize search data
+                loadSearchData();
+
+                // Debounce function to limit search calls
+                function debounce(func, wait) {
+                    let timeout;
+                    return function executedFunction(...args) {
+                        const later = () => {
+                            clearTimeout(timeout);
+                            func(...args);
+                        };
+                        clearTimeout(timeout);
+                        timeout = setTimeout(later, wait);
+                    };
+                }
+
+                // Get selected search type
+                function getSelectedSearchType() {
+                    const selectedRadio = document.querySelector('input[name="search-type"]:checked');
+                    return selectedRadio ? selectedRadio.value : 'all';
+                }
+
+                // Perform search
+                function performSearch(query) {
+                    if (!searchData || !query.trim()) {
+                        searchResults.innerHTML = '';
+                        searchSuggestions.innerHTML = '';
+                        return;
+                    }
+
+                    const queryTerms = query.toLowerCase().split(/\s+/).filter(term => term.length > 0);
+                    const searchType = getSelectedSearchType();
+
+                    if (queryTerms.length === 0) {
+                        searchResults.innerHTML = '';
+                        return;
+                    }
+
+                    const results = [];
+
+                    // Search through articles
+                    searchData.articles.forEach(article => {
+                        let score = 0;
+                        let snippet = '';
+
+                        // Get content based on search type
+                        const lowerTitle = article.title.toLowerCase();
+                        const lowerContent = article.content.toLowerCase();
+                        const lowerTags = article.tags.join(' ').toLowerCase();
+
+                        queryTerms.forEach(term => {
+                            switch(searchType) {
+                                case 'title':
+                                    // Only title matches count
+                                    if (lowerTitle.includes(term)) {
+                                        score += 10;
+                                    }
+                                    break;
+                                case 'content':
+                                    // Only content matches count (fixed to exclude title matches)
+                                    if (lowerContent.includes(term)) {
+                                        score += 1;
+                                    }
+                                    break;
+                                case 'all':
+                                default:
+                                    // Both title and content matches count
+                                    if (lowerTitle.includes(term)) {
+                                        score += 10;
+                                    }
+                                    if (lowerContent.includes(term)) {
+                                        score += 1;
+                                    }
+                                    // Tag matches get medium-high score
+                                    if (lowerTags.includes(term)) {
+                                        score += 5;
+                                    }
+                                    break;
+                            }
+                        });
+
+                        if (score > 0) {
+                            // Generate snippet based on search type
+                            let content = '';
+
+                            if (searchType === 'title') {
+                                // For title-only search, show title content
+                                content = article.title.substring(0, 200);
+                            } else if (searchType === 'content') {
+                                // For content-only search, show content excerpt
+                                content = article.content.substring(0, 200);
+                            } else {
+                                // For all search, show content with title as context
+                                content = article.content.substring(0, 200);
+                            }
+
+                            // Find first occurrence of query term in content for snippet
+                            queryTerms.forEach(term => {
+                                let searchIn = content.toLowerCase();
+                                if (searchType === 'title') {
+                                    searchIn = lowerTitle;
+                                } else if (searchType === 'content') {
+                                    searchIn = lowerContent;
+                                }
+
+                                const index = searchIn.indexOf(term);
+                                if (index !== -1) {
+                                    // Expand snippet around the match
+                                    let start, end;
+                                    if (searchType === 'title') {
+                                        start = Math.max(0, index - 15);
+                                        end = Math.min(content.length, index + term.length + 35);
+                                    } else {
+                                        start = Math.max(0, index - 30);
+                                        end = Math.min(content.length, index + term.length + 70);
+                                    }
+
+                                    content = (start > 0 ? '...' : '') +
+                                              content.substring(start, end) +
+                                              (end < (searchType === 'title' ? article.title.length : article.content.length) ? '...' : '');
+
+                                    // Highlight the term in the snippet
+                                    const searchContent = searchType === 'title' ? article.title : article.content;
+                                    const adjustedIndex = searchType === 'title' ?
+                                        Math.min(index, article.title.length - 1) :
+                                        Math.min(index, article.content.length - 1);
+
+                                    content = content.replace(
+                                        new RegExp(`(${escapeRegExp(term)})`, 'gi'),
+                                        '<mark>$1</mark>'
+                                    );
+                                }
+                            });
+
+                            results.push({
+                                article: article,
+                                score: score,
+                                snippet: content
+                            });
+                        }
+                    });
+
+                    // Sort results by score
+                    results.sort((a, b) => b.score - a.score);
+
+                    // Display results
+                    displaySearchResults(results);
+                }
+
+                // Display search results
+                function displaySearchResults(results) {
+                    if (results.length === 0) {
+                        searchResults.innerHTML = '<p class="no-results">未找到匹配的文章</p>';
+                        return;
+                    }
+
+                    const resultsHTML = results.map(result => `
+                        <div class="search-result-item">
+                            <h3 class="search-result-title">
+                                <a href="./${result.article.slug}.html">${highlightQueryTerms(result.article.title, document.querySelector('#search-input').value)}</a>
+                            </h3>
+                            <div class="search-result-meta">
+                                ${result.article.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                            </div>
+                            <p class="search-result-excerpt">${result.snippet}</p>
+                        </div>
+                    `).join('');
+
+                    searchResults.innerHTML = resultsHTML;
+                }
+
+                // Highlight query terms in text
+                function highlightQueryTerms(text, query) {
+                    if (!query.trim()) return text;
+
+                    const queryTerms = query.split(/\s+/).filter(term => term.length > 0);
+                    let highlightedText = text;
+
+                    queryTerms.forEach(term => {
+                        const regex = new RegExp(`(${escapeRegExp(term)})`, 'gi');
+                        highlightedText = highlightedText.replace(regex, '<mark>$1</mark>');
+                    });
+
+                    return highlightedText;
+                }
+
+                // Escape special regex characters
+                function escapeRegExp(string) {
+                    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                }
+
+                // Event listener for search button
+                searchButton.addEventListener('click', function() {
+                    const query = searchInput.value;
+                    performSearch(query);
+                });
+
+                // Event listener for Enter key
+                searchInput.addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') {
+                        const query = searchInput.value;
+                        performSearch(query);
+                    }
+                });
+
+                // Add debounced input handler for live search (optional)
+                const debouncedSearch = debounce(function() {
+                    const query = searchInput.value;
+                    performSearch(query);
+                }, 300);
+
+                searchInput.addEventListener('input', debouncedSearch);
+
+                // Add event listeners for search type radios
+                searchTypeRadios.forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        const query = searchInput.value;
+                        if (query.trim()) {
+                            performSearch(query);
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

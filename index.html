@@ -12,15 +12,19 @@
 </head>
 <body class="home-page" id="theme-body">
     <div class="page-wrapper">
+        <div class="sidebar-overlay"></div>
         <header class="page-header">
             <div class="container">
                 <nav class="page-nav">
                     <div class="nav-links">
+                        <button class="sidebar-toggle" aria-label="Toggle sidebar">
+                            <span class="sidebar-toggle-icon"></span>
+                        </button>
                         <a href="index.html" class="nav-link active">Home</a>
                         <a href="articles.html" class="nav-link ">Articles</a>
                         <a href="search.html" class="nav-link ">Search</a>
                     </div>
-                    <div class="theme-toggle-container">
+                    <div class="nav-actions">
                         <button id="theme-toggle" aria-label="Toggle dark mode" class="theme-toggle-btn">
                             <span class="sun-icon">☀️</span>
                             <span class="moon-icon">🌙</span>
@@ -32,6 +36,28 @@
         <main class="page-main">
             <div class="container">
                 
+      <aside class="sidebar">
+        <div class="sidebar-profile">
+          <img src="./assets/images/avatar.png" alt="avatar" class="sidebar-avatar">
+          <h3 class="sidebar-author">shinerio</h3>
+          <p class="sidebar-slogan">Code flows with ease, and life unfolds in beauty</p>
+          <a href="https://github.com/shinerio" target="_blank" rel="noopener noreferrer" class="sidebar-github" aria-label="GitHub"><svg viewBox="0 0 16 16" width="22" height="22" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
+        </div>
+
+        <div class="sidebar-stats">
+          <span>文章: 303</span>
+          <span class="stats-dot">·</span>
+          <span>更新: 2026年2月7日</span>
+        </div>
+
+        <div class="sidebar-widget">
+          <h3>标签</h3>
+          <div class="tag-cloud">
+            <a href="articles.html?tag=network" class="tag">#network (14)</a><a href="articles.html?tag=excalidraw" class="tag">#excalidraw (8)</a><a href="articles.html?tag=%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C" class="tag">#计算机网络 (7)</a><a href="articles.html?tag=linux" class="tag">#linux (5)</a><a href="articles.html?tag=nat" class="tag">#nat (4)</a><a href="articles.html?tag=bgp" class="tag">#bgp (2)</a><a href="articles.html?tag=protocol" class="tag">#protocol (1)</a><a href="articles.html?tag=database" class="tag">#database (1)</a><a href="articles.html?tag=dcn" class="tag">#dcn (1)</a><a href="articles.html?tag=%E4%BA%A4%E6%8D%A2%E6%9C%BA" class="tag">#交换机 (1)</a><a href="articles.html?tag=NAT" class="tag">#NAT (1)</a><a href="articles.html?tag=thread" class="tag">#thread (1)</a><a href="articles.html?tag=%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8" class="tag">#网络安全 (1)</a><a href="articles.html?tag=%E5%8A%A0%E5%AF%86" class="tag">#加密 (1)</a><a href="articles.html?tag=obsidian" class="tag">#obsidian (1)</a>
+          </div>
+        </div>
+      </aside>
+
       <div class="home-layout">
         <main class="home-main">
           <section class="hero">
@@ -47,11 +73,19 @@
             <div class="article-grid">
               
     <div class="article-card">
+        <h3><a href="ibgp与ebgp区别.html">Ibgp与Ebgp区别</a></h3>
+        <p class="article-excerpt">1. 使用场景 eBGP主要用于： - 不同运营商/组织之间交换路由，例如中国电信与中国联通的互联互通 - 企业多归属（multihoming）接入多个 ISP - IXP（互联网交换点）中各参与方之间的路由交换 iBGP 主要用于： - 在一个大型 AS 内部传递从 eBGP 学到的外部路由信息，...</p>
+        <div class="article-meta">
+            <time datetime="2026-02-07T14:16:23.418Z">2026年2月7日</time>
+            <span class="reading-time">4 分钟</span>
+        </div>
+    </div>
+    <div class="article-card">
         <h3><a href="bgp协议优先级.html">BGP协议优先级</a></h3>
         <p class="article-excerpt">1. 核心逻辑 1.1. “大”即是好的（高优先级） Weight 和 Local Preference：这两个属性是管理员手动干预的首选。数值设置得越大，代表你越“偏好”这条路径。 1.2. “短/小”即是好的（低开销） - AS-Path 长度：这体现了 BGP 的路径矢量特性，跳数越少代表路径...</p>
         <div class="article-meta">
             <time datetime="2026-02-06T00:00:00.000Z">2026年2月6日</time>
-            <span class="reading-time">13 分钟</span>
+            <span class="reading-time">15 分钟</span>
         </div>
     </div>
     <div class="article-card">
@@ -78,43 +112,16 @@
             <span class="reading-time">1 分钟</span>
         </div>
     </div>
-    <div class="article-card">
-        <h3><a href="run-code.html">Run Code</a></h3>
-        <p class="article-excerpt">runcode是一个来自veadk库的内置工具，它提供了一个安全的代码执行沙箱功能。这个工具允许AI Agent运行用户请求的代码片段（主要是 Python3），并返回执行结果。该工具通过字节跳动云服务的API在远程安全环境中执行代码，并具有会话管理和身份验证功能。 1. 工作原理 1.1. 工具注...</p>
-        <div class="article-meta">
-            <time datetime="2026-01-25T13:59:16.511Z">2026年1月25日</time>
-            <span class="reading-time">3 分钟</span>
-        </div>
-    </div>
             </div>
           </section>
         </main>
-
-        <aside class="sidebar">
-          <div class="sidebar-widget">
-            <h3>文章总数</h3>
-            <p class="article-count">302</p>
-          </div>
-
-          <div class="sidebar-widget">
-            <h3>标签云</h3>
-            <div class="tag-cloud">
-              <span class="tag">#network (13)</span><span class="tag">#excalidraw (8)</span><span class="tag">#计算机网络 (7)</span><span class="tag">#linux (5)</span><span class="tag">#nat (4)</span><span class="tag">#protocol (1)</span><span class="tag">#database (1)</span><span class="tag">#dcn (1)</span><span class="tag">#交换机 (1)</span><span class="tag">#NAT (1)</span><span class="tag">#bgp (1)</span><span class="tag">#thread (1)</span><span class="tag">#网络安全 (1)</span><span class="tag">#加密 (1)</span><span class="tag">#obsidian (1)</span>
-            </div>
-          </div>
-
-          <div class="sidebar-widget">
-            <h3>最近更新</h3>
-            <p class="last-update">2026年2月6日</p>
-          </div>
-        </aside>
       </div>
     
             </div>
         </main>
         <footer class="page-footer">
             <div class="container">
-                <p>&copy; 2026 Shinerio. All rights reserved.</p>
+                <p>&copy; 2026 shinerio. All rights reserved.</p>
             </div>
         </footer>
     </div>
@@ -160,6 +167,47 @@
                     }
                 }
             });
+
+            // Sidebar toggle (desktop + mobile)
+            const sidebarToggle = document.querySelector('.sidebar-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarOverlay = document.querySelector('.sidebar-overlay');
+
+            if (sidebarToggle && sidebar) {
+                // Desktop: restore saved collapse state
+                const isMobile = () => window.innerWidth < 768;
+                if (!isMobile() && localStorage.getItem('sidebar-collapsed') === 'true') {
+                    document.body.classList.add('sidebar-collapsed');
+                }
+
+                sidebarToggle.addEventListener('click', function() {
+                    if (isMobile()) {
+                        // Mobile: overlay drawer behavior
+                        sidebar.classList.toggle('active');
+                        if (sidebarOverlay) sidebarOverlay.classList.toggle('active');
+                    } else {
+                        // Desktop: collapse/expand with body offset
+                        document.body.classList.toggle('sidebar-collapsed');
+                        localStorage.setItem('sidebar-collapsed',
+                            document.body.classList.contains('sidebar-collapsed'));
+                    }
+                });
+
+                if (sidebarOverlay) {
+                    sidebarOverlay.addEventListener('click', function() {
+                        sidebar.classList.remove('active');
+                        sidebarOverlay.classList.remove('active');
+                    });
+                }
+
+                // Reset mobile state on resize to desktop
+                window.addEventListener('resize', function() {
+                    if (!isMobile()) {
+                        sidebar.classList.remove('active');
+                        if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+                    }
+                });
+            }
 
             // Search functionality
             const searchInput = document.getElementById('search-input');

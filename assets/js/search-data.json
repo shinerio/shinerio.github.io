@@ -157,7 +157,7 @@
     {
       "id": "..\\..\\obsidian\\obsidian\\Tech\\AI\\AI Code\\Claude code",
       "title": "Claude Code",
-      "content": "1. 安装claude code 环境变量方式启动或直接修改文件 使用claude code 在vscode中安装claude code插件，然后在claude code命令行界面使用即可连接到vscode。claude code就可以和vscode进行交付，感知你在vscode中选中的代码、文件，claude code的修改也会在vscode中以diff形式呈现。 2. 常用命令 | 命令 | ",
+      "content": "1. 安装claude code 环境变量方式启动或直接修改文件 使用claude code 在vscode中安装claude code插件，然后在claude code命令行界面使用即可连接到vscode。claude code就可以和vscode进行交付，感知你在vscode中选中的代码、文件，claude code的修改也会在vscode中以diff形式呈现。 1.1. 使用vscode作为",
       "tags": [],
       "slug": "claude-code"
     },
@@ -1644,6 +1644,16 @@
       "slug": "bgp邻居建立"
     },
     {
+      "id": "..\\..\\obsidian\\obsidian\\Tech\\Network\\路由协议\\BGP\\ibgp与ebgp区别",
+      "title": "Ibgp与Ebgp区别",
+      "content": "1. 使用场景 eBGP主要用于： - 不同运营商/组织之间交换路由，例如中国电信与中国联通的互联互通 - 企业多归属（multihoming）接入多个 ISP - IXP（互联网交换点）中各参与方之间的路由交换 iBGP 主要用于： - 在一个大型 AS 内部传递从 eBGP 学到的外部路由信息，使 AS 内所有边界路由器共享一致的路由视图 - 大型 ISP 或企业骨干网内部，配合 IGP（OS",
+      "tags": [
+        "network",
+        "bgp"
+      ],
+      "slug": "ibgp与ebgp区别"
+    },
+    {
       "id": "..\\..\\obsidian\\obsidian\\Tech\\Network\\路由协议\\内部路由协议",
       "title": "路由协议",
       "content": "路由是选择路径并将报文沿着选择的路径进行转发的过程。 1. 路由器 1.1. 路由器功能 路由器从功能上可以划分为： - 路由选择：使用路由协议（或手工静态配置的方式）获取整个网络的拓扑结构，构造、维护路由表。 - 分组转发：分组转发结构由交换结构、一组输入端口和一组输出端口构成。 1. IP分组检查：检查版本号，检查分组头字段，计算头校验和。 2. 目的IP地址分析与路由表查找：决定分组的输出接",
@@ -2159,7 +2169,7 @@
     {
       "id": "..\\..\\obsidian\\obsidian\\Tool\\Windows\\效率工具",
       "title": "效率工具",
-      "content": "1. windows命令行代理 2. git代理 也可以直接编辑/.gitconfig文件 3. windows配置beyondcompare作为gitdiff 修改.gitconfig配置文件 4. 删除重复文件",
+      "content": "1. 添加环境变量 2. windows命令行代理 3. git代理 也可以直接编辑/.gitconfig文件 4. windows配置beyondcompare作为gitdiff 修改.gitconfig配置文件 5. 删除重复文件",
       "tags": [],
       "slug": "效率工具"
     },

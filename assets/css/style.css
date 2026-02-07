@@ -399,6 +399,14 @@ body {
     max-width: var(--container-max-width);
     margin: 0 auto;
     padding: 0 var(--spacing-md);
+    width: 100%;
+}
+
+/* Special container layout for home page main content (sidebar + articles) */
+body.home-page .page-main > .container {
+    display: flex;
+    gap: var(--spacing-lg);
+    flex-wrap: nowrap;
 }
 
 /* Grid/Flexbox layout for the page structure */
@@ -516,25 +524,171 @@ body {
     margin: var(--spacing-lg) 0;
 }
 
-/* Layout for home page with sidebar */
+/* Layout for home page with sidebar - This div should flex with the sidebar */
 .home-layout {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--spacing-lg);
-    margin: 0 auto;
-    max-width: var(--container-max-width);
+    flex: 1; /* Take remaining space next to sidebar */
+    min-width: 0; /* Prevent grid items from overflowing */
+    width: 100%; /* Take available width */
 }
 
 .home-main {
-    min-width: 0; /* Prevent grid items from overflowing */
+    width: 100%; /* Ensure it takes full width of its container */
 }
 
+/* Desktop: offset entire page for fixed sidebar */
+body.home-page {
+    padding-left: 280px;
+    transition: padding-left 0.3s ease;
+}
+
+body.home-page.sidebar-collapsed {
+    padding-left: 0;
+}
+
+body.home-page.sidebar-collapsed .sidebar {
+    transform: translateX(-280px);
+}
+
+/* Sidebar navigation - fixed left panel */
 .sidebar {
+    width: 280px;
     background-color: var(--color-bg-secondary);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-lg);
-    border: 1px solid var(--color-border);
-    align-self: start; /* Align to top of grid */
+    padding: var(--spacing-xl) var(--spacing-lg);
+    flex-shrink: 0;
+    z-index: 1000;
+    transition: transform 0.3s ease, background-color var(--transition-normal);
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    box-shadow: 1px 0 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Sidebar profile section */
+.sidebar-profile {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+}
+
+.sidebar-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: var(--spacing-md);
+    border: 3px solid var(--color-accent-primary);
+    transition: border-color var(--transition-normal), transform var(--transition-fast);
+}
+
+.sidebar-avatar:hover {
+    transform: scale(1.05);
+}
+
+/* Fallback when avatar image is missing */
+.sidebar-avatar-fallback {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-md);
+    font-size: var(--font-size-3xl);
+    color: white;
+    border: 3px solid var(--color-accent-primary);
+}
+
+.sidebar-author {
+    margin: 0 0 var(--spacing-sm) 0;
+    font-size: var(--font-size-lg);
+    color: var(--color-text-primary);
+}
+
+.sidebar-slogan {
+    margin: 0 0 var(--spacing-sm) 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+}
+
+.sidebar-github {
+    display: inline-flex;
+    color: var(--color-text-tertiary);
+    transition: color var(--transition-fast);
+}
+
+.sidebar-github:hover {
+    color: var(--color-text-primary);
+}
+
+/* Sidebar toggle button (in nav bar) */
+.sidebar-toggle {
+    display: none; /* Hidden on non-home pages */
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: opacity var(--transition-fast);
+    opacity: 0.6;
+}
+
+body.home-page .sidebar-toggle {
+    display: flex; /* Show on home page */
+}
+
+.sidebar-toggle:hover {
+    opacity: 1;
+}
+
+.sidebar-toggle-icon,
+.sidebar-toggle-icon::before,
+.sidebar-toggle-icon::after {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background-color: var(--color-text-primary);
+    border-radius: 1px;
+    transition: transform var(--transition-normal), opacity var(--transition-normal);
+}
+
+.sidebar-toggle-icon {
+    position: relative;
+}
+
+.sidebar-toggle-icon::before,
+.sidebar-toggle-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+}
+
+.sidebar-toggle-icon::before {
+    top: -6px;
+}
+
+.sidebar-toggle-icon::after {
+    top: 6px;
+}
+
+/* Sidebar overlay (mobile) */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    transition: opacity var(--transition-normal);
+}
+
+.sidebar-overlay.active {
+    display: block;
 }
 
 .sidebar-widget {
@@ -543,18 +697,30 @@ body {
 
 .sidebar-widget h3 {
     margin-top: 0;
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
     color: var(--color-accent-primary);
-    font-size: var(--font-size-lg);
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: var(--spacing-sm);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    letter-spacing: 0.02em;
 }
 
-.sidebar-widget .article-count {
-    font-size: var(--font-size-3xl);
+/* Sidebar compact stats row */
+.sidebar-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-xs) var(--spacing-md);
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius-md);
+}
+
+.sidebar-stats .stats-dot {
+    color: var(--color-text-tertiary);
     font-weight: 700;
-    color: var(--color-accent-primary);
-    margin: 0;
 }
 
 .sidebar-widget .tag-cloud {
@@ -573,13 +739,17 @@ body {
     font-family: var(--font-body);
     font-weight: 500;
     letter-spacing: var(--letter-spacing-body);
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
 }
 
-.sidebar-widget .last-update {
-    font-style: italic;
-    color: var(--color-text-secondary);
-    margin: 0;
+.sidebar-widget .tag:hover {
+    background-color: var(--color-accent-primary);
+    border-color: var(--color-accent-primary);
+    color: white;
 }
+
 
 .article-card {
     background: var(--color-card-bg);
@@ -680,8 +850,10 @@ a:hover::before {
     width: 100%;
 }
 
-.theme-toggle-container {
-    display: inline-block;
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
 }
 
 .theme-toggle-btn {
@@ -965,9 +1137,9 @@ li {
     h1 { font-size: var(--font-size-4xl); }
     h2 { font-size: var(--font-size-3xl); }
 
-    /* On small screens, keep sidebar below main content */
+    /* On small screens, no sidebar offset */
     .home-layout {
-        grid-template-columns: 1fr;
+        margin-left: 0;
     }
 
     /* Increase line height slightly for better readability on medium screens */
@@ -997,13 +1169,21 @@ li {
     h2 { font-size: 2rem; }
     h3 { font-size: 1.5rem; }
 
-    /* Home page sidebar layout */
-    .home-layout {
-        grid-template-columns: 1fr 300px; /* Main content, sidebar */
+    /* Sidebar is fixed positioned, no margin offset needed */
+    body.home-page .page-header,
+    body.home-page .page-main,
+    body.home-page .page-footer {
+        margin-left: 0;
     }
 
+    /* Ensure sidebar is visible on desktop */
     .sidebar {
-        height: fit-content;
+        display: block !important;
+        transform: translateX(0);
+    }
+
+    body.home-page.sidebar-collapsed .sidebar {
+        transform: translateX(-280px);
     }
 
     /* Optimize typography for tablets */
@@ -1026,11 +1206,6 @@ li {
         gap: var(--spacing-xl);
     }
 
-    /* Enhance sidebar layout for larger screens */
-    .home-layout {
-        grid-template-columns: 1fr 320px; /* Main content, sidebar */
-    }
-
     /* Further optimize for larger screens */
     body {
         font-size: 1.1rem;
@@ -1051,11 +1226,6 @@ li {
 
     .articles-grid {
         grid-template-columns: repeat(3, 1fr);
-    }
-
-    /* Optimize sidebar for extra large screens */
-    .home-layout {
-        grid-template-columns: 1fr 350px; /* Main content, sidebar */
     }
 
     h1 { font-size: 3rem; }
@@ -1087,10 +1257,71 @@ li {
         gap: var(--spacing-md);
     }
 
-    /* Stack sidebar below main content on extra small screens */
+    /* Sidebar handled by mobile media query */
+
+    .page-header,
+    .page-main,
+    .page-footer {
+        padding-left: var(--spacing-sm);
+        padding-right: var(--spacing-sm);
+    }
+
+    h1 { font-size: var(--font-size-2xl); }
+    h2 { font-size: var(--font-size-xl); }
+    h3 { font-size: var(--font-size-lg); }
+
+    /* Adjust for better readability on small screens */
+    body {
+        font-size: 0.95rem;
+    }
+
+    p, li {
+        line-height: var(--line-height-base);
+    }
+}
+
+/* Mobile sidebar behavior (< 768px) */
+@media (max-width: 767px) {
+    /* No body padding on mobile - sidebar is overlay */
+    body.home-page {
+        padding-left: 0;
+    }
+
+    .sidebar {
+        display: none;
+        transform: translateX(-100%);
+        background-color: var(--color-bg-primary);
+    }
+
+    .sidebar.active {
+        display: block;
+        transform: translateX(0);
+    }
+
+    /* Adjust home layout to take full width when sidebar is hidden */
     .home-layout {
+        max-width: 100%;
+    }
+}
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: calc(var(--breakpoint-sm) - 1px)) {
+    .page-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+
+    .nav-links {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: var(--spacing-xs);
+    }
+
+    .articles-grid {
         grid-template-columns: 1fr;
-        gap: var(--spacing-lg);
+        gap: var(--spacing-md);
     }
 
     .page-header,

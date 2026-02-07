@@ -12,19 +12,23 @@
 <meta property="og:description" content="runcode是一个来自veadk库的内置工具，它提供了一个安全的代码执行沙箱功能。这个工具允许AI Agent运行用户请求的代码片段（主要是 Python3），并返回执行结果。该工具通过字节跳动云服务的API在远程安全环境中执行代码，并具有会话管理和身份验证功能。 1. 工作原理 1.1. 工具注...">
 <meta property="og:type" content="article">
 <meta property="article:published_time" content="2026-01-25T13:59:16.511Z">
-<meta property="article:author" content="Shinerio">
+<meta property="article:author" content="shinerio">
 </head>
 <body class="article-page" id="theme-body">
     <div class="page-wrapper">
+        <div class="sidebar-overlay"></div>
         <header class="page-header">
             <div class="container">
                 <nav class="page-nav">
                     <div class="nav-links">
+                        <button class="sidebar-toggle" aria-label="Toggle sidebar">
+                            <span class="sidebar-toggle-icon"></span>
+                        </button>
                         <a href="index.html" class="nav-link ">Home</a>
                         <a href="articles.html" class="nav-link ">Articles</a>
                         <a href="search.html" class="nav-link ">Search</a>
                     </div>
-                    <div class="theme-toggle-container">
+                    <div class="nav-actions">
                         <button id="theme-toggle" aria-label="Toggle dark mode" class="theme-toggle-btn">
                             <span class="sun-icon">☀️</span>
                             <span class="moon-icon">🌙</span>
@@ -103,7 +107,7 @@
         </main>
         <footer class="page-footer">
             <div class="container">
-                <p>&copy; 2026 Shinerio. All rights reserved.</p>
+                <p>&copy; 2026 shinerio. All rights reserved.</p>
             </div>
         </footer>
     </div>
@@ -149,6 +153,47 @@
                     }
                 }
             });
+
+            // Sidebar toggle (desktop + mobile)
+            const sidebarToggle = document.querySelector('.sidebar-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarOverlay = document.querySelector('.sidebar-overlay');
+
+            if (sidebarToggle && sidebar) {
+                // Desktop: restore saved collapse state
+                const isMobile = () => window.innerWidth < 768;
+                if (!isMobile() && localStorage.getItem('sidebar-collapsed') === 'true') {
+                    document.body.classList.add('sidebar-collapsed');
+                }
+
+                sidebarToggle.addEventListener('click', function() {
+                    if (isMobile()) {
+                        // Mobile: overlay drawer behavior
+                        sidebar.classList.toggle('active');
+                        if (sidebarOverlay) sidebarOverlay.classList.toggle('active');
+                    } else {
+                        // Desktop: collapse/expand with body offset
+                        document.body.classList.toggle('sidebar-collapsed');
+                        localStorage.setItem('sidebar-collapsed',
+                            document.body.classList.contains('sidebar-collapsed'));
+                    }
+                });
+
+                if (sidebarOverlay) {
+                    sidebarOverlay.addEventListener('click', function() {
+                        sidebar.classList.remove('active');
+                        sidebarOverlay.classList.remove('active');
+                    });
+                }
+
+                // Reset mobile state on resize to desktop
+                window.addEventListener('resize', function() {
+                    if (!isMobile()) {
+                        sidebar.classList.remove('active');
+                        if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+                    }
+                });
+            }
 
             // Search functionality
             const searchInput = document.getElementById('search-input');

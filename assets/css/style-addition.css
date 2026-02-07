@@ -1,0 +1,7 @@
+/* Additional layout overrides - sidebar is now fixed positioned */
+
+/* Home layout takes full remaining space */
+body.home-page main.page-main > div.home-layout {
+    flex: 1;
+    min-width: 0;
+}

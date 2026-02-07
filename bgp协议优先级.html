@@ -12,19 +12,23 @@
 <meta property="og:description" content="1. 核心逻辑 1.1. “大”即是好的（高优先级） Weight 和 Local Preference：这两个属性是管理员手动干预的首选。数值设置得越大，代表你越“偏好”这条路径。 1.2. “短/小”即是好的（低开销） - AS-Path 长度：这体现了 BGP 的路径矢量特性，跳数越少代表路径...">
 <meta property="og:type" content="article">
 <meta property="article:published_time" content="2026-02-06T00:00:00.000Z">
-<meta property="article:author" content="Shinerio">
+<meta property="article:author" content="shinerio">
 </head>
 <body class="article-page" id="theme-body">
     <div class="page-wrapper">
+        <div class="sidebar-overlay"></div>
         <header class="page-header">
             <div class="container">
                 <nav class="page-nav">
                     <div class="nav-links">
+                        <button class="sidebar-toggle" aria-label="Toggle sidebar">
+                            <span class="sidebar-toggle-icon"></span>
+                        </button>
                         <a href="index.html" class="nav-link ">Home</a>
                         <a href="articles.html" class="nav-link ">Articles</a>
                         <a href="search.html" class="nav-link ">Search</a>
                     </div>
-                    <div class="theme-toggle-container">
+                    <div class="nav-actions">
                         <button id="theme-toggle" aria-label="Toggle dark mode" class="theme-toggle-btn">
                             <span class="sun-icon">☀️</span>
                             <span class="moon-icon">🌙</span>
@@ -74,7 +78,7 @@
 </thead>
 <tbody><tr>
 <td>1</td>
-<td>Weight (权重)</td>
+<td>Weight(Prefer Val)</td>
 <td>仅限本地</td>
 <td>值越大越优先</td>
 <td><strong>从不传播</strong>。只在收到路由的路由器本地生效，甚至不会传给同一个 AS 内的邻居。</td>
@@ -221,14 +225,98 @@
 </ul>
 </li>
 </ul>
-<h2>3.4. ecmp</h2>
+<h2>3.4. med</h2>
+<p><strong>MED (Multi-Exit Discriminator)</strong> 是 BGP 路由属性中用于控制入站流量（Inbound Traffic）的关键属性。简单来说，它的作用是告诉你的邻居 AS：“如果不止一条路能进我家，请走我推荐的这条（MED 值更小的）路。”</p>
+<ul>
+<li><strong>定义</strong>：MED 是 BGP 的一种可选非传递（Optional Non-transitive）属性。</li>
+<li><strong>本质</strong>：它就是一个<strong>度量值（Metric）</strong>。</li>
+<li><strong>比较规则</strong>：<strong>值越小越优先</strong>（Lower is better）。这与 OSPF、IS-IS 的 Cost 值逻辑一致。</li>
+<li><strong>别名</strong>：在 Cisco 等设备的配置命令行中，MED 通常直接被称为 <code>metric</code>。</li>
+</ul>
+<h3>3.4.1. 生成原理</h3>
+<p>MED 的核心原理是利用 BGP 属性在 AS 之间传递“建议”，从而影响邻居 AS 的路由决策。<br>MED 值通常通过以下三种方式生成：</p>
+<ol>
+<li><strong>继承 IGP 度量值</strong>：这是最常见的方式。当你将 IGP（如 OSPF）路由引入（Redistribute）到 BGP 时，BGP 可以自动将 OSPF 的 Cost 值复制为 BGP 的 MED 值。这体现了“外部路由选择依赖内部网络状况”。如果内部网络到某个出口的 Cost 变大了，MED 也会变大，邻居就会感知并可能避开该出口。</li>
+<li><strong>手动指定</strong>：通过路由策略（Route-map）强制设置 MED 值。配置示例：<code>set metric 100</code>。</li>
+<li><strong>默认值</strong>：如果未设置，默认 MED 值为 0（最优先）。</li>
+</ol>
+<h3>3.4.2. MED最重要的特性——非传递性。</h3>
+<ul>
+<li><strong>规则</strong>：MED 只能传给<strong>直连的邻居 AS</strong>，邻居 AS 收到后，<strong>不会</strong>再把这个 MED 传给它的下一个邻居 AS（除非显式配置使其传递）。</li>
+<li>例子：AS 100 发给 AS 200 一个 MED=50 的路由。AS 200 会在自己的选路中使用这个值，但当 AS 200 把这条路由传给 AS 300 时，会把 MED 值剥离（归零）。</li>
+</ul>
+<h3>3.4.3. 比较限制：著名的“来自同一 AS”规则**</h3>
+<ul>
+<li><strong>默认行为</strong>：BGP 路由器<strong>只比较来自同一个相邻 AS</strong> 的路由的 MED 值。</li>
+<li><em>场景</em>：<ul>
+<li>如果路由 A 来自 AS 100，MED=10。</li>
+<li>如果路由 B 来自 AS 200，MED=20。</li>
+<li><strong>结果</strong>：默认情况下，路由器<strong>不会</strong>比较这两个 MED，因为它们来自不同的“商家”。路由器会跳过 MED，继续比较后面的属性（如 AS-Path）。</li>
+</ul>
+</li>
+<li>例外：可以通过配置 <code>bgp always-compare-med</code> 命令强制比较来自不同 AS 的 MED，但这在公网中很少见，通常用于企业自建网。</li>
+</ul>
+<h3>3.4.4. 使用场景与案例</h3>
+<h4>3.4.4.1. <strong>场景一：双链路互联（多出口鉴别）</strong></h4>
+<p>这是 MED 名字的由来。</p>
+<ul>
+<li><strong>背景</strong>：企业网（AS 65001）通过两条物理链路连接到同一个 ISP（AS 100）。</li>
+<li><strong>需求</strong>：企业希望 ISP 优先通过“链路 A”访问企业的服务器，只有当 A 断了才走 B。</li>
+<li><strong>操作</strong>：<ul>
+<li>企业路由器 A 对 ISP 发送路由通告：<code>set metric 50</code>。</li>
+<li>企业路由器 B 对 ISP 发送路由通告：<code>set metric 100</code>。</li>
+</ul>
+</li>
+<li><strong>结果</strong>：ISP 的路由器收到两份通告，发现来自同一个 AS（65001），于是比较 MED。50 &lt; 100，ISP 决定流量全部走链路 A。</li>
+</ul>
+<h4>3.4.4.2. <strong>场景二：冷土豆路由 (Cold Potato Routing)</strong></h4>
+<ul>
+<li><strong>概念</strong>：与“热土豆路由”（尽快把流量扔出 AS）相反，MED 常用于实现“冷土豆路由”。</li>
+<li><strong>原理</strong>：通过携带 IGP 的 Metric 作为 MED，让邻居 AS 知道：“请把流量送到离我目的网段最近的那个接口进来，别让我自己在内部网里跑长途。”</li>
+</ul>
+<h3>3.4.5. 总结：MED与Local Preference的区别</h3>
+<table>
+<thead>
+<tr>
+<th><strong>特性</strong></th>
+<th><strong>MED (Multi-Exit Discriminator)</strong></th>
+<th><strong>Local Preference (本地优先级)</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>控制方向</strong></td>
+<td>控制<strong>入站</strong>流量 (别人怎么进我家)</td>
+<td>控制<strong>出站</strong>流量 (我怎么去别人家)</td>
+</tr>
+<tr>
+<td><strong>生效范围</strong></td>
+<td>仅影响<strong>邻居 AS</strong></td>
+<td>影响<strong>本 AS 内部</strong>所有路由器</td>
+</tr>
+<tr>
+<td><strong>默认值</strong></td>
+<td>0</td>
+<td>100</td>
+</tr>
+<tr>
+<td><strong>优选规则</strong></td>
+<td><strong>越小</strong>越好 (Lower is better)</td>
+<td><strong>越大</strong>越好 (Higher is better)</td>
+</tr>
+<tr>
+<td><strong>强制力</strong></td>
+<td><strong>弱</strong> (邻居可以忽略你的建议)</td>
+<td><strong>强</strong> (本AS内部必须遵守)</td>
+</tr>
+</tbody></table>
+<h2>3.5. ecmp</h2>
 <p>BGP 默认是<strong>不</strong>进行负载均衡（ECMP）的，它默认只会选出<strong>一条</strong> Best Path。要形成BGP的ECMP（等价多路径），必须同时满足“人工开启”和“属性一致”两个层面的条件。ECMP 发生的时机是在比较完 <strong>IGP Metric (第 8 条)</strong> 之后，比较 <strong>Router ID (第 10 条)</strong> 之前。</p>
-<h3>3.4.1. 核心前提：开“开关”</h3>
+<h3>3.5.1. 核心前提：开“开关”</h3>
 <p>BGP 协议设计的初衷是防环和策略控制，而不是负载均衡。默认情况下，即使有多条一模一样的优秀路径，BGP 也会强行通过 Router ID 把它们比个高下，只留一条。要启用 ECMP，必须在 BGP 配置中显式指定允许安装多条路径：</p>
 <ul>
 <li><strong>命令示例</strong>：<code>maximum-paths [number]</code> (针对 EBGP) 或 <code>maximum-paths ibgp [number]</code> (针对 IBGP)。</li>
 </ul>
-<h3>3.4.2. 硬性条件：前 8 项属性必须“完全一致”</h3>
+<h3>3.5.2. 硬性条件：前 8 项属性必须“完全一致”</h3>
 <p>当开关打开后，BGP 路由器会检查多条路径。只有当以下属性<strong>全部相同</strong>时，才会认为它们是“Equal Cost”的，进而形成 ECMP。</p>
 <ol>
 <li><strong>Weight</strong> (权重)：必须相同。</li>
@@ -244,7 +332,7 @@
 <li><strong>Neighbor 类型</strong>：必须相同（都是 EBGP 或都是 IBGP，很少有设备支持 EBGP 和 IBGP 混合负载均衡）。</li>
 <li><strong>IGP Metric</strong> (内部开销)：<strong>这一步很关键</strong>。到达 BGP 下一跳（Next Hop）的 IGP 代价必须相同。<br><strong>👉 结论</strong>：只有当这 8 项比完还分不出胜负，且 <code>maximum-paths</code> &gt; 1 时，选路过程<strong>中止</strong>，这几条路由同时进入路由表。<strong>Router ID 和 Cluster List 将不再被比较。</strong></li>
 </ol>
-<h3>3.4.3. 特殊场景：AS-Path 的“松弛” (Multipath Relax)</h3>
+<h3>3.5.3. 特殊场景：AS-Path 的“松弛” (Multipath Relax)</h3>
 <p>在很多现代数据中心网络（特别是 Clos/Leaf-Spine 架构）中，我们希望在两条物理链路（连接不同的上游 AS）之间做负载均衡。</p>
 <ul>
 <li><strong>问题</strong>：默认规则要求 AS-Path 内容必须完全一致。如果连接了两个不同的 ISP（比如 AS 65001 和 AS 65002），虽然 AS-Path 长度都是 1，但因为 AS 号不同，默认无法形成 ECMP。</li>
@@ -263,7 +351,7 @@
         </main>
         <footer class="page-footer">
             <div class="container">
-                <p>&copy; 2026 Shinerio. All rights reserved.</p>
+                <p>&copy; 2026 shinerio. All rights reserved.</p>
             </div>
         </footer>
     </div>
@@ -309,6 +397,47 @@
                     }
                 }
             });
+
+            // Sidebar toggle (desktop + mobile)
+            const sidebarToggle = document.querySelector('.sidebar-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarOverlay = document.querySelector('.sidebar-overlay');
+
+            if (sidebarToggle && sidebar) {
+                // Desktop: restore saved collapse state
+                const isMobile = () => window.innerWidth < 768;
+                if (!isMobile() && localStorage.getItem('sidebar-collapsed') === 'true') {
+                    document.body.classList.add('sidebar-collapsed');
+                }
+
+                sidebarToggle.addEventListener('click', function() {
+                    if (isMobile()) {
+                        // Mobile: overlay drawer behavior
+                        sidebar.classList.toggle('active');
+                        if (sidebarOverlay) sidebarOverlay.classList.toggle('active');
+                    } else {
+                        // Desktop: collapse/expand with body offset
+                        document.body.classList.toggle('sidebar-collapsed');
+                        localStorage.setItem('sidebar-collapsed',
+                            document.body.classList.contains('sidebar-collapsed'));
+                    }
+                });
+
+                if (sidebarOverlay) {
+                    sidebarOverlay.addEventListener('click', function() {
+                        sidebar.classList.remove('active');
+                        sidebarOverlay.classList.remove('active');
+                    });
+                }
+
+                // Reset mobile state on resize to desktop
+                window.addEventListener('resize', function() {
+                    if (!isMobile()) {
+                        sidebar.classList.remove('active');
+                        if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+                    }
+                });
+            }
 
             // Search functionality
             const searchInput = document.getElementById('search-input');

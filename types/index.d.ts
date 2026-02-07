@@ -14,6 +14,7 @@ export interface BlogConfig {
     postsPerPage: number;
     blacklist?: string[];
     customDomain?: string;
+    githubUrl?: string;
 }
 export interface ValidationResult {
     isValid: boolean;
