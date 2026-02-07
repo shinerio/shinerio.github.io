@@ -74,6 +74,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  // Read tag from URL query parameter (e.g. articles.html?tag=network)
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlTag = urlParams.get('tag');
+  if (urlTag && tagFilter) {
+    tagFilter.value = urlTag;
+  }
+
   // Current filter state - initialize with default values if elements don't exist
   let currentState = {
     sortBy: sortSelect && sortSelect.value ? sortSelect.value : 'date-desc',

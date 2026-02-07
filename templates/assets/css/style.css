@@ -739,6 +739,15 @@ body.home-page .sidebar-toggle {
     font-family: var(--font-body);
     font-weight: 500;
     letter-spacing: var(--letter-spacing-body);
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.sidebar-widget .tag:hover {
+    background-color: var(--color-accent-primary);
+    border-color: var(--color-accent-primary);
+    color: white;
 }
 
 
