@@ -16,6 +16,7 @@ export interface BlogConfig {
   postsPerPage: number;
   blacklist?: string[]; // Array of file/folder paths to exclude from processing
   customDomain?: string; // Custom domain for GitHub Pages deployment
+  githubUrl?: string; // GitHub profile URL
 }
 
 // 配置验证结果

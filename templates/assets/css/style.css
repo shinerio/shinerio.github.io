@@ -608,10 +608,20 @@ body.home-page.sidebar-collapsed .sidebar {
 }
 
 .sidebar-slogan {
-    margin: 0;
+    margin: 0 0 var(--spacing-sm) 0;
     font-size: var(--font-size-sm);
     color: var(--color-text-secondary);
     line-height: 1.5;
+}
+
+.sidebar-github {
+    display: inline-flex;
+    color: var(--color-text-tertiary);
+    transition: color var(--transition-fast);
+}
+
+.sidebar-github:hover {
+    color: var(--color-text-primary);
 }
 
 /* Sidebar toggle button (in nav bar) */

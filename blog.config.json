@@ -3,8 +3,9 @@
   "outputPath": "./dist",
   "siteTitle": "Shinerio's Blog",
   "siteDescription": "Code flows with ease, and life unfolds in beauty",
-  "author": "Shinerio",
+  "author": "shinerio",
   "perPage": 5,
   "theme": "auto",
-  "customDomain": "shinerio.site"
+  "customDomain": "shinerio.site",
+  "githubUrl": "https://github.com/shinerio"
 }
