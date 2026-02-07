@@ -3,8 +3,8 @@
  * 测试搜索功能的各种场景和边界条件
  */
 
-import { SearchEngine } from '../SearchEngine';
-import { ParsedArticle } from '../../types';
+import { SearchEngine } from '../../src/core/SearchEngine';
+import { ParsedArticle } from '../../src/types';
 import fc from 'fast-check';
 
 describe('SearchEngine', () => {

@@ -3,8 +3,8 @@
  * Comprehensive tests to validate the enhanced search functionality as implemented in the fix-search-functionality change
  */
 
-import { SearchEngine } from '../SearchEngine';
-import { ParsedArticle } from '../../types';
+import { SearchEngine } from '../../src/core/SearchEngine';
+import { ParsedArticle } from '../../src/types';
 
 describe('SearchEngine Validation Tests - Fix Search Functionality Change', () => {
   let searchEngine: SearchEngine;

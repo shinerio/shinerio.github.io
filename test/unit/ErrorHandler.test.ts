@@ -3,8 +3,8 @@
  * 测试错误处理的各种场景和边界条件
  */
 
-import { GracefulErrorHandler } from '../ErrorHandler';
-import { ConfigError, FileError, ParseError, GenerationError, ProgressReport } from '../../types';
+import { GracefulErrorHandler } from '../../src/core/ErrorHandler';
+import { ConfigError, FileError, ParseError, GenerationError, ProgressReport } from '../../src/types';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import fc from 'fast-check';

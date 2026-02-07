@@ -3,8 +3,8 @@
  * Unit tests for FileScanner
  */
 
-import { FileScanner } from '../FileScanner';
-import { createTempDir, cleanupTempDir, createTestMarkdownFile } from '../../../test/setup/test-setup';
+import { FileScanner } from '../../src/core/FileScanner';
+import { createTempDir, cleanupTempDir, createTestMarkdownFile } from '../setup/test-setup';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import fc from 'fast-check';

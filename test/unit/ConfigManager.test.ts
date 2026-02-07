@@ -3,9 +3,9 @@
  * Unit tests for ConfigManager
  */
 
-import { ConfigManager } from '../ConfigManager';
-import { BlogConfig, ConfigError } from '../../types';
-import { createTempDir, cleanupTempDir } from '../../../test-setup';
+import { ConfigManager } from '../../src/core/ConfigManager';
+import { BlogConfig, ConfigError } from '../../src/types';
+import { createTempDir, cleanupTempDir } from '../setup/test-setup';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import fc from 'fast-check';

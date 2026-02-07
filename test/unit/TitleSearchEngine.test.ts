@@ -3,8 +3,8 @@
  * 测试标题搜索功能的各种场景和边界条件
  */
 
-import { TitleSearchEngine } from '../TitleSearchEngine';
-import { ParsedArticle } from '../../types';
+import { TitleSearchEngine } from '../../src/core/TitleSearchEngine';
+import { ParsedArticle } from '../../src/types';
 import fc from 'fast-check';
 
 describe('TitleSearchEngine', () => {

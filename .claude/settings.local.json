@@ -90,7 +90,8 @@
       "Bash(dir specs)",
       "Bash(dir specs002-articles-page-fix)",
       "Bash(dir \"specs\\\\002-articles-page-fix\")",
-      "Bash(findstr \"Test Suites: Tests:\")"
+      "Bash(findstr \"Test Suites: Tests:\")",
+      "Bash(ls -la test-*.json)"
     ]
   }
 }

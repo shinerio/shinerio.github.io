@@ -3,8 +3,8 @@
  * 测试内容搜索功能的各种场景和边界条件
  */
 
-import { ContentSearchEngine } from '../ContentSearchEngine';
-import { ParsedArticle } from '../../types';
+import { ContentSearchEngine } from '../../src/core/ContentSearchEngine';
+import { ParsedArticle } from '../../src/types';
 import fc from 'fast-check';
 
 describe('ContentSearchEngine', () => {

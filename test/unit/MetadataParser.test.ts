@@ -3,12 +3,12 @@
  * Unit tests for MetadataParser
  */
 
-import { MetadataParser } from '../MetadataParser';
-import { createTempDir, cleanupTempDir, createTestMarkdownFile } from '../../../test-setup';
+import { MetadataParser } from '../../src/core/MetadataParser';
+import { createTempDir, cleanupTempDir, createTestMarkdownFile } from '../setup/test-setup';
 import * as path from 'path';
 import fc from 'fast-check';
 import * as fs from 'fs-extra';
-import { ParseError } from '../../types';
+import { ParseError } from '../../src/types';
 
 describe('MetadataParser', () => {
   let parser: MetadataParser;

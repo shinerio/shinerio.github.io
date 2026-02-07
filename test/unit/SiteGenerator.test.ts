@@ -3,8 +3,8 @@
  * Tests for SiteGenerator class
  */
 
-import { SiteGenerator } from '../SiteGenerator';
-import { GenerationOptions, ParsedArticle, BlogConfig } from '../../types';
+import { SiteGenerator } from '../../src/core/SiteGenerator';
+import { GenerationOptions, ParsedArticle, BlogConfig } from '../../src/types';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as os from 'os';

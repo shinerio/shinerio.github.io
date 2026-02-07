@@ -1,5 +1,5 @@
-import { SearchCoordinator } from '../SearchCoordinator';
-import { ParsedArticle } from '../../types';
+import { SearchCoordinator } from '../../src/core/SearchCoordinator';
+import { ParsedArticle } from '../../src/types';
 
 describe('ContentOnlySearch', () => {
   let searchCoordinator: SearchCoordinator;
