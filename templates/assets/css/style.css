@@ -518,9 +518,7 @@ body {
 
 /* Layout for home page with sidebar */
 .home-layout {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--spacing-lg);
+    display: block;
     margin: 0 auto;
     max-width: var(--container-max-width);
 }
@@ -529,12 +527,136 @@ body {
     min-width: 0; /* Prevent grid items from overflowing */
 }
 
+/* Fixed sidebar navigation */
 .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
     background-color: var(--color-bg-secondary);
-    border-radius: var(--radius-lg);
+    border-right: 1px solid var(--color-border);
     padding: var(--spacing-lg);
+    overflow-y: auto;
+    z-index: 1000;
+    transition: transform var(--transition-normal), background-color var(--transition-normal), border-color var(--transition-normal);
+}
+
+/* Sidebar profile section */
+.sidebar-profile {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.sidebar-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: var(--spacing-md);
+    border: 3px solid var(--color-accent-primary);
+    transition: border-color var(--transition-normal), transform var(--transition-fast);
+}
+
+.sidebar-avatar:hover {
+    transform: scale(1.05);
+}
+
+/* Fallback when avatar image is missing */
+.sidebar-avatar-fallback {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-md);
+    font-size: var(--font-size-3xl);
+    color: white;
+    border: 3px solid var(--color-accent-primary);
+}
+
+.sidebar-author {
+    margin: 0 0 var(--spacing-sm) 0;
+    font-size: var(--font-size-lg);
+    color: var(--color-text-primary);
+}
+
+.sidebar-slogan {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+}
+
+/* Sidebar toggle button (hamburger) */
+.sidebar-toggle {
+    position: fixed;
+    top: var(--spacing-md);
+    left: var(--spacing-md);
+    z-index: 1001;
+    display: none;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background: var(--color-bg-secondary);
     border: 1px solid var(--color-border);
-    align-self: start; /* Align to top of grid */
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.sidebar-toggle:hover {
+    background: var(--color-bg-tertiary);
+}
+
+.sidebar-toggle-icon,
+.sidebar-toggle-icon::before,
+.sidebar-toggle-icon::after {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background-color: var(--color-text-primary);
+    border-radius: 1px;
+    transition: transform var(--transition-normal), opacity var(--transition-normal);
+}
+
+.sidebar-toggle-icon {
+    position: relative;
+}
+
+.sidebar-toggle-icon::before,
+.sidebar-toggle-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+}
+
+.sidebar-toggle-icon::before {
+    top: -6px;
+}
+
+.sidebar-toggle-icon::after {
+    top: 6px;
+}
+
+/* Sidebar overlay (mobile) */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    transition: opacity var(--transition-normal);
+}
+
+.sidebar-overlay.active {
+    display: block;
 }
 
 .sidebar-widget {
@@ -965,9 +1087,9 @@ li {
     h1 { font-size: var(--font-size-4xl); }
     h2 { font-size: var(--font-size-3xl); }
 
-    /* On small screens, keep sidebar below main content */
+    /* On small screens, no sidebar offset */
     .home-layout {
-        grid-template-columns: 1fr;
+        margin-left: 0;
     }
 
     /* Increase line height slightly for better readability on medium screens */
@@ -997,13 +1119,19 @@ li {
     h2 { font-size: 2rem; }
     h3 { font-size: 1.5rem; }
 
-    /* Home page sidebar layout */
-    .home-layout {
-        grid-template-columns: 1fr 300px; /* Main content, sidebar */
+    /* Home page: offset content for fixed sidebar */
+    body.home-page .page-header,
+    body.home-page .page-main,
+    body.home-page .page-footer {
+        margin-left: 280px;
     }
 
     .sidebar {
-        height: fit-content;
+        transform: translateX(0);
+    }
+
+    .sidebar-toggle {
+        display: none !important;
     }
 
     /* Optimize typography for tablets */
@@ -1026,11 +1154,6 @@ li {
         gap: var(--spacing-xl);
     }
 
-    /* Enhance sidebar layout for larger screens */
-    .home-layout {
-        grid-template-columns: 1fr 320px; /* Main content, sidebar */
-    }
-
     /* Further optimize for larger screens */
     body {
         font-size: 1.1rem;
@@ -1051,11 +1174,6 @@ li {
 
     .articles-grid {
         grid-template-columns: repeat(3, 1fr);
-    }
-
-    /* Optimize sidebar for extra large screens */
-    .home-layout {
-        grid-template-columns: 1fr 350px; /* Main content, sidebar */
     }
 
     h1 { font-size: 3rem; }
@@ -1087,10 +1205,9 @@ li {
         gap: var(--spacing-md);
     }
 
-    /* Stack sidebar below main content on extra small screens */
+    /* Sidebar hidden on small screens */
     .home-layout {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-lg);
+        margin-left: 0;
     }
 
     .page-header,
@@ -1111,5 +1228,30 @@ li {
 
     p, li {
         line-height: var(--line-height-base);
+    }
+}
+
+/* Mobile sidebar behavior (< 768px) */
+@media (max-width: 767px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .sidebar-toggle {
+        display: flex;
+    }
+
+    body.home-page .page-header,
+    body.home-page .page-main,
+    body.home-page .page-footer {
+        margin-left: 0;
+    }
+
+    body.home-page .page-header {
+        padding-left: calc(var(--spacing-md) + 48px);
     }
 }

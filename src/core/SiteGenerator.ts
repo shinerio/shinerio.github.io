@@ -67,7 +67,42 @@ export class SiteGenerator {
 
     const layoutTemplate = await this.loadTemplate('layout.html');
 
+    const author = options.config.author || options.config.siteTitle;
+
     const content = `
+      <button class="sidebar-toggle" aria-label="Toggle sidebar">
+        <span class="sidebar-toggle-icon"></span>
+      </button>
+
+      <div class="sidebar-overlay"></div>
+
+      <aside class="sidebar">
+        <div class="sidebar-profile">
+          <img src="./assets/images/avatar.png" alt="avatar" class="sidebar-avatar">
+          <h3 class="sidebar-author">${author}</h3>
+          <p class="sidebar-slogan">${options.config.siteDescription}</p>
+        </div>
+
+        <div class="sidebar-widget">
+          <h3>文章总数</h3>
+          <p class="article-count">${articles.filter(a => !a.isDraft).length}</p>
+        </div>
+
+        <div class="sidebar-widget">
+          <h3>标签云</h3>
+          <div class="tag-cloud">
+            ${this.getPopularTags(articles).slice(0, 15).map(tag =>
+              `<span class="tag">#${tag.name} (${tag.count})</span>`
+            ).join('')}
+          </div>
+        </div>
+
+        <div class="sidebar-widget">
+          <h3>最近更新</h3>
+          <p class="last-update">${this.formatDate(new Date())}</p>
+        </div>
+      </aside>
+
       <div class="home-layout">
         <main class="home-main">
           <section class="hero">
@@ -85,27 +120,6 @@ export class SiteGenerator {
             </div>
           </section>
         </main>
-
-        <aside class="sidebar">
-          <div class="sidebar-widget">
-            <h3>文章总数</h3>
-            <p class="article-count">${articles.filter(a => !a.isDraft).length}</p>
-          </div>
-
-          <div class="sidebar-widget">
-            <h3>标签云</h3>
-            <div class="tag-cloud">
-              ${this.getPopularTags(articles).slice(0, 15).map(tag =>
-                `<span class="tag">#${tag.name} (${tag.count})</span>`
-              ).join('')}
-            </div>
-          </div>
-
-          <div class="sidebar-widget">
-            <h3>最近更新</h3>
-            <p class="last-update">${this.formatDate(new Date())}</p>
-          </div>
-        </aside>
       </div>
     `;
 
