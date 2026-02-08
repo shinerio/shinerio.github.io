@@ -373,14 +373,14 @@ func consumer(ctx context.Context, rdb *redis.Client, streamKey, groupName, cons
 &lt;section class=&quot;comments-section&quot; id=&quot;comments&quot;&gt;
     &lt;h2 class=&quot;comments-title&quot;&gt;评论&lt;/h2&gt;
     &lt;div class=&quot;utterances-container&quot;&gt;
-        {&lt;script src=&quot;https://utteranc.es/client.js&quot;
+        &lt;script src=&quot;https://utteranc.es/client.js&quot;
         repo=&quot;shinerio/shinerio.github.io&quot;
         issue-term=&quot;pathname&quot;
         label=&quot;blog-comment&quot;
         theme=&quot;preferred-color-scheme&quot;
         crossorigin=&quot;anonymous&quot;
         async&gt;
-&lt;/script&gt;}
+&lt;/script&gt;
     &lt;/div&gt;
 &lt;/section&gt;amp;quot;).Result()
     if err != nil &amp;amp;&amp;amp; err.Error() != &amp;quot;BUSYGROUP Consumer Group name already exists&amp;quot; {
@@ -554,14 +554,14 @@ func consumer(ctx context.Context, rdb *redis.Client, streamKey, groupName, cons
 <section class="comments-section" id="comments">
     <h2 class="comments-title">评论</h2>
     <div class="utterances-container">
-        {<script src="https://utteranc.es/client.js"
+        <script src="https://utteranc.es/client.js"
         repo="shinerio/shinerio.github.io"
         issue-term="pathname"
         label="blog-comment"
         theme="preferred-color-scheme"
         crossorigin="anonymous"
         async>
-</script>}
+</script>
     </div>
 </section>
             </div>
