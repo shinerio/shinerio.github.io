@@ -8,9 +8,12 @@
     --color-text-secondary: #64748b;
     --color-text-tertiary: #94a3b8;
     --color-border: #e2e8f0;
-    --color-accent-primary: #0ea5e9; /* cyan-500 */
-    --color-accent-secondary: #0284c7; /* cyan-600 */
-    --color-accent-highlight: #22d3ee; /* cyan-400 */
+    --color-accent-primary: #0ea5e9;
+    /* cyan-500 */
+    --color-accent-secondary: #0284c7;
+    /* cyan-600 */
+    --color-accent-highlight: #22d3ee;
+    /* cyan-400 */
 
     /* Dark mode colors */
     --color-dark-bg-primary: #0f172a;
@@ -20,9 +23,12 @@
     --color-dark-text-secondary: #cbd5e1;
     --color-dark-text-tertiary: #94a3b8;
     --color-dark-border: #475569;
-    --color-dark-accent-primary: #0ea5e9; /* cyan-500 */
-    --color-dark-accent-secondary: #38bdf8; /* cyan-300 */
-    --color-dark-accent-highlight: #22d3ee; /* cyan-400 */
+    --color-dark-accent-primary: #0ea5e9;
+    /* cyan-500 */
+    --color-dark-accent-secondary: #38bdf8;
+    /* cyan-300 */
+    --color-dark-accent-highlight: #22d3ee;
+    /* cyan-400 */
 
     /* Component-specific colors */
     --color-card-bg: var(--color-bg-secondary);
@@ -141,6 +147,7 @@
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -152,6 +159,7 @@
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -163,6 +171,7 @@
         opacity: 0;
         transform: scale(0.95);
     }
+
     to {
         opacity: 1;
         transform: scale(1);
@@ -286,7 +295,7 @@
     cursor: pointer;
 }
 
-.radio-option input[type="radio"]:checked + .radio-text {
+.radio-option input[type="radio"]:checked+.radio-text {
     color: var(--color-accent-primary);
     font-weight: 600;
 }
@@ -403,7 +412,7 @@ body {
 }
 
 /* Special container layout for home page main content (sidebar + articles) */
-body.home-page .page-main > .container {
+body.home-page .page-main>.container {
     display: flex;
     gap: var(--spacing-lg);
     flex-wrap: nowrap;
@@ -526,13 +535,17 @@ body.home-page .page-main > .container {
 
 /* Layout for home page with sidebar - This div should flex with the sidebar */
 .home-layout {
-    flex: 1; /* Take remaining space next to sidebar */
-    min-width: 0; /* Prevent grid items from overflowing */
-    width: 100%; /* Take available width */
+    flex: 1;
+    /* Take remaining space next to sidebar */
+    min-width: 0;
+    /* Prevent grid items from overflowing */
+    width: 100%;
+    /* Take available width */
 }
 
 .home-main {
-    width: 100%; /* Ensure it takes full width of its container */
+    width: 100%;
+    /* Ensure it takes full width of its container */
 }
 
 /* Desktop: offset entire page for fixed sidebar */
@@ -630,9 +643,58 @@ body.home-page.sidebar-collapsed .sidebar {
     color: var(--color-text-primary);
 }
 
+/* GitHub actions container (icon + follow button) */
+.sidebar-github-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-sm);
+}
+
+/* GitHub Follow Button */
+.sidebar-follow-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background: var(--color-bg-tertiary);
+    color: var(--color-accent-primary);
+    border-radius: var(--radius-md);
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+}
+
+.sidebar-follow-btn:hover {
+    background: var(--color-accent-primary);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+    border-color: var(--color-accent-primary);
+}
+
+.sidebar-follow-btn:active {
+    transform: translateY(0);
+}
+
+.sidebar-follow-btn svg {
+    flex-shrink: 0;
+    width: 12px;
+    height: 12px;
+}
+
+.sidebar-follow-btn::before {
+    display: none;
+}
+
 /* Sidebar toggle button (in nav bar) */
 .sidebar-toggle {
-    display: none; /* Hidden on non-home pages */
+    display: none;
+    /* Hidden on non-home pages */
     width: 36px;
     height: 36px;
     padding: 0;
@@ -646,7 +708,8 @@ body.home-page.sidebar-collapsed .sidebar {
 }
 
 body.home-page .sidebar-toggle {
-    display: flex; /* Show on home page */
+    display: flex;
+    /* Show on home page */
 }
 
 .sidebar-toggle:hover {
@@ -768,12 +831,29 @@ body.home-page .sidebar-toggle {
     opacity: 0;
 }
 
-.article-card:nth-child(1) { animation-delay: 0.1s; }
-.article-card:nth-child(2) { animation-delay: 0.2s; }
-.article-card:nth-child(3) { animation-delay: 0.3s; }
-.article-card:nth-child(4) { animation-delay: 0.4s; }
-.article-card:nth-child(5) { animation-delay: 0.5s; }
-.article-card:nth-child(6) { animation-delay: 0.6s; }
+.article-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.article-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.article-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.article-card:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.article-card:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.article-card:nth-child(6) {
+    animation-delay: 0.6s;
+}
 
 .article-card:hover {
     transform: translateY(-5px);
@@ -781,7 +861,12 @@ body.home-page .sidebar-toggle {
     border-color: var(--color-accent-primary);
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     color: var(--color-text-primary);
     margin-top: 0;
     line-height: var(--line-height-heading);
@@ -887,7 +972,8 @@ a:hover::before {
     outline-offset: 2px;
 }
 
-.sun-icon, .moon-icon {
+.sun-icon,
+.moon-icon {
     position: absolute;
     transition: opacity var(--transition-normal), transform var(--transition-normal);
 }
@@ -964,7 +1050,8 @@ a:hover::before {
 .filter-select:focus {
     outline: none;
     border-color: var(--color-accent-primary);
-    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2); /* Cyan-500 with opacity */
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+    /* Cyan-500 with opacity */
 }
 
 .filter-select:hover {
@@ -1113,7 +1200,8 @@ blockquote {
     letter-spacing: var(--letter-spacing-body);
 }
 
-ul, ol {
+ul,
+ol {
     padding-left: var(--spacing-xl);
     margin: var(--spacing-md) 0;
     line-height: var(--line-height-base);
@@ -1140,8 +1228,13 @@ li {
         gap: var(--spacing-md);
     }
 
-    h1 { font-size: var(--font-size-4xl); }
-    h2 { font-size: var(--font-size-3xl); }
+    h1 {
+        font-size: var(--font-size-4xl);
+    }
+
+    h2 {
+        font-size: var(--font-size-3xl);
+    }
 
     /* On small screens, no sidebar offset */
     .home-layout {
@@ -1149,7 +1242,14 @@ li {
     }
 
     /* Increase line height slightly for better readability on medium screens */
-    p, li, h1, h2, h3, h4, h5, h6 {
+    p,
+    li,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
         line-height: calc(var(--line-height-base) * 1.05);
     }
 }
@@ -1171,9 +1271,17 @@ li {
         gap: var(--spacing-lg);
     }
 
-    h1 { font-size: 2.5rem; }
-    h2 { font-size: 2rem; }
-    h3 { font-size: 1.5rem; }
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+    }
 
     /* Sidebar is fixed positioned, no margin offset needed */
     body.home-page .page-header,
@@ -1197,7 +1305,8 @@ li {
         font-size: 1.05rem;
     }
 
-    p, li {
+    p,
+    li {
         line-height: calc(var(--line-height-base) * 1.1);
     }
 }
@@ -1218,7 +1327,8 @@ li {
         line-height: calc(var(--line-height-base) * 1.15);
     }
 
-    p, li {
+    p,
+    li {
         line-height: calc(var(--line-height-base) * 1.2);
     }
 }
@@ -1234,11 +1344,18 @@ li {
         grid-template-columns: repeat(3, 1fr);
     }
 
-    h1 { font-size: 3rem; }
-    h2 { font-size: 2.5rem; }
+    h1 {
+        font-size: 3rem;
+    }
+
+    h2 {
+        font-size: 2.5rem;
+    }
 
     /* Typography adjustments for large screens */
-    h1, h2, h3 {
+    h1,
+    h2,
+    h3 {
         line-height: calc(var(--line-height-heading) * 0.95);
     }
 }
@@ -1281,22 +1398,32 @@ li {
         padding-right: var(--spacing-sm);
     }
 
-    h1 { font-size: var(--font-size-2xl); }
-    h2 { font-size: var(--font-size-xl); }
-    h3 { font-size: var(--font-size-lg); }
+    h1 {
+        font-size: var(--font-size-2xl);
+    }
+
+    h2 {
+        font-size: var(--font-size-xl);
+    }
+
+    h3 {
+        font-size: var(--font-size-lg);
+    }
 
     /* Adjust for better readability on small screens */
     body {
         font-size: 0.95rem;
     }
 
-    p, li {
+    p,
+    li {
         line-height: var(--line-height-base);
     }
 }
 
 /* Mobile sidebar behavior (< 768px) */
 @media (max-width: 767px) {
+
     /* Keep nav items and theme toggle on one line */
     .page-nav {
         flex-wrap: nowrap;
@@ -1360,4 +1487,3 @@ li {
         -webkit-touch-callout: none;
     }
 }
-
