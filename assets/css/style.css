@@ -1253,14 +1253,18 @@ li {
     }
 
     .nav-links {
-        flex: 1;
-        justify-content: flex-start;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         gap: var(--spacing-xs);
     }
 
-    .nav-actions {
-        flex-shrink: 0;
+    .nav-link {
+        padding: var(--spacing-xs);
+        font-size: var(--font-size-sm);
+    }
+
+    .theme-toggle-btn {
+        width: 34px;
+        height: 34px;
     }
 
     .articles-grid {
@@ -1293,6 +1297,28 @@ li {
 
 /* Mobile sidebar behavior (< 768px) */
 @media (max-width: 767px) {
+    /* Keep nav items and theme toggle on one line */
+    .page-nav {
+        flex-wrap: nowrap;
+        gap: var(--spacing-xs);
+    }
+
+    .nav-links {
+        gap: var(--spacing-xs);
+        flex-wrap: nowrap;
+    }
+
+    .nav-link {
+        padding: var(--spacing-xs);
+        font-size: var(--font-size-sm);
+    }
+
+    .theme-toggle-btn {
+        width: 34px;
+        height: 34px;
+        flex-shrink: 0;
+    }
+
     /* No body padding on mobile - sidebar is overlay */
     body.home-page {
         padding-left: 0;
