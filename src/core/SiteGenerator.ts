@@ -261,7 +261,9 @@ export class SiteGenerator {
           wordCount: article.wordCount,
           tags: article.tags,
           tableOfContents: this.generateTableOfContents(article.htmlContent),
-          relatedArticles: this.getRelatedArticles(article, articles).slice(0, 3)
+          relatedArticles: this.getRelatedArticles(article, articles).slice(0, 3),
+          commentsEnabled: options.config.comments?.enabled || false,
+          commentsScript: this.generateCommentsScript(options.config)
         });
 
         const html = this.renderTemplate(layoutTemplate, {
@@ -610,6 +612,28 @@ export class SiteGenerator {
       month: 'long',
       day: 'numeric'
     });
+  }
+
+  /**
+   * 生成评论脚本
+   * Generate Utterances comments script tag
+   */
+  private generateCommentsScript(config: BlogConfig): string {
+    if (!config.comments?.enabled || !config.comments?.repo) {
+      return '';
+    }
+
+    const repo = config.comments.repo;
+    const issueTerm = config.comments.issueTerm || 'pathname';
+    const label = config.comments.label ? `\n        label="${config.comments.label}"` : '';
+
+    return `<script src="https://utteranc.es/client.js"
+        repo="${repo}"
+        issue-term="${issueTerm}"${label}
+        theme="preferred-color-scheme"
+        crossorigin="anonymous"
+        async>
+</script>`;
   }
 
   /**

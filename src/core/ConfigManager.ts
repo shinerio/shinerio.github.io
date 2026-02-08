@@ -126,6 +126,34 @@ export class ConfigManager {
       }
     }
 
+    // 验证评论配置
+    if (config.comments !== undefined) {
+      if (typeof config.comments !== 'object' || config.comments === null) {
+        errors.push('comments 必须是一个对象');
+      } else {
+        if (typeof config.comments.enabled !== 'boolean') {
+          errors.push('comments.enabled 必须是布尔值');
+        }
+        if (!config.comments.repo || typeof config.comments.repo !== 'string') {
+          errors.push('comments.repo 是必需的字符串');
+        } else {
+          const repoRegex = /^[a-zA-Z0-9._-]+\/[a-zA-Z0-9._-]+$/;
+          if (!repoRegex.test(config.comments.repo)) {
+            errors.push('comments.repo 格式不正确，应为 "owner/repo"');
+          }
+        }
+        if (config.comments.issueTerm !== undefined) {
+          const validTerms = ['pathname', 'title', 'og:title', 'url'];
+          if (!validTerms.includes(config.comments.issueTerm)) {
+            errors.push('comments.issueTerm 必须是 pathname、title、og:title 或 url');
+          }
+        }
+        if (config.comments.label !== undefined && typeof config.comments.label !== 'string') {
+          errors.push('comments.label 必须是字符串');
+        }
+      }
+    }
+
     return {
       isValid: errors.length === 0,
       errors,

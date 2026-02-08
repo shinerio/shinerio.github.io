@@ -3,6 +3,14 @@
  * Core data interfaces and type definitions for Obsidian Blog Generator
  */
 
+// 评论配置接口
+export interface CommentsConfig {
+  enabled: boolean;
+  repo: string;                // "owner/repo" 格式
+  issueTerm?: 'pathname' | 'title' | 'og:title' | 'url';
+  label?: string;              // Issues 标签，用于区分评论和普通 Issue
+}
+
 // 博客配置接口
 export interface BlogConfig {
   vaultPath: string;
@@ -17,6 +25,7 @@ export interface BlogConfig {
   blacklist?: string[]; // Array of file/folder paths to exclude from processing
   customDomain?: string; // Custom domain for GitHub Pages deployment
   githubUrl?: string; // GitHub profile URL
+  comments?: CommentsConfig; // 评论功能配置
 }
 
 // 配置验证结果

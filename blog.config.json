@@ -7,5 +7,11 @@
   "perPage": 5,
   "theme": "auto",
   "customDomain": "shinerio.site",
-  "githubUrl": "https://github.com/shinerio"
+  "githubUrl": "https://github.com/shinerio",
+  "comments": {
+    "enabled": true,
+    "repo": "shinerio/shinerio.github.io",
+    "issueTerm": "pathname",
+    "label": "blog-comment"
+  }
 }

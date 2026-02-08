@@ -12,3 +12,12 @@
         {{content}}
     </section>
 </article>
+
+{{#if commentsEnabled}}
+<section class="comments-section" id="comments">
+    <h2 class="comments-title">评论</h2>
+    <div class="utterances-container">
+        {{commentsScript}}
+    </div>
+</section>
+{{/if}}
