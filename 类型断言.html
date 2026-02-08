@@ -76,6 +76,21 @@ func main() {
 
     </section>
 </article>
+
+
+<section class="comments-section" id="comments">
+    <h2 class="comments-title">评论</h2>
+    <div class="utterances-container">
+        {<script src="https://utteranc.es/client.js"
+        repo="shinerio/shinerio.github.io"
+        issue-term="pathname"
+        label="blog-comment"
+        theme="preferred-color-scheme"
+        crossorigin="anonymous"
+        async>
+</script>}
+    </div>
+</section>
             </div>
         </main>
         <footer class="page-footer">
@@ -102,14 +117,36 @@ func main() {
                 body.removeAttribute('data-theme'); // light theme
             }
 
+            // Sync Utterances iframe theme
+            function syncUtterancesTheme(isDark) {
+                const utterancesFrame = document.querySelector('.utterances-frame');
+                if (utterancesFrame) {
+                    const theme = isDark ? 'github-dark' : 'github-light';
+                    utterancesFrame.contentWindow.postMessage(
+                        { type: 'set-theme', theme: theme },
+                        'https://utteranc.es'
+                    );
+                }
+            }
+
+            // Listen for Utterances iframe ready to set initial theme
+            window.addEventListener('message', function(event) {
+                if (event.origin !== 'https://utteranc.es') return;
+                const isDark = body.getAttribute('data-theme') === 'dark' ||
+                    (!localStorage.getItem('theme') && prefersDarkScheme.matches);
+                syncUtterancesTheme(isDark);
+            });
+
             // Toggle theme function
             function toggleTheme() {
                 if (body.getAttribute('data-theme') === 'dark') {
                     body.removeAttribute('data-theme');
                     localStorage.setItem('theme', 'light');
+                    syncUtterancesTheme(false);
                 } else {
                     body.setAttribute('data-theme', 'dark');
                     localStorage.setItem('theme', 'dark');
+                    syncUtterancesTheme(true);
                 }
             }
 
@@ -124,6 +161,7 @@ func main() {
                     } else {
                         body.removeAttribute('data-theme');
                     }
+                    syncUtterancesTheme(e.matches);
                 }
             });
 

@@ -279,7 +279,22 @@ Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Whe
 &lt;/code&gt;&lt;/pre&gt;
 
     &lt;/section&gt;
-&lt;/article&gt;amp;#39;} | Select-Object FullName
+&lt;/article&gt;
+
+
+&lt;section class=&quot;comments-section&quot; id=&quot;comments&quot;&gt;
+    &lt;h2 class=&quot;comments-title&quot;&gt;评论&lt;/h2&gt;
+    &lt;div class=&quot;utterances-container&quot;&gt;
+        {&lt;script src=&quot;https://utteranc.es/client.js&quot;
+        repo=&quot;shinerio/shinerio.github.io&quot;
+        issue-term=&quot;pathname&quot;
+        label=&quot;blog-comment&quot;
+        theme=&quot;preferred-color-scheme&quot;
+        crossorigin=&quot;anonymous&quot;
+        async&gt;
+&lt;/script&gt;}
+    &lt;/div&gt;
+&lt;/section&gt;amp;#39;} | Select-Object FullName
 
 # 实际删除（确认无误后使用）
 Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&lt;article&gt;
@@ -431,7 +446,22 @@ Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Whe
 &lt;/code&gt;&lt;/pre&gt;
 
     &lt;/section&gt;
-&lt;/article&gt;amp;#39;} | Remove-Item -Force
+&lt;/article&gt;
+
+
+&lt;section class=&quot;comments-section&quot; id=&quot;comments&quot;&gt;
+    &lt;h2 class=&quot;comments-title&quot;&gt;评论&lt;/h2&gt;
+    &lt;div class=&quot;utterances-container&quot;&gt;
+        {&lt;script src=&quot;https://utteranc.es/client.js&quot;
+        repo=&quot;shinerio/shinerio.github.io&quot;
+        issue-term=&quot;pathname&quot;
+        label=&quot;blog-comment&quot;
+        theme=&quot;preferred-color-scheme&quot;
+        crossorigin=&quot;anonymous&quot;
+        async&gt;
+&lt;/script&gt;}
+    &lt;/div&gt;
+&lt;/section&gt;amp;#39;} | Remove-Item -Force
 &lt;/code&gt;&lt;/pre&gt;
 #39;} | Select-Object FullName
 
@@ -626,7 +656,22 @@ Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Whe
 &lt;/code&gt;&lt;/pre&gt;
 
     &lt;/section&gt;
-&lt;/article&gt;amp;#39;} | Select-Object FullName
+&lt;/article&gt;
+
+
+&lt;section class=&quot;comments-section&quot; id=&quot;comments&quot;&gt;
+    &lt;h2 class=&quot;comments-title&quot;&gt;评论&lt;/h2&gt;
+    &lt;div class=&quot;utterances-container&quot;&gt;
+        {&lt;script src=&quot;https://utteranc.es/client.js&quot;
+        repo=&quot;shinerio/shinerio.github.io&quot;
+        issue-term=&quot;pathname&quot;
+        label=&quot;blog-comment&quot;
+        theme=&quot;preferred-color-scheme&quot;
+        crossorigin=&quot;anonymous&quot;
+        async&gt;
+&lt;/script&gt;}
+    &lt;/div&gt;
+&lt;/section&gt;amp;#39;} | Select-Object FullName
 
 # 实际删除（确认无误后使用）
 Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&lt;article&gt;
@@ -778,13 +823,43 @@ Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Whe
 &lt;/code&gt;&lt;/pre&gt;
 
     &lt;/section&gt;
-&lt;/article&gt;amp;#39;} | Remove-Item -Force
+&lt;/article&gt;
+
+
+&lt;section class=&quot;comments-section&quot; id=&quot;comments&quot;&gt;
+    &lt;h2 class=&quot;comments-title&quot;&gt;评论&lt;/h2&gt;
+    &lt;div class=&quot;utterances-container&quot;&gt;
+        {&lt;script src=&quot;https://utteranc.es/client.js&quot;
+        repo=&quot;shinerio/shinerio.github.io&quot;
+        issue-term=&quot;pathname&quot;
+        label=&quot;blog-comment&quot;
+        theme=&quot;preferred-color-scheme&quot;
+        crossorigin=&quot;anonymous&quot;
+        async&gt;
+&lt;/script&gt;}
+    &lt;/div&gt;
+&lt;/section&gt;amp;#39;} | Remove-Item -Force
 &lt;/code&gt;&lt;/pre&gt;
 #39;} | Remove-Item -Force
 </code></pre>
 
     </section>
 </article>
+
+
+<section class="comments-section" id="comments">
+    <h2 class="comments-title">评论</h2>
+    <div class="utterances-container">
+        {<script src="https://utteranc.es/client.js"
+        repo="shinerio/shinerio.github.io"
+        issue-term="pathname"
+        label="blog-comment"
+        theme="preferred-color-scheme"
+        crossorigin="anonymous"
+        async>
+</script>}
+    </div>
+</section>
             </div>
         </main>
         <footer class="page-footer">
@@ -811,14 +886,36 @@ Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Whe
                 body.removeAttribute('data-theme'); // light theme
             }
 
+            // Sync Utterances iframe theme
+            function syncUtterancesTheme(isDark) {
+                const utterancesFrame = document.querySelector('.utterances-frame');
+                if (utterancesFrame) {
+                    const theme = isDark ? 'github-dark' : 'github-light';
+                    utterancesFrame.contentWindow.postMessage(
+                        { type: 'set-theme', theme: theme },
+                        'https://utteranc.es'
+                    );
+                }
+            }
+
+            // Listen for Utterances iframe ready to set initial theme
+            window.addEventListener('message', function(event) {
+                if (event.origin !== 'https://utteranc.es') return;
+                const isDark = body.getAttribute('data-theme') === 'dark' ||
+                    (!localStorage.getItem('theme') && prefersDarkScheme.matches);
+                syncUtterancesTheme(isDark);
+            });
+
             // Toggle theme function
             function toggleTheme() {
                 if (body.getAttribute('data-theme') === 'dark') {
                     body.removeAttribute('data-theme');
                     localStorage.setItem('theme', 'light');
+                    syncUtterancesTheme(false);
                 } else {
                     body.setAttribute('data-theme', 'dark');
                     localStorage.setItem('theme', 'dark');
+                    syncUtterancesTheme(true);
                 }
             }
 
@@ -833,6 +930,7 @@ Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Whe
                     } else {
                         body.removeAttribute('data-theme');
                     }
+                    syncUtterancesTheme(e.matches);
                 }
             });
 

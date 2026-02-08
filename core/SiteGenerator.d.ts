@@ -102,6 +102,11 @@ export declare class SiteGenerator {
      */
     private formatDate;
     /**
+     * 生成评论脚本
+     * Generate Utterances comments script tag
+     */
+    private generateCommentsScript;
+    /**
      * 生成CNAME文件
      * Generate CNAME file for custom domain
      */

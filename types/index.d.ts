@@ -2,6 +2,12 @@
  * 核心数据接口和类型定义
  * Core data interfaces and type definitions for Obsidian Blog Generator
  */
+export interface CommentsConfig {
+    enabled: boolean;
+    repo: string;
+    issueTerm?: 'pathname' | 'title' | 'og:title' | 'url';
+    label?: string;
+}
 export interface BlogConfig {
     vaultPath: string;
     outputPath: string;
@@ -15,6 +21,7 @@ export interface BlogConfig {
     blacklist?: string[];
     customDomain?: string;
     githubUrl?: string;
+    comments?: CommentsConfig;
 }
 export interface ValidationResult {
     isValid: boolean;
