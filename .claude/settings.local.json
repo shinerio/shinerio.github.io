@@ -119,7 +119,9 @@
       "mcp__chrome-devtools__emulate",
       "mcp__chrome-devtools__list_pages",
       "Bash(npx obsidian-blog:*)",
-      "Bash(npx serve:*)"
+      "Bash(npx serve:*)",
+      "Bash(wc:*)",
+      "Bash(dir:*)"
     ]
   }
 }
