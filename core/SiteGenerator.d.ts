@@ -27,6 +27,16 @@ export declare class SiteGenerator {
     generateSearchPage(options: GenerationOptions, outputPath: string): Promise<void>;
     generateArticlePages(articles: Article[], options: GenerationOptions, outputPath: string): Promise<void>;
     /**
+     * 生成 TODO 页面
+     * Generate TODO Kanban board page
+     */
+    generateTodoPage(options: GenerationOptions, outputPath: string): Promise<void>;
+    /**
+     * 从 GitHub URL 中提取用户名
+     * Extract GitHub username from GitHub profile URL
+     */
+    private extractGithubUsername;
+    /**
      * 复制静态资源
      * Copy static assets
      */

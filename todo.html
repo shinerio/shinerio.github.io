@@ -8,13 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
-    <meta property="og:title" content="TODO">
-<meta property="og:description" content="- BGP实践，BGP PEER建立 - 核隔离与CGROUP - NUMA - 中断 - 硬件卸载 - 大页 - etcd 1. cloud wan ccn一个vpc支持创建几个attachment ccn路由同步，会同步到未关联的attachment吗？默认会同步所有路由表吗？">
-<meta property="og:type" content="article">
-<meta property="article:published_time" content="2025-09-17T13:31:12.000Z">
-<meta property="article:author" content="shinerio">
+    <script src="assets/js/todo.js" defer></script>
 </head>
-<body class="article-page" id="theme-body">
+<body class="todo-page" id="theme-body">
     <div class="page-wrapper">
         <div class="sidebar-overlay"></div>
         <header class="page-header">
@@ -27,6 +23,7 @@
                         <a href="index.html" class="nav-link ">Home</a>
                         <a href="articles.html" class="nav-link ">Articles</a>
                         <a href="search.html" class="nav-link ">Search</a>
+                        <a href="todo.html" class="nav-link active">TODO</a>
                     </div>
                     <div class="nav-actions">
                         <button id="theme-toggle" aria-label="Toggle dark mode" class="theme-toggle-btn">
@@ -39,43 +36,76 @@
         </header>
         <main class="page-main">
             <div class="container">
-                <article>
-    <header>
-        <h1>TODO</h1>
-        <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
-        <div class="tags">
-            
+                <section class="todo-section fade-in">
+    <div class="todo-header">
+        <h1 class="todo-title">TODO Board</h1>
+        <div class="todo-auth" id="todo-auth">
+            <button class="todo-btn todo-btn-primary" id="todo-login-btn">Sign in with GitHub</button>
         </div>
-    </header>
-    <section class="content">
-        <ul>
-<li>BGP实践，BGP PEER建立</li>
-<li>核隔离与CGROUP</li>
-<li>NUMA</li>
-<li>中断</li>
-<li>硬件卸载</li>
-<li>大页</li>
-<li>etcd</li>
-</ul>
-<h1>1. cloud wan</h1>
-<p>ccn一个vpc支持创建几个attachment<br>ccn路由同步，会同步到未关联的attachment吗？默认会同步所有路由表吗？</p>
-
-    </section>
-</article>
-
-
-<section class="comments-section" id="comments">
-    <h2 class="comments-title">评论</h2>
-    <div class="utterances-container">
-        <script src="https://utteranc.es/client.js"
-        repo="shinerio/shinerio.github.io"
-        issue-term="pathname"
-        label="blog-comment"
-        theme="preferred-color-scheme"
-        crossorigin="anonymous"
-        async>
-</script>
     </div>
+
+    <div class="todo-toolbar" id="todo-toolbar" style="display:none;">
+        <button class="todo-btn todo-btn-accent" id="todo-add-btn">+ Add Item</button>
+    </div>
+
+    <div class="todo-loading" id="todo-loading">
+        <div class="todo-spinner"></div>
+        <p>Loading board...</p>
+    </div>
+
+    <div class="todo-error" id="todo-error" style="display:none;">
+        <p id="todo-error-msg"></p>
+        <button class="todo-btn todo-btn-small" id="todo-retry-btn">Retry</button>
+    </div>
+
+    <div class="todo-board" id="todo-board"></div>
+
+    <!-- Device Flow Modal -->
+    <div class="todo-modal" id="todo-device-modal" style="display:none;">
+        <div class="todo-modal-content">
+            <h2>Sign in to GitHub</h2>
+            <p>Enter this code on GitHub:</p>
+            <div class="todo-device-code" id="todo-device-code"></div>
+            <a class="todo-btn todo-btn-primary" id="todo-device-link" href="https://github.com/login/device" target="_blank" rel="noopener noreferrer">Open GitHub</a>
+            <p class="todo-device-status" id="todo-device-status">Waiting for authorization...</p>
+            <button class="todo-btn todo-btn-small" id="todo-device-cancel">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Add/Edit Item Modal -->
+    <div class="todo-modal" id="todo-item-modal" style="display:none;">
+        <div class="todo-modal-content">
+            <h2 id="todo-item-modal-title">Add Item</h2>
+            <form id="todo-item-form">
+                <div class="todo-form-group">
+                    <label for="todo-item-title">Title</label>
+                    <input type="text" id="todo-item-title" class="todo-form-input" required>
+                </div>
+                <div class="todo-form-group">
+                    <label for="todo-item-body">Description</label>
+                    <textarea id="todo-item-body" class="todo-form-textarea" rows="4"></textarea>
+                </div>
+                <div class="todo-form-group" id="todo-status-group" style="display:none;">
+                    <label for="todo-item-status">Status</label>
+                    <select id="todo-item-status" class="todo-form-select"></select>
+                </div>
+                <div class="todo-form-actions">
+                    <button type="submit" class="todo-btn todo-btn-primary">Save</button>
+                    <button type="button" class="todo-btn todo-btn-small" id="todo-item-cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="application/json" id="todo-config">
+    {
+        "githubUsername": "shinerio",
+        "projectNumber": 1,
+        "todoRepo": "TODO",
+        "oauthClientId": "",
+        "oauthProxyUrl": ""
+    }
+    </script>
 </section>
             </div>
         </main>

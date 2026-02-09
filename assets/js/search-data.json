@@ -64,28 +64,28 @@
       "slug": "postgresql不可重复读"
     },
     {
-      "id": "..\\..\\obsidian\\obsidian\\life\\房产\\基础知识",
+      "id": "..\\..\\obsidian\\obsidian\\Life\\房产\\基础知识",
       "title": "基础知识",
       "content": "首套房贷利率30% 1. 准备 购房资质：双方都是北京户口 资金：首付250-350 2. 普通住宅认定 - 住宅小区建筑容积率在1.0（含）以上； - 单套建筑面积在144平方米（含）以下； - 实际成交价格低于确定的价格标准，其中五环内单价低于85000元/平方米，五至六环之间单价低于65000元/平方米，六环以外单价低于45000/平方米。 3. 贷款 3.1. 公积金 国管公积金：余额 1",
       "tags": [],
       "slug": "基础知识"
     },
     {
-      "id": "..\\..\\obsidian\\obsidian\\life\\股票\\专业术语",
+      "id": "..\\..\\obsidian\\obsidian\\Life\\股票\\专业术语",
       "title": "专业术语",
       "content": "1. 盘口 股市交易过程中，看盘观察交易的俗称。 2. 扫盘 在涨势中常有大单从天而降,将卖盘挂单连续悉数吞噬,即称扫盘。在股价刚刚形成多头排列且涨势初起之际,若发现有大单一下子连续地横扫了多笔卖盘时,则预示主力正大举进场建仓,是投资人跟进的绝好时机。 3. 量比 量比是指股市开市后平均每分钟的成交量与过去 5 个交易日平均每分钟成交量之比。其计算公式为： 量比数值的大小直接反映了股票交易的活跃程",
       "tags": [],
       "slug": "专业术语"
     },
     {
-      "id": "..\\..\\obsidian\\obsidian\\life\\股票\\炒股原则",
+      "id": "..\\..\\obsidian\\obsidian\\Life\\股票\\炒股原则",
       "title": "炒股原则",
       "content": "- 买在分歧，卖在一致: 这个是站在散户的视角来看的，散户一致性非常强的时候，说明涨已经到位了，没有散户去抬高价格了。这句话要辩证的去看，做股票要始终站在主力一致性的一边，站在散户一致性的对立面。",
       "tags": [],
       "slug": "炒股原则"
     },
     {
-      "id": "..\\..\\obsidian\\obsidian\\life\\股票\\股票",
+      "id": "..\\..\\obsidian\\obsidian\\Life\\股票\\股票",
       "title": "股票",
       "content": "",
       "tags": [],
@@ -405,6 +405,13 @@
       "content": "dapr重点落在了runtime上，runtime是一个抽象概念，提供了运行时的实现，不需要开发人员操心，比如Java的runtime环境就是jvm。核心思想是模块化，通过sidecar的方式实现，然后通过本地rpc或者http调用。 1. Multi Runtime 分布式应用的需求： - 生命周期：包括部署，健康检查，水平扩展，配置管理等。kubernetes实现 - 网络：服务发现；接口超时",
       "tags": [],
       "slug": "daprdistributed-application-runtime"
+    },
+    {
+      "id": "..\\..\\obsidian\\obsidian\\Tech\\Cloud Network\\cc\\cloud wan竞品分析",
+      "title": "Cloud Wan竞品分析",
+      "content": "1. 腾讯 - CCN路由同步，默认会同步所有路由表 - CCN一个VPC可以接入多个CCN - VPC多条路由冲突的时候，可以支持启用、停用 2. 阿里 - CEN路由同步，默认只会同步默认路由表，用户可以选择默认路由表或所有路由表 3. aws - 一个vpc只能挂一个attachment",
+      "tags": [],
+      "slug": "cloud-wan竞品分析"
     },
     {
       "id": "..\\..\\obsidian\\obsidian\\Tech\\Cloud Network\\Cloud Network",
@@ -2015,6 +2022,13 @@
       "content": "1. 将多个sheet join合并 Power Query自动化合并（适合多列/大数据） 1. 导入数据到Power Query： - 在Excel中点击数据 > Power Query > 获取数据，加载Sheet1和Sheet2。 2. 合并查询： - 选择Sheet1作为主表，与Sheet2按“课程”列进行左连接（Left Join）。 3. 展开所有属性： - 在合并后的查询中，展开Sh",
       "tags": [],
       "slug": "excel"
+    },
+    {
+      "id": "..\\..\\obsidian\\obsidian\\Tool\\FreeResource\\cloudflare免费worker",
+      "title": "Cloudflare免费Worker",
+      "content": "cloudflare一段时间之前推出的一项免费服务, 允许在CDN服务器上运行js脚本或wasm 截止到这篇文章写完的时候，这仍是一项长期免费服务，免费套餐为每天 100000 个请求, 大概是100个人 每人请求100次, 或0.01个人 每人请求10000000次>)",
+      "tags": [],
+      "slug": "cloudflare免费worker"
     },
     {
       "id": "..\\..\\obsidian\\obsidian\\Tool\\Linux\\vnc远程桌面",

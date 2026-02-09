@@ -8,6 +8,13 @@ export interface CommentsConfig {
     issueTerm?: 'pathname' | 'title' | 'og:title' | 'url';
     label?: string;
 }
+export interface TodoConfig {
+    enabled: boolean;
+    projectNumber: number;
+    repo?: string;
+    oauthClientId?: string;
+    oauthProxyUrl?: string;
+}
 export interface BlogConfig {
     vaultPath: string;
     outputPath: string;
@@ -22,6 +29,7 @@ export interface BlogConfig {
     customDomain?: string;
     githubUrl?: string;
     comments?: CommentsConfig;
+    todo?: TodoConfig;
 }
 export interface ValidationResult {
     isValid: boolean;
