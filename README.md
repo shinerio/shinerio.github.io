@@ -10,6 +10,7 @@
 - **明暗主题**: 支持 `light`/`dark`/`auto` 三种主题模式，含手动切换
 - **搜索功能**: 内置加权全文搜索（标题权重3 > 标签权重2 > 正文权重1），支持中英文分词
 - **评论系统**: 基于 GitHub Issues 的评论功能（Utterances），主题跟随博客自动切换
+- **TODO看板**: 集成 GitHub Projects v2 的 Kanban 看板，支持任务管理（需配置 OAuth 和 Cloudflare Worker）
 - **GitHub集成**: 侧边栏展示 GitHub 主页链接和 Follow 按钮
 - **Obsidian语法**: 自动处理 `[[内部链接]]` 和 `#标签` 语法
 - **黑名单过滤**: 支持 glob 通配符模式排除文件和目录
@@ -127,6 +128,7 @@ npx obsidian-blog validate -c ./config.json  # 验证配置文件
 | `customDomain` | string | - | GitHub Pages 自定义域名 |
 | `githubUrl` | string | - | GitHub 主页 URL，显示在侧边栏 |
 | `comments` | object | - | 评论功能配置，详见[评论功能](#评论功能)章节 |
+| `todo` | object | - | TODO 看板功能配置，详见[TODO功能](#todo功能)章节 |
 
 ## 配置文件格式
 
@@ -211,6 +213,92 @@ npx obsidian-blog validate -c ./config.json  # 验证配置文件
 ### 主题同步
 
 评论区会自动跟随博客的明暗主题切换。当用户手动切换主题或系统主题变化时，评论组件的配色方案会同步更新。
+
+## TODO功能
+
+博客支持集成了 GitHub Projects v2 的 Kanban 看板功能，用于任务管理和待办事项跟踪。
+
+### 前置条件
+
+1. 在您的 GitHub 账户下创建一个 GitHub Projects v2 项目
+2. 项目中应包含一个名为 `Status` 的单选字段，用于任务状态跟踪
+3. 准备一个 GitHub OAuth 应用用于身份验证（需启用设备流）
+
+### Cloudflare Worker 配置
+
+由于 GitHub OAuth 的端点不支持浏览器 CORS 请求，需要配置一个 Cloudflare Worker 作为代理：
+
+1. **创建 OAuth 应用**：
+   - 访问 https://github.com/settings/developers
+   - 创建新的 OAuth App 或 GitHub App
+   - 启用 "Device flow" 选项
+   - 记下 Client ID
+
+2. **部署 Cloudflare Worker**：
+   ```bash
+   # 安装 wrangler CLI (如果未安装)
+   npm install -g wrangler
+
+   # 进入 worker 目录
+   cd cloudflare-worker
+
+   # 登录到 Cloudflare (首次使用时)
+   wrangler login
+
+   # 部署 worker
+   wrangler deploy
+   ```
+
+3. **获取 Worker URL**：
+   - 部署成功后，会获得一个形如 `https://your-worker.your-account.workers.dev` 的 URL
+
+4. **配置project**
+在github上创建是个名叫TODO的仓库，并创建一个Projects。
+  - 创建完成后，项目 URL 会类似这样：https://github.com/users/your-username/projects/123
+  - 其中的数字 123 就是您的 projectNumber，需要填入到 blog.config.json 中
+
+### 配置方式
+
+在 `blog.config.json` 中添加 `todo` 字段：
+
+```json
+{
+  "todo": {
+    "enabled": true,
+    "projectNumber": 1,
+    "repo": "TODO",
+    "oauthClientId": "Ov23li65mtWdX973c2zm",
+    "oauthProxyUrl": "https://your-worker.your-account.workers.dev"
+  }
+}
+```
+
+### 配置项说明
+
+| 选项 | 类型 | 必填 | 默认值 | 描述 |
+|------|------|------|--------|------|
+| `enabled` | boolean | 是 | - | 是否启用 TODO 功能 |
+| `projectNumber` | number | 是 | - | GitHub Projects v2 项目的编号 |
+| `repo` | string | 否 | `"TODO"` | 项目所属的仓库名 |
+| `oauthClientId` | string | 是 | - | GitHub OAuth 应用的客户端 ID |
+| `oauthProxyUrl` | string | 是 | - | Cloudflare Worker 的 URL，用作 OAuth 代理 |
+
+### 使用方式
+
+1. 部署完成后，在博客导航栏会出现 "TODO" 链接
+2. 点击进入看板页面，点击 "Sign in with GitHub" 按钮
+3. 系统会启动 OAuth 设备流，显示设备码
+4. 在新窗口打开 GitHub，输入设备码进行授权
+5. 授权完成后，即可查看和管理您的 GitHub Projects v2 看板
+
+### 功能特性
+
+- **Kanban 板视图**：根据 Status 字段显示任务列
+- **添加任务**：支持创建新的待办事项
+- **编辑任务**：可以修改任务状态
+- **删除任务**：支持删除不需要的任务
+- **响应式设计**：适配不同屏幕尺寸
+- **暗色主题**：跟随站点主题设置
 
 ## 搜索架构
 

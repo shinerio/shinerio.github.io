@@ -16,9 +16,9 @@
   },
   "todo": {
     "enabled": true,
-    "projectNumber": 1,
+    "projectNumber": 4,
     "repo": "TODO",
-    "oauthClientId": "",
-    "oauthProxyUrl": ""
+    "oauthClientId": "Ov23li65mtWdX973c2zm",
+    "oauthProxyUrl": "https://github-oauth-proxy.jstxshinerio.workers.dev"
   }
 }

@@ -122,7 +122,13 @@
       "Bash(npx serve:*)",
       "Bash(wc:*)",
       "Bash(dir:*)",
-      "Bash(npm run test:*)"
+      "Bash(npm run test:*)",
+      "Bash(git add .)",
+      "Bash(git reset)",
+      "Bash(git add README.md blog.config.json changelog/ templates/ src/ cloudflare-worker/)",
+      "Bash(git add --all)",
+      "Bash(git reset .claude/settings.local.json)",
+      "Bash(git add README.md blog.config.json changelog/CHANGELOG_TODO_FEATURE.md templates/todo.html templates/assets/js/todo.js templates/assets/css/style.css src/types/index.ts src/core/ConfigManager.ts src/core/SiteGenerator.ts cloudflare-worker/worker.js cloudflare-worker/wrangler.toml)"
     ]
   }
 }
