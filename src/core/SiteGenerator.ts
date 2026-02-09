@@ -42,6 +42,11 @@ export class SiteGenerator {
       await this.generateArticlePages(articles, options, outputPath);
       await this.generateSearchPage(options, outputPath);
 
+      // 生成 TODO 页面（如果启用）
+      if (options.config.todo?.enabled) {
+        await this.generateTodoPage(options, outputPath);
+      }
+
       // 复制静态资源
       await this.copyStaticAssets(outputPath);
 
@@ -133,6 +138,7 @@ export class SiteGenerator {
       homeActive: 'active',
       articlesActive: '',
       searchActive: '',
+      todoActive: '',
       currentYear: new Date().getFullYear(),
       author: options.config.author || options.config.siteTitle,
       content,
@@ -202,6 +208,7 @@ export class SiteGenerator {
       homeActive: '',
       articlesActive: 'active',
       searchActive: '',
+      todoActive: '',
       currentYear: new Date().getFullYear(),
       author: options.config.author || options.config.siteTitle,
       content,
@@ -235,6 +242,7 @@ export class SiteGenerator {
       homeActive: '',
       articlesActive: '',
       searchActive: 'active',
+      todoActive: '',
       currentYear: new Date().getFullYear(),
       author: options.config.author || options.config.siteTitle,
       content,
@@ -275,6 +283,7 @@ export class SiteGenerator {
           homeActive: '',
           articlesActive: '',
           searchActive: '',
+          todoActive: '',
           currentYear: new Date().getFullYear(),
           author: options.config.author || options.config.siteTitle,
           content,
@@ -288,6 +297,53 @@ export class SiteGenerator {
         await fs.writeFile(path.join(outputPath, `${article.slug}.html`), html);
       }
     }
+  }
+
+  /**
+   * 生成 TODO 页面
+   * Generate TODO Kanban board page
+   */
+  async generateTodoPage(options: GenerationOptions, outputPath: string): Promise<void> {
+    const layoutTemplate = await this.loadTemplate('layout.html');
+    const todoTemplate = await this.loadTemplate('todo.html');
+
+    const todoConfig = options.config.todo!;
+    const githubUsername = options.config.githubUrl ? this.extractGithubUsername(options.config.githubUrl) : '';
+
+    const content = this.renderTemplate(todoTemplate, {
+      githubUsername,
+      projectNumber: todoConfig.projectNumber,
+      todoRepo: todoConfig.repo || 'TODO',
+      oauthClientId: todoConfig.oauthClientId || '',
+      oauthProxyUrl: todoConfig.oauthProxyUrl || ''
+    });
+
+    const html = this.renderTemplate(layoutTemplate, {
+      title: 'TODO',
+      siteTitle: options.config.siteTitle,
+      siteDescription: options.config.siteDescription,
+      description: 'TODO Kanban Board',
+      bodyClass: 'todo-page',
+      homeActive: '',
+      articlesActive: '',
+      searchActive: '',
+      todoActive: 'active',
+      currentYear: new Date().getFullYear(),
+      author: options.config.author || options.config.siteTitle,
+      content,
+      additionalHead: '<script src="assets/js/todo.js" defer></script>'
+    });
+
+    await fs.writeFile(path.join(outputPath, 'todo.html'), html);
+  }
+
+  /**
+   * 从 GitHub URL 中提取用户名
+   * Extract GitHub username from GitHub profile URL
+   */
+  private extractGithubUsername(githubUrl: string): string {
+    const match = githubUrl.match(/github\.com\/([^/]+)/);
+    return match ? match[1] : '';
   }
 
   /**

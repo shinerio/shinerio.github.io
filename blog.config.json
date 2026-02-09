@@ -13,5 +13,12 @@
     "repo": "shinerio/shinerio.github.io",
     "issueTerm": "pathname",
     "label": "blog-comment"
+  },
+  "todo": {
+    "enabled": true,
+    "projectNumber": 1,
+    "repo": "TODO",
+    "oauthClientId": "",
+    "oauthProxyUrl": ""
   }
 }

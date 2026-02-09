@@ -11,6 +11,15 @@ export interface CommentsConfig {
   label?: string;              // Issues 标签，用于区分评论和普通 Issue
 }
 
+// TODO 配置接口
+export interface TodoConfig {
+  enabled: boolean;
+  projectNumber: number;       // GitHub Projects v2 project number
+  repo?: string;               // Repo name (default: "TODO")
+  oauthClientId?: string;      // GitHub OAuth App client ID
+  oauthProxyUrl?: string;      // Cloudflare Worker URL for OAuth proxy
+}
+
 // 博客配置接口
 export interface BlogConfig {
   vaultPath: string;
@@ -26,6 +35,7 @@ export interface BlogConfig {
   customDomain?: string; // Custom domain for GitHub Pages deployment
   githubUrl?: string; // GitHub profile URL
   comments?: CommentsConfig; // 评论功能配置
+  todo?: TodoConfig; // TODO 看板功能配置
 }
 
 // 配置验证结果

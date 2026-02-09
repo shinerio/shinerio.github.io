@@ -154,6 +154,26 @@ export class ConfigManager {
       }
     }
 
+    // 验证 TODO 配置
+    if (config.todo !== undefined) {
+      if (typeof config.todo !== 'object' || config.todo === null) {
+        errors.push('todo 必须是一个对象');
+      } else {
+        if (typeof config.todo.enabled !== 'boolean') {
+          errors.push('todo.enabled 必须是布尔值');
+        }
+        if (config.todo.projectNumber === undefined || typeof config.todo.projectNumber !== 'number' || config.todo.projectNumber <= 0 || !Number.isInteger(config.todo.projectNumber)) {
+          errors.push('todo.projectNumber 必须是正整数');
+        }
+        if (config.todo.oauthClientId !== undefined && typeof config.todo.oauthClientId !== 'string') {
+          errors.push('todo.oauthClientId 必须是字符串');
+        }
+        if (config.todo.oauthProxyUrl !== undefined && typeof config.todo.oauthProxyUrl !== 'string') {
+          errors.push('todo.oauthProxyUrl 必须是字符串');
+        }
+      }
+    }
+
     return {
       isValid: errors.length === 0,
       errors,

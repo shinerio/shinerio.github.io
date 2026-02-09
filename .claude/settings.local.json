@@ -121,7 +121,8 @@
       "Bash(npx obsidian-blog:*)",
       "Bash(npx serve:*)",
       "Bash(wc:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(npm run test:*)"
     ]
   }
 }
