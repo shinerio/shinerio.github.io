@@ -1281,7 +1281,6 @@ body.todo-page .page-main {
     display: inline-flex;
     align-items: center;
     gap: var(--spacing-xs);
-    text-decoration: none !important;
 }
 
 .todo-title a:hover {
@@ -1289,11 +1288,11 @@ body.todo-page .page-main {
     background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
-    text-decoration: none !important;
+    text-decoration: none;
 }
 
 .todo-title a::before {
-    content: "📋 ";
+    content: "📋";
     font-size: 1.2em;
 }
 
