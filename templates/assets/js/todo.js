@@ -18,8 +18,6 @@
   const dom = {
     auth: document.getElementById('todo-auth'),
     loginBtn: document.getElementById('todo-login-btn'),
-    toolbar: document.getElementById('todo-toolbar'),
-    addBtn: document.getElementById('todo-add-btn'),
     loading: document.getElementById('todo-loading'),
     error: document.getElementById('todo-error'),
     errorMsg: document.getElementById('todo-error-msg'),
@@ -193,13 +191,11 @@
       '<span class="todo-user-name">' + user.login + '</span></span>' +
       '<button class="todo-btn todo-btn-small" id="todo-logout-btn">Sign out</button>';
     document.getElementById('todo-logout-btn').addEventListener('click', logout);
-    dom.toolbar.style.display = 'flex';
   }
 
   function showLoggedOut() {
     dom.auth.innerHTML = '<button class="todo-btn todo-btn-primary" id="todo-login-btn">Sign in with GitHub</button>';
     document.getElementById('todo-login-btn').addEventListener('click', startDeviceFlow);
-    dom.toolbar.style.display = 'none';
   }
 
   function logout() {
@@ -244,11 +240,14 @@
       '            }\n' +
       '          }\n' +
       '          content {\n' +
+      '            __typename\n' +
       '            ... on DraftIssue {\n' +
+      '              id\n' +
       '              title\n' +
       '              body\n' +
       '            }\n' +
       '            ... on Issue {\n' +
+      '              id\n' +
       '              title\n' +
       '              body\n' +
       '              url\n' +
@@ -284,7 +283,7 @@
       state.statusFieldId = statusField.id;
       state.statusOptions = statusField.options;
     } else {
-      state.statusOptions = [{ id: null, name: 'No Status' }];
+      state.statusOptions = [];
     }
 
     // Parse items
@@ -304,6 +303,8 @@
         title: item.content ? item.content.title : '(untitled)',
         body: item.content ? (item.content.body || '') : '',
         url: item.content ? item.content.url : null,
+        contentId: item.content ? item.content.id : null,
+        contentType: item.content ? item.content.__typename : null,
         status: statusValue,
         statusOptionId: statusOptionId
       };
@@ -357,6 +358,32 @@
     }, state.token);
   }
 
+  async function updateDraftIssueContent(draftIssueId, title, body) {
+    var mutation = 'mutation($draftIssueId: ID!, $title: String!, $body: String) {\n' +
+      '  updateProjectV2DraftIssue(input: {draftIssueId: $draftIssueId, title: $title, body: $body}) {\n' +
+      '    draftIssue { id }\n' +
+      '  }\n' +
+      '}';
+    await graphqlRequest(mutation, {
+      draftIssueId: draftIssueId,
+      title: title,
+      body: body
+    }, state.token);
+  }
+
+  async function updateIssueContent(issueId, title, body) {
+    var mutation = 'mutation($issueId: ID!, $title: String, $body: String) {\n' +
+      '  updateIssue(input: {id: $issueId, title: $title, body: $body}) {\n' +
+      '    issue { id }\n' +
+      '  }\n' +
+      '}';
+    await graphqlRequest(mutation, {
+      issueId: issueId,
+      title: title,
+      body: body
+    }, state.token);
+  }
+
   // --- Board Rendering ---
   function renderBoard() {
     dom.board.innerHTML = '';
@@ -373,17 +400,11 @@
       statusOptionMap[opt.name] = opt.id;
     }
 
-    // "No Status" column for items without a status
-    if (!columns['No Status']) {
-      columns['No Status'] = [];
-      columnOrder.unshift('No Status');
-      statusOptionMap['No Status'] = null;
-    }
-
     // Distribute items
     for (var j = 0; j < state.items.length; j++) {
       var item = state.items[j];
-      var col = item.status || 'No Status';
+      if (!item.status) continue;
+      var col = item.status;
       if (!columns[col]) {
         columns[col] = [];
         columnOrder.push(col);
@@ -704,19 +725,6 @@
     }
   });
 
-  dom.addBtn.addEventListener('click', function () {
-    state.editingItem = null;
-    state.targetStatus = null;
-    dom.itemModalTitle.textContent = 'Add Item';
-    dom.itemTitle.value = '';
-    dom.itemTitle.disabled = false;
-    dom.itemBody.value = '';
-    dom.itemBody.disabled = false;
-    dom.statusGroup.style.display = 'none';
-    dom.itemModal.style.display = 'flex';
-    dom.itemTitle.focus();
-  });
-
   dom.itemCancel.addEventListener('click', function () {
     dom.itemModal.style.display = 'none';
   });
@@ -732,10 +740,12 @@
 
     try {
       if (state.editingItem) {
-        // Update status
-        var optionId = dom.itemStatus.value;
-        if (optionId) {
-          await updateItemStatus(state.editingItem.id, optionId);
+        // Update content
+        showLoading();
+        if (state.editingItem.contentType === 'DraftIssue' && state.editingItem.contentId) {
+          await updateDraftIssueContent(state.editingItem.contentId, title, body);
+        } else if (state.editingItem.contentType === 'Issue' && state.editingItem.contentId) {
+          await updateIssueContent(state.editingItem.contentId, title, body);
         }
       } else {
         // Add new item
@@ -773,24 +783,15 @@
       if (!item) return;
 
       state.editingItem = item;
-      dom.itemModalTitle.textContent = 'Edit Status';
+      dom.itemModalTitle.textContent = 'Edit Item';
       dom.itemTitle.value = item.title;
-      dom.itemTitle.disabled = true;
+      dom.itemTitle.disabled = false;
       dom.itemBody.value = item.body;
-      dom.itemBody.disabled = true;
+      dom.itemBody.disabled = false;
 
-      // Populate status select
-      dom.itemStatus.innerHTML = '';
-      for (var i = 0; i < state.statusOptions.length; i++) {
-        var opt = state.statusOptions[i];
-        var optEl = document.createElement('option');
-        optEl.value = opt.id;
-        optEl.textContent = opt.name;
-        if (opt.id === item.statusOptionId) optEl.selected = true;
-        dom.itemStatus.appendChild(optEl);
-      }
-      dom.statusGroup.style.display = 'block';
+      dom.statusGroup.style.display = 'none';
       dom.itemModal.style.display = 'flex';
+      dom.itemTitle.focus();
     }
 
     if (deleteBtn) {
