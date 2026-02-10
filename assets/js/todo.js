@@ -18,8 +18,6 @@
   const dom = {
     auth: document.getElementById('todo-auth'),
     loginBtn: document.getElementById('todo-login-btn'),
-    toolbar: document.getElementById('todo-toolbar'),
-    addBtn: document.getElementById('todo-add-btn'),
     loading: document.getElementById('todo-loading'),
     error: document.getElementById('todo-error'),
     errorMsg: document.getElementById('todo-error-msg'),
@@ -193,13 +191,11 @@
       '<span class="todo-user-name">' + user.login + '</span></span>' +
       '<button class="todo-btn todo-btn-small" id="todo-logout-btn">Sign out</button>';
     document.getElementById('todo-logout-btn').addEventListener('click', logout);
-    dom.toolbar.style.display = 'flex';
   }
 
   function showLoggedOut() {
     dom.auth.innerHTML = '<button class="todo-btn todo-btn-primary" id="todo-login-btn">Sign in with GitHub</button>';
     document.getElementById('todo-login-btn').addEventListener('click', startDeviceFlow);
-    dom.toolbar.style.display = 'none';
   }
 
   function logout() {
@@ -727,19 +723,6 @@
     } else {
       init();
     }
-  });
-
-  dom.addBtn.addEventListener('click', function () {
-    state.editingItem = null;
-    state.targetStatus = null;
-    dom.itemModalTitle.textContent = 'Add Item';
-    dom.itemTitle.value = '';
-    dom.itemTitle.disabled = false;
-    dom.itemBody.value = '';
-    dom.itemBody.disabled = false;
-    dom.statusGroup.style.display = 'none';
-    dom.itemModal.style.display = 'flex';
-    dom.itemTitle.focus();
   });
 
   dom.itemCancel.addEventListener('click', function () {
