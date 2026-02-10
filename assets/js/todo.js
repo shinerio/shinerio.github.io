@@ -363,13 +363,12 @@
   }
 
   async function updateDraftIssueContent(draftIssueId, title, body) {
-    var mutation = 'mutation($projectId: ID!, $draftIssueId: ID!, $title: String!, $body: String) {\n' +
-      '  updateProjectV2DraftIssue(input: {projectId: $projectId, draftIssueId: $draftIssueId, title: $title, body: $body}) {\n' +
+    var mutation = 'mutation($draftIssueId: ID!, $title: String!, $body: String) {\n' +
+      '  updateProjectV2DraftIssue(input: {draftIssueId: $draftIssueId, title: $title, body: $body}) {\n' +
       '    draftIssue { id }\n' +
       '  }\n' +
       '}';
     await graphqlRequest(mutation, {
-      projectId: state.projectId,
       draftIssueId: draftIssueId,
       title: title,
       body: body
