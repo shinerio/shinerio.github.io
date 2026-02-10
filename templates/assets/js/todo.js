@@ -49,6 +49,7 @@
     statusOptions: [],
     items: [],
     editingItem: null,
+    targetStatus: null,
     devicePollTimer: null
   };
 
@@ -77,6 +78,10 @@
     }
 
     try {
+      console.log('[TODO] Starting device flow...');
+      console.log('[TODO] OAuth Proxy URL:', CONFIG.oauthProxyUrl);
+      console.log('[TODO] Client ID:', CONFIG.oauthClientId);
+
       var resp = await fetch(CONFIG.oauthProxyUrl + '/device/code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -85,9 +90,26 @@
           scope: 'project'
         })
       });
+
+      console.log('[TODO] Response status:', resp.status, resp.statusText);
+      console.log('[TODO] Response headers:', {
+        contentType: resp.headers.get('Content-Type'),
+        cors: resp.headers.get('Access-Control-Allow-Origin')
+      });
+
+      if (!resp.ok) {
+        var errorText = await resp.text();
+        console.error('[TODO] Response error:', errorText);
+        showError('OAuth proxy error (HTTP ' + resp.status + '): ' + (errorText || resp.statusText) +
+                  '\n\nPlease check:\n1. Cloudflare Worker is deployed\n2. OAuth Client ID is correct\n3. Browser console for details');
+        return;
+      }
+
       var data = await resp.json();
+      console.log('[TODO] Device flow response:', data);
 
       if (data.error) {
+        console.error('[TODO] GitHub error:', data);
         showError('Device flow error: ' + (data.error_description || data.error));
         return;
       }
@@ -99,12 +121,16 @@
 
       pollForToken(data.device_code, data.interval || 5);
     } catch (e) {
-      showError('Failed to start device flow: ' + e.message);
+      console.error('[TODO] Exception:', e);
+      showError('Failed to start device flow: ' + e.message +
+                '\n\nCheck browser console for details.');
     }
   }
 
   function pollForToken(deviceCode, interval) {
     if (state.devicePollTimer) clearInterval(state.devicePollTimer);
+
+    console.log('[TODO] Starting token polling, interval:', interval + 1, 'seconds');
 
     state.devicePollTimer = setInterval(async function () {
       try {
@@ -117,9 +143,19 @@
             grant_type: 'urn:ietf:params:oauth:grant-type:device_code'
           })
         });
+
+        if (!resp.ok) {
+          var errorText = await resp.text();
+          console.error('[TODO] Token polling error (HTTP ' + resp.status + '):', errorText);
+          dom.deviceStatus.textContent = 'Polling error (HTTP ' + resp.status + '). Check console.';
+          return;
+        }
+
         var data = await resp.json();
+        console.log('[TODO] Token poll response:', data.error || 'success');
 
         if (data.access_token) {
+          console.log('[TODO] Authorization successful!');
           clearInterval(state.devicePollTimer);
           state.devicePollTimer = null;
           state.token = data.access_token;
@@ -129,17 +165,23 @@
         } else if (data.error === 'authorization_pending') {
           dom.deviceStatus.textContent = 'Waiting for authorization...';
         } else if (data.error === 'slow_down') {
+          console.warn('[TODO] Slow down requested by GitHub');
           dom.deviceStatus.textContent = 'Slowing down polling...';
         } else if (data.error === 'expired_token') {
+          console.error('[TODO] Device code expired');
           clearInterval(state.devicePollTimer);
           state.devicePollTimer = null;
           dom.deviceStatus.textContent = 'Code expired. Please try again.';
         } else if (data.error === 'access_denied') {
+          console.error('[TODO] Access denied by user');
           clearInterval(state.devicePollTimer);
           state.devicePollTimer = null;
           dom.deviceStatus.textContent = 'Access denied.';
+        } else {
+          console.warn('[TODO] Unknown response:', data);
         }
       } catch (e) {
+        console.error('[TODO] Polling exception:', e);
         dom.deviceStatus.textContent = 'Polling error: ' + e.message;
       }
     }, (interval + 1) * 1000);
@@ -275,11 +317,12 @@
       '    projectItem { id }\n' +
       '  }\n' +
       '}';
-    await graphqlRequest(mutation, {
+    var data = await graphqlRequest(mutation, {
       projectId: state.projectId,
       title: title,
       body: body
     }, state.token);
+    return data.addProjectV2DraftIssue.projectItem.id;
   }
 
   async function updateItemStatus(itemId, optionId) {
@@ -320,18 +363,21 @@
 
     var columns = {};
     var columnOrder = [];
+    var statusOptionMap = {};
 
     // Create columns from status options
     for (var i = 0; i < state.statusOptions.length; i++) {
       var opt = state.statusOptions[i];
       columns[opt.name] = [];
       columnOrder.push(opt.name);
+      statusOptionMap[opt.name] = opt.id;
     }
 
     // "No Status" column for items without a status
     if (!columns['No Status']) {
       columns['No Status'] = [];
       columnOrder.unshift('No Status');
+      statusOptionMap['No Status'] = null;
     }
 
     // Distribute items
@@ -349,18 +395,46 @@
     for (var k = 0; k < columnOrder.length; k++) {
       var colName = columnOrder[k];
       var items = columns[colName];
+      var statusOptionId = statusOptionMap[colName];
 
       var colEl = document.createElement('div');
       colEl.className = 'todo-column';
+      colEl.dataset.status = colName;
+      colEl.dataset.statusId = statusOptionId || '';
 
       var headerEl = document.createElement('div');
       headerEl.className = 'todo-column-header';
-      headerEl.innerHTML = '<span class="todo-column-title">' + escapeHtml(colName) + '</span>' +
-        '<span class="todo-column-count">' + items.length + '</span>';
+      headerEl.innerHTML = '<div class="todo-column-header-left">' +
+        '<span class="todo-column-title">' + escapeHtml(colName) + '</span>' +
+        '<span class="todo-column-count">' + items.length + '</span>' +
+        '</div>';
+
+      // Add "+" button if user is logged in
+      if (state.token) {
+        var addBtn = document.createElement('button');
+        addBtn.className = 'todo-column-add-btn';
+        addBtn.setAttribute('aria-label', 'Add item to ' + colName);
+        addBtn.setAttribute('data-status', colName);
+        addBtn.setAttribute('data-status-id', statusOptionId || '');
+        addBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+        addBtn.addEventListener('click', handleColumnAddClick);
+        headerEl.appendChild(addBtn);
+      }
+
       colEl.appendChild(headerEl);
 
       var listEl = document.createElement('div');
       listEl.className = 'todo-column-items';
+      listEl.dataset.status = colName;
+      listEl.dataset.statusId = statusOptionId || '';
+
+      // Add drag and drop event listeners
+      if (state.token) {
+        listEl.addEventListener('dragover', handleDragOver);
+        listEl.addEventListener('drop', handleDrop);
+        listEl.addEventListener('dragenter', handleDragEnter);
+        listEl.addEventListener('dragleave', handleDragLeave);
+      }
 
       for (var m = 0; m < items.length; m++) {
         listEl.appendChild(renderCard(items[m]));
@@ -375,6 +449,15 @@
     var card = document.createElement('div');
     card.className = 'todo-item';
     card.dataset.id = item.id;
+    card.dataset.status = item.status || 'No Status';
+    card.dataset.statusId = item.statusOptionId || '';
+
+    // Make card draggable if user is logged in
+    if (state.token) {
+      card.setAttribute('draggable', 'true');
+      card.addEventListener('dragstart', handleDragStart);
+      card.addEventListener('dragend', handleDragEnd);
+    }
 
     var titleText = escapeHtml(item.title);
     if (item.url) {
@@ -384,12 +467,22 @@
     var bodyPreview = item.body ? escapeHtml(item.body.substring(0, 120)) : '';
     if (item.body && item.body.length > 120) bodyPreview += '...';
 
-    card.innerHTML = '<div class="todo-item-title">' + titleText + '</div>' +
+    var dragHandle = state.token ? '<div class="todo-item-drag-handle" title="Drag to move">' +
+      '<svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">' +
+      '<circle cx="3" cy="3" r="1"/><circle cx="9" cy="3" r="1"/>' +
+      '<circle cx="3" cy="6" r="1"/><circle cx="9" cy="6" r="1"/>' +
+      '<circle cx="3" cy="9" r="1"/><circle cx="9" cy="9" r="1"/>' +
+      '</svg></div>' : '';
+
+    card.innerHTML = dragHandle +
+      '<div class="todo-item-content">' +
+      '<div class="todo-item-title">' + titleText + '</div>' +
       (bodyPreview ? '<div class="todo-item-body">' + bodyPreview + '</div>' : '') +
       (state.token ? '<div class="todo-item-actions">' +
-        '<button class="todo-btn todo-btn-small todo-edit-btn" data-id="' + item.id + '">Edit Status</button>' +
+        '<button class="todo-btn todo-btn-small todo-edit-btn" data-id="' + item.id + '">Edit</button>' +
         '<button class="todo-btn todo-btn-small todo-btn-danger todo-delete-btn" data-id="' + item.id + '">Delete</button>' +
-        '</div>' : '');
+        '</div>' : '') +
+      '</div>';
 
     return card;
   }
@@ -398,6 +491,151 @@
     var div = document.createElement('div');
     div.appendChild(document.createTextNode(text));
     return div.innerHTML;
+  }
+
+  // --- Drag and Drop ---
+  var dragState = {
+    draggedItem: null,
+    draggedElement: null
+  };
+
+  function handleDragStart(e) {
+    var card = e.currentTarget;
+    dragState.draggedElement = card;
+    dragState.draggedItem = state.items.find(function (item) {
+      return item.id === card.dataset.id;
+    });
+
+    card.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', card.innerHTML);
+
+    console.log('[TODO] Drag started:', dragState.draggedItem.title);
+  }
+
+  function handleDragEnd(e) {
+    var card = e.currentTarget;
+    card.classList.remove('dragging');
+
+    // Remove drag-over classes from all columns
+    var columns = document.querySelectorAll('.todo-column-items');
+    for (var i = 0; i < columns.length; i++) {
+      columns[i].classList.remove('drag-over');
+    }
+
+    console.log('[TODO] Drag ended');
+  }
+
+  function handleDragOver(e) {
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+    e.dataTransfer.dropEffect = 'move';
+    return false;
+  }
+
+  function handleDragEnter(e) {
+    var target = e.currentTarget;
+    if (target.classList.contains('todo-column-items')) {
+      target.classList.add('drag-over');
+    }
+  }
+
+  function handleDragLeave(e) {
+    var target = e.currentTarget;
+    if (target.classList.contains('todo-column-items')) {
+      // Only remove if we're actually leaving the element
+      var rect = target.getBoundingClientRect();
+      var x = e.clientX;
+      var y = e.clientY;
+      if (x <= rect.left || x >= rect.right || y <= rect.top || y >= rect.bottom) {
+        target.classList.remove('drag-over');
+      }
+    }
+  }
+
+  async function handleDrop(e) {
+    if (e.stopPropagation) {
+      e.stopPropagation();
+    }
+    e.preventDefault();
+
+    var targetColumn = e.currentTarget;
+    targetColumn.classList.remove('drag-over');
+
+    if (!dragState.draggedItem) {
+      console.warn('[TODO] No dragged item found');
+      return false;
+    }
+
+    var newStatus = targetColumn.dataset.status;
+    var newStatusId = targetColumn.dataset.statusId;
+    var oldStatus = dragState.draggedItem.status || 'No Status';
+
+    console.log('[TODO] Drop:', {
+      item: dragState.draggedItem.title,
+      from: oldStatus,
+      to: newStatus
+    });
+
+    // If dropped in the same column, do nothing
+    if (newStatus === oldStatus) {
+      console.log('[TODO] Dropped in same column, no action needed');
+      return false;
+    }
+
+    // Update status via GitHub API
+    try {
+      if (newStatusId) {
+        showLoading();
+        await updateItemStatus(dragState.draggedItem.id, newStatusId);
+        console.log('[TODO] Status updated successfully');
+
+        // Refresh board
+        await fetchProjectData();
+        hideLoading();
+        renderBoard();
+      } else {
+        showError('Cannot move item to "No Status" column. Please use Edit Status button instead.');
+      }
+    } catch (err) {
+      console.error('[TODO] Failed to update status:', err);
+      hideLoading();
+      showError('Failed to move item: ' + err.message);
+      renderBoard(); // Restore original state
+    }
+
+    return false;
+  }
+
+  function handleColumnAddClick(e) {
+    var btn = e.currentTarget;
+    var statusName = btn.dataset.status;
+    var statusId = btn.dataset.statusId;
+
+    console.log('[TODO] Add item to column:', statusName);
+
+    // Open add modal with pre-selected status
+    state.editingItem = null;
+    state.targetStatus = { name: statusName, id: statusId };
+
+    dom.itemModalTitle.textContent = 'Add Item to ' + statusName;
+    dom.itemTitle.value = '';
+    dom.itemTitle.disabled = false;
+    dom.itemBody.value = '';
+    dom.itemBody.disabled = false;
+
+    // Show status field (read-only) if not "No Status"
+    if (statusName !== 'No Status' && statusId) {
+      dom.itemStatus.innerHTML = '<option value="' + statusId + '">' + escapeHtml(statusName) + '</option>';
+      dom.itemStatus.disabled = true;
+      dom.statusGroup.style.display = 'block';
+    } else {
+      dom.statusGroup.style.display = 'none';
+    }
+
+    dom.itemModal.style.display = 'flex';
+    dom.itemTitle.focus();
   }
 
   // --- Error / Loading ---
@@ -468,9 +706,12 @@
 
   dom.addBtn.addEventListener('click', function () {
     state.editingItem = null;
+    state.targetStatus = null;
     dom.itemModalTitle.textContent = 'Add Item';
     dom.itemTitle.value = '';
+    dom.itemTitle.disabled = false;
     dom.itemBody.value = '';
+    dom.itemBody.disabled = false;
     dom.statusGroup.style.display = 'none';
     dom.itemModal.style.display = 'flex';
     dom.itemTitle.focus();
@@ -498,7 +739,17 @@
         }
       } else {
         // Add new item
-        await addDraftIssue(title, body);
+        showLoading();
+        var newItemId = await addDraftIssue(title, body);
+        console.log('[TODO] Created new item:', newItemId);
+
+        // If added from a specific column, set its status
+        if (state.targetStatus && state.targetStatus.id) {
+          console.log('[TODO] Setting status to:', state.targetStatus.name);
+          await updateItemStatus(newItemId, state.targetStatus.id);
+        }
+
+        state.targetStatus = null;
       }
       // Refresh
       showLoading();
@@ -506,6 +757,7 @@
       hideLoading();
       renderBoard();
     } catch (err) {
+      hideLoading();
       showError('Operation failed: ' + err.message);
     }
   });
