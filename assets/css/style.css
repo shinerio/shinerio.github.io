@@ -1468,7 +1468,10 @@ body.todo-page .page-main {
     border-radius: var(--radius-md);
     padding: var(--spacing-md);
     transition: transform var(--transition-fast), box-shadow var(--transition-fast),
-                border-color var(--transition-fast);
+                border-color var(--transition-fast), opacity var(--transition-fast);
+    display: flex;
+    gap: var(--spacing-sm);
+    position: relative;
 }
 
 .todo-item:hover {
@@ -1638,13 +1641,6 @@ body.todo-page .page-main {
 }
 
 /* Drag and drop styles */
-.todo-item {
-    cursor: grab;
-    position: relative;
-    display: flex;
-    gap: var(--spacing-sm);
-}
-
 .todo-item[draggable="true"] {
     cursor: grab;
 }
@@ -1684,33 +1680,6 @@ body.todo-page .page-main {
     border: 2px dashed var(--color-accent-primary);
     border-radius: var(--radius-md);
     min-height: 100px;
-}
-
-/* Adjust item title and body to be in content wrapper */
-.todo-item-content .todo-item-title {
-    font-weight: 600;
-    color: var(--color-text-primary);
-    margin-bottom: var(--spacing-xs);
-    word-break: break-word;
-}
-
-.todo-item-content .todo-item-title a {
-    color: var(--color-accent-primary);
-    text-decoration: none;
-}
-
-.todo-item-content .todo-item-body {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
-    margin-bottom: var(--spacing-sm);
-    line-height: 1.5;
-}
-
-.todo-item-content .todo-item-actions {
-    display: flex;
-    gap: var(--spacing-xs);
-    flex-wrap: wrap;
-    margin-top: var(--spacing-sm);
 }
 
 /* Dark mode adjustments for TODO */
