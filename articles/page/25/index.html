@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
-    <title>Claudemd - Shinerio's Blog</title>
+    <title>文章列表 - 第 25 页 - Shinerio's Blog</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
-    <meta property="og:title" content="Claudemd">
-<meta property="og:description" content="| 类型 | 位置 | 范围 | 版本控制 | 典型用途 | | ------ | ----------------------- | ---- | ----- | ------ | | 全局 | | 所有项目 | 不共享 | 个人编码偏好 | | 项目 | | 当前项目 | 共享给团队 | 团队规...">
-<meta property="og:type" content="article">
-<meta property="article:published_time" content="2026-01-30T15:58:18.000Z">
-<meta property="article:author" content="shinerio">
+    
+          <script type="application/json" id="article-data" style="display:none">
+            [{"id":"操作系统概述","title":"操作系统概述","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":7,"slug":"操作系统概述","description":"1. 操作系统基本特征 1.1. 并发 并发是指两个或多个事件在同一时间间隔内发生，在多道程序环境下，一段时间内宏观上有多个程序在同时执行，而在同一时刻，单处理器环境下实际上只有一个程序在执行，故微观上这些程序还是在分时的交替进行。操作系统的并发是通过分时得以实现的。操作系统的并发性是指计算机系统中..."},{"id":"进程调度策略","title":"进程调度策略","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":2,"slug":"进程调度策略","description":"进程调度的关注点： - 性能：执行完所有任务需要的总时间。 - 公平性：每个任务都期望自己先被执行，尽早完成。 - 响应时间：首次运行时间 - 任务提交时间。 性能、公平性、响应时间是矛盾的，为了达到最好的性能，我们希望cpu不要在不同进程或线程之间切换，这样避免了上下文的切换，一个任务从开始执行到..."},{"id":"openssl","title":"Openssl","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":1,"slug":"openssl","description":"1. RSA密钥 生成私钥 - ：指定算法为 RSA - ：指定密钥长度为 2048 位（可改为 4096 - ：输出私钥文件路径 生成公钥 - ：输入私钥 - ：导出公钥 - ：输出公钥文件路径 2. ECC密钥 生成对应的ECC私钥 - ：指定椭圆曲线（可换成 , , , 等） - ：生成密钥 ..."},{"id":"SSL证书","title":"SSL证书","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":16,"slug":"ssl证书","description":"在密码学和数字证书体系中，一般没有“私钥证书”的说法。主要是公钥证书。公钥证书（通常就简称为数字证书）是一种电子文档，包含以下信息 - 公钥信息 - 持有者身份信息（如姓名、组织等） - 证书颁发机构（CA）的数字签名等 其主要目的是将公钥与特定的实体（如个人、服务器等）绑定，用于在网络通信等场景中..."},{"id":"webauthn","title":"Webauthn","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":5,"slug":"webauthn","description":"在数字时代，密码已成为我们日常生活和在线活动中不可或缺的一部分。尽管互联网已经发展了20多年，许多方面都有了巨大的改进，但只有密码，还是20年前的用法。更准确的说，它的用户体验比 20 年前更差了。 1. 密码的强度现在要求越来越高，一般不能少于8个字符，还要包括特殊符号。 2. 除了密码，通常还有..."},{"id":"Tech","title":"Tech","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":0,"slug":"tech","description":""},{"id":"CPU架构","title":"CPU架构","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":7,"slug":"cpu架构","description":"1. 主频 CPU 主频，即CPU的时钟频率，是衡量 CPU 运算速度的重要指标，以下从其定义、工作原理及与性能的关系等方面进行具体解释。 - 基本定义：CPU 主频表示 CPU 内数字脉冲信号振荡的速度，单位为赫兹（Hz）。通常所说的CPU 主频为2.4GHz、3.6GHz等，意味着CPU内部的时..."},{"id":"CPU缓存设计","title":"CPU缓存设计","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":18,"slug":"cpu缓存设计","description":"1. 缓存 Cache Memory也被称为Cache，是存储器子系统的组成部分，存放着程序经常使用的指令和数据，这就是Cache的传统定义。从广义的角度上看，Cache是快设备为了缓解访问慢设备延时的预留的Buffer，从而可以在掩盖访问延时的同时，尽可能地提高数据传输率。 快和慢是一个相对概念，..."},{"id":"CPU调度策略","title":"CPU调度策略","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":2,"slug":"cpu调度策略","description":"1. MLFQ（Multi-Level Feedback Queue） - 系统中存在多个就绪队列，每个队列有不同的优先级，高优先级队列中的进程会优先获得 CPU 执行。 - 进程在队列之间可以移动，根据其行为（如 CPU 占用时间、I/O 操作等）动态调整优先级。 1.1. 规则 1.1.1. 优..."},{"id":"blog_online","title":"Blog Online","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":0,"slug":"blog-online","description":""}]
+          </script>
+          <script src="assets/js/articles-filters.js"></script>
+          <link rel="canonical" href="articles/page/25/index.html"/>
+          <link rel="prev" href="articles/page/24/index.html"/>
+          <link rel="next" href="articles/page/26/index.html"/>
+        
 </head>
-<body class="article-page" id="theme-body">
+<body class="articles-page" id="theme-body">
     <div class="page-wrapper">
         <div class="sidebar-overlay"></div>
         <header class="page-header">
@@ -25,7 +29,7 @@
                             <span class="sidebar-toggle-icon"></span>
                         </button>
                         <a href="index.html" class="nav-link ">Home</a>
-                        <a href="articles.html" class="nav-link ">Articles</a>
+                        <a href="articles.html" class="nav-link active">Articles</a>
                         <a href="search.html" class="nav-link ">Search</a>
                         <a href="todo.html" class="nav-link ">TODO</a>
                     </div>
@@ -40,87 +44,138 @@
         </header>
         <main class="page-main">
             <div class="container">
-                <article>
-    <header>
-        <h1>Claudemd</h1>
-        <time datetime="2026-01-30T15:58:18.000Z">2026年1月30日</time>
-        <div class="tags">
+                
+        <div class="articles-filters">
+          <div class="filter-group">
+            <label for="sort-select">排序方式:</label>
+            <select id="sort-select" class="filter-select">
+              <option value="date-desc">最新发布</option>
+              <option value="date-asc">最早发布</option>
+              <option value="title-asc">标题 A-Z</option>
+              <option value="title-desc">标题 Z-A</option>
+              <option value="readtime-asc">阅读时间 (短至长)</option>
+              <option value="readtime-desc">阅读时间 (长至短)</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="tag-filter">标签筛选:</label>
+            <select id="tag-filter" class="filter-select">
+              <option value="">所有标签</option>
+              <option value="network">#network (14)</option><option value="excalidraw">#excalidraw (8)</option><option value="计算机网络">#计算机网络 (7)</option><option value="linux">#linux (5)</option><option value="nat">#nat (4)</option><option value="bgp">#bgp (2)</option><option value="protocol">#protocol (1)</option><option value="database">#database (1)</option><option value="dcn">#dcn (1)</option><option value="交换机">#交换机 (1)</option><option value="NAT">#NAT (1)</option><option value="thread">#thread (1)</option><option value="网络安全">#网络安全 (1)</option><option value="加密">#加密 (1)</option><option value="obsidian">#obsidian (1)</option><option value="tool">#tool (1)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="article-list">
+          
+    <div class="article-item">
+        <h3><a href="操作系统概述.html">操作系统概述</a></h3>
+        <p class="article-excerpt">1. 操作系统基本特征 1.1. 并发 并发是指两个或多个事件在同一时间间隔内发生，在多道程序环境下，一段时间内宏观上有多个程序在同时执行，而在同一时刻，单处理器环境下实际上只有一个程序在执行，故微观上这些程序还是在分时的交替进行。操作系统的并发是通过分时得以实现的。操作系统的并发性是指计算机系统中...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">7 分钟阅读</span>
             
         </div>
-    </header>
-    <section class="content">
-        <table>
-<thead>
-<tr>
-<th>类型</th>
-<th>位置</th>
-<th>范围</th>
-<th>版本控制</th>
-<th>典型用途</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>全局</strong></td>
-<td><code>~/.claude/CLAUDE.md</code></td>
-<td>所有项目</td>
-<td>不共享</td>
-<td>个人编码偏好</td>
-</tr>
-<tr>
-<td><strong>项目</strong></td>
-<td><code>项目根目录/CLAUDE.md</code></td>
-<td>当前项目</td>
-<td>共享给团队</td>
-<td>团队规范</td>
-</tr>
-<tr>
-<td><strong>本地</strong></td>
-<td><code>项目根目录/CLAUDE.local.md</code></td>
-<td>本地</td>
-<td>不共享</td>
-<td>项目个人偏好</td>
-</tr>
-</tbody></table>
-<pre><code>CLAUDE.md的作用：
-├── 项目目标和愿景
-├── 目录结构说明
-├── 技术栈和依赖
-├── 编码规范和风格
-├── 命令和脚本
-├── 命名约定
-├── 错误处理原则
-└── 团队特定要求
-</code></pre>
-<p>可以使用相对路径、绝对路径，甚至是用户主目录 (<code>~</code>) 的路径来导入文件。</p>
-<pre><code class="language-text"># ./CLAUDE.md (项目记忆)
-
-# 导入团队共享的React最佳实践
-@/path/to/shared/react-best-practices.md
-
-# 导入我个人的项目特定快捷指令
-@~/.claude/my-project-shortcuts.md
-</code></pre>
-<p><strong>技术限制</strong>: 最大支持 5 层递归导入。在 Markdown 的代码块或行内代码中，<code>@import</code> 不会生效。</p>
-<h2>0.1. 添加记忆</h2>
-<p>在会话中输入 <code>/memory</code> 命令，Claude 会在你的系统默认编辑器中打开相关的记忆文件，方便你进行更复杂的编辑、整理和重构。</p>
-
-    </section>
-</article>
-
-
-<section class="comments-section" id="comments">
-    <h2 class="comments-title">评论</h2>
-    <div class="utterances-container">
-        <script src="https://utteranc.es/client.js"
-        repo="shinerio/shinerio.github.io"
-        issue-term="Claudemd"
-        label="blog-comment"
-        theme="preferred-color-scheme"
-        crossorigin="anonymous"
-        async>
-</script>
     </div>
-</section>
+    <div class="article-item">
+        <h3><a href="进程调度策略.html">进程调度策略</a></h3>
+        <p class="article-excerpt">进程调度的关注点： - 性能：执行完所有任务需要的总时间。 - 公平性：每个任务都期望自己先被执行，尽早完成。 - 响应时间：首次运行时间 - 任务提交时间。 性能、公平性、响应时间是矛盾的，为了达到最好的性能，我们希望cpu不要在不同进程或线程之间切换，这样避免了上下文的切换，一个任务从开始执行到...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">2 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="openssl.html">Openssl</a></h3>
+        <p class="article-excerpt">1. RSA密钥 生成私钥 - ：指定算法为 RSA - ：指定密钥长度为 2048 位（可改为 4096 - ：输出私钥文件路径 生成公钥 - ：输入私钥 - ：导出公钥 - ：输出公钥文件路径 2. ECC密钥 生成对应的ECC私钥 - ：指定椭圆曲线（可换成 , , , 等） - ：生成密钥 ...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">1 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="ssl证书.html">SSL证书</a></h3>
+        <p class="article-excerpt">在密码学和数字证书体系中，一般没有“私钥证书”的说法。主要是公钥证书。公钥证书（通常就简称为数字证书）是一种电子文档，包含以下信息 - 公钥信息 - 持有者身份信息（如姓名、组织等） - 证书颁发机构（CA）的数字签名等 其主要目的是将公钥与特定的实体（如个人、服务器等）绑定，用于在网络通信等场景中...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">16 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="webauthn.html">Webauthn</a></h3>
+        <p class="article-excerpt">在数字时代，密码已成为我们日常生活和在线活动中不可或缺的一部分。尽管互联网已经发展了20多年，许多方面都有了巨大的改进，但只有密码，还是20年前的用法。更准确的说，它的用户体验比 20 年前更差了。 1. 密码的强度现在要求越来越高，一般不能少于8个字符，还要包括特殊符号。 2. 除了密码，通常还有...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">5 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="tech.html">Tech</a></h3>
+        <p class="article-excerpt"></p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">0 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="cpu架构.html">CPU架构</a></h3>
+        <p class="article-excerpt">1. 主频 CPU 主频，即CPU的时钟频率，是衡量 CPU 运算速度的重要指标，以下从其定义、工作原理及与性能的关系等方面进行具体解释。 - 基本定义：CPU 主频表示 CPU 内数字脉冲信号振荡的速度，单位为赫兹（Hz）。通常所说的CPU 主频为2.4GHz、3.6GHz等，意味着CPU内部的时...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">7 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="cpu缓存设计.html">CPU缓存设计</a></h3>
+        <p class="article-excerpt">1. 缓存 Cache Memory也被称为Cache，是存储器子系统的组成部分，存放着程序经常使用的指令和数据，这就是Cache的传统定义。从广义的角度上看，Cache是快设备为了缓解访问慢设备延时的预留的Buffer，从而可以在掩盖访问延时的同时，尽可能地提高数据传输率。 快和慢是一个相对概念，...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">18 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="cpu调度策略.html">CPU调度策略</a></h3>
+        <p class="article-excerpt">1. MLFQ（Multi-Level Feedback Queue） - 系统中存在多个就绪队列，每个队列有不同的优先级，高优先级队列中的进程会优先获得 CPU 执行。 - 进程在队列之间可以移动，根据其行为（如 CPU 占用时间、I/O 操作等）动态调整优先级。 1.1. 规则 1.1.1. 优...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">2 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="blog-online.html">Blog Online</a></h3>
+        <p class="article-excerpt"></p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">0 分钟阅读</span>
+            
+        </div>
+    </div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <nav class="pagination-nav" aria-label="文章列表分页">
+          <div class="pagination-info">
+            第 25 页，共 31 页 (总计 306 篇文章)
+          </div>
+          <div class="pagination-links">
+            <a href="articles/page/24/index.html" class="pagination-prev" rel="prev">上一页</a>
+
+            <div class="pagination-pages">
+              <a href="articles/page/23/index.html" class="pagination-page">23</a><a href="articles/page/24/index.html" class="pagination-page">24</a><a href="articles/page/25/index.html" class="pagination-page active">25</a><a href="articles/page/26/index.html" class="pagination-page">26</a><a href="articles/page/27/index.html" class="pagination-page">27</a>
+            </div>
+
+            <a href="articles/page/26/index.html" class="pagination-next" rel="next">下一页</a>
+          </div>
+        </nav>
+      
             </div>
         </main>
         <footer class="page-footer">

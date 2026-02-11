@@ -205,7 +205,7 @@ class SiteGenerator {
         </div>
       </div>
 
-      <div class="article-list">
+      <div class="article-list" data-per-page="${options.config.postsPerPage}">
         ${publishedArticles.map(article => this.renderArticleListItem(article)).join('')}
       </div>
     `;

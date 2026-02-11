@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
-    <title>Claudemd - Shinerio's Blog</title>
+    <title>文章列表 - 第 4 页 - Shinerio's Blog</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
-    <meta property="og:title" content="Claudemd">
-<meta property="og:description" content="| 类型 | 位置 | 范围 | 版本控制 | 典型用途 | | ------ | ----------------------- | ---- | ----- | ------ | | 全局 | | 所有项目 | 不共享 | 个人编码偏好 | | 项目 | | 当前项目 | 共享给团队 | 团队规...">
-<meta property="og:type" content="article">
-<meta property="article:published_time" content="2026-01-30T15:58:18.000Z">
-<meta property="article:author" content="shinerio">
+    
+          <script type="application/json" id="article-data" style="display:none">
+            [{"id":"MCP概念理解","title":"MCP概念理解","date":"2026-01-03T13:04:29.180Z","tags":[],"readingTime":18,"slug":"mcp概念理解","description":"1. 基本概念 MCP(Model Context Protocol 模型上下文协议) 是一个开放的标准化协议，用于在AI模型和外部数据源、工具之间建立安全、可控的连接。它定义了AI系统如何访问和利用外部上下文信息的规范。MCP就像是AI应用程序的USB-C接口，为AI模型提供了一种标准化的方式来连..."},{"id":"MCP配置","title":"MCP配置","date":"2026-01-03T13:04:29.180Z","tags":[],"readingTime":3,"slug":"mcp配置","description":"1. 基本定义 - 每个MCP服务器都是一个独立json对象，以服务器名称作为key - key在MCP配置文件中以及全局配置文件和项目配置文件中必须是唯一的 - 每个MCP服务器条目对象都必须具有属性 2. local mcp server - （可选）：在执行之前，先将进程的工作目录切换到指定路..."},{"id":"开发与测试","title":"开发与测试","date":"2026-01-03T13:04:29.180Z","tags":[],"readingTime":1,"slug":"开发与测试","description":"1. tools 1.1. stdio 启动命令 inspector调试 mcp config 1.2. SSE 启动命令 inspector调试 mcp config 1.3. streamable http mcp-server仅需修改transport即可 mcp confi需要将修改为，例如..."},{"id":"Prompt","title":"Prompt","date":"2026-01-03T13:04:29.180Z","tags":[],"readingTime":0,"slug":"prompt","description":""},{"id":"概念","title":"概念","date":"2026-01-03T13:04:29.180Z","tags":[],"readingTime":4,"slug":"概念","description":"1. Message类型 System message 在大模型内部是每次加在了用户输入的前面。在 的大模型设计的时候，有三种不同的message 类型，这三者是有明显区别的。 - System Message：对大模型的角色进行定义，并输入一些基础的指令，包括大模型的身份、一些用于提高安全性的指令..."},{"id":"RAG","title":"RAG","date":"2026-01-03T13:04:29.180Z","tags":[],"readingTime":6,"slug":"rag","description":"RAG（Retrieval-Augmented-Generation, 检索增强生成）is a process that helps AI models \"look things up\" before they answer, like accessing my calender or the we..."},{"id":"Vector Database","title":"Vector Database","date":"2026-01-03T13:04:29.180Z","tags":[],"readingTime":2,"slug":"vector-database","description":"Embeddings用数值形式的向量，在高维空间表示数据（通常是文本等非结构化的数据）。传统的关系型数据库并不适合存储和搜索这些向量表示。 向量存储库能够使用相似度算法对相似向量进行索引和快速搜索，使得应用程序能够在给定目标向量的情况下找到相关向量。 例如，在个性化聊天机器人的案例中，用户会向生成式..."},{"id":"AI","title":"AI","date":"2026-01-03T13:04:29.174Z","tags":[],"readingTime":0,"slug":"ai","description":""},{"id":"Agntcy","title":"Agntcy","date":"2025-12-31T13:26:59.000Z","tags":[],"readingTime":7,"slug":"agntcy","description":"1. OASF Open Agentic Schema Framework一个基于OCI(Open Container Initiative)的可扩展数据模型，用于描述agent的属性并确保agent的唯一标识。OASF支持描述A2A代理和MCP服务器，并且可以扩展以支持其他常用格式，例如Copil..."},{"id":"Claude skills","title":"Claude Skills","date":"2025-12-28T13:11:30.000Z","tags":[],"readingTime":6,"slug":"claude-skills","description":"1. 原理 claude skill是一类模块化能力组件，用于拓展 Claude的功能边界。每项技能都封装了： 1. 元数据 2. 指令说明 3. 可选配套资源（脚本、模板） Claude Agent Skills的设计哲学在于模块化与按需加载，旨在解决传统代理系统中常见的上下文冗余、性能衰减以及操..."}]
+          </script>
+          <script src="assets/js/articles-filters.js"></script>
+          <link rel="canonical" href="articles/page/4/index.html"/>
+          <link rel="prev" href="articles/page/3/index.html"/>
+          <link rel="next" href="articles/page/5/index.html"/>
+        
 </head>
-<body class="article-page" id="theme-body">
+<body class="articles-page" id="theme-body">
     <div class="page-wrapper">
         <div class="sidebar-overlay"></div>
         <header class="page-header">
@@ -25,7 +29,7 @@
                             <span class="sidebar-toggle-icon"></span>
                         </button>
                         <a href="index.html" class="nav-link ">Home</a>
-                        <a href="articles.html" class="nav-link ">Articles</a>
+                        <a href="articles.html" class="nav-link active">Articles</a>
                         <a href="search.html" class="nav-link ">Search</a>
                         <a href="todo.html" class="nav-link ">TODO</a>
                     </div>
@@ -40,87 +44,138 @@
         </header>
         <main class="page-main">
             <div class="container">
-                <article>
-    <header>
-        <h1>Claudemd</h1>
-        <time datetime="2026-01-30T15:58:18.000Z">2026年1月30日</time>
-        <div class="tags">
+                
+        <div class="articles-filters">
+          <div class="filter-group">
+            <label for="sort-select">排序方式:</label>
+            <select id="sort-select" class="filter-select">
+              <option value="date-desc">最新发布</option>
+              <option value="date-asc">最早发布</option>
+              <option value="title-asc">标题 A-Z</option>
+              <option value="title-desc">标题 Z-A</option>
+              <option value="readtime-asc">阅读时间 (短至长)</option>
+              <option value="readtime-desc">阅读时间 (长至短)</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="tag-filter">标签筛选:</label>
+            <select id="tag-filter" class="filter-select">
+              <option value="">所有标签</option>
+              <option value="network">#network (14)</option><option value="excalidraw">#excalidraw (8)</option><option value="计算机网络">#计算机网络 (7)</option><option value="linux">#linux (5)</option><option value="nat">#nat (4)</option><option value="bgp">#bgp (2)</option><option value="protocol">#protocol (1)</option><option value="database">#database (1)</option><option value="dcn">#dcn (1)</option><option value="交换机">#交换机 (1)</option><option value="NAT">#NAT (1)</option><option value="thread">#thread (1)</option><option value="网络安全">#网络安全 (1)</option><option value="加密">#加密 (1)</option><option value="obsidian">#obsidian (1)</option><option value="tool">#tool (1)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="article-list">
+          
+    <div class="article-item">
+        <h3><a href="mcp概念理解.html">MCP概念理解</a></h3>
+        <p class="article-excerpt">1. 基本概念 MCP(Model Context Protocol 模型上下文协议) 是一个开放的标准化协议，用于在AI模型和外部数据源、工具之间建立安全、可控的连接。它定义了AI系统如何访问和利用外部上下文信息的规范。MCP就像是AI应用程序的USB-C接口，为AI模型提供了一种标准化的方式来连...</p>
+        <div class="article-meta">
+            <time datetime="2026-01-03T13:04:29.180Z">2026年1月3日</time>
+            <span class="reading-time">18 分钟阅读</span>
             
         </div>
-    </header>
-    <section class="content">
-        <table>
-<thead>
-<tr>
-<th>类型</th>
-<th>位置</th>
-<th>范围</th>
-<th>版本控制</th>
-<th>典型用途</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>全局</strong></td>
-<td><code>~/.claude/CLAUDE.md</code></td>
-<td>所有项目</td>
-<td>不共享</td>
-<td>个人编码偏好</td>
-</tr>
-<tr>
-<td><strong>项目</strong></td>
-<td><code>项目根目录/CLAUDE.md</code></td>
-<td>当前项目</td>
-<td>共享给团队</td>
-<td>团队规范</td>
-</tr>
-<tr>
-<td><strong>本地</strong></td>
-<td><code>项目根目录/CLAUDE.local.md</code></td>
-<td>本地</td>
-<td>不共享</td>
-<td>项目个人偏好</td>
-</tr>
-</tbody></table>
-<pre><code>CLAUDE.md的作用：
-├── 项目目标和愿景
-├── 目录结构说明
-├── 技术栈和依赖
-├── 编码规范和风格
-├── 命令和脚本
-├── 命名约定
-├── 错误处理原则
-└── 团队特定要求
-</code></pre>
-<p>可以使用相对路径、绝对路径，甚至是用户主目录 (<code>~</code>) 的路径来导入文件。</p>
-<pre><code class="language-text"># ./CLAUDE.md (项目记忆)
-
-# 导入团队共享的React最佳实践
-@/path/to/shared/react-best-practices.md
-
-# 导入我个人的项目特定快捷指令
-@~/.claude/my-project-shortcuts.md
-</code></pre>
-<p><strong>技术限制</strong>: 最大支持 5 层递归导入。在 Markdown 的代码块或行内代码中，<code>@import</code> 不会生效。</p>
-<h2>0.1. 添加记忆</h2>
-<p>在会话中输入 <code>/memory</code> 命令，Claude 会在你的系统默认编辑器中打开相关的记忆文件，方便你进行更复杂的编辑、整理和重构。</p>
-
-    </section>
-</article>
-
-
-<section class="comments-section" id="comments">
-    <h2 class="comments-title">评论</h2>
-    <div class="utterances-container">
-        <script src="https://utteranc.es/client.js"
-        repo="shinerio/shinerio.github.io"
-        issue-term="Claudemd"
-        label="blog-comment"
-        theme="preferred-color-scheme"
-        crossorigin="anonymous"
-        async>
-</script>
     </div>
-</section>
+    <div class="article-item">
+        <h3><a href="mcp配置.html">MCP配置</a></h3>
+        <p class="article-excerpt">1. 基本定义 - 每个MCP服务器都是一个独立json对象，以服务器名称作为key - key在MCP配置文件中以及全局配置文件和项目配置文件中必须是唯一的 - 每个MCP服务器条目对象都必须具有属性 2. local mcp server - （可选）：在执行之前，先将进程的工作目录切换到指定路...</p>
+        <div class="article-meta">
+            <time datetime="2026-01-03T13:04:29.180Z">2026年1月3日</time>
+            <span class="reading-time">3 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="开发与测试.html">开发与测试</a></h3>
+        <p class="article-excerpt">1. tools 1.1. stdio 启动命令 inspector调试 mcp config 1.2. SSE 启动命令 inspector调试 mcp config 1.3. streamable http mcp-server仅需修改transport即可 mcp confi需要将修改为，例如...</p>
+        <div class="article-meta">
+            <time datetime="2026-01-03T13:04:29.180Z">2026年1月3日</time>
+            <span class="reading-time">1 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="prompt.html">Prompt</a></h3>
+        <p class="article-excerpt"></p>
+        <div class="article-meta">
+            <time datetime="2026-01-03T13:04:29.180Z">2026年1月3日</time>
+            <span class="reading-time">0 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="概念.html">概念</a></h3>
+        <p class="article-excerpt">1. Message类型 System message 在大模型内部是每次加在了用户输入的前面。在 的大模型设计的时候，有三种不同的message 类型，这三者是有明显区别的。 - System Message：对大模型的角色进行定义，并输入一些基础的指令，包括大模型的身份、一些用于提高安全性的指令...</p>
+        <div class="article-meta">
+            <time datetime="2026-01-03T13:04:29.180Z">2026年1月3日</time>
+            <span class="reading-time">4 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="rag.html">RAG</a></h3>
+        <p class="article-excerpt">RAG（Retrieval-Augmented-Generation, 检索增强生成）is a process that helps AI models "look things up" before they answer, like accessing my calender or the we...</p>
+        <div class="article-meta">
+            <time datetime="2026-01-03T13:04:29.180Z">2026年1月3日</time>
+            <span class="reading-time">6 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="vector-database.html">Vector Database</a></h3>
+        <p class="article-excerpt">Embeddings用数值形式的向量，在高维空间表示数据（通常是文本等非结构化的数据）。传统的关系型数据库并不适合存储和搜索这些向量表示。 向量存储库能够使用相似度算法对相似向量进行索引和快速搜索，使得应用程序能够在给定目标向量的情况下找到相关向量。 例如，在个性化聊天机器人的案例中，用户会向生成式...</p>
+        <div class="article-meta">
+            <time datetime="2026-01-03T13:04:29.180Z">2026年1月3日</time>
+            <span class="reading-time">2 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="ai.html">AI</a></h3>
+        <p class="article-excerpt"></p>
+        <div class="article-meta">
+            <time datetime="2026-01-03T13:04:29.174Z">2026年1月3日</time>
+            <span class="reading-time">0 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="agntcy.html">Agntcy</a></h3>
+        <p class="article-excerpt">1. OASF Open Agentic Schema Framework一个基于OCI(Open Container Initiative)的可扩展数据模型，用于描述agent的属性并确保agent的唯一标识。OASF支持描述A2A代理和MCP服务器，并且可以扩展以支持其他常用格式，例如Copil...</p>
+        <div class="article-meta">
+            <time datetime="2025-12-31T13:26:59.000Z">2025年12月31日</time>
+            <span class="reading-time">7 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="claude-skills.html">Claude Skills</a></h3>
+        <p class="article-excerpt">1. 原理 claude skill是一类模块化能力组件，用于拓展 Claude的功能边界。每项技能都封装了： 1. 元数据 2. 指令说明 3. 可选配套资源（脚本、模板） Claude Agent Skills的设计哲学在于模块化与按需加载，旨在解决传统代理系统中常见的上下文冗余、性能衰减以及操...</p>
+        <div class="article-meta">
+            <time datetime="2025-12-28T13:11:30.000Z">2025年12月28日</time>
+            <span class="reading-time">6 分钟阅读</span>
+            
+        </div>
+    </div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <nav class="pagination-nav" aria-label="文章列表分页">
+          <div class="pagination-info">
+            第 4 页，共 31 页 (总计 306 篇文章)
+          </div>
+          <div class="pagination-links">
+            <a href="articles/page/3/index.html" class="pagination-prev" rel="prev">上一页</a>
+
+            <div class="pagination-pages">
+              <a href="articles/page/2/index.html" class="pagination-page">2</a><a href="articles/page/3/index.html" class="pagination-page">3</a><a href="articles/page/4/index.html" class="pagination-page active">4</a><a href="articles/page/5/index.html" class="pagination-page">5</a><a href="articles/page/6/index.html" class="pagination-page">6</a>
+            </div>
+
+            <a href="articles/page/5/index.html" class="pagination-next" rel="next">下一页</a>
+          </div>
+        </nav>
+      
             </div>
         </main>
         <footer class="page-footer">

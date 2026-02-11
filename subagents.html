@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
-    <title>Claudemd - Shinerio's Blog</title>
+    <title>Subagents - Shinerio's Blog</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
-    <meta property="og:title" content="Claudemd">
-<meta property="og:description" content="| 类型 | 位置 | 范围 | 版本控制 | 典型用途 | | ------ | ----------------------- | ---- | ----- | ------ | | 全局 | | 所有项目 | 不共享 | 个人编码偏好 | | 项目 | | 当前项目 | 共享给团队 | 团队规...">
+    <meta property="og:title" content="Subagents">
+<meta property="og:description" content="1. 子代理是专门处理特定类型任务的 AI 助手，当Claude遇到与子代理描述相匹配的任务时，它会将任务委派给该子代理，由其独立工作并返回结果。 - 每个子代理都在自己的上下文窗口中运行 - 拥有自定义的系统提示词（System Prompt） - 特定的工具访问权限和独立的权限设置。 优势： -...">
 <meta property="og:type" content="article">
-<meta property="article:published_time" content="2026-01-30T15:58:18.000Z">
+<meta property="article:published_time" content="2026-02-11T11:40:40.204Z">
 <meta property="article:author" content="shinerio">
 </head>
 <body class="article-page" id="theme-body">
@@ -42,67 +42,128 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Claudemd</h1>
-        <time datetime="2026-01-30T15:58:18.000Z">2026年1月30日</time>
+        <h1>Subagents</h1>
+        <time datetime="2026-02-11T11:40:40.204Z">2026年2月11日</time>
         <div class="tags">
             
         </div>
     </header>
     <section class="content">
-        <table>
+        <h1>1. <a href="https://code.claude.com/docs/en/sub-agents">Definition</a></h1>
+<p>子代理是专门处理特定类型任务的 AI 助手，当Claude遇到与子代理描述相匹配的任务时，它会将任务委派给该子代理，由其独立工作并返回结果。</p>
+<ul>
+<li>每个子代理都在自己的上下文窗口中运行</li>
+<li>拥有自定义的系统提示词（System Prompt）</li>
+<li>特定的工具访问权限和独立的权限设置。<br><strong>优势：</strong></li>
+<li><strong>保持上下文：</strong> 子agent对话的细节和主对话保持独立。 </li>
+<li><strong>强制约束：</strong> 限制子代理只能使用特定工具。</li>
+<li><strong>跨项目复用：</strong> 通过用户级子代理在不同项目间共用配置。</li>
+<li><strong>专业化行为：</strong> 为特定领域使用专注的系统提示词。</li>
+<li><strong>控制成本：</strong> 将任务路由到更快、更便宜的模型（如 Haiku）。</li>
+</ul>
+<h1>2. 委托方式</h1>
+<p>Claude uses each <strong>subagent’s description</strong> to decide when to delegate tasks. When you create a subagent, write a clear description so Claude knows when to use it.</p>
+<h1>3. 内置子代理</h1>
+<table>
 <thead>
 <tr>
-<th>类型</th>
-<th>位置</th>
-<th>范围</th>
-<th>版本控制</th>
-<th>典型用途</th>
+<th>Agent</th>
+<th>Model</th>
+<th>Tool</th>
+<th>When Claude uses it</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><strong>全局</strong></td>
-<td><code>~/.claude/CLAUDE.md</code></td>
-<td>所有项目</td>
-<td>不共享</td>
-<td>个人编码偏好</td>
+<td>Plan</td>
+<td>Inherits</td>
+<td>Read-only tools</td>
+<td>Plan mode: Codebase research for planning</td>
 </tr>
 <tr>
-<td><strong>项目</strong></td>
-<td><code>项目根目录/CLAUDE.md</code></td>
-<td>当前项目</td>
-<td>共享给团队</td>
-<td>团队规范</td>
+<td>Explore</td>
+<td>Haiku</td>
+<td>Read-only tools</td>
+<td>File discovery, code search, codebase exploration</td>
 </tr>
 <tr>
-<td><strong>本地</strong></td>
-<td><code>项目根目录/CLAUDE.local.md</code></td>
-<td>本地</td>
-<td>不共享</td>
-<td>项目个人偏好</td>
+<td>General-purpose</td>
+<td>Inherits</td>
+<td>All tools</td>
+<td>Complex research, multi-step operations, code modifications</td>
+</tr>
+<tr>
+<td>Bash</td>
+<td>Inherits</td>
+<td></td>
+<td>Running terminal commands in a separate context</td>
+</tr>
+<tr>
+<td>statusline-setup</td>
+<td>Sonnet</td>
+<td></td>
+<td>When you run <code>/statusline</code> to configure your status line</td>
+</tr>
+<tr>
+<td>Claude Code Guide</td>
+<td>Haiku</td>
+<td></td>
+<td>When you ask questions about Claude Code features</td>
 </tr>
 </tbody></table>
-<pre><code>CLAUDE.md的作用：
-├── 项目目标和愿景
-├── 目录结构说明
-├── 技术栈和依赖
-├── 编码规范和风格
-├── 命令和脚本
-├── 命名约定
-├── 错误处理原则
-└── 团队特定要求
+<h1>4. 自定义agents</h1>
+<h2>配置文件示例<br>```markdown</h2>
+<h2>name: test-case-executor<br>description: &quot;Use this agent when you need to execute test cases and analyze failures without making any modifications to the code. This agent should be invoked when test results show failures and you need to understand why tests are failing. Examples of usage include:\n\n<example>\nContext: The user wants to run existing tests to verify functionality\nuser: &quot;Please execute the test suite and tell me which tests fail and why&quot;\nassistant: &quot;I&#39;ll use the test-case-executor agent to run the tests and analyze any failures&quot;\n</example>\n\n<example>\nContext: Test execution shows failing tests that need analysis\nuser: &quot;The build failed with test errors, can you help me understand why?&quot;\nassistant: &quot;Let me use the test-case-executor agent to run the tests and analyze the failure reasons&quot;\n</example>&quot;<br>tools: Glob, Grep, Read, WebFetch, WebSearch, ListMcpResourcesTool, ReadMcpResourceTool<br>model: inherit<br>color: green</h2>
+<p>You are an expert test case execution and analysis specialist. Your role is to execute test cases and provide detailed analysis of why tests fail, without making any modifications to the code.</p>
+<p>Your responsibilities:</p>
+<ul>
+<li>Execute the provided test cases or test suite in the current environment</li>
+<li>Carefully observe and record all test results, including passed, failed, and skipped tests</li>
+<li>For each failed test, provide a comprehensive analysis of the root cause</li>
+<li>Identify specific issues such as assertion failures, exceptions, incorrect values, performance problems, or missing dependencies</li>
+<li>Explain the technical reasons behind each failure with reference to the expected vs actual behavior</li>
+<li>Highlight any environmental factors that might contribute to test failures</li>
+<li>Provide suggestions for potential fixes while emphasizing that you cannot implement them yourself</li>
+<li>If tests pass successfully, confirm that execution completed without issues</li>
+</ul>
+<p>Constraints:</p>
+<ul>
+<li>You are strictly prohibited from modifying any code, files, or configurations</li>
+<li>Only perform analysis and reporting functions</li>
+<li>Do not attempt to fix, update, or change any implementation</li>
+<li>Focus solely on providing insights about test execution and failure analysis</li>
+</ul>
+<p>Output Format:</p>
+<ul>
+<li>Summary of total tests executed, passed, failed, and skipped</li>
+<li>Detailed breakdown of each failed test with specific failure causes</li>
+<li>Technical explanation of why each failure occurred</li>
+<li>Relevant stack traces or error messages that explain the failures</li>
+<li>Any patterns or commonalities among failing tests</li>
+</ul>
+<pre><code>
+## 4.1. 配置文件格式**
+子代理定义在带有 YAML 前注（Frontmatter）的 Markdown 文件中：
+```Markdown
+name: test-case-executor
+description: &quot;Use this agent when you need to execute test cases and analyze failures without making any modifications to the code. This agent should be invoked when test results show failures and you need to understand why tests are failing. Examples of usage include:\\n\\n&lt;example&gt;\\nContext: The user wants to run existing tests to verify functionality\\nuser: \&quot;Please execute the test suite and tell me which tests fail and why\&quot;\\nassistant: \&quot;I&#39;ll use the test-case-executor agent to run the tests and analyze any failures\&quot;\\n&lt;/example&gt;\\n\\n&lt;example&gt;\\nContext: Test execution shows failing tests that need analysis\\nuser: \&quot;The build failed with test errors, can you help me understand why?\&quot;\\nassistant: \&quot;Let me use the test-case-executor agent to run the tests and analyze the failure reasons\&quot;\\n&lt;/example&gt;&quot;
+tools: Glob, Grep, Read, WebFetch, WebSearch, ListMcpResourcesTool, ReadMcpResourceTool
+model: inherit
+color: green
 </code></pre>
-<p>可以使用相对路径、绝对路径，甚至是用户主目录 (<code>~</code>) 的路径来导入文件。</p>
-<pre><code class="language-text"># ./CLAUDE.md (项目记忆)
-
-# 导入团队共享的React最佳实践
-@/path/to/shared/react-best-practices.md
-
-# 导入我个人的项目特定快捷指令
-@~/.claude/my-project-shortcuts.md
-</code></pre>
-<p><strong>技术限制</strong>: 最大支持 5 层递归导入。在 Markdown 的代码块或行内代码中，<code>@import</code> 不会生效。</p>
-<h2>0.1. 添加记忆</h2>
-<p>在会话中输入 <code>/memory</code> 命令，Claude 会在你的系统默认编辑器中打开相关的记忆文件，方便你进行更复杂的编辑、整理和重构。</p>
+<p><strong>支持的字段：</strong></p>
+<ul>
+<li><code>name</code>: 唯一标识符。</li>
+<li><code>description</code>: <strong>关键字段</strong>，Claude 根据此描述决定何时委派任务。</li>
+<li><code>tools</code> / <code>disallowedTools</code>: 允许或禁止使用的工具清单。</li>
+<li><code>model</code>: 指定模型（sonnet, opus, haiku 或 inherit）。</li>
+<li><code>permissionMode</code>: 权限模式（如 <code>dontAsk</code> 自动同意，或 <code>plan</code> 仅限计划）。</li>
+<li><code>memory</code>: 启用跨会话的持久记忆。</li>
+</ul>
+<h2>4.2. 前台与后台运行**</h2>
+<ul>
+<li><strong>后台运行：</strong> 子代理可以在后台静默工作，不打断你的当前对话。Claude 会自动决定何时后台运行，你也可以要求 &quot;run this in the background&quot; 或按 <code>Ctrl+B</code>。</li>
+<li>注意：后台子代理如果需要额外权限，工具调用会失败，你可以在前台恢复（Resume）它以进行交互。<br><img src="https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/20260211203944383.png" alt="image.png"></li>
+</ul>
 
     </section>
 </article>
@@ -113,7 +174,7 @@
     <div class="utterances-container">
         <script src="https://utteranc.es/client.js"
         repo="shinerio/shinerio.github.io"
-        issue-term="Claudemd"
+        issue-term="Subagents"
         label="blog-comment"
         theme="preferred-color-scheme"
         crossorigin="anonymous"

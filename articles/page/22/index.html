@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
-    <title>Claudemd - Shinerio's Blog</title>
+    <title>文章列表 - 第 22 页 - Shinerio's Blog</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
-    <meta property="og:title" content="Claudemd">
-<meta property="og:description" content="| 类型 | 位置 | 范围 | 版本控制 | 典型用途 | | ------ | ----------------------- | ---- | ----- | ------ | | 全局 | | 所有项目 | 不共享 | 个人编码偏好 | | 项目 | | 当前项目 | 共享给团队 | 团队规...">
-<meta property="og:type" content="article">
-<meta property="article:published_time" content="2026-01-30T15:58:18.000Z">
-<meta property="article:author" content="shinerio">
+    
+          <script type="application/json" id="article-data" style="display:none">
+            [{"id":"链路本地地址","title":"链路本地地址","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":6,"slug":"链路本地地址","description":"链路本地地址（Link-local Address）是一类特殊的IP地址，仅用于在网段内、同一广播域内的主机相互通信使用，这类主机可认为是不需要外部互联网服务的。其中IPv4的链路本地地址定义在169.254.0.0/16范围内，IPv6定义在fe80::/10范围。链路本地地址在ipv4和ipv6..."},{"id":"BGP","title":"BGP","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":0,"slug":"bgp","description":""},{"id":"BGP基础概念","title":"BGP基础概念","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":11,"slug":"bgp基础概念","description":"1. AS - OSPF、IS-IS等IGP路由协议在组织机构网络内部广泛应用，随着网络规模扩大，网络中路由数量不断增长，IGP已无法管理大规模网络，AS的概念由此诞生。 - AS指的是在同一个组织管理下，使用统一选路策略的设备集合。 > [!question] 不同的AS之间需要进行通信，在AS之..."},{"id":"BGP邻居建立","title":"BGP邻居建立","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":4,"slug":"bgp邻居建立","description":"- 先启动BGP的一端先发起TCP连接，R1先启动BGP，R1使用随机端口号向R2的179端口发起TCP连接，完成TCP连接的建立。 - 三次握手建立完成之后，R1、R2之间相互发送Open报文，携带参数用于对等体建立 - 参数协商正常之后双方相互发送Keepalive报文，收到对端发送的Keepa..."},{"id":"路由协议","title":"路由协议","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":0,"slug":"路由协议","description":""},{"id":"CPU","title":"CPU","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":4,"slug":"cpu","description":"1. 基本概念 - Socket: 指的是主板上用于安装物理CPU芯片的接口。每一个这样的接口能够插入一个物理的CPU处理器，一台计算机可以配备多个这样的插槽，进而安装多个物理CPU，以增强系统的计算能力和性能。一个物理CPU可以有多个物理CPU核。 - 物理核(): 可以看的到的，真实的cpu核，..."},{"id":"file system","title":"File System","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":0,"slug":"file-system","description":""},{"id":"常见文件目录","title":"常见文件目录","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":8,"slug":"常见文件目录","description":"各大发行版基本一致，遵循的是通用的FHS（Filesystem Hierarchy Standard）约定，（个别子目录如 lib64、multiarch 名称可能略有不同） 1. 开发者部署模板 用一个假想应用myapp为例，展示其在Linux系统中应该如何分布文件和目录。 🏗️ myapp 部..."},{"id":"Linux","title":"Linux","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":0,"slug":"linux","description":""},{"id":"bridge","title":"Bridge","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":5,"slug":"bridge","description":"1. 常见命令 2. 泛洪 - 泛洪机制：桥接设备会将该数据包从除接收端口之外的所有其他端口发送出去。这样做的目的是确保目的设备无论连接到哪个端口，都有机会接收到这个数据包。例如，在一个包含多个主机的局域网中，如果主机 A 向一个桥接设备发送了一个数据包，而该桥接设备的 FDB 表中没有目的主机的 ..."}]
+          </script>
+          <script src="assets/js/articles-filters.js"></script>
+          <link rel="canonical" href="articles/page/22/index.html"/>
+          <link rel="prev" href="articles/page/21/index.html"/>
+          <link rel="next" href="articles/page/23/index.html"/>
+        
 </head>
-<body class="article-page" id="theme-body">
+<body class="articles-page" id="theme-body">
     <div class="page-wrapper">
         <div class="sidebar-overlay"></div>
         <header class="page-header">
@@ -25,7 +29,7 @@
                             <span class="sidebar-toggle-icon"></span>
                         </button>
                         <a href="index.html" class="nav-link ">Home</a>
-                        <a href="articles.html" class="nav-link ">Articles</a>
+                        <a href="articles.html" class="nav-link active">Articles</a>
                         <a href="search.html" class="nav-link ">Search</a>
                         <a href="todo.html" class="nav-link ">TODO</a>
                     </div>
@@ -40,87 +44,138 @@
         </header>
         <main class="page-main">
             <div class="container">
-                <article>
-    <header>
-        <h1>Claudemd</h1>
-        <time datetime="2026-01-30T15:58:18.000Z">2026年1月30日</time>
-        <div class="tags">
+                
+        <div class="articles-filters">
+          <div class="filter-group">
+            <label for="sort-select">排序方式:</label>
+            <select id="sort-select" class="filter-select">
+              <option value="date-desc">最新发布</option>
+              <option value="date-asc">最早发布</option>
+              <option value="title-asc">标题 A-Z</option>
+              <option value="title-desc">标题 Z-A</option>
+              <option value="readtime-asc">阅读时间 (短至长)</option>
+              <option value="readtime-desc">阅读时间 (长至短)</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="tag-filter">标签筛选:</label>
+            <select id="tag-filter" class="filter-select">
+              <option value="">所有标签</option>
+              <option value="network">#network (14)</option><option value="excalidraw">#excalidraw (8)</option><option value="计算机网络">#计算机网络 (7)</option><option value="linux">#linux (5)</option><option value="nat">#nat (4)</option><option value="bgp">#bgp (2)</option><option value="protocol">#protocol (1)</option><option value="database">#database (1)</option><option value="dcn">#dcn (1)</option><option value="交换机">#交换机 (1)</option><option value="NAT">#NAT (1)</option><option value="thread">#thread (1)</option><option value="网络安全">#网络安全 (1)</option><option value="加密">#加密 (1)</option><option value="obsidian">#obsidian (1)</option><option value="tool">#tool (1)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="article-list">
+          
+    <div class="article-item">
+        <h3><a href="链路本地地址.html">链路本地地址</a></h3>
+        <p class="article-excerpt">链路本地地址（Link-local Address）是一类特殊的IP地址，仅用于在网段内、同一广播域内的主机相互通信使用，这类主机可认为是不需要外部互联网服务的。其中IPv4的链路本地地址定义在169.254.0.0/16范围内，IPv6定义在fe80::/10范围。链路本地地址在ipv4和ipv6...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">6 分钟阅读</span>
             
         </div>
-    </header>
-    <section class="content">
-        <table>
-<thead>
-<tr>
-<th>类型</th>
-<th>位置</th>
-<th>范围</th>
-<th>版本控制</th>
-<th>典型用途</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>全局</strong></td>
-<td><code>~/.claude/CLAUDE.md</code></td>
-<td>所有项目</td>
-<td>不共享</td>
-<td>个人编码偏好</td>
-</tr>
-<tr>
-<td><strong>项目</strong></td>
-<td><code>项目根目录/CLAUDE.md</code></td>
-<td>当前项目</td>
-<td>共享给团队</td>
-<td>团队规范</td>
-</tr>
-<tr>
-<td><strong>本地</strong></td>
-<td><code>项目根目录/CLAUDE.local.md</code></td>
-<td>本地</td>
-<td>不共享</td>
-<td>项目个人偏好</td>
-</tr>
-</tbody></table>
-<pre><code>CLAUDE.md的作用：
-├── 项目目标和愿景
-├── 目录结构说明
-├── 技术栈和依赖
-├── 编码规范和风格
-├── 命令和脚本
-├── 命名约定
-├── 错误处理原则
-└── 团队特定要求
-</code></pre>
-<p>可以使用相对路径、绝对路径，甚至是用户主目录 (<code>~</code>) 的路径来导入文件。</p>
-<pre><code class="language-text"># ./CLAUDE.md (项目记忆)
-
-# 导入团队共享的React最佳实践
-@/path/to/shared/react-best-practices.md
-
-# 导入我个人的项目特定快捷指令
-@~/.claude/my-project-shortcuts.md
-</code></pre>
-<p><strong>技术限制</strong>: 最大支持 5 层递归导入。在 Markdown 的代码块或行内代码中，<code>@import</code> 不会生效。</p>
-<h2>0.1. 添加记忆</h2>
-<p>在会话中输入 <code>/memory</code> 命令，Claude 会在你的系统默认编辑器中打开相关的记忆文件，方便你进行更复杂的编辑、整理和重构。</p>
-
-    </section>
-</article>
-
-
-<section class="comments-section" id="comments">
-    <h2 class="comments-title">评论</h2>
-    <div class="utterances-container">
-        <script src="https://utteranc.es/client.js"
-        repo="shinerio/shinerio.github.io"
-        issue-term="Claudemd"
-        label="blog-comment"
-        theme="preferred-color-scheme"
-        crossorigin="anonymous"
-        async>
-</script>
     </div>
-</section>
+    <div class="article-item">
+        <h3><a href="bgp.html">BGP</a></h3>
+        <p class="article-excerpt"></p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">0 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="bgp基础概念.html">BGP基础概念</a></h3>
+        <p class="article-excerpt">1. AS - OSPF、IS-IS等IGP路由协议在组织机构网络内部广泛应用，随着网络规模扩大，网络中路由数量不断增长，IGP已无法管理大规模网络，AS的概念由此诞生。 - AS指的是在同一个组织管理下，使用统一选路策略的设备集合。 > [!question] 不同的AS之间需要进行通信，在AS之...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">11 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="bgp邻居建立.html">BGP邻居建立</a></h3>
+        <p class="article-excerpt">- 先启动BGP的一端先发起TCP连接，R1先启动BGP，R1使用随机端口号向R2的179端口发起TCP连接，完成TCP连接的建立。 - 三次握手建立完成之后，R1、R2之间相互发送Open报文，携带参数用于对等体建立 - 参数协商正常之后双方相互发送Keepalive报文，收到对端发送的Keepa...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">4 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="路由协议.html">路由协议</a></h3>
+        <p class="article-excerpt"></p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">0 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="cpu.html">CPU</a></h3>
+        <p class="article-excerpt">1. 基本概念 - Socket: 指的是主板上用于安装物理CPU芯片的接口。每一个这样的接口能够插入一个物理的CPU处理器，一台计算机可以配备多个这样的插槽，进而安装多个物理CPU，以增强系统的计算能力和性能。一个物理CPU可以有多个物理CPU核。 - 物理核(): 可以看的到的，真实的cpu核，...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">4 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="file-system.html">File System</a></h3>
+        <p class="article-excerpt"></p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">0 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="常见文件目录.html">常见文件目录</a></h3>
+        <p class="article-excerpt">各大发行版基本一致，遵循的是通用的FHS（Filesystem Hierarchy Standard）约定，（个别子目录如 lib64、multiarch 名称可能略有不同） 1. 开发者部署模板 用一个假想应用myapp为例，展示其在Linux系统中应该如何分布文件和目录。 🏗️ myapp 部...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">8 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="linux.html">Linux</a></h3>
+        <p class="article-excerpt"></p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">0 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="bridge.html">Bridge</a></h3>
+        <p class="article-excerpt">1. 常见命令 2. 泛洪 - 泛洪机制：桥接设备会将该数据包从除接收端口之外的所有其他端口发送出去。这样做的目的是确保目的设备无论连接到哪个端口，都有机会接收到这个数据包。例如，在一个包含多个主机的局域网中，如果主机 A 向一个桥接设备发送了一个数据包，而该桥接设备的 FDB 表中没有目的主机的 ...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">5 分钟阅读</span>
+            
+        </div>
+    </div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <nav class="pagination-nav" aria-label="文章列表分页">
+          <div class="pagination-info">
+            第 22 页，共 31 页 (总计 306 篇文章)
+          </div>
+          <div class="pagination-links">
+            <a href="articles/page/21/index.html" class="pagination-prev" rel="prev">上一页</a>
+
+            <div class="pagination-pages">
+              <a href="articles/page/20/index.html" class="pagination-page">20</a><a href="articles/page/21/index.html" class="pagination-page">21</a><a href="articles/page/22/index.html" class="pagination-page active">22</a><a href="articles/page/23/index.html" class="pagination-page">23</a><a href="articles/page/24/index.html" class="pagination-page">24</a>
+            </div>
+
+            <a href="articles/page/23/index.html" class="pagination-next" rel="next">下一页</a>
+          </div>
+        </nav>
+      
             </div>
         </main>
         <footer class="page-footer">

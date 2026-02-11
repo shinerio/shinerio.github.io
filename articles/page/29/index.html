@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
-    <title>Claudemd - Shinerio's Blog</title>
+    <title>文章列表 - 第 29 页 - Shinerio's Blog</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
-    <meta property="og:title" content="Claudemd">
-<meta property="og:description" content="| 类型 | 位置 | 范围 | 版本控制 | 典型用途 | | ------ | ----------------------- | ---- | ----- | ------ | | 全局 | | 所有项目 | 不共享 | 个人编码偏好 | | 项目 | | 当前项目 | 共享给团队 | 团队规...">
-<meta property="og:type" content="article">
-<meta property="article:published_time" content="2026-01-30T15:58:18.000Z">
-<meta property="article:author" content="shinerio">
+    
+          <script type="application/json" id="article-data" style="display:none">
+            [{"id":"交换机选型","title":"交换机选型要点","date":"2025-02-20T00:00:00.000Z","tags":["交换机"],"readingTime":8,"slug":"交换机选型","description":"交换机选型"},{"id":"clos架构","title":"clos架构","date":"2025-02-19T00:00:00.000Z","tags":["dcn","network"],"readingTime":4,"slug":"clos架构","description":"CLOS网络的核心思想是：用多个小规模、低成本的单元构建复杂，大规模的网络。简单的CLOS网络是一个三级互连架构，包含了输入级，中间级，输出级。下图中的矩形都是规模小得多的转发单元，相应的成本也很低。简单来说，CLOS就是一种多级交换架构，在输入输出增长的情况下，增加中间交换单元的数量，而不是每个交..."},{"id":"(三)NAT分片报文","title":"NAT分片报文","date":"2023-03-12T00:00:00.000Z","tags":["network","nat"],"readingTime":5,"slug":"三nat分片报文","description":"前文我们聊到，在NAT地址转换中，NAT除了对IP地址转换外，还使用到TCP或UDP报文的端口号、ICMP报文的ICMP头中的identifier字段信息。当一个IP分片报文和TCP分段报文 1|IP报文被分成若干片之后，这些信息只有首片报文会携带，后续分片报文依靠报文ID、分片标志位、分片偏移量依..."},{"id":"(四)NAT之ICMP","title":"NAT之ICMP","date":"2023-02-19T00:00:00.000Z","tags":["network","nat"],"readingTime":5,"slug":"四nat之icmp","description":"报文没有类似于或的端口信息，而正常NAT为了内网的安全性和IP地址的高利用率，一般都使用了五元组来匹配NAT会话。为了对ICMP的请求报文进行NAT映射，又要确保网络的安全性，只允许合法的ICMP响应报文进入内网，就必须对其进行特殊的处理。 1. ICMP请求和应答报文 ICMP的request和r..."},{"id":"(二)NAT会话","title":"NAT会话","date":"2023-02-10T00:00:00.000Z","tags":["nat","network"],"readingTime":14,"slug":"二nat会话","description":"我们知道传输层的任意一条流都是通过两个建立的，由组成，因此一条流可以用五元组表示。这个五元组中的任意一个元素都不能改变，否则就是另外一条流了。对于服务端来说，和中任意一个变了，就意味着一个新的接入连接；而对于客户端来说，和中任意一个发生变化，访问的就是一个新的服务，比如通常是一个服务，是一个数据库的..."},{"id":"Thrift框架","title":"Thrift协议","date":"2023-01-25T00:00:00.000Z","tags":["protocol","network"],"readingTime":12,"slug":"thrift框架","description":"是一种轻量化、语言无关的RPC框架。主要包含三大部分：代码生成、序列化框架、RPC框架。 Thrift网络协议栈 采用的是模型，网络协议栈从下到上分别为：、、、。 Transport 传输层为网络提供了一个简单的抽象，定义了具体的网络传输协议。其本质是一个提供了通过各种协议进行通信的框架，支持包括和..."},{"id":"shell编程","title":"shell编程","date":"2023-01-24T00:00:00.000Z","tags":["linux"],"readingTime":12,"slug":"shell编程","description":"本文主要介绍shell编程的基本语法以及实际应用中的常见命令。 1. 注释 1.1. 单行注释 1.2. 多行注释 多行注释也可替换成或 2. 变量 2.1. 变量定义 使用的形式，VALUE如果是字符串的话，可以使用单引号、双引号或者不加引号。单引号内的任何字符都会原样输出，不能进行转义，单引号内..."},{"id":"netstat命令","title":"netstat命令","date":"2023-01-24T00:00:00.000Z","tags":["linux"],"readingTime":2,"slug":"netstat命令","description":"是基于Netstat这个命令行工具的指令，它可以用来查询系统上的网络套接字连接情况，包括,以及。另外它还能列出路由表，接口状态和多播成员等信息。 1. 参数选项 | 参数 | 作用 | | | --- | -----------------------------------------------..."},{"id":"系统信息查看命令汇总","title":"系统信息查看命令汇总","date":"2023-01-24T00:00:00.000Z","tags":["linux"],"readingTime":2,"slug":"系统信息查看命令汇总","description":"在系统下经常要查看各种信息，需要使用到各种命令，全部背下来也是一项不小的工作量。每次临时找也比较浪费时间，这里汇总下常用的命令。 1. 系统 1.1. 查看linux内核版本 文件系统不是普通的文件系统，而是系统内核的映像。也就是说，该目录中的文件是存放在系统内存之中的，它以文件系统的方式为访问系统..."},{"id":"数据库隔离级别","title":"数据库隔离级别","date":"2023-01-23T00:00:00.000Z","tags":["database"],"readingTime":8,"slug":"数据库隔离级别","description":"本文主要目的是阐明数据库的四种隔离级别以及在mysql下实现隔离的原理。 1. 隔离级别 数据库事务隔离级别从低到高分别是：read uncommitted、read committed、retpeatable read、serializable，依次解决了数据库脏读、不可重复读、幻读问题。 - 脏..."}]
+          </script>
+          <script src="assets/js/articles-filters.js"></script>
+          <link rel="canonical" href="articles/page/29/index.html"/>
+          <link rel="prev" href="articles/page/28/index.html"/>
+          <link rel="next" href="articles/page/30/index.html"/>
+        
 </head>
-<body class="article-page" id="theme-body">
+<body class="articles-page" id="theme-body">
     <div class="page-wrapper">
         <div class="sidebar-overlay"></div>
         <header class="page-header">
@@ -25,7 +29,7 @@
                             <span class="sidebar-toggle-icon"></span>
                         </button>
                         <a href="index.html" class="nav-link ">Home</a>
-                        <a href="articles.html" class="nav-link ">Articles</a>
+                        <a href="articles.html" class="nav-link active">Articles</a>
                         <a href="search.html" class="nav-link ">Search</a>
                         <a href="todo.html" class="nav-link ">TODO</a>
                     </div>
@@ -40,87 +44,138 @@
         </header>
         <main class="page-main">
             <div class="container">
-                <article>
-    <header>
-        <h1>Claudemd</h1>
-        <time datetime="2026-01-30T15:58:18.000Z">2026年1月30日</time>
-        <div class="tags">
-            
+                
+        <div class="articles-filters">
+          <div class="filter-group">
+            <label for="sort-select">排序方式:</label>
+            <select id="sort-select" class="filter-select">
+              <option value="date-desc">最新发布</option>
+              <option value="date-asc">最早发布</option>
+              <option value="title-asc">标题 A-Z</option>
+              <option value="title-desc">标题 Z-A</option>
+              <option value="readtime-asc">阅读时间 (短至长)</option>
+              <option value="readtime-desc">阅读时间 (长至短)</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="tag-filter">标签筛选:</label>
+            <select id="tag-filter" class="filter-select">
+              <option value="">所有标签</option>
+              <option value="network">#network (14)</option><option value="excalidraw">#excalidraw (8)</option><option value="计算机网络">#计算机网络 (7)</option><option value="linux">#linux (5)</option><option value="nat">#nat (4)</option><option value="bgp">#bgp (2)</option><option value="protocol">#protocol (1)</option><option value="database">#database (1)</option><option value="dcn">#dcn (1)</option><option value="交换机">#交换机 (1)</option><option value="NAT">#NAT (1)</option><option value="thread">#thread (1)</option><option value="网络安全">#网络安全 (1)</option><option value="加密">#加密 (1)</option><option value="obsidian">#obsidian (1)</option><option value="tool">#tool (1)</option>
+            </select>
+          </div>
         </div>
-    </header>
-    <section class="content">
-        <table>
-<thead>
-<tr>
-<th>类型</th>
-<th>位置</th>
-<th>范围</th>
-<th>版本控制</th>
-<th>典型用途</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>全局</strong></td>
-<td><code>~/.claude/CLAUDE.md</code></td>
-<td>所有项目</td>
-<td>不共享</td>
-<td>个人编码偏好</td>
-</tr>
-<tr>
-<td><strong>项目</strong></td>
-<td><code>项目根目录/CLAUDE.md</code></td>
-<td>当前项目</td>
-<td>共享给团队</td>
-<td>团队规范</td>
-</tr>
-<tr>
-<td><strong>本地</strong></td>
-<td><code>项目根目录/CLAUDE.local.md</code></td>
-<td>本地</td>
-<td>不共享</td>
-<td>项目个人偏好</td>
-</tr>
-</tbody></table>
-<pre><code>CLAUDE.md的作用：
-├── 项目目标和愿景
-├── 目录结构说明
-├── 技术栈和依赖
-├── 编码规范和风格
-├── 命令和脚本
-├── 命名约定
-├── 错误处理原则
-└── 团队特定要求
-</code></pre>
-<p>可以使用相对路径、绝对路径，甚至是用户主目录 (<code>~</code>) 的路径来导入文件。</p>
-<pre><code class="language-text"># ./CLAUDE.md (项目记忆)
 
-# 导入团队共享的React最佳实践
-@/path/to/shared/react-best-practices.md
-
-# 导入我个人的项目特定快捷指令
-@~/.claude/my-project-shortcuts.md
-</code></pre>
-<p><strong>技术限制</strong>: 最大支持 5 层递归导入。在 Markdown 的代码块或行内代码中，<code>@import</code> 不会生效。</p>
-<h2>0.1. 添加记忆</h2>
-<p>在会话中输入 <code>/memory</code> 命令，Claude 会在你的系统默认编辑器中打开相关的记忆文件，方便你进行更复杂的编辑、整理和重构。</p>
-
-    </section>
-</article>
-
-
-<section class="comments-section" id="comments">
-    <h2 class="comments-title">评论</h2>
-    <div class="utterances-container">
-        <script src="https://utteranc.es/client.js"
-        repo="shinerio/shinerio.github.io"
-        issue-term="Claudemd"
-        label="blog-comment"
-        theme="preferred-color-scheme"
-        crossorigin="anonymous"
-        async>
-</script>
+        <div class="article-list">
+          
+    <div class="article-item">
+        <h3><a href="交换机选型.html">交换机选型要点</a></h3>
+        <p class="article-excerpt">交换机选型</p>
+        <div class="article-meta">
+            <time datetime="2025-02-20T00:00:00.000Z">2025年2月20日</time>
+            <span class="reading-time">8 分钟阅读</span>
+            <div class="tags"><span class="tag">#交换机</span></div>
+        </div>
     </div>
-</section>
+    <div class="article-item">
+        <h3><a href="clos架构.html">clos架构</a></h3>
+        <p class="article-excerpt">CLOS网络的核心思想是：用多个小规模、低成本的单元构建复杂，大规模的网络。简单的CLOS网络是一个三级互连架构，包含了输入级，中间级，输出级。下图中的矩形都是规模小得多的转发单元，相应的成本也很低。简单来说，CLOS就是一种多级交换架构，在输入输出增长的情况下，增加中间交换单元的数量，而不是每个交...</p>
+        <div class="article-meta">
+            <time datetime="2025-02-19T00:00:00.000Z">2025年2月19日</time>
+            <span class="reading-time">4 分钟阅读</span>
+            <div class="tags"><span class="tag">#dcn</span><span class="tag">#network</span></div>
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="三nat分片报文.html">NAT分片报文</a></h3>
+        <p class="article-excerpt">前文我们聊到，在NAT地址转换中，NAT除了对IP地址转换外，还使用到TCP或UDP报文的端口号、ICMP报文的ICMP头中的identifier字段信息。当一个IP分片报文和TCP分段报文 1|IP报文被分成若干片之后，这些信息只有首片报文会携带，后续分片报文依靠报文ID、分片标志位、分片偏移量依...</p>
+        <div class="article-meta">
+            <time datetime="2023-03-12T00:00:00.000Z">2023年3月12日</time>
+            <span class="reading-time">5 分钟阅读</span>
+            <div class="tags"><span class="tag">#network</span><span class="tag">#nat</span></div>
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="四nat之icmp.html">NAT之ICMP</a></h3>
+        <p class="article-excerpt">报文没有类似于或的端口信息，而正常NAT为了内网的安全性和IP地址的高利用率，一般都使用了五元组来匹配NAT会话。为了对ICMP的请求报文进行NAT映射，又要确保网络的安全性，只允许合法的ICMP响应报文进入内网，就必须对其进行特殊的处理。 1. ICMP请求和应答报文 ICMP的request和r...</p>
+        <div class="article-meta">
+            <time datetime="2023-02-19T00:00:00.000Z">2023年2月19日</time>
+            <span class="reading-time">5 分钟阅读</span>
+            <div class="tags"><span class="tag">#network</span><span class="tag">#nat</span></div>
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="二nat会话.html">NAT会话</a></h3>
+        <p class="article-excerpt">我们知道传输层的任意一条流都是通过两个建立的，由组成，因此一条流可以用五元组表示。这个五元组中的任意一个元素都不能改变，否则就是另外一条流了。对于服务端来说，和中任意一个变了，就意味着一个新的接入连接；而对于客户端来说，和中任意一个发生变化，访问的就是一个新的服务，比如通常是一个服务，是一个数据库的...</p>
+        <div class="article-meta">
+            <time datetime="2023-02-10T00:00:00.000Z">2023年2月10日</time>
+            <span class="reading-time">14 分钟阅读</span>
+            <div class="tags"><span class="tag">#nat</span><span class="tag">#network</span></div>
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="thrift框架.html">Thrift协议</a></h3>
+        <p class="article-excerpt">是一种轻量化、语言无关的RPC框架。主要包含三大部分：代码生成、序列化框架、RPC框架。 Thrift网络协议栈 采用的是模型，网络协议栈从下到上分别为：、、、。 Transport 传输层为网络提供了一个简单的抽象，定义了具体的网络传输协议。其本质是一个提供了通过各种协议进行通信的框架，支持包括和...</p>
+        <div class="article-meta">
+            <time datetime="2023-01-25T00:00:00.000Z">2023年1月25日</time>
+            <span class="reading-time">12 分钟阅读</span>
+            <div class="tags"><span class="tag">#protocol</span><span class="tag">#network</span></div>
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="shell编程.html">shell编程</a></h3>
+        <p class="article-excerpt">本文主要介绍shell编程的基本语法以及实际应用中的常见命令。 1. 注释 1.1. 单行注释 1.2. 多行注释 多行注释也可替换成或 2. 变量 2.1. 变量定义 使用的形式，VALUE如果是字符串的话，可以使用单引号、双引号或者不加引号。单引号内的任何字符都会原样输出，不能进行转义，单引号内...</p>
+        <div class="article-meta">
+            <time datetime="2023-01-24T00:00:00.000Z">2023年1月24日</time>
+            <span class="reading-time">12 分钟阅读</span>
+            <div class="tags"><span class="tag">#linux</span></div>
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="netstat命令.html">netstat命令</a></h3>
+        <p class="article-excerpt">是基于Netstat这个命令行工具的指令，它可以用来查询系统上的网络套接字连接情况，包括,以及。另外它还能列出路由表，接口状态和多播成员等信息。 1. 参数选项 | 参数 | 作用 | | | --- | -----------------------------------------------...</p>
+        <div class="article-meta">
+            <time datetime="2023-01-24T00:00:00.000Z">2023年1月24日</time>
+            <span class="reading-time">2 分钟阅读</span>
+            <div class="tags"><span class="tag">#linux</span></div>
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="系统信息查看命令汇总.html">系统信息查看命令汇总</a></h3>
+        <p class="article-excerpt">在系统下经常要查看各种信息，需要使用到各种命令，全部背下来也是一项不小的工作量。每次临时找也比较浪费时间，这里汇总下常用的命令。 1. 系统 1.1. 查看linux内核版本 文件系统不是普通的文件系统，而是系统内核的映像。也就是说，该目录中的文件是存放在系统内存之中的，它以文件系统的方式为访问系统...</p>
+        <div class="article-meta">
+            <time datetime="2023-01-24T00:00:00.000Z">2023年1月24日</time>
+            <span class="reading-time">2 分钟阅读</span>
+            <div class="tags"><span class="tag">#linux</span></div>
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="数据库隔离级别.html">数据库隔离级别</a></h3>
+        <p class="article-excerpt">本文主要目的是阐明数据库的四种隔离级别以及在mysql下实现隔离的原理。 1. 隔离级别 数据库事务隔离级别从低到高分别是：read uncommitted、read committed、retpeatable read、serializable，依次解决了数据库脏读、不可重复读、幻读问题。 - 脏...</p>
+        <div class="article-meta">
+            <time datetime="2023-01-23T00:00:00.000Z">2023年1月23日</time>
+            <span class="reading-time">8 分钟阅读</span>
+            <div class="tags"><span class="tag">#database</span></div>
+        </div>
+    </div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <nav class="pagination-nav" aria-label="文章列表分页">
+          <div class="pagination-info">
+            第 29 页，共 31 页 (总计 306 篇文章)
+          </div>
+          <div class="pagination-links">
+            <a href="articles/page/28/index.html" class="pagination-prev" rel="prev">上一页</a>
+
+            <div class="pagination-pages">
+              <a href="articles/page/27/index.html" class="pagination-page">27</a><a href="articles/page/28/index.html" class="pagination-page">28</a><a href="articles/page/29/index.html" class="pagination-page active">29</a><a href="articles/page/30/index.html" class="pagination-page">30</a><a href="articles/page/31/index.html" class="pagination-page">31</a>
+            </div>
+
+            <a href="articles/page/30/index.html" class="pagination-next" rel="next">下一页</a>
+          </div>
+        </nav>
+      
             </div>
         </main>
         <footer class="page-footer">

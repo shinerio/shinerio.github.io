@@ -1,4 +1,4 @@
-// Articles page filtering and sorting functionality
+// Articles page filtering, sorting, and pagination functionality
 document.addEventListener('DOMContentLoaded', function() {
   // Retrieve article data from the hidden script element
   const articleDataElement = document.getElementById('article-data');
@@ -55,6 +55,9 @@ document.addEventListener('DOMContentLoaded', function() {
     return;
   }
 
+  // Read per-page config from data attribute, default to 10
+  const perPage = parseInt(articleContainer.getAttribute('data-per-page'), 10) || 10;
+
   // Add container for active filters display
   if (filtersContainer) {
     const activeFiltersDiv = document.createElement('div');
@@ -81,13 +84,37 @@ document.addEventListener('DOMContentLoaded', function() {
     tagFilter.value = urlTag;
   }
 
+  // Read initial page from URL hash (e.g. #page=3)
+  function getPageFromHash() {
+    const match = window.location.hash.match(/^#page=(\d+)$/);
+    return match ? parseInt(match[1], 10) : 1;
+  }
+
   // Current filter state - initialize with default values if elements don't exist
   let currentState = {
     sortBy: sortSelect && sortSelect.value ? sortSelect.value : 'date-desc',
-    filterByTag: tagFilter && tagFilter.value ? tagFilter.value : ''
+    filterByTag: tagFilter && tagFilter.value ? tagFilter.value : '',
+    currentPage: getPageFromHash(),
+    perPage: perPage
   };
 
-  // Apply filters and sorting
+  // Paginate articles: clamp page and return slice for current page
+  function paginateArticles(filteredArticles) {
+    var totalPages = Math.max(1, Math.ceil(filteredArticles.length / currentState.perPage));
+    // Clamp current page to valid range
+    if (currentState.currentPage < 1) currentState.currentPage = 1;
+    if (currentState.currentPage > totalPages) currentState.currentPage = totalPages;
+
+    var start = (currentState.currentPage - 1) * currentState.perPage;
+    var end = start + currentState.perPage;
+    return {
+      pageArticles: filteredArticles.slice(start, end),
+      totalItems: filteredArticles.length,
+      totalPages: totalPages
+    };
+  }
+
+  // Apply filters, sorting, and pagination
   function applyFilters() {
     if (!articleContainer) return;
 
@@ -112,8 +139,147 @@ document.addEventListener('DOMContentLoaded', function() {
       filteredArticles.sort(sortFunctions[currentState.sortBy]);
     }
 
-    // Update the DOM to reflect filtering and sorting
-    updateArticleDisplay(filteredArticles);
+    // Paginate
+    var paginationResult = paginateArticles(filteredArticles);
+
+    // Update the DOM to reflect filtering, sorting, and pagination
+    updateArticleDisplay(paginationResult.pageArticles);
+
+    // Render pagination controls
+    renderPaginationControls(paginationResult.totalItems, currentState.currentPage, currentState.perPage);
+
+    // Update URL hash
+    updateHash();
+  }
+
+  // Update URL hash with current page
+  function updateHash() {
+    if (currentState.currentPage <= 1) {
+      // Clean URL for page 1
+      if (window.location.hash) {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
+    } else {
+      var newHash = '#page=' + currentState.currentPage;
+      if (window.location.hash !== newHash) {
+        history.replaceState(null, '', window.location.pathname + window.location.search + newHash);
+      }
+    }
+  }
+
+  // Render pagination controls below the article list
+  function renderPaginationControls(totalItems, currentPage, itemsPerPage) {
+    var totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
+
+    // Remove existing pagination
+    var existingPagination = document.querySelector('.pagination');
+    if (existingPagination) {
+      existingPagination.remove();
+    }
+
+    // Hide controls when only 1 page
+    if (totalPages <= 1) return;
+
+    var paginationDiv = document.createElement('div');
+    paginationDiv.className = 'pagination';
+
+    // Previous button
+    var prevBtn = document.createElement('button');
+    prevBtn.className = 'pagination-btn pagination-prev';
+    prevBtn.textContent = '« 上一页';
+    prevBtn.disabled = currentPage <= 1;
+    prevBtn.addEventListener('click', function() {
+      if (currentState.currentPage > 1) {
+        currentState.currentPage--;
+        applyFilters();
+      }
+    });
+    paginationDiv.appendChild(prevBtn);
+
+    // Page numbers with ellipsis
+    var pageNumbers = getPageNumbers(currentPage, totalPages);
+    pageNumbers.forEach(function(item) {
+      if (item === '...') {
+        var ellipsis = document.createElement('span');
+        ellipsis.className = 'pagination-ellipsis';
+        ellipsis.textContent = '...';
+        paginationDiv.appendChild(ellipsis);
+      } else {
+        var pageBtn = document.createElement('button');
+        pageBtn.className = 'pagination-btn pagination-number' + (item === currentPage ? ' active' : '');
+        pageBtn.textContent = item;
+        pageBtn.addEventListener('click', (function(page) {
+          return function() {
+            currentState.currentPage = page;
+            applyFilters();
+          };
+        })(item));
+        paginationDiv.appendChild(pageBtn);
+      }
+    });
+
+    // Next button
+    var nextBtn = document.createElement('button');
+    nextBtn.className = 'pagination-btn pagination-next';
+    nextBtn.textContent = '下一页 »';
+    nextBtn.disabled = currentPage >= totalPages;
+    nextBtn.addEventListener('click', function() {
+      if (currentState.currentPage < totalPages) {
+        currentState.currentPage++;
+        applyFilters();
+      }
+    });
+    paginationDiv.appendChild(nextBtn);
+
+    // Insert after article list
+    articleContainer.parentNode.insertBefore(paginationDiv, articleContainer.nextSibling);
+  }
+
+  // Generate page number array with ellipsis
+  // Shows at most 5 numbers around current page, with ellipsis for gaps when total > 7
+  function getPageNumbers(current, total) {
+    if (total <= 7) {
+      // Show all pages
+      var pages = [];
+      for (var i = 1; i <= total; i++) pages.push(i);
+      return pages;
+    }
+
+    var pages = [];
+    // Always show first page
+    pages.push(1);
+
+    var rangeStart = Math.max(2, current - 2);
+    var rangeEnd = Math.min(total - 1, current + 2);
+
+    // Adjust range to always show 5 numbers in the middle when possible
+    if (rangeEnd - rangeStart < 4) {
+      if (rangeStart === 2) {
+        rangeEnd = Math.min(total - 1, rangeStart + 4);
+      } else if (rangeEnd === total - 1) {
+        rangeStart = Math.max(2, rangeEnd - 4);
+      }
+    }
+
+    // Left ellipsis
+    if (rangeStart > 2) {
+      pages.push('...');
+    }
+
+    // Middle pages
+    for (var i = rangeStart; i <= rangeEnd; i++) {
+      pages.push(i);
+    }
+
+    // Right ellipsis
+    if (rangeEnd < total - 1) {
+      pages.push('...');
+    }
+
+    // Always show last page
+    pages.push(total);
+
+    return pages;
   }
 
   // Update the display of active filters
@@ -170,6 +336,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (tagFilter) {
       tagFilter.value = '';
       currentState.filterByTag = '';
+      currentState.currentPage = 1;
       applyFilters();
     }
   };
@@ -179,6 +346,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (sortSelect) {
       sortSelect.value = 'date-desc';
       currentState.sortBy = 'date-desc';
+      currentState.currentPage = 1;
       applyFilters();
     }
   };
@@ -193,6 +361,7 @@ document.addEventListener('DOMContentLoaded', function() {
       tagFilter.value = '';
       currentState.filterByTag = '';
     }
+    currentState.currentPage = 1;
     applyFilters();
   };
 
@@ -211,27 +380,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Rebuild the article list in the correct order
     sortedFilteredArticles.forEach(article => {
-      // Find the corresponding DOM element
-      let articleElement = document.querySelector(`[data-id="${article.id}"]`);
+      // If we can't find the element, reconstruct it from the data
+      var articleElement = document.createElement('div');
+      articleElement.className = 'article-item';
+      articleElement.setAttribute('data-id', article.id);
 
-      if (!articleElement) {
-        // If we can't find the element, reconstruct it from the data
-        articleElement = document.createElement('div');
-        articleElement.className = 'article-item';
-        articleElement.setAttribute('data-id', article.id);
-
-        articleElement.innerHTML = `
-          <h3><a href="${article.slug}.html">${article.title}</a></h3>
-          <p class="article-excerpt">${article.description || ''}</p>
-          <div class="article-meta">
-            <time datetime="${new Date(article.date).toISOString()}">${formatDate(new Date(article.date))}</time>
-            <span class="reading-time">${article.readingTime || 0} 分钟阅读</span>
-            ${article.tags && article.tags.length > 0 ?
-              `<div class="tags">${article.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}</div>` :
-              ''}
-          </div>
-        `;
-      }
+      articleElement.innerHTML = `
+        <h3><a href="${article.slug}.html">${article.title}</a></h3>
+        <p class="article-excerpt">${article.description || ''}</p>
+        <div class="article-meta">
+          <time datetime="${new Date(article.date).toISOString()}">${formatDate(new Date(article.date))}</time>
+          <span class="reading-time">${article.readingTime || 0} 分钟阅读</span>
+          ${article.tags && article.tags.length > 0 ?
+            `<div class="tags">${article.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}</div>` :
+            ''}
+        </div>
+      `;
 
       articleContainer.appendChild(articleElement);
     });
@@ -246,14 +410,29 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Attach event listeners
+  // Attach event listeners for filters - reset page to 1 on filter/sort change
   if (sortSelect) {
-    sortSelect.addEventListener('change', applyFilters);
+    sortSelect.addEventListener('change', function() {
+      currentState.currentPage = 1;
+      applyFilters();
+    });
   }
 
   if (tagFilter) {
-    tagFilter.addEventListener('change', applyFilters);
+    tagFilter.addEventListener('change', function() {
+      currentState.currentPage = 1;
+      applyFilters();
+    });
   }
+
+  // Listen for hashchange to handle browser back/forward
+  window.addEventListener('hashchange', function() {
+    var newPage = getPageFromHash();
+    if (newPage !== currentState.currentPage) {
+      currentState.currentPage = newPage;
+      applyFilters();
+    }
+  });
 
   // Initial application of filters
   applyFilters();

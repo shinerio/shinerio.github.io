@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
-    <title>Claudemd - Shinerio's Blog</title>
+    <title>文章列表 - 第 12 页 - Shinerio's Blog</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
-    <meta property="og:title" content="Claudemd">
-<meta property="og:description" content="| 类型 | 位置 | 范围 | 版本控制 | 典型用途 | | ------ | ----------------------- | ---- | ----- | ------ | | 全局 | | 所有项目 | 不共享 | 个人编码偏好 | | 项目 | | 当前项目 | 共享给团队 | 团队规...">
-<meta property="og:type" content="article">
-<meta property="article:published_time" content="2026-01-30T15:58:18.000Z">
-<meta property="article:author" content="shinerio">
+    
+          <script type="application/json" id="article-data" style="display:none">
+            [{"id":"web","title":"Web","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":0,"slug":"web","description":""},{"id":"测试","title":"测试","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":1,"slug":"测试","description":"Golang单元测试对文件名和方法名，参数都有很严格的要求。 1. 文件名必须以xxtest.go命名 2. 方法参数必须 3. 使用go test执行单元测试 在文件中有三种类型的函数，单元测试函数、基准测试函数和示例函数。 | 类型 | 格式 | 作用 | | ---- | ----------..."},{"id":"benchmark","title":"Benchmark","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":11,"slug":"benchmark","description":"Go语言标准库内置的testing测试框架提供了基准测试(benchmark)的能力，能让我们很容易地对某一段代码进行性能测试。 本文中会对斐波那契数列进行基准测试 创建一个基准测试用例 - Benchmark测试文件必须以filename加结尾 - 方法名必须以开头 - 测试参数必须为 1. 执行..."},{"id":"go性能分析","title":"Go性能分析","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":2,"slug":"go性能分析","description":"golang中性能调试优化的方法包括： - benchmark：基准测试，对特定代码的运行时间和内存信息等进行测试 - profiling: 程序分析，程序的运行画像，在程序执行期间，通过采样收集的数据对程序进行分析 - Trace：跟踪，在程序执行期间，通过采集发生的事件数据对程序进行分析 > [..."},{"id":"pprof","title":"Pprof","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":7,"slug":"pprof","description":"1. 使用方式 必须在代码里引入才能使用，不像Java里jdk工具包中的 、、、、 工具可以单独使用。可以从以下两个包中引入 Golang pprof的使用方式主要有两种 1. 在程序中通过http接口的方式暴露相应的pprof的采集控制界面，需要依赖， 使用 包来进行封装。 2. 可以用来产生du..."},{"id":"程序调优","title":"程序调优","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":0,"slug":"程序调优","description":""},{"id":"进程、线程与协程","title":"进程、线程与协程","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":7,"slug":"进程线程与协程","description":"1. go中线程的数量 Go 使用Goroutine 调度器 (Scheduler) 来管理Goroutine的执行。调度器的核心概念如下 1.1. GMP模型 goalng采用特有的GMP模型。 1. G（Goroutine)：指的是 Go 代码中的 Goroutine。 2. M（machine..."},{"id":"go面向对象","title":"Go面向对象","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":1,"slug":"go面向对象","description":"1. 自定义数据类型 增强代码可读性 2. 方法接收器 只有自定义类型(或内置类型)才能够绑定方法，从而获得面向对象的特性。例如,为 绑定 方法。,使得User对象实现了Name方法。 在Go语言中，接口的实现是隐式的，也就是说只要一个自定义类型实现了接口中声明的所有方法，那么它就被认为实现了该接口..."},{"id":"反射","title":"反射","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":15,"slug":"反射","description":"1. 任意类型 在 Go 语言中， 常被称为“空接口”，它的确能承载fff88f\">任意类型的值，但这种“万能”特性背后存在明显的权衡和局限性。也可以用关键词替代， go 的接口是由两部分组成的，一部分是类型信息，另一部分是数据信息 对于这个例子， 的类型信息是 ，数据信息是 ，这两部分信息都是存储..."},{"id":"泛型","title":"泛型","date":"2025-09-17T13:31:12.000Z","tags":[],"readingTime":15,"slug":"泛型","description":"1. 泛型 我们知道，函数的 形参(parameter) 只是类似占位符的东西并没有具体的值，只有我们调用函数传入实参(argument) 之后才有具体的值。那么，如果我们将形参 实参这个概念推广一下，给变量的类型也引入和类似形参实参的概念的话，问题就迎刃而解：在这里我们将其称之为 类型形参(typ..."}]
+          </script>
+          <script src="assets/js/articles-filters.js"></script>
+          <link rel="canonical" href="articles/page/12/index.html"/>
+          <link rel="prev" href="articles/page/11/index.html"/>
+          <link rel="next" href="articles/page/13/index.html"/>
+        
 </head>
-<body class="article-page" id="theme-body">
+<body class="articles-page" id="theme-body">
     <div class="page-wrapper">
         <div class="sidebar-overlay"></div>
         <header class="page-header">
@@ -25,7 +29,7 @@
                             <span class="sidebar-toggle-icon"></span>
                         </button>
                         <a href="index.html" class="nav-link ">Home</a>
-                        <a href="articles.html" class="nav-link ">Articles</a>
+                        <a href="articles.html" class="nav-link active">Articles</a>
                         <a href="search.html" class="nav-link ">Search</a>
                         <a href="todo.html" class="nav-link ">TODO</a>
                     </div>
@@ -40,87 +44,138 @@
         </header>
         <main class="page-main">
             <div class="container">
-                <article>
-    <header>
-        <h1>Claudemd</h1>
-        <time datetime="2026-01-30T15:58:18.000Z">2026年1月30日</time>
-        <div class="tags">
+                
+        <div class="articles-filters">
+          <div class="filter-group">
+            <label for="sort-select">排序方式:</label>
+            <select id="sort-select" class="filter-select">
+              <option value="date-desc">最新发布</option>
+              <option value="date-asc">最早发布</option>
+              <option value="title-asc">标题 A-Z</option>
+              <option value="title-desc">标题 Z-A</option>
+              <option value="readtime-asc">阅读时间 (短至长)</option>
+              <option value="readtime-desc">阅读时间 (长至短)</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="tag-filter">标签筛选:</label>
+            <select id="tag-filter" class="filter-select">
+              <option value="">所有标签</option>
+              <option value="network">#network (14)</option><option value="excalidraw">#excalidraw (8)</option><option value="计算机网络">#计算机网络 (7)</option><option value="linux">#linux (5)</option><option value="nat">#nat (4)</option><option value="bgp">#bgp (2)</option><option value="protocol">#protocol (1)</option><option value="database">#database (1)</option><option value="dcn">#dcn (1)</option><option value="交换机">#交换机 (1)</option><option value="NAT">#NAT (1)</option><option value="thread">#thread (1)</option><option value="网络安全">#网络安全 (1)</option><option value="加密">#加密 (1)</option><option value="obsidian">#obsidian (1)</option><option value="tool">#tool (1)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="article-list">
+          
+    <div class="article-item">
+        <h3><a href="web.html">Web</a></h3>
+        <p class="article-excerpt"></p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">0 分钟阅读</span>
             
         </div>
-    </header>
-    <section class="content">
-        <table>
-<thead>
-<tr>
-<th>类型</th>
-<th>位置</th>
-<th>范围</th>
-<th>版本控制</th>
-<th>典型用途</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>全局</strong></td>
-<td><code>~/.claude/CLAUDE.md</code></td>
-<td>所有项目</td>
-<td>不共享</td>
-<td>个人编码偏好</td>
-</tr>
-<tr>
-<td><strong>项目</strong></td>
-<td><code>项目根目录/CLAUDE.md</code></td>
-<td>当前项目</td>
-<td>共享给团队</td>
-<td>团队规范</td>
-</tr>
-<tr>
-<td><strong>本地</strong></td>
-<td><code>项目根目录/CLAUDE.local.md</code></td>
-<td>本地</td>
-<td>不共享</td>
-<td>项目个人偏好</td>
-</tr>
-</tbody></table>
-<pre><code>CLAUDE.md的作用：
-├── 项目目标和愿景
-├── 目录结构说明
-├── 技术栈和依赖
-├── 编码规范和风格
-├── 命令和脚本
-├── 命名约定
-├── 错误处理原则
-└── 团队特定要求
-</code></pre>
-<p>可以使用相对路径、绝对路径，甚至是用户主目录 (<code>~</code>) 的路径来导入文件。</p>
-<pre><code class="language-text"># ./CLAUDE.md (项目记忆)
-
-# 导入团队共享的React最佳实践
-@/path/to/shared/react-best-practices.md
-
-# 导入我个人的项目特定快捷指令
-@~/.claude/my-project-shortcuts.md
-</code></pre>
-<p><strong>技术限制</strong>: 最大支持 5 层递归导入。在 Markdown 的代码块或行内代码中，<code>@import</code> 不会生效。</p>
-<h2>0.1. 添加记忆</h2>
-<p>在会话中输入 <code>/memory</code> 命令，Claude 会在你的系统默认编辑器中打开相关的记忆文件，方便你进行更复杂的编辑、整理和重构。</p>
-
-    </section>
-</article>
-
-
-<section class="comments-section" id="comments">
-    <h2 class="comments-title">评论</h2>
-    <div class="utterances-container">
-        <script src="https://utteranc.es/client.js"
-        repo="shinerio/shinerio.github.io"
-        issue-term="Claudemd"
-        label="blog-comment"
-        theme="preferred-color-scheme"
-        crossorigin="anonymous"
-        async>
-</script>
     </div>
-</section>
+    <div class="article-item">
+        <h3><a href="测试.html">测试</a></h3>
+        <p class="article-excerpt">Golang单元测试对文件名和方法名，参数都有很严格的要求。 1. 文件名必须以xxtest.go命名 2. 方法参数必须 3. 使用go test执行单元测试 在文件中有三种类型的函数，单元测试函数、基准测试函数和示例函数。 | 类型 | 格式 | 作用 | | ---- | ----------...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">1 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="benchmark.html">Benchmark</a></h3>
+        <p class="article-excerpt">Go语言标准库内置的testing测试框架提供了基准测试(benchmark)的能力，能让我们很容易地对某一段代码进行性能测试。 本文中会对斐波那契数列进行基准测试 创建一个基准测试用例 - Benchmark测试文件必须以filename加结尾 - 方法名必须以开头 - 测试参数必须为 1. 执行...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">11 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="go性能分析.html">Go性能分析</a></h3>
+        <p class="article-excerpt">golang中性能调试优化的方法包括： - benchmark：基准测试，对特定代码的运行时间和内存信息等进行测试 - profiling: 程序分析，程序的运行画像，在程序执行期间，通过采样收集的数据对程序进行分析 - Trace：跟踪，在程序执行期间，通过采集发生的事件数据对程序进行分析 > [...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">2 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="pprof.html">Pprof</a></h3>
+        <p class="article-excerpt">1. 使用方式 必须在代码里引入才能使用，不像Java里jdk工具包中的 、、、、 工具可以单独使用。可以从以下两个包中引入 Golang pprof的使用方式主要有两种 1. 在程序中通过http接口的方式暴露相应的pprof的采集控制界面，需要依赖， 使用 包来进行封装。 2. 可以用来产生du...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">7 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="程序调优.html">程序调优</a></h3>
+        <p class="article-excerpt"></p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">0 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="进程线程与协程.html">进程、线程与协程</a></h3>
+        <p class="article-excerpt">1. go中线程的数量 Go 使用Goroutine 调度器 (Scheduler) 来管理Goroutine的执行。调度器的核心概念如下 1.1. GMP模型 goalng采用特有的GMP模型。 1. G（Goroutine)：指的是 Go 代码中的 Goroutine。 2. M（machine...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">7 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="go面向对象.html">Go面向对象</a></h3>
+        <p class="article-excerpt">1. 自定义数据类型 增强代码可读性 2. 方法接收器 只有自定义类型(或内置类型)才能够绑定方法，从而获得面向对象的特性。例如,为 绑定 方法。,使得User对象实现了Name方法。 在Go语言中，接口的实现是隐式的，也就是说只要一个自定义类型实现了接口中声明的所有方法，那么它就被认为实现了该接口...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">1 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="反射.html">反射</a></h3>
+        <p class="article-excerpt">1. 任意类型 在 Go 语言中， 常被称为“空接口”，它的确能承载fff88f">任意类型的值，但这种“万能”特性背后存在明显的权衡和局限性。也可以用关键词替代， go 的接口是由两部分组成的，一部分是类型信息，另一部分是数据信息 对于这个例子， 的类型信息是 ，数据信息是 ，这两部分信息都是存储...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">15 分钟阅读</span>
+            
+        </div>
+    </div>
+    <div class="article-item">
+        <h3><a href="泛型.html">泛型</a></h3>
+        <p class="article-excerpt">1. 泛型 我们知道，函数的 形参(parameter) 只是类似占位符的东西并没有具体的值，只有我们调用函数传入实参(argument) 之后才有具体的值。那么，如果我们将形参 实参这个概念推广一下，给变量的类型也引入和类似形参实参的概念的话，问题就迎刃而解：在这里我们将其称之为 类型形参(typ...</p>
+        <div class="article-meta">
+            <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+            <span class="reading-time">15 分钟阅读</span>
+            
+        </div>
+    </div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <nav class="pagination-nav" aria-label="文章列表分页">
+          <div class="pagination-info">
+            第 12 页，共 31 页 (总计 306 篇文章)
+          </div>
+          <div class="pagination-links">
+            <a href="articles/page/11/index.html" class="pagination-prev" rel="prev">上一页</a>
+
+            <div class="pagination-pages">
+              <a href="articles/page/10/index.html" class="pagination-page">10</a><a href="articles/page/11/index.html" class="pagination-page">11</a><a href="articles/page/12/index.html" class="pagination-page active">12</a><a href="articles/page/13/index.html" class="pagination-page">13</a><a href="articles/page/14/index.html" class="pagination-page">14</a>
+            </div>
+
+            <a href="articles/page/13/index.html" class="pagination-next" rel="next">下一页</a>
+          </div>
+        </nav>
+      
             </div>
         </main>
         <footer class="page-footer">

@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
     <meta property="og:title" content="Claude Code">
-<meta property="og:description" content="1. 安装claude code 环境变量方式启动或直接修改文件 使用claude code 在vscode中安装claude code插件，然后在claude code命令行界面使用即可连接到vscode。claude code就可以和vscode进行交付，感知你在vscode中选中的代码、文件，...">
+<meta property="og:description" content="1. claude code配置 1.1. ide集成 在vscode中安装claude code插件，然后在claude code命令行界面使用即可连接到vscode。claude code就可以和vscode进行交付，感知你在vscode中选中的代码、文件，claude code的修改也会在vs...">
 <meta property="og:type" content="article">
 <meta property="article:published_time" content="2025-12-07T11:19:03.000Z">
 <meta property="article:author" content="shinerio">
@@ -49,15 +49,14 @@
         </div>
     </header>
     <section class="content">
-        <h1>1. 安装claude code</h1>
-<pre><code class="language-shell">npm install -g @anthropic-ai/claude-code
+        <h1>1. claude code配置</h1>
+<h2>1.1. ide集成</h2>
+<p>在vscode中安装claude code插件，然后在claude code命令行界面使用<code>/idea</code>即可连接到vscode。claude code就可以和vscode进行交付，感知你在vscode中选中的代码、文件，claude code的修改也会在vscode中以diff形式呈现。</p>
+<h2>1.2. 使用vscode作为输入编辑器</h2>
+<pre><code>$env:EDITOR = &quot;code --wait&quot;
 </code></pre>
-<p>环境变量方式启动或直接修改<code>~/.claude/settings.json</code>文件</p>
-<pre><code>export ANTHROPIC_BASE_URL=https://ark.cn-beijing.volces.com/api/compatible 
-export ANTHROPIC_AUTH_TOKEN=&lt;ARK-API-KEY&gt; 
-export ANTHROPIC_MODEL=doubao-seed-code-preview-latest
-</code></pre>
-<p>使用claude code</p>
+<h2>1.3. 切换provider</h2>
+<p><strong>方案一</strong>：使用<a href="https://github.com/farion1231/cc-switch">cc-switch</a><br><strong>方案二</strong>：claude-code-router</p>
 <pre><code># 将claude code路由至其他大模型提供商
 npm install -g @musistudio/claude-code-router
 &lt;span class=&quot;tag&quot;&gt;#安装阿里云百炼的config&lt;/span&gt;
@@ -69,11 +68,7 @@ ccr-dashscope
 # 启动，启动命令执行的路径要和vscode准备打开的项目路径一致
 ccr code
 </code></pre>
-<p>在vscode中安装claude code插件，然后在claude code命令行界面使用<code>/idea</code>即可连接到vscode。claude code就可以和vscode进行交付，感知你在vscode中选中的代码、文件，claude code的修改也会在vscode中以diff形式呈现。</p>
-<h2>1.1. 使用vscode作为输入编辑器</h2>
-<pre><code>$env:EDITOR = &quot;code --wait&quot;
-</code></pre>
-<h1>2. 常用命令</h1>
+<h1>2. <a href="https://code.claude.com/docs/zh-CN/cli-reference">常用命令</a></h1>
 <table>
 <thead>
 <tr>
@@ -133,7 +128,6 @@ ccr code
 <td></td>
 </tr>
 </tbody></table>
-<p><a href="https://code.claude.com/docs/zh-CN/cli-reference">更多命令行参考</a></p>
 <h1>3. 使用技巧</h1>
 <p><code>/init</code> claude code会分析当前文件夹，把它学到的关于项目的知识记录在根目录下CLAUDE.md里。当然，我们也可以手动修改这个文件，把我们认为的一些重要信息（提示、约束等）放到里面。</p>
 <p><code>/commpact</code> 压缩</p>
@@ -165,8 +159,13 @@ ccr code
 </code></pre>
 <p><code>/permissions</code> 添加工具或者命令，允许自动执行</p>
 <p><code>claude --dangerously-skip-permissions</code> 赋予claude code最高权限，可以自动执行任何命令</p>
-<p>[hooks(<a href="https://code.claude.com/docs/en/hooks-guide">https://code.claude.com/docs/en/hooks-guide</a>)</p>
 <p>subagent可以让claude在后台开启多个子任务，并行执行。<code>/agents</code></p>
+<h2>3.1. <a href="https://github.com/ZeroSumQuant/claude-conversation-extractor">导出会话历史</a></h2>
+<pre><code class="language-shell">uv tool install claude-conversation-extractor
+claude-start
+</code></pre>
+<h2>3.2. 快捷键</h2>
+<p><a href="https://code.claude.com/docs/en/interactive-mode">https://code.claude.com/docs/en/interactive-mode</a></p>
 <h1>4. claudia</h1>
 <p>可视化界面</p>
 <h1>5. mcp安装</h1>
@@ -175,75 +174,41 @@ ccr code
 claude mcp remove context7
 </code></pre>
 <p>项目级别，仅在当前项目下生效<br><code>claude mcp add context7 -- npx @upstash/context7-mcp</code><br>用户级别的，所有项目生效<br><code>claude mcp add context7 --scope user -- npx @upstash/context7-mcp</code><br>使用<code>/mcp</code>命令可以进行mcp管理</p>
-<pre><code>╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ Manage MCP servers                                                                                                   │
-│                                                                                                                      │
-│ ❯ 1. context7            ✔ connected · Enter to view details                                                         │
-│                                                                                                                      │
-│ MCP Config locations (by scope):                                                                                     │
-│  • User config (available in all your projects):                                                                     │
-│    • C:\Users\jstxz\.claude.json                                                                                     │
-│  • Project config (shared via .mcp.json):                                                                            │
-│    • D:\workspace\proj\blog\.mcp.json (file does not exist)                                                          │
-│  • Local config (private to you in this project):                                                                    │
-│    • C:\Users\jstxz\.claude.json [project: D:\workspace\proj\blog]                                                   │
-│                                                                                                                      │
-│ Tip: Use /mcp enable or /mcp disable to quickly toggle all servers                                                   │
-│                                                                                                                      │
-│ For help configuring MCP servers, see: https://code.claude.com/docs/en/mcp                                           │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
-</code></pre>
-<p>使用示例</p>
-<pre><code>&gt; java中如何创建虚拟线程 使用context7
-
-● 我将帮您了解如何在Java中创建虚拟线程。首先，让我使用Context7来获取相关的文档信息。
-
-● context7 - resolve-library-id (MCP)(libraryName: &quot;Java virtual threads&quot;)
-
-────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Tool use
-
-   context7 - resolve-library-id(libraryName: &quot;Java virtual threads&quot;) (MCP)
-   Resolves a package/product name to a Context7-compatible library ID and returns a list of matching libraries.
-
-   You MUST call this function before &#39;get-library-docs&#39; to obtain a valid Context7-compatible library ID UNLESS the
-   user explicitly provides a library ID in the format &#39;/org/project&#39; or &#39;/org/project/version&#39; in their query.
-
-   Selection Process:
-   1. Analyze the query to understand what library/package the user is looking for
-   2. Return the most relevant match based on:
-   - Name similarity to the query (exact matches prioritized)
-   - Description relevance to the query&#39;s intent
-   - Documentation coverage (prioritize libraries with higher Code Snippet counts)
-   - Source reputation (consider libraries with High or Medium reputation more authoritative)
-   - Benchmark Score: Quality indicator (100 is the highest score)
-
-   Response Format:
-   - Return the selected library ID in a clearly marked section
-   - Provide a brief explanation for why this library was chosen
-   - If multiple good matches exist, acknowledge this but proceed with the most relevant one
-   - If no good matches exist, clearly state this and suggest query refinements
-
-   For ambiguous queries, request clarification before proceeding with a best-guess match.
-
- Do you want to proceed?
- ❯ 1. Yes
-   2. Yes, and don&#39;t ask again for context7 - resolve-library-id commands in D:\workspace\proj\blog
-   3. No, and tell Claude what to do differently (esc)
-</code></pre>
-<h1>6. claude code状态</h1>
-<ul>
-<li><strong>deliberating</strong>: 深思熟虑；仔细考虑；商议；审议</li>
-<li><strong>effecting</strong>: 生效</li>
-<li><strong>puzzling</strong>: 令人费解</li>
-<li><strong>concating</strong>: 连接</li>
-<li><strong>elucidating</strong>: 阐明</li>
-<li><strong>churning</strong>: 搅拌</li>
-<li><strong>crafting</strong>: 手工制作</li>
-<li><strong>Reticulating</strong>: 网状</li>
-<li><strong>scheming</strong>: </li>
-<li><strong>newspapering</strong>: 报刊</li>
-</ul>
+<h1>6. 用量查询</h1>
+<table>
+<thead>
+<tr>
+<th><strong>命令</strong></th>
+<th><strong>核心作用</strong></th>
+<th><strong>适用人群</strong></th>
+<th><strong>典型场景</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong><code>/context</code></strong></td>
+<td><strong>查看当前会话的上下文占用</strong>。显示已用 token 数、剩余空间以及距离“自动压缩（Auto-compact）”还有多远。</td>
+<td><strong>所有人</strong></td>
+<td>感觉 Claude 开始“忘事”或变慢时，确认上下文窗口是否快满了。</td>
+</tr>
+<tr>
+<td><strong><code>/usage</code></strong></td>
+<td><strong>查看 Pro/Max 订阅计划的限制</strong>。显示当前时间段内剩余的消息配额或 Token 限额，以及重置时间。</td>
+<td><strong>订阅用户</strong> (Pro/Max)</td>
+<td>担心触发“每 5 小时限额”时，检查还能发多少消息。</td>
+</tr>
+<tr>
+<td><strong><code>/cost</code></strong></td>
+<td><strong>查看 API 费用的实时统计</strong>。显示当前会话产生的美元开销、Input/Output/Cache 的具体消耗。</td>
+<td><strong>API 用户</strong> (按量付费)</td>
+<td>关注钱包，想知道刚才那个复杂的重构任务花了几美分。</td>
+</tr>
+<tr>
+<td><strong><code>/stats</code></strong></td>
+<td><strong>查看历史使用习惯和性能</strong>。显示总计消息数、工具使用频率（如读了多少次文件）、最常调用的代理等。</td>
+<td><strong>所有人</strong></td>
+<td>想回顾在这个项目中一共让 Claude 干了多少活，或者分析性能瓶颈。</td>
+</tr>
+</tbody></table>
 
     </section>
 </article>
