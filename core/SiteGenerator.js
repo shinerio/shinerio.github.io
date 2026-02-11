@@ -274,7 +274,7 @@ class SiteGenerator {
                     tableOfContents: this.generateTableOfContents(article.htmlContent),
                     relatedArticles: this.getRelatedArticles(article, articles).slice(0, 3),
                     commentsEnabled: options.config.comments?.enabled || false,
-                    commentsScript: this.generateCommentsScript(options.config)
+                    commentsScript: this.generateCommentsScript(options.config, article.title)
                 });
                 const html = this.renderTemplate(layoutTemplate, {
                     title: article.title,
@@ -628,16 +628,22 @@ class SiteGenerator {
      * 生成评论脚本
      * Generate Utterances comments script tag
      */
-    generateCommentsScript(config) {
+    generateCommentsScript(config, articleTitle) {
         if (!config.comments?.enabled || !config.comments?.repo) {
             return '';
         }
         const repo = config.comments.repo;
         const issueTerm = config.comments.issueTerm || 'pathname';
         const label = config.comments.label ? `\n        label="${config.comments.label}"` : '';
+        // 当 issueTerm 为 pathname 或 url 时，使用文章标题作为 issue-term 的具体值，
+        // 避免中文路径被浏览器 URL 编码后导致 GitHub Issue 标题显示为编码字符串
+        const useSpecificTerm = (issueTerm === 'pathname' || issueTerm === 'url') && articleTitle;
+        const issueTermAttr = useSpecificTerm
+            ? `issue-term="${articleTitle.replace(/"/g, '&quot;')}"`
+            : `issue-term="${issueTerm}"`;
         return `<script src="https://utteranc.es/client.js"
         repo="${repo}"
-        issue-term="${issueTerm}"${label}
+        ${issueTermAttr}${label}
         theme="preferred-color-scheme"
         crossorigin="anonymous"
         async>
