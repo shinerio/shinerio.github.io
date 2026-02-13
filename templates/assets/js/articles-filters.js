@@ -77,12 +77,22 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  // View toggle elements
+  const folderContainer = document.querySelector('.folder-tree-container');
+  const viewToggleBtns = document.querySelectorAll('.view-toggle-btn');
+  const filterGroups = filtersContainer ? filtersContainer.querySelectorAll('.filter-group') : [];
+  let folderViewInitialized = false;
+
   // Read tag from URL query parameter (e.g. articles.html?tag=network)
   const urlParams = new URLSearchParams(window.location.search);
   const urlTag = urlParams.get('tag');
   if (urlTag && tagFilter) {
     tagFilter.value = urlTag;
   }
+
+  // Read view from URL query parameter (e.g. articles.html?view=folder)
+  const urlView = urlParams.get('view');
+  let currentView = (urlView === 'folder') ? 'folder' : 'list';
 
   // Read initial page from URL hash (e.g. #page=3)
   function getPageFromHash() {
@@ -434,6 +444,81 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
+  // --- View toggle logic ---
+
+  function switchView(view) {
+    currentView = view;
+
+    // Update toggle button active states
+    viewToggleBtns.forEach(function(btn) {
+      if (btn.getAttribute('data-view') === view) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
+    if (view === 'folder') {
+      // Hide list view elements
+      if (articleContainer) articleContainer.style.display = 'none';
+      var pagination = document.querySelector('.pagination');
+      if (pagination) pagination.style.display = 'none';
+      filterGroups.forEach(function(g) { g.style.display = 'none'; });
+      var activeFilters = document.getElementById('active-filters');
+      if (activeFilters) activeFilters.style.display = 'none';
+
+      // Show folder view
+      if (folderContainer) {
+        folderContainer.style.display = '';
+        if (!folderViewInitialized && typeof window.initFolderView === 'function') {
+          window.initFolderView(articles, folderContainer);
+          folderViewInitialized = true;
+        }
+      }
+    } else {
+      // Show list view elements
+      if (articleContainer) articleContainer.style.display = '';
+      var pagination = document.querySelector('.pagination');
+      if (pagination) pagination.style.display = '';
+      filterGroups.forEach(function(g) { g.style.display = ''; });
+      var activeFilters = document.getElementById('active-filters');
+      if (activeFilters) activeFilters.style.display = '';
+
+      // Hide folder view
+      if (folderContainer) folderContainer.style.display = 'none';
+    }
+
+    // Update URL
+    updateViewUrl(view);
+  }
+
+  function updateViewUrl(view) {
+    var params = new URLSearchParams(window.location.search);
+    if (view === 'folder') {
+      params.set('view', 'folder');
+    } else {
+      params.delete('view');
+    }
+    var newSearch = params.toString();
+    var newUrl = window.location.pathname + (newSearch ? '?' + newSearch : '') + window.location.hash;
+    history.replaceState(null, '', newUrl);
+  }
+
+  // Attach click listeners to view toggle buttons
+  viewToggleBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var view = btn.getAttribute('data-view');
+      if (view !== currentView) {
+        switchView(view);
+      }
+    });
+  });
+
   // Initial application of filters
   applyFilters();
+
+  // Apply initial view (after applyFilters so list is rendered)
+  if (currentView === 'folder') {
+    switchView('folder');
+  }
 });
