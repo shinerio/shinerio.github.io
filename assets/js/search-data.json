@@ -1627,6 +1627,13 @@
       "slug": "链路本地地址"
     },
     {
+      "id": "..\\..\\obsidian\\obsidian\\Tech\\Network\\路由协议\\BGP\\BGP Speaker",
+      "title": "BGP Speaker",
+      "content": "在传统的网络设备中，我们通常直觉地认为“一台设备 = 一个 BGP 进程 = 一个 Speaker”。但在现代网络设计和高级设备架构中：一台物理路由器可以拥有多个 BGP Speaker。 为了理解这一点，我们需要区分“物理实体”和“逻辑协议实例”。以下是几种实现“多 Speaker”的典型场景： 0.1. 逻辑隔离：多VRF实例 (Virtual Routing and Forwarding) ",
+      "tags": [],
+      "slug": "bgp-speaker"
+    },
+    {
       "id": "..\\..\\obsidian\\obsidian\\Tech\\Network\\路由协议\\BGP\\BGP",
       "title": "BGP",
       "content": "",
@@ -1649,6 +1656,13 @@
       "content": "1. AS - OSPF、IS-IS等IGP路由协议在组织机构网络内部广泛应用，随着网络规模扩大，网络中路由数量不断增长，IGP已无法管理大规模网络，AS的概念由此诞生。 - AS指的是在同一个组织管理下，使用统一选路策略的设备集合。 > [!question] 不同的AS之间需要进行通信，在AS之间应该使用何种路由协议进行路由的传递？ 2. 什么是BGP BGP（Border Gateway P",
       "tags": [],
       "slug": "bgp基础概念"
+    },
+    {
+      "id": "..\\..\\obsidian\\obsidian\\Tech\\Network\\路由协议\\BGP\\BGP路由器分类",
+      "title": "BGP路由器分类",
+      "content": "",
+      "tags": [],
+      "slug": "bgp路由器分类"
     },
     {
       "id": "..\\..\\obsidian\\obsidian\\Tech\\Network\\路由协议\\BGP\\BGP邻居建立",

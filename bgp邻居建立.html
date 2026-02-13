@@ -13,6 +13,10 @@
 <meta property="og:type" content="article">
 <meta property="article:published_time" content="2025-09-17T13:31:12.000Z">
 <meta property="article:author" content="shinerio">
+<link rel="stylesheet" id="hljs-light" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+<link rel="stylesheet" id="hljs-dark" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" disabled>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+<script src="assets/js/code-enhance.js" defer></script>
 </head>
 <body class="article-page" id="theme-body">
     <div class="page-wrapper">
@@ -65,8 +69,9 @@
 </blockquote>
 </li>
 </ul>
+<p>故障隔离</p>
 <blockquote>
-<p>[!note]<br>一般而言在AS内部，网络具备一定的冗余性。在R1与R3之间，如果采用直连接口建IBGP邻居关系，那么一旦接口或者直连链路发生故障，BGP会话也就断了，但是事实上，由于冗余链路的存在，R1与R3之间的IP连通性其实并没有DOWN（仍然可以通过R4到达彼此）。</p>
+<p>[!note]<br>一般而言在AS内部，网络具备一定的冗余性。在R1与R3之间，如果采用直连接口建IBGP邻居关系，那么一旦接口或者直连链路发生故障，BGP会话也就断了，但是事实上，由于冗余链路的存在，R1与R3之间的IP连通性其实并没有DOWN（仍然可以通过R4到达彼此）。<strong>如果用 Loopback 建邻居：</strong> 只要 A 和 B 之间还有<strong>任何</strong>一条物理路径能通，Loopback 的 IP 就能互相 Ping 通，BGP 会话就不会中断。</p>
 </blockquote>
 <h1>2. Open报文</h1>
 <p>主要包括</p>

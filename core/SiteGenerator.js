@@ -332,7 +332,11 @@ class SiteGenerator {
 <meta property="og:description" content="${article.description}">
 <meta property="og:type" content="article">
 <meta property="article:published_time" content="${article.date.toISOString()}">
-<meta property="article:author" content="${options.config.author || options.config.siteTitle}">`
+<meta property="article:author" content="${options.config.author || options.config.siteTitle}">
+<link rel="stylesheet" id="hljs-light" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+<link rel="stylesheet" id="hljs-dark" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" disabled>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+<script src="assets/js/code-enhance.js" defer></script>`
                 });
                 await fs.writeFile(path.join(outputPath, `${article.slug}.html`), html);
             }
