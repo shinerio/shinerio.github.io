@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/style-addition.css">
     <meta property="og:title" content="Tcp异常断链">
 <meta property="og:description" content="1. 现象 客服访问建行业务偶现超时。 建行server端主动发起断链，发送fin报文，客户B收到后回ACK报文，进入fin-wait-2状态 客户B服务端前设置有防火墙，fin状态下设置10秒超时，客户B超时后的rst报文被防火墙丢了，建行server无法收到rst报文，导致一直处于fin-wai...">
 <meta property="og:type" content="article">

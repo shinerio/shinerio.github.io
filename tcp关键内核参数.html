@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/style-addition.css">
     <meta property="og:title" content="Tcp关键内核参数">
 <meta property="og:description" content="1. tcpsynretries 这个参数值设置的是client发送SYN如果server端不回复的话，ff0000">重传SYN的次数。对我们的直接影响就是connet建立连接时的超时时间。当然Java通过一些C原生系统调用的组合使得我们可以进行超时时间的设置。在Linux里面默认设置是5，下面给...">
 <meta property="og:type" content="article">

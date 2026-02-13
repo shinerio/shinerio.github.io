@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/style-addition.css">
     <meta property="og:title" content="Kafka高性能读写">
 <meta property="og:description" content="核心： - 顺序读写 - page cache，避免每次读取磁盘。也正是因为顺序读写，避免了大量page cache miss，可以充分利用page cache。 - 零拷贝。 1. 存储结构 一个topic下多个partition，每个partition使用一个文件夹存储。partition命名规...">
 <meta property="og:type" content="article">

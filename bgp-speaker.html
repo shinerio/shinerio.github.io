@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/style-addition.css">
     <meta property="og:title" content="BGP Speaker">
 <meta property="og:description" content="在传统的网络设备中，我们通常直觉地认为“一台设备 = 一个 BGP 进程 = 一个 Speaker”。但在现代网络设计和高级设备架构中：一台物理路由器可以拥有多个 BGP Speaker。 为了理解这一点，我们需要区分“物理实体”和“逻辑协议实例”。以下是几种实现“多 Speaker”的典型场景： ...">
 <meta property="og:type" content="article">
@@ -72,11 +73,23 @@
 </li>
 </ul>
 <h2>0.3. 容灾与冗余：控制平面集群 (Control Plane Clusters)</h2>
+<h3>0.3.1. 场景一</h3>
 <p>在一些超高端的核心路由器（Chassis 开关）中，内部通常有两块主控板（Routing Engine / Supervisor）。</p>
 <ul>
 <li><strong>实现方式：</strong> 虽然对外表现为一个 Router ID，但内部实际上运行着主、备两个BGP进程。</li>
 <li><strong>场景：</strong> 当主进程崩溃时，备份进程（另一个 Speaker 实例）可以无缝接管，这就是所谓的 <strong>Graceful Restart (GR)</strong> 或 <strong>Non-Stop Routing (NSR)</strong>。</li>
 </ul>
+<h3>0.3.2. 场景二</h3>
+<p> <strong>Multi-homing（多归属）</strong> 或 <strong>Dual-Homing（双归属）</strong>。 BGP Speaker会同时维护两个独立的 TCP 会话，与对端的两个 Speaker 交换路由。<br>当你的 Speaker（假设为 Leaf 交换机）与对端两个 Speaker（Spine A 和 Spine B）建立连接时：</p>
+<ol>
+<li><strong>独立会话：</strong> 你的设备会与 Spine A 建立一个 BGP Session，同时与 Spine B 建立另一个。它们是两个独立的邻居关系。</li>
+<li><strong>路由接收：</strong> 你会从两个邻居那里收到去往相同目的地（比如外网）的路由。</li>
+<li><strong>选路与决策：</strong><ul>
+<li><strong>主备模式（Active-Standby）：</strong> 你可以通过调整 <code>Local Preference</code> 或 <code>MED</code> 属性，让流量平时只走 Spine A。只有当 A 挂了，流量才切到 B。</li>
+<li><strong>负载均衡模式（ECMP）：</strong> 如果两条路径的属性完全一致，你可以开启 <strong>ECMP（等价多路径）</strong>，让流量同时从两个 Spine 转发，既容灾又增加带宽。</li>
+</ul>
+</li>
+</ol>
 <h2>0.4. 总结：一台设备，多个“灵魂”</h2>
 <table>
 <thead>

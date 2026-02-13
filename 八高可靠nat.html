@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/style-addition.css">
     <meta property="og:title" content="(八)高可靠NAT">
 <meta property="og:description" content="1. 双机冷备 2. 双机热备 双机热备可以极大地提升NAT服务的可靠性和承载能力，但是两台NAT设备上的NAT配置也需要完全相同。这样就会出现一个问题：如果两个NAT设备分别将两条不同的流映射到相同的公网地址，并且端口也相同的话，势必会造成表项的混乱，所以我们引入了优先级的概念。 在双机热备的环境...">
 <meta property="og:type" content="article">

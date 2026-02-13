@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/style-addition.css">
     <meta property="og:title" content="Etcd架构">
 <meta property="og:description" content="etcd 集群通过Raft算法实现了 “动态主从 + 分布式共识” 的架构，确保数据强一致性和高可用性。etcd 集群在同一时刻只能有一个主节点（Leader），且写操作必须由该主节点处理，但读操作可以从任意节点执行。etcd集群中的节点在正常运行时通过Raft算法动态选举 “领导者（Leader）...">
 <meta property="og:type" content="article">

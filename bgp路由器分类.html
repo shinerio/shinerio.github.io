@@ -8,8 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/style-addition.css">
     <meta property="og:title" content="BGP路由器分类">
-<meta property="og:description" content="">
+<meta property="og:description" content="在BGP（边界网关协议）中，路由器的分类通常根据其在自治系统（AS）中的位置以及建立邻居关系的方式来划分。 1. 按协议划分 1.1. EBGP 路由器 (External BGP) 当两台运行 BGP 的路由器处于不同的自治系统（AS）时，它们之间建立的邻居关系称为 EBGP。 - 位置： 通常位...">
 <meta property="og:type" content="article">
 <meta property="article:published_time" content="2026-02-13T15:01:03.547Z">
 <meta property="article:author" content="shinerio">
@@ -53,7 +54,37 @@
         </div>
     </header>
     <section class="content">
-        
+        <p>在BGP（边界网关协议）中，路由器的分类通常根据其<strong>在自治系统（AS）中的位置</strong>以及<strong>建立邻居关系的方式</strong>来划分。</p>
+<h1>1. 按协议划分</h1>
+<h2>1.1. EBGP 路由器 (External BGP)</h2>
+<p>当两台运行 BGP 的路由器处于<strong>不同的自治系统</strong>（AS）时，它们之间建立的邻居关系称为 EBGP。</p>
+<ul>
+<li><strong>位置：</strong> 通常位于 AS 的边界，连接到其他运营商或合作伙伴的网络。</li>
+<li><strong>特点：</strong> 默认情况下，EBGP 邻居必须在物理上直连（TTL 值为 1），如果非直连则需要特殊配置（如 <code>ebgp-multihop</code>）。</li>
+</ul>
+<h2>1.2. IBGP 路由器 (Internal BGP)</h2>
+<p>当两台运行 BGP 的路由器处于<strong>同一个自治系统</strong>（AS）内时，它们之间建立的邻居关系称为 IBGP。</p>
+<ul>
+<li><strong>位置：</strong> 位于 AS 内部，用于在 AS 内部传递从外部学习到的路由。</li>
+<li><strong>特点：</strong> IBGP 邻居不需要物理直连，只要 TCP 可达即可。为了防止环路，IBGP 遵循“水平分割”原则：从 IBGP 邻居收到的路由不会再传给另一个 IBGP 邻居。</li>
+</ul>
+<h1>2. 按照角色划分的特殊路由器</h1>
+<p>在大规模网络中，为了解决 IBGP 全互联（Full Mesh）带来的配置复杂和资源消耗问题，会出现以下特殊角色：</p>
+<ul>
+<li><strong>路由反射器 (Route Reflector, RR)：</strong> * 作为“中心”节点，它可以打破 IBGP 的水平分割限制，将从一个客户端学习到的路由转发给其他客户端。</li>
+<li><strong>角色细分：</strong> 服务端（Server）、客户端（Client）和非客户端（Non-client）。    </li>
+<li><strong>联盟路由器 (Confederation Router)：</strong><ul>
+<li>将一个大 AS 划分为多个“子 AS”。在子 AS 内部运行的是联盟 IBGP，子 AS 之间运行的是联盟 EBGP。</li>
+<li>对外看起来仍然是一个单一的 AS，但在内部简化了路由管理。</li>
+</ul>
+</li>
+</ul>
+<h1>3. 边界路由器 (Speaker / Border Router)</h1>
+<ul>
+<li><strong>BGP 发言者 (BGP Speaker)：</strong> 任何运行 BGP 协议的路由器都可以称为 BGP Speaker。</li>
+<li><strong>自治系统边界路由器 (ASBR)：</strong> 专门指那些连接了两个或多个不同 AS 的路由器，它是流量进入或离开该 AS 的门户。</li>
+</ul>
+
     </section>
 </article>
 

@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/style-addition.css">
     <meta property="og:title" content="业务偶现超时">
 <meta property="og:description" content="1. 现象 客户A通过NAT网关访问客户B业务偶现超时。 2. 抓包分析 中间设备抓包发现，服务端主动断链，发送FIN报文并收到ACK报文完成两次挥手，但客户端并没有随之进行被动关闭，直到约20秒后发出rst报文，在此期间连接一直处于半关闭状态。而NAT网关fin超时时间为5秒，此时会话已经老化，再...">
 <meta property="og:type" content="article">

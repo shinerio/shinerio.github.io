@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/style-addition.css">
     <meta property="og:title" content="大二层架构的问题">
 <meta property="og:description" content="1. 历史背景 网关在汇聚上的原因是因为openstack平面约束，要求资源池里面的节点必须在一个二层上。 管理服务区解大二层原因是管理区容灾1.0方案依赖vip在az间漂移，管理区汇聚下就是一个二层。同时，az之间还需要在两个az的汇聚交换机上通过硬件vxlan打一个二层隧道。 2. 大二层的问题...">
 <meta property="og:type" content="article">
