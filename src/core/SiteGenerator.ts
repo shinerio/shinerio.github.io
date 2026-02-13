@@ -40,7 +40,7 @@ export class SiteGenerator {
       await this.generateHomePage(articles, options, outputPath);
       await this.generateArticleList(articles, options, outputPath);
       await this.generateArticlePages(articles, options, outputPath);
-      await this.generateSearchPage(options, outputPath);
+      await this.generateSearchPage(articles, options, outputPath);
 
       // 生成 TODO 页面（如果启用）
       if (options.config.todo?.enabled) {
@@ -61,20 +61,13 @@ export class SiteGenerator {
   }
 
   /**
-   * 生成首页
-   * Generate home page
+   * 渲染侧边栏
+   * Render sidebar HTML
    */
-  async generateHomePage(articles: Article[], options: GenerationOptions, outputPath: string): Promise<void> {
-    const recentArticles = articles
-      .filter(article => !article.isDraft)
-      .sort((a, b) => b.date.getTime() - a.date.getTime())
-      .slice(0, 5);
-
-    const layoutTemplate = await this.loadTemplate('layout.html');
-
+  private renderSidebar(articles: Article[], options: GenerationOptions): string {
     const author = options.config.author || options.config.siteTitle;
 
-    const content = `
+    return `
       <aside class="sidebar">
         <div class="sidebar-profile">
           <img src="./assets/images/avatar.png" alt="avatar" class="sidebar-avatar">
@@ -108,6 +101,25 @@ export class SiteGenerator {
           </div>
         </div>
       </aside>
+    `;
+  }
+
+  /**
+   * 生成首页
+   * Generate home page
+   */
+  async generateHomePage(articles: Article[], options: GenerationOptions, outputPath: string): Promise<void> {
+    const recentArticles = articles
+      .filter(article => !article.isDraft)
+      .sort((a, b) => b.date.getTime() - a.date.getTime())
+      .slice(0, 5);
+
+    const layoutTemplate = await this.loadTemplate('layout.html');
+
+    const sidebar = this.renderSidebar(articles, options);
+
+    const content = `
+      ${sidebar}
 
       <div class="home-layout">
         <main class="home-main">
@@ -170,32 +182,40 @@ export class SiteGenerator {
       description: article.description
     }));
 
-    const content = `
-      <div class="articles-filters">
-        <div class="filter-group">
-          <label for="sort-select">排序方式:</label>
-          <select id="sort-select" class="filter-select">
-            <option value="date-desc">最新发布</option>
-            <option value="date-asc">最早发布</option>
-            <option value="title-asc">标题 A-Z</option>
-            <option value="title-desc">标题 Z-A</option>
-            <option value="readtime-asc">阅读时间 (短至长)</option>
-            <option value="readtime-desc">阅读时间 (长至短)</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label for="tag-filter">标签筛选:</label>
-          <select id="tag-filter" class="filter-select">
-            <option value="">所有标签</option>
-            ${this.getPopularTags(articles).map(tag =>
-              `<option value="${tag.name}">#${tag.name} (${tag.count})</option>`
-            ).join('')}
-          </select>
-        </div>
-      </div>
+    const sidebar = this.renderSidebar(articles, options);
 
-      <div class="article-list" data-per-page="${options.config.postsPerPage}">
-        ${publishedArticles.map(article => this.renderArticleListItem(article)).join('')}
+    const content = `
+      ${sidebar}
+
+      <div class="page-layout">
+        <main class="page-content">
+          <div class="articles-filters">
+            <div class="filter-group">
+              <label for="sort-select">排序方式:</label>
+              <select id="sort-select" class="filter-select">
+                <option value="date-desc">最新发布</option>
+                <option value="date-asc">最早发布</option>
+                <option value="title-asc">标题 A-Z</option>
+                <option value="title-desc">标题 Z-A</option>
+                <option value="readtime-asc">阅读时间 (短至长)</option>
+                <option value="readtime-desc">阅读时间 (长至短)</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="tag-filter">标签筛选:</label>
+              <select id="tag-filter" class="filter-select">
+                <option value="">所有标签</option>
+                ${this.getPopularTags(articles).map(tag =>
+                  `<option value="${tag.name}">#${tag.name} (${tag.count})</option>`
+                ).join('')}
+              </select>
+            </div>
+          </div>
+
+          <div class="article-list" data-per-page="${options.config.postsPerPage}">
+            ${publishedArticles.map(article => this.renderArticleListItem(article)).join('')}
+          </div>
+        </main>
       </div>
     `;
 
@@ -227,11 +247,23 @@ export class SiteGenerator {
    * 生成搜索页面
    * Generate search page
    */
-  async generateSearchPage(options: GenerationOptions, outputPath: string): Promise<void> {
+  async generateSearchPage(articles: Article[], options: GenerationOptions, outputPath: string): Promise<void> {
     const layoutTemplate = await this.loadTemplate('layout.html');
     const searchTemplate = await this.loadTemplate('search.html');
 
-    const content = this.renderTemplate(searchTemplate, {});
+    const searchContent = this.renderTemplate(searchTemplate, {});
+
+    const sidebar = this.renderSidebar(articles, options);
+
+    const content = `
+      ${sidebar}
+
+      <div class="page-layout">
+        <main class="page-content">
+          ${searchContent}
+        </main>
+      </div>
+    `;
 
     const html = this.renderTemplate(layoutTemplate, {
       title: '搜索',
