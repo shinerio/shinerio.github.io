@@ -122,6 +122,11 @@ export declare class SiteGenerator {
      */
     private generateCommentsScript;
     /**
+     * 生成划词评论相关的 head 内容
+     * Generate text selection comment head content
+     */
+    private generateTextSelectionCommentHead;
+    /**
      * 生成CNAME文件
      * Generate CNAME file for custom domain
      */

@@ -7,6 +7,11 @@ export interface CommentsConfig {
     repo: string;
     issueTerm?: 'pathname' | 'title' | 'og:title' | 'url';
     label?: string;
+    annotation?: {
+        enabled: boolean;
+        label?: string;
+        oauthClientId?: string;
+    };
 }
 export interface TodoConfig {
     enabled: boolean;
