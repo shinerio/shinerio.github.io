@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
     <meta property="og:title" content="Cloud Wan竞品分析">
-<meta property="og:description" content="1. 腾讯 - CCN路由同步，默认会同步所有路由表 - CCN一个VPC可以接入多个CCN - VPC多条路由冲突的时候，可以支持启用、停用 2. 阿里 - CEN路由同步，默认只会同步默认路由表，用户可以选择默认路由表或所有路由表 3. aws - 一个vpc只能挂一个attachment">
+<meta property="og:description" content="1. 腾讯 - CCN路由同步，默认会同步所有路由表 - - VPC多条路由冲突的时候，可以支持启用、停用 1.1. 跨地域流量管理 - 单向的流量调度规则限速带宽总和不得超过带宽上限。 - 带宽上限提高后，默认规则的限速带宽不会自动调整，需手动调整 2. 阿里 - CEN路由同步，默认只会同步默认...">
 <meta property="og:type" content="article">
 <meta property="article:published_time" content="2026-02-09T15:40:58.122Z">
 <meta property="article:author" content="shinerio">
@@ -52,8 +52,13 @@
         <h1>1. 腾讯</h1>
 <ul>
 <li>CCN路由同步，默认会同步所有路由表</li>
-<li>CCN一个VPC可以接入多个CCN</li>
+<li><a href="https://cloud.tencent.com/document/product/877/96123">CCN一个VPC可以接入多个CCN</a></li>
 <li>VPC多条路由冲突的时候，可以支持启用、停用</li>
+</ul>
+<h2>1.1. 跨地域流量管理</h2>
+<ul>
+<li>单向的流量调度规则限速带宽总和不得超过带宽上限。</li>
+<li>带宽上限提高后，默认规则的限速带宽不会自动调整，需手动调整</li>
 </ul>
 <h1>2. 阿里</h1>
 <ul>

@@ -11,6 +11,11 @@ export declare class SiteGenerator {
      */
     generateSite(options: GenerationOptions): Promise<void>;
     /**
+     * 渲染侧边栏
+     * Render sidebar HTML
+     */
+    private renderSidebar;
+    /**
      * 生成首页
      * Generate home page
      */
@@ -24,7 +29,7 @@ export declare class SiteGenerator {
      * 生成搜索页面
      * Generate search page
      */
-    generateSearchPage(options: GenerationOptions, outputPath: string): Promise<void>;
+    generateSearchPage(articles: Article[], options: GenerationOptions, outputPath: string): Promise<void>;
     generateArticlePages(articles: Article[], options: GenerationOptions, outputPath: string): Promise<void>;
     /**
      * 生成 TODO 页面

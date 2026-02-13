@@ -562,6 +562,37 @@ body.home-page.sidebar-collapsed .sidebar {
     transform: translateX(-280px);
 }
 
+/* Articles and Search pages with sidebar */
+body.articles-page,
+body.search-page {
+    padding-left: 280px;
+    transition: padding-left 0.3s ease;
+}
+
+body.articles-page.sidebar-collapsed,
+body.search-page.sidebar-collapsed {
+    padding-left: 0;
+}
+
+body.articles-page.sidebar-collapsed .sidebar,
+body.search-page.sidebar-collapsed .sidebar {
+    transform: translateX(-280px);
+}
+
+/* Page layout for articles and search pages */
+body.articles-page .page-layout,
+body.search-page .page-layout {
+    display: flex;
+    gap: var(--spacing-lg);
+}
+
+body.articles-page .page-content,
+body.search-page .page-content {
+    flex: 1;
+    min-width: 0;
+    max-width: 100%;
+}
+
 /* Sidebar navigation - fixed left panel */
 .sidebar {
     width: 280px;
@@ -707,9 +738,11 @@ body.home-page.sidebar-collapsed .sidebar {
     opacity: 0.6;
 }
 
-body.home-page .sidebar-toggle {
+body.home-page .sidebar-toggle,
+body.articles-page .sidebar-toggle,
+body.search-page .sidebar-toggle {
     display: flex;
-    /* Show on home page */
+    /* Show on pages with sidebar */
 }
 
 .sidebar-toggle:hover {
@@ -2071,7 +2104,9 @@ body.todo-page .page-main {
     }
 
     /* No body padding on mobile - sidebar is overlay */
-    body.home-page {
+    body.home-page,
+    body.articles-page,
+    body.search-page {
         padding-left: 0;
         /* Improve scrolling performance on Safari */
         -webkit-overflow-scrolling: touch;
