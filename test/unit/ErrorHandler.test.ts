@@ -21,9 +21,27 @@ describe('GracefulErrorHandler', () => {
   });
 
   afterEach(async () => {
-    // Restore original cwd method
+    // Restore original cwd method first
     jest.restoreAllMocks();
-    await fs.remove(tempDir);
+
+    // Wait longer to ensure any pending async operations complete
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // Force remove temp directory with retries
+    for (let i = 0; i < 3; i++) {
+      try {
+        if (await fs.pathExists(tempDir)) {
+          await fs.remove(tempDir);
+        }
+        break;
+      } catch (err) {
+        if (i === 2) {
+          console.warn(`Failed to remove temp directory ${tempDir} after 3 attempts`);
+        }
+        // Wait before retry
+        await new Promise(resolve => setTimeout(resolve, 50));
+      }
+    }
   });
 
   describe('handleConfigError', () => {
@@ -233,14 +251,26 @@ describe('GracefulErrorHandler Property Tests', () => {
   });
 
   afterEach(async () => {
-    // Restore original cwd method
+    // Restore original cwd method first
     jest.restoreAllMocks();
-    // Wait a bit to ensure any pending async operations complete
-    await new Promise(resolve => setTimeout(resolve, 10));
-    try {
-      await fs.remove(tempDir);
-    } catch (err) {
-      // Ignore errors if temp directory is already removed
+
+    // Wait longer to ensure any pending async operations complete
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // Force remove temp directory with retries
+    for (let i = 0; i < 3; i++) {
+      try {
+        if (await fs.pathExists(tempDir)) {
+          await fs.remove(tempDir);
+        }
+        break;
+      } catch (err) {
+        if (i === 2) {
+          console.warn(`Failed to remove temp directory ${tempDir} after 3 attempts`);
+        }
+        // Wait before retry
+        await new Promise(resolve => setTimeout(resolve, 50));
+      }
     }
   });
 
