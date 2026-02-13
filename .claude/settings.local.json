@@ -142,7 +142,8 @@
       "Bash(git push)",
       "Bash(npx jest:*)",
       "Bash(git add:*)",
-      "Bash(git commit -m \"$\\(cat <<''EOF''\nArticles页面视图切换功能实现与归档\n\n实现Articles页面列表/文件夹双视图切换功能：后端SiteGenerator新增relativePath字段；前端新增articles-folder-view.js（树形目录构建、展开折叠、文章计数）；articles-filters.js新增视图切换逻辑（URL参数持久化、容器显隐）；新增视图切换按钮、文件夹树样式（含暗色模式和移动端适配）。OpenSpec制品同步到主specs并归档。\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")"
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nArticles页面视图切换功能实现与归档\n\n实现Articles页面列表/文件夹双视图切换功能：后端SiteGenerator新增relativePath字段；前端新增articles-folder-view.js（树形目录构建、展开折叠、文章计数）；articles-filters.js新增视图切换逻辑（URL参数持久化、容器显隐）；新增视图切换按钮、文件夹树样式（含暗色模式和移动端适配）。OpenSpec制品同步到主specs并归档。\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit:*)"
     ]
   }
 }

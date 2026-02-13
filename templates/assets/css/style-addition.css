@@ -5,3 +5,103 @@ body.home-page main.page-main > div.home-layout {
     flex: 1;
     min-width: 0;
 }
+
+/* ===== Code Block Enhancements ===== */
+
+/* Pre block: relative positioning for badge and button */
+pre {
+    position: relative;
+    padding-top: 2.2em !important;
+}
+
+/* Language badge */
+.code-lang-badge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0.15em 0.7em;
+    font-size: 0.75rem;
+    font-family: var(--font-mono, monospace);
+    line-height: 1.6;
+    color: var(--color-text-secondary, #64748b);
+    background: var(--color-bg-tertiary, #f1f5f9);
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
+    border-right: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0 0 var(--radius-sm, 4px) 0;
+    user-select: none;
+    pointer-events: none;
+}
+
+[data-theme="dark"] .code-lang-badge {
+    color: var(--color-dark-text-secondary, #94a3b8);
+    background: var(--color-dark-bg-tertiary, #334155);
+    border-bottom-color: var(--color-dark-border, #334155);
+    border-right-color: var(--color-dark-border, #334155);
+}
+
+/* Copy button */
+.code-copy-btn {
+    position: absolute;
+    top: 0.35em;
+    right: 0.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: var(--radius-sm, 4px);
+    background: var(--color-bg-secondary, #f8fafc);
+    color: var(--color-text-secondary, #64748b);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s, background-color 0.2s, color 0.2s;
+}
+
+pre:hover .code-copy-btn {
+    opacity: 1;
+}
+
+.code-copy-btn:hover {
+    background: var(--color-bg-tertiary, #f1f5f9);
+    color: var(--color-text-primary, #1e293b);
+}
+
+.code-copy-btn.copied {
+    color: #22c55e;
+    border-color: #22c55e;
+}
+
+[data-theme="dark"] .code-copy-btn {
+    border-color: var(--color-dark-border, #334155);
+    background: var(--color-dark-bg-secondary, #1e293b);
+    color: var(--color-dark-text-secondary, #94a3b8);
+}
+
+[data-theme="dark"] pre:hover .code-copy-btn {
+    opacity: 1;
+}
+
+[data-theme="dark"] .code-copy-btn:hover {
+    background: var(--color-dark-bg-tertiary, #334155);
+    color: var(--color-dark-text-primary, #f8fafc);
+}
+
+[data-theme="dark"] .code-copy-btn.copied {
+    color: #22c55e;
+    border-color: #22c55e;
+}
+
+/* Mobile: always show copy button for touch devices */
+@media (max-width: 768px) {
+    .code-copy-btn {
+        opacity: 0.7;
+    }
+}
+
+/* Ensure hljs backgrounds don't clash with our pre styling */
+pre code.hljs {
+    background: transparent !important;
+    padding: 0 !important;
+}
