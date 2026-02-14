@@ -351,6 +351,97 @@ tsc-mark:hover {
   height: 18px;
 }
 
+/* Device Flow Modal */
+.tsc-device-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1003;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+}
+
+.tsc-device-modal.visible {
+  display: flex;
+}
+
+.tsc-device-modal-content {
+  width: 360px;
+  max-width: calc(100vw - 40px);
+  padding: 20px;
+  background: var(--tsc-popover-bg);
+  border: 1px solid var(--tsc-popover-border);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.tsc-device-body {
+  text-align: center;
+  padding: 8px 0;
+}
+
+.tsc-device-instruction {
+  font-size: 14px;
+  color: var(--color-text-secondary, #586069);
+  margin-bottom: 12px;
+}
+
+.tsc-device-link {
+  display: inline-block;
+  font-size: 14px;
+  color: var(--color-primary, #0366d6);
+  text-decoration: none;
+  margin-bottom: 16px;
+}
+
+.tsc-device-link:hover {
+  text-decoration: underline;
+}
+
+.tsc-device-code {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--color-text-primary, #24292e);
+  background: var(--color-bg-secondary, #f6f8fa);
+  border: 1px solid var(--color-border, #e1e4e8);
+  border-radius: 8px;
+  padding: 12px 20px;
+  margin-bottom: 12px;
+  user-select: all;
+}
+
+.tsc-device-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary, #586069);
+  background: transparent;
+  border: 1px solid var(--color-border, #e1e4e8);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-bottom: 16px;
+}
+
+.tsc-device-copy-btn:hover {
+  background-color: var(--color-bg-secondary, #f6f8fa);
+}
+
+.tsc-device-status {
+  font-size: 13px;
+  color: var(--tsc-text-muted);
+}
+
 /* Mobile adaptations */
 @media (max-width: 768px) {
   .tsc-toolbar {
@@ -378,6 +469,7 @@ tsc-mark:hover {
   .tsc-toolbar,
   .tsc-popover,
   .tsc-tooltip,
+  .tsc-device-modal,
   tsc-mark {
     display: none !important;
   }

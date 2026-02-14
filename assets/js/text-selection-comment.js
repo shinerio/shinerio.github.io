@@ -41,6 +41,8 @@
     popover: null,
     tooltip: null,
     articleSlug: null,
+    deviceModal: null,
+    devicePollTimer: null,
   };
 
   // Icons (SVG)
@@ -60,6 +62,8 @@
     const pageConfig = window.textSelectionCommentConfig || {};
     CONFIG.repo = pageConfig.repo || CONFIG.repo;
     CONFIG.label = pageConfig.label || CONFIG.label;
+    CONFIG.clientId = pageConfig.clientId || '';
+    CONFIG.oauthProxyUrl = pageConfig.oauthProxyUrl || '';
     state.articleSlug = pageConfig.articleSlug || getArticleSlug();
 
     if (!CONFIG.repo) {
@@ -334,24 +338,195 @@
   }
 
   /**
-   * Handle GitHub auth click
+   * Handle GitHub auth click - starts Device Flow
    */
   function handleAuthClick() {
-    // Generate OAuth state
-    const stateParam = btoa(Math.random().toString(36)).substring(0, 16);
-    sessionStorage.setItem('tsc_oauth_state', stateParam);
+    hidePopover();
+    startDeviceFlow();
+  }
 
-    // Store current URL to redirect back
-    sessionStorage.setItem('tsc_redirect_url', window.location.href);
+  /**
+   * Create the device flow modal
+   */
+  function createDeviceModal() {
+    if (state.deviceModal) return;
 
-    // Build OAuth URL
+    state.deviceModal = document.createElement('div');
+    state.deviceModal.className = 'tsc-device-modal';
+    state.deviceModal.innerHTML = `
+      <div class="tsc-device-modal-content">
+        <div class="tsc-popover-header">
+          <span class="tsc-popover-title">GitHub 授权</span>
+          <button class="tsc-popover-close tsc-device-cancel" title="关闭">${ICONS.close}</button>
+        </div>
+        <div class="tsc-device-body">
+          <p class="tsc-device-instruction">请访问以下链接并输入授权码：</p>
+          <a class="tsc-device-link" href="https://github.com/login/device" target="_blank" rel="noopener noreferrer">github.com/login/device</a>
+          <div class="tsc-device-code"></div>
+          <button class="tsc-device-copy-btn">复制授权码</button>
+          <p class="tsc-device-status">等待授权中...</p>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(state.deviceModal);
+
+    // Bind close/cancel
+    state.deviceModal.querySelector('.tsc-device-cancel').addEventListener('click', cancelDeviceFlow);
+    state.deviceModal.addEventListener('click', (e) => {
+      if (e.target === state.deviceModal) cancelDeviceFlow();
+    });
+
+    // Bind copy button
+    state.deviceModal.querySelector('.tsc-device-copy-btn').addEventListener('click', () => {
+      const code = state.deviceModal.querySelector('.tsc-device-code').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = state.deviceModal.querySelector('.tsc-device-copy-btn');
+        btn.textContent = '已复制!';
+        setTimeout(() => { btn.textContent = '复制授权码'; }, 2000);
+      }).catch(() => {});
+    });
+  }
+
+  /**
+   * Start OAuth Device Flow
+   */
+  async function startDeviceFlow() {
     const clientId = CONFIG.clientId || '';
-    const redirectUri = encodeURIComponent(window.location.origin + '/oauth-callback.html');
-    const scope = encodeURIComponent('public_repo');
+    const proxyUrl = CONFIG.oauthProxyUrl || '';
 
-    const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&state=${stateParam}`;
+    if (!clientId || !proxyUrl) {
+      console.error('[TSC] OAuth not configured: missing clientId or oauthProxyUrl');
+      alert('OAuth 未配置，无法登录');
+      return;
+    }
 
-    window.location.href = authUrl;
+    createDeviceModal();
+
+    try {
+      const resp = await fetch(proxyUrl + '/device/code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          client_id: clientId,
+          scope: 'public_repo'
+        })
+      });
+
+      if (!resp.ok) {
+        const errorText = await resp.text();
+        console.error('[TSC] Device flow error:', errorText);
+        alert('启动授权失败，请重试');
+        return;
+      }
+
+      const data = await resp.json();
+
+      if (data.error) {
+        console.error('[TSC] GitHub error:', data);
+        alert('授权错误: ' + (data.error_description || data.error));
+        return;
+      }
+
+      // Show modal with device code
+      state.deviceModal.querySelector('.tsc-device-code').textContent = data.user_code;
+      const linkEl = state.deviceModal.querySelector('.tsc-device-link');
+      linkEl.href = data.verification_uri || 'https://github.com/login/device';
+      state.deviceModal.querySelector('.tsc-device-status').textContent = '等待授权中...';
+      state.deviceModal.classList.add('visible');
+
+      // Start polling for token
+      pollForToken(data.device_code, data.interval || 5);
+    } catch (e) {
+      console.error('[TSC] Device flow exception:', e);
+      alert('授权请求失败: ' + e.message);
+    }
+  }
+
+  /**
+   * Poll for access token during Device Flow
+   */
+  function pollForToken(deviceCode, interval) {
+    if (state.devicePollTimer) clearInterval(state.devicePollTimer);
+
+    const clientId = CONFIG.clientId || '';
+    const proxyUrl = CONFIG.oauthProxyUrl || '';
+
+    state.devicePollTimer = setInterval(async () => {
+      try {
+        const resp = await fetch(proxyUrl + '/access_token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            client_id: clientId,
+            device_code: deviceCode,
+            grant_type: 'urn:ietf:params:oauth:grant-type:device_code'
+          })
+        });
+
+        if (!resp.ok) return;
+
+        const data = await resp.json();
+
+        if (data.access_token) {
+          clearInterval(state.devicePollTimer);
+          state.devicePollTimer = null;
+
+          // Fetch user info and save auth state
+          try {
+            const userResp = await fetch('https://api.github.com/user', {
+              headers: { 'Authorization': 'token ' + data.access_token }
+            });
+            if (userResp.ok) {
+              const user = await userResp.json();
+              saveAuthState(data.access_token, {
+                login: user.login,
+                avatarUrl: user.avatar_url,
+                id: user.id
+              });
+            } else {
+              saveAuthState(data.access_token, null);
+            }
+          } catch (e) {
+            saveAuthState(data.access_token, null);
+          }
+
+          // Hide modal
+          state.deviceModal.classList.remove('visible');
+
+          // If we had a pending selection, show the comment popover
+          if (state.currentSelection) {
+            showCommentPopover();
+          }
+        } else if (data.error === 'authorization_pending') {
+          // Keep waiting
+        } else if (data.error === 'slow_down') {
+          state.deviceModal.querySelector('.tsc-device-status').textContent = '请稍候...';
+        } else if (data.error === 'expired_token') {
+          clearInterval(state.devicePollTimer);
+          state.devicePollTimer = null;
+          state.deviceModal.querySelector('.tsc-device-status').textContent = '授权码已过期，请重新操作';
+        } else if (data.error === 'access_denied') {
+          clearInterval(state.devicePollTimer);
+          state.devicePollTimer = null;
+          state.deviceModal.querySelector('.tsc-device-status').textContent = '授权被拒绝';
+        }
+      } catch (e) {
+        console.error('[TSC] Token polling error:', e);
+      }
+    }, (interval + 1) * 1000);
+  }
+
+  /**
+   * Cancel the device flow
+   */
+  function cancelDeviceFlow() {
+    if (state.devicePollTimer) {
+      clearInterval(state.devicePollTimer);
+      state.devicePollTimer = null;
+    }
+    if (state.deviceModal) {
+      state.deviceModal.classList.remove('visible');
+    }
   }
 
   /**

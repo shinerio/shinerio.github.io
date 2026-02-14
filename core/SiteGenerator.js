@@ -705,6 +705,7 @@ class SiteGenerator {
         const repo = config.comments.repo;
         const annotationLabel = config.comments.annotation.label || 'text-annotation';
         const oauthClientId = config.comments.annotation.oauthClientId || '';
+        const oauthProxyUrl = config.comments.annotation.oauthProxyUrl || '';
         return `
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
@@ -713,7 +714,8 @@ class SiteGenerator {
     repo: '${repo}',
     label: '${annotationLabel}',
     articleSlug: '${articleSlug}',
-    clientId: '${oauthClientId}'
+    clientId: '${oauthClientId}',
+    oauthProxyUrl: '${oauthProxyUrl}'
   };
 </script>
 <script src="assets/js/text-selection-comment.js" defer></script>`;

@@ -11,6 +11,7 @@ export interface CommentsConfig {
         enabled: boolean;
         label?: string;
         oauthClientId?: string;
+        oauthProxyUrl?: string;
     };
 }
 export interface TodoConfig {
