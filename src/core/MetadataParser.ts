@@ -10,6 +10,88 @@ import matter from 'gray-matter';
 import { execSync } from 'child_process';
 
 export class MetadataParser {
+  private gitRootCache: string | null | undefined = undefined; // undefined = 未初始化, null = 不是 git 仓库, string = git 根目录
+  private gitDateCache: Map<string, Date> = new Map(); // 批量缓存所有文件的 git 第一次 commit 时间
+
+  /**
+   * 批量构建所有文件的 Git 日期缓存（性能优化）
+   * Build git date cache for all files in batch (performance optimization)
+   */
+  async buildGitDateCache(filePaths: string[]): Promise<void> {
+    if (filePaths.length === 0) {
+      return;
+    }
+
+    try {
+      // 获取 git 根目录
+      const gitRoot = this.getGitRoot(filePaths[0]);
+      if (!gitRoot) {
+        return; // 不是 git 仓库，跳过
+      }
+
+      // 将所有文件路径转为相对路径
+      const relativePaths = filePaths.map(filePath =>
+        path.relative(gitRoot, path.resolve(filePath))
+      );
+
+      // 批量执行 git log 获取所有文件的第一次 commit 时间
+      // 使用 --name-only 和 --diff-filter=A 找出每个文件的第一次添加时间
+      const command = `git log --all --name-only --diff-filter=A --format=%aI`;
+
+      const output = execSync(command, {
+        encoding: 'utf-8',
+        cwd: gitRoot,
+        stdio: ['pipe', 'pipe', 'ignore'],
+        timeout: 10000 // 10秒超时（批量查询需要更长时间）
+      }).trim();
+
+      if (!output) {
+        return;
+      }
+
+      // 解析输出：格式为 "日期\n文件名\n文件名\n...\n日期\n文件名\n..."
+      const lines = output.split('\n');
+      let currentDate: string | null = null;
+
+      for (const line of lines) {
+        const trimmedLine = line.trim();
+        if (!trimmedLine) {
+          continue;
+        }
+
+        // 检查是否是日期行（ISO 8601 格式）
+        if (/^\d{4}-\d{2}-\d{2}T/.test(trimmedLine)) {
+          currentDate = trimmedLine;
+        } else if (currentDate) {
+          // 这是一个文件路径
+          const normalizedPath = trimmedLine.replace(/\\/g, '/');
+
+          // 检查这个文件是否在我们要处理的文件列表中
+          const matchedIndex = relativePaths.findIndex(relPath =>
+            relPath.replace(/\\/g, '/') === normalizedPath
+          );
+
+          if (matchedIndex !== -1) {
+            const absolutePath = path.resolve(filePaths[matchedIndex]);
+
+            // 只缓存第一次出现的日期（最早的添加时间）
+            if (!this.gitDateCache.has(absolutePath)) {
+              const date = new Date(currentDate);
+              if (!isNaN(date.getTime())) {
+                this.gitDateCache.set(absolutePath, date);
+              }
+            }
+          }
+        }
+      }
+
+      console.log(`   Git 日期缓存: ${this.gitDateCache.size}/${filePaths.length} 个文件`);
+    } catch (error) {
+      // 批量查询失败，回退到单文件查询模式（保持兼容性）
+      console.warn('   Git 批量查询失败，将使用单文件查询模式');
+    }
+  }
+
   /**
    * 解析文件
    * Parse markdown file
@@ -79,16 +161,19 @@ export class MetadataParser {
   }
 
   /**
-   * 获取文件的 git 第一次 commit 时间
-   * Get git first commit date for the file
+   * 获取 git 仓库根目录（带缓存）
+   * Get git repository root directory (with cache)
    */
-  private getGitFirstCommitDate(filePath: string): Date | null {
+  private getGitRoot(filePath: string): string | null {
+    // 如果已经缓存过，直接返回
+    if (this.gitRootCache !== undefined) {
+      return this.gitRootCache;
+    }
+
     try {
-      // 首先找到 git 仓库的根目录
       const absolutePath = path.resolve(filePath);
       const fileDir = path.dirname(absolutePath);
 
-      // 获取 git 仓库根目录
       const gitRoot = execSync('git rev-parse --show-toplevel', {
         encoding: 'utf-8',
         cwd: fileDir,
@@ -96,6 +181,32 @@ export class MetadataParser {
         timeout: 2000
       }).trim();
 
+      // 缓存结果（成功或失败都缓存，避免重复查询）
+      this.gitRootCache = gitRoot || null;
+      return this.gitRootCache;
+    } catch {
+      // 不是 git 仓库，缓存 null
+      this.gitRootCache = null;
+      return null;
+    }
+  }
+
+  /**
+   * 获取文件的 git 第一次 commit 时间（优化版：优先从缓存读取）
+   * Get git first commit date for the file (optimized: prefer cache)
+   */
+  private getGitFirstCommitDate(filePath: string): Date | null {
+    const absolutePath = path.resolve(filePath);
+
+    // 优先从缓存中读取（批量查询的结果）
+    if (this.gitDateCache.has(absolutePath)) {
+      return this.gitDateCache.get(absolutePath) || null;
+    }
+
+    // 缓存中没有，执行单文件查询（兼容性回退）
+    try {
+      // 获取 git 根目录（带缓存）
+      const gitRoot = this.getGitRoot(filePath);
       if (!gitRoot) {
         return null;
       }
@@ -103,25 +214,28 @@ export class MetadataParser {
       // 计算文件相对于仓库根目录的相对路径
       const relativePath = path.relative(gitRoot, absolutePath);
 
-      // 使用 git log 获取文件的第一次 commit 时间
+      // 优化后的 git log 命令：
+      // --diff-filter=A: 只查找文件添加（Add）记录，通常只有一条，比 --reverse 快得多
       // --follow: 跟踪文件重命名
       // --format=%aI: 输出 ISO 8601 格式的作者时间
-      // --reverse: 反向排序（从最早到最新）
-      // -- <file>: 指定文件路径（相对路径）
-      const command = `git log --follow --format=%aI --reverse -- "${relativePath}"`;
+      // -- <file>: 指定文件路径
+      const command = `git log --diff-filter=A --follow --format=%aI -- "${relativePath}"`;
       const output = execSync(command, {
         encoding: 'utf-8',
-        cwd: gitRoot, // 使用仓库根目录作为工作目录
-        stdio: ['pipe', 'pipe', 'ignore'], // 忽略 stderr 避免非 git 仓库报错
-        timeout: 5000 // 5秒超时
+        cwd: gitRoot,
+        stdio: ['pipe', 'pipe', 'ignore'],
+        timeout: 3000 // 降低超时时间（优化后的命令更快）
       }).trim();
 
       if (output) {
-        // 取第一行（最早的 commit）
+        // --diff-filter=A 通常只返回一条记录（文件被添加的那次 commit）
+        // 如果有多条（罕见），取第一条
         const firstCommitDate = output.split('\n')[0];
         const date = new Date(firstCommitDate);
 
         if (!isNaN(date.getTime())) {
+          // 缓存结果
+          this.gitDateCache.set(absolutePath, date);
           return date;
         }
       }

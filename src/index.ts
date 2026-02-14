@@ -105,6 +105,10 @@ export class ObsidianBlogGenerator {
         metadata: { fileCount: scanResult.files.length }
       });
 
+      // 2.5 批量构建 Git 日期缓存（性能优化）
+      console.log('⚡ 批量构建 Git 日期缓存...');
+      await this.metadataParser.buildGitDateCache(scanResult.files);
+
       // 3. 解析文章
       this.errorHandler.reportProgress({ stage: 'PARSING', current: 3, total: 6, message: '解析文章内容...' });
       console.log('📝 解析文章内容...');
