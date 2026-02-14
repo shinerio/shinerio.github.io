@@ -1,0 +1,27 @@
+# 这个文件是模板文件，用于在 obsidian 仓库中配置即时触发
+# 使用方法：
+# 1. 复制此文件到 obsidian 仓库的 .github/workflows/trigger-blog.yml
+# 2. 根据 obsidian 仓库的默认分支名称修改 branches 配置
+# 3. 在 obsidian 仓库配置 BLOG_REPO_TOKEN secret（参考 GITHUB_ACTIONS_SETUP.md）
+
+name: Trigger Blog Deployment
+
+on:
+  push:
+    branches:
+      - main  # 修改为你的 obsidian 仓库默认分支（main 或 master）
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository dispatch to blog repo
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.BLOG_REPO_TOKEN }}" \
+            https://api.github.com/repos/shinerio/shinerio.github.io/dispatches \
+            -d '{"event_type":"notes-updated"}'
+
+      - name: Log trigger
+        run: echo "Blog deployment triggered at $(date)"

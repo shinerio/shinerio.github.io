@@ -1,0 +1,67 @@
+name: Trigger deployment from notes update
+
+# 这个工作流通过 repository_dispatch 事件触发
+# 需要在 obsidian 仓库配置对应的 workflow 来发送触发请求
+on:
+  repository_dispatch:
+    types: [notes-updated]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout blog repository
+        uses: actions/checkout@v4
+        with:
+          path: code/shinerio.github.io
+
+      - name: Checkout Obsidian notes repository
+        uses: actions/checkout@v4
+        with:
+          repository: shinerio/obsidian
+          token: ${{ secrets.OBSIDIAN_REPO_TOKEN }}
+          path: obsidian/obsidian
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: code/shinerio.github.io/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd code/shinerio.github.io
+          npm ci
+
+      - name: Build project
+        run: |
+          cd code/shinerio.github.io
+          npm run build
+
+      - name: Generate blog
+        run: |
+          cd code/shinerio.github.io
+          npx obsidian-blog generate -c blog.config.json
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: code/shinerio.github.io/dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

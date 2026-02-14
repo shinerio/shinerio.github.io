@@ -1,0 +1,76 @@
+name: Deploy Blog to GitHub Pages
+
+on:
+  # 当博客代码仓库有 push 时触发
+  push:
+    branches:
+      - master
+
+  # 允许手动触发
+  workflow_dispatch:
+
+  # 定时检查笔记仓库更新（每天检查一次）
+  schedule:
+    - cron: '0 */12 * * *'
+
+# 设置 GITHUB_TOKEN 的权限
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# 只允许一个部署任务同时运行
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout blog repository
+        uses: actions/checkout@v4
+        with:
+          path: code/shinerio.github.io
+
+      - name: Checkout Obsidian notes repository
+        uses: actions/checkout@v4
+        with:
+          repository: shinerio/obsidian
+          token: ${{ secrets.OBSIDIAN_REPO_TOKEN }}
+          path: obsidian/obsidian
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: code/shinerio.github.io/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd code/shinerio.github.io
+          npm ci
+
+      - name: Build project
+        run: |
+          cd code/shinerio.github.io
+          npm run build
+
+      - name: Generate blog
+        run: |
+          cd code/shinerio.github.io
+          npx obsidian-blog generate -c blog.config.json
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: code/shinerio.github.io/dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
