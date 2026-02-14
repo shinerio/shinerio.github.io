@@ -2187,42 +2187,6 @@ body.todo-page .page-main {
 }
 
 /* ======================== */
-/* Article Export Button    */
-/* ======================== */
-
-.article-item h3 {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-}
-
-.article-export-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    border: none;
-    border-radius: var(--radius-md);
-    background-color: transparent;
-    color: var(--color-text-tertiary);
-    cursor: pointer;
-    transition: color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast);
-    flex-shrink: 0;
-}
-
-.article-export-btn:hover {
-    color: var(--color-accent-primary);
-    background-color: var(--color-bg-tertiary);
-    transform: translateY(-1px);
-}
-
-.article-export-btn:active {
-    transform: translateY(0);
-}
-
-/* ======================== */
 /* Folder Tree View         */
 /* ======================== */
 

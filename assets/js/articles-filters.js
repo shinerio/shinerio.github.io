@@ -33,79 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // ========================
-  // Article Export Functions
-  // ========================
-
-  /**
-   * Sanitize filename by replacing invalid characters
-   */
-  function sanitizeFileName(title) {
-    // Replace invalid file characters with underscore
-    let sanitized = title.replace(/[\\/:*?"<>|]/g, '_');
-    // Replace Windows reserved names
-    const reservedNames = ['CON', 'PRN', 'AUX', 'NUL', 'COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM7', 'COM8', 'COM9', 'LPT1', 'LPT2', 'LPT3', 'LPT4', 'LPT5', 'LPT6', 'LPT7', 'LPT8', 'LPT9'];
-    const baseName = sanitized.split('.')[0].toUpperCase();
-    if (reservedNames.includes(baseName)) {
-      sanitized = '_' + sanitized;
-    }
-    // Truncate to reasonable length (keep extension if present)
-    const maxLength = 100;
-    if (sanitized.length > maxLength) {
-      sanitized = sanitized.substring(0, maxLength);
-    }
-    return sanitized.trim();
-  }
-
-  /**
-   * Trigger download of Markdown content
-   */
-  function downloadArticle(article) {
-    if (!article || !article.rawContent) {
-      console.error('Article content not available for export');
-      return;
-    }
-
-    const fileName = sanitizeFileName(article.title) + '.md';
-    const blob = new Blob([article.rawContent], { type: 'text/markdown;charset=utf-8' });
-
-    // Create download link
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = fileName;
-
-    // Trigger download
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    // Clean up
-    URL.revokeObjectURL(url);
-  }
-
-  /**
-   * Attach export button event listeners
-   */
-  function attachExportListeners(container) {
-    const exportButtons = container.querySelectorAll('.article-export-btn');
-    exportButtons.forEach(button => {
-      button.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        const articleId = this.getAttribute('data-article-id');
-        const article = articles.find(a => a.id === articleId);
-
-        if (article) {
-          downloadArticle(article);
-        } else {
-          console.error('Article not found for export:', articleId);
-        }
-      });
-    });
-  }
-
   // Sort options mapping
   const sortFunctions = {
     'date-desc': (a, b) => new Date(b.date) - new Date(a.date),
@@ -469,16 +396,7 @@ document.addEventListener('DOMContentLoaded', function() {
       articleElement.setAttribute('data-id', article.id);
 
       articleElement.innerHTML = `
-        <h3>
-          <a href="${article.slug}.html">${article.title}</a>
-          <button class="article-export-btn" data-article-id="${article.id}" title="导出文章">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7,10 12,15 17,10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
-          </button>
-        </h3>
+        <h3><a href="${article.slug}.html">${article.title}</a></h3>
         <p class="article-excerpt">${article.description || ''}</p>
         <div class="article-meta">
           <time datetime="${new Date(article.date).toISOString()}">${formatDate(new Date(article.date))}</time>
@@ -491,9 +409,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
       articleContainer.appendChild(articleElement);
     });
-
-    // Reattach export button listeners after rebuilding the list
-    attachExportListeners(articleContainer);
   }
 
   // Helper function to format dates
@@ -607,8 +522,137 @@ document.addEventListener('DOMContentLoaded', function() {
     switchView('folder');
   }
 
-  // Attach export button listeners to initial article list
-  if (articleContainer) {
-    attachExportListeners(articleContainer);
-  }
+  // ===== Article Export Functionality =====
+  initializeExportButtons();
 });
+
+// Initialize export buttons
+function initializeExportButtons() {
+  const exportButtons = document.querySelectorAll('.export-btn');
+
+  exportButtons.forEach(function(button) {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const slug = button.getAttribute('data-slug');
+      if (slug) {
+        exportArticle(slug);
+      }
+    });
+  });
+}
+
+// Export article as Markdown file
+function exportArticle(slug) {
+  // Find article data from the articles array
+  const article = articles.find(function(a) {
+    return a.slug === slug || a.id === slug;
+  });
+
+  if (!article) {
+    console.error('Article not found:', slug);
+    alert('无法找到文章数据');
+    return;
+  }
+
+  // Generate Markdown content
+  const markdownContent = generateMarkdownContent(article);
+
+  // Generate filename
+  const filename = (article.slug || sanitizeFilename(article.title)) + '.md';
+
+  // Trigger download
+  downloadFile(markdownContent, filename, 'text/markdown');
+}
+
+// Generate Markdown content with YAML frontmatter
+function generateMarkdownContent(article) {
+  const lines = [];
+
+  // YAML frontmatter
+  lines.push('---');
+  lines.push('title: ' + escapeYamlString(article.title));
+
+  if (article.date) {
+    const dateStr = formatDateForYaml(article.date);
+    lines.push('date: ' + dateStr);
+  }
+
+  if (article.slug) {
+    lines.push('slug: ' + article.slug);
+  }
+
+  if (article.description) {
+    lines.push('description: ' + escapeYamlString(article.description));
+  }
+
+  if (article.tags && article.tags.length > 0) {
+    lines.push('tags:');
+    article.tags.forEach(function(tag) {
+      lines.push('  - ' + tag);
+    });
+  }
+
+  lines.push('---');
+  lines.push('');
+
+  // Article body content
+  if (article.content) {
+    lines.push(article.content);
+  } else if (article.body) {
+    lines.push(article.body);
+  }
+
+  return lines.join('\n');
+}
+
+// Format date for YAML frontmatter
+function formatDateForYaml(dateInput) {
+  const date = new Date(dateInput);
+  if (isNaN(date.getTime())) {
+    return String(dateInput);
+  }
+  return date.toISOString().split('T')[0];
+}
+
+// Escape YAML string values
+function escapeYamlString(str) {
+  if (!str) return '';
+  // Check if string needs quoting
+  if (/[:#{[\],&*?|>-]|^\s|#$|\n/.test(str) || str === '') {
+    // Use double quotes and escape special characters
+    return '"' + str.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n') + '"';
+  }
+  return str;
+}
+
+// Sanitize filename
+function sanitizeFilename(str) {
+  if (!str) return 'untitled';
+  return str
+    .toLowerCase()
+    .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, '-')  // Keep Chinese characters and alphanumeric
+    .replace(/^-+|-+$/g, '')  // Remove leading/trailing hyphens
+    .substring(0, 100);  // Limit length
+}
+
+// Download file using Blob
+function downloadFile(content, filename, mimeType) {
+  const blob = new Blob([content], { type: mimeType || 'text/plain' });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+
+  // Append to body, click, and remove
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  // Clean up the object URL after a short delay
+  setTimeout(function() {
+    URL.revokeObjectURL(url);
+  }, 100);
+}

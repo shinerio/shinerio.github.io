@@ -69,7 +69,6 @@ export interface ArticleMetadata {
 export interface ParsedArticle {
     metadata: ArticleMetadata;
     content: string;
-    rawContent: string;
     filePath: string;
     wordCount: number;
 }
@@ -82,7 +81,6 @@ export interface Article {
     description: string;
     content: string;
     htmlContent: string;
-    rawContent: string;
     wordCount: number;
     readingTime: number;
     filePath: string;

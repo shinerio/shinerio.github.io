@@ -192,8 +192,7 @@ class SiteGenerator {
             readingTime: article.readingTime,
             slug: article.slug,
             description: article.description,
-            relativePath: path.relative(options.config.vaultPath, article.filePath).replace(/\\/g, '/'),
-            rawContent: article.rawContent // 原始 Markdown 内容用于导出
+            relativePath: path.relative(options.config.vaultPath, article.filePath).replace(/\\/g, '/')
         }));
         const sidebar = this.renderSidebar(articles, options);
         const content = `
@@ -419,7 +418,6 @@ class SiteGenerator {
             description: parsed.metadata.description || this.extractDescription(parsed.content),
             content: parsed.content,
             htmlContent: this.convertMarkdownToHtml(parsed.content),
-            rawContent: parsed.rawContent, // 传递原始内容
             wordCount: parsed.wordCount,
             readingTime: Math.ceil(parsed.wordCount / 200), // 假设每分钟200字
             filePath: parsed.filePath,
@@ -614,16 +612,7 @@ class SiteGenerator {
     renderArticleListItem(article) {
         return `
     <div class="article-item">
-        <h3>
-            <a href="${article.slug}.html">${article.title}</a>
-            <button class="article-export-btn" data-article-id="${article.id}" title="导出文章">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7,10 12,15 17,10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </button>
-        </h3>
+        <h3><a href="${article.slug}.html">${article.title}</a></h3>
         <p class="article-excerpt">${article.description}</p>
         <div class="article-meta">
             <time datetime="${article.date.toISOString()}">${this.formatDate(article.date)}</time>
