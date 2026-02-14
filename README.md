@@ -10,6 +10,7 @@
 - **明暗主题**: 支持 `light`/`dark`/`auto` 三种主题模式，含手动切换
 - **搜索功能**: 内置加权全文搜索（标题权重3 > 标签权重2 > 正文权重1），支持中英文分词
 - **评论系统**: 基于 GitHub Issues 的评论功能（Utterances），主题跟随博客自动切换
+- **划词评论**: 支持对文章特定段落进行划词标注评论，独立于底部评论系统，悬浮显示评论内容
 - **TODO看板**: 集成 GitHub Projects v2 的 Kanban 看板，支持任务管理（需配置 OAuth 和 Cloudflare Worker）
 - **GitHub集成**: 侧边栏展示 GitHub 主页链接和 Follow 按钮
 - **Obsidian语法**: 自动处理 `[[内部链接]]` 和 `#标签` 语法
@@ -213,6 +214,65 @@ npx obsidian-blog validate -c ./config.json  # 验证配置文件
 ### 主题同步
 
 评论区会自动跟随博客的明暗主题切换。当用户手动切换主题或系统主题变化时，评论组件的配色方案会同步更新。
+
+## 划词评论功能
+
+博客支持对文章特定段落进行划词标注评论。读者可以选中文章中的任意文本段落，添加评论，并在悬浮时查看评论内容。该功能与底部的 Utterances 评论系统完全独立，数据存储在独立的 GitHub Issue 中。
+
+### 前置条件
+
+1. 博客必须启用底部的评论功能（`comments.enabled: true`）
+2. 需要在 GitHub 上创建一个 OAuth App 用于用户认证（或使用现有的）
+3. 确保博客使用的 GitHub 仓库已安装 Utterances App
+
+### 配置方式
+
+在 `blog.config.json` 中的 `comments` 字段下添加 `annotation` 配置：
+
+```json
+{
+  "comments": {
+    "enabled": true,
+    "repo": "owner/repo",
+    "issueTerm": "pathname",
+    "label": "blog-comment",
+    "annotation": {
+      "enabled": true,
+      "label": "text-annotation",
+      "oauthClientId": "your-oauth-app-client-id"
+    }
+  }
+}
+```
+
+### 配置项说明
+
+| 选项 | 类型 | 必填 | 默认值 | 描述 |
+|------|------|------|--------|------|
+| `annotation.enabled` | boolean | 是 | - | 是否启用划词评论功能 |
+| `annotation.label` | string | 否 | `"text-annotation"` | 用于划词评论的 GitHub Issue 标签 |
+| `annotation.oauthClientId` | string | 否 | - | GitHub OAuth App 的 Client ID，用于用户认证 |
+
+### 数据隔离
+
+划词评论与底部 Utterances 评论的数据完全隔离：
+
+- **Utterances 评论**：存储在标题为文章路径的 Issue 中，使用配置的 `label`（如 `blog-comment`）
+- **划词评论**：存储在标题为 `[annotation] <article-slug>` 的 Issue 中，使用独立的 `annotation.label`（如 `text-annotation`）
+
+这种设计确保两种评论数据不会混淆，便于管理和维护。
+
+### 使用方式
+
+1. 启用划词评论后，读者访问文章页面时，选中任意文本段落
+2. 选中后会弹出浮动工具栏，点击评论图标
+3. 如果是首次使用，需要点击 "使用 GitHub 登录" 按钮进行 OAuth 认证
+4. 在弹出的评论框中输入评论内容，点击提交
+5. 评论提交后，选中的文本会高亮显示，其他读者悬浮时可查看评论内容
+
+### 主题同步
+
+划词评论的界面元素（工具栏、弹窗、高亮标记、悬浮气泡）会自动跟随博客的明暗主题切换，确保与博客整体风格保持一致。
 
 ## TODO功能
 

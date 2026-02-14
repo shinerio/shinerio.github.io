@@ -8,11 +8,21 @@
   "theme": "auto",
   "customDomain": "shinerio.site",
   "githubUrl": "https://github.com/shinerio",
+  "blacklist": [
+    "Travel/",
+    "Life/"
+  ],
   "comments": {
     "enabled": true,
     "repo": "shinerio/shinerio.github.io",
     "issueTerm": "pathname",
-    "label": "blog-comment"
+    "label": "blog-comment",
+    "annotation": {
+      "enabled": true,
+      "label": "select-annotation",
+      "oauthClientId": "Ov23li65mtWdX973c2zm",
+      "oauthProxyUrl": "https://github-oauth-proxy.jstxshinerio.workers.dev"
+    }
   },
   "todo": {
     "enabled": true,

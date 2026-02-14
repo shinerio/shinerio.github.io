@@ -340,7 +340,7 @@ export class SiteGenerator {
 <link rel="stylesheet" id="hljs-dark" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" disabled>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
-<script src="assets/js/image-enhance.js" defer></script>`
+<script src="assets/js/image-enhance.js" defer></script>${this.generateTextSelectionCommentHead(options.config, article.slug)}`
         });
 
         await fs.writeFile(path.join(outputPath, `${article.slug}.html`), html);
@@ -746,6 +746,36 @@ export class SiteGenerator {
         crossorigin="anonymous"
         async>
 </script>`;
+  }
+
+  /**
+   * 生成划词评论相关的 head 内容
+   * Generate text selection comment head content
+   */
+  private generateTextSelectionCommentHead(config: BlogConfig, articleSlug: string): string {
+    // 检查是否启用了划词评论
+    if (!config.comments?.annotation?.enabled) {
+      return '';
+    }
+
+    const repo = config.comments.repo;
+    const annotationLabel = config.comments.annotation.label || 'text-annotation';
+    const oauthClientId = config.comments.annotation.oauthClientId || '';
+    const oauthProxyUrl = config.comments.annotation.oauthProxyUrl || '';
+
+    return `
+<!-- Text Selection Comment (划词评论) -->
+<link rel="stylesheet" href="assets/css/text-selection-comment.css">
+<script>
+  window.textSelectionCommentConfig = {
+    repo: '${repo}',
+    label: '${annotationLabel}',
+    articleSlug: '${articleSlug}',
+    clientId: '${oauthClientId}',
+    oauthProxyUrl: '${oauthProxyUrl}'
+  };
+</script>
+<script src="assets/js/text-selection-comment.js" defer></script>`;
   }
 
   /**

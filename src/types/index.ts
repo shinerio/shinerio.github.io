@@ -9,6 +9,13 @@ export interface CommentsConfig {
   repo: string;                // "owner/repo" 格式
   issueTerm?: 'pathname' | 'title' | 'og:title' | 'url';
   label?: string;              // Issues 标签，用于区分评论和普通 Issue
+  // 划词评论配置
+  annotation?: {
+    enabled: boolean;          // 是否启用划词评论
+    label?: string;            // 用于划词评论的 GitHub label，默认 'text-annotation'
+    oauthClientId?: string;    // GitHub OAuth App Client ID
+    oauthProxyUrl?: string;    // Cloudflare Worker URL for OAuth proxy
+  };
 }
 
 // TODO 配置接口
