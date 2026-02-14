@@ -77,6 +77,8 @@ class SiteGenerator {
             }
             // 复制静态资源
             await this.copyStaticAssets(outputPath);
+            // 复制 Markdown 源文件
+            await this.copyMarkdownFiles(articles, options, outputPath);
             // 生成CNAME文件（如果配置了自定义域名）
             await this.generateCnameFile(options.config, outputPath);
         }
@@ -310,6 +312,8 @@ class SiteGenerator {
                     readingTime: article.readingTime,
                     wordCount: article.wordCount,
                     tags: article.tags,
+                    markdownUrl: `assets/markdown/${article.slug}.md`,
+                    markdownFilename: `${article.title}.md`,
                     tableOfContents: this.generateTableOfContents(article.htmlContent),
                     relatedArticles: this.getRelatedArticles(article, articles).slice(0, 3),
                     commentsEnabled: options.config.comments?.enabled || false,
@@ -402,6 +406,33 @@ class SiteGenerator {
             // 如果模板资源不存在，创建基本目录结构
             await fs.ensureDir(path.join(assetsDestPath, 'css'));
             await fs.ensureDir(path.join(assetsDestPath, 'js'));
+        }
+    }
+    /**
+     * 复制 Markdown 源文件
+     * Copy markdown source files to output directory
+     */
+    async copyMarkdownFiles(articles, options, outputPath) {
+        const markdownDestPath = path.join(outputPath, 'assets', 'markdown');
+        await fs.ensureDir(markdownDestPath);
+        for (const article of articles) {
+            if (!article.isDraft) {
+                try {
+                    // 使用 slug 作为文件名以确保 URL 安全
+                    const destFilename = `${article.slug}.md`;
+                    const destPath = path.join(markdownDestPath, destFilename);
+                    // 如果 markdown 文件存在则复制
+                    if (await fs.pathExists(article.filePath)) {
+                        await fs.copy(article.filePath, destPath);
+                    }
+                    else {
+                        console.warn(`Markdown file not found for article "${article.title}": ${article.filePath}`);
+                    }
+                }
+                catch (error) {
+                    console.warn(`Failed to copy markdown for "${article.title}": ${error instanceof Error ? error.message : String(error)}`);
+                }
+            }
         }
     }
     /**
@@ -611,15 +642,22 @@ class SiteGenerator {
      */
     renderArticleListItem(article) {
         return `
-    <div class="article-item" data-slug="${article.slug}" data-title="${this.escapeHtml(article.title)}" data-date="${article.date.toISOString()}" data-tags='${JSON.stringify(article.tags)}' data-description="${this.escapeHtml(article.description)}">
-        <h3><a href="${article.slug}.html">${article.title}</a></h3>
-        <button class="export-btn" title="导出文章" data-slug="${article.slug}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-        </button>
+    <div class="article-item">
+        <h3>
+            <a href="${article.slug}.html">${article.title}</a>
+            <a href="assets/markdown/${article.slug}.md"
+               download="${article.title}.md"
+               class="markdown-export-btn"
+               title="下载 Markdown 源文件"
+               aria-label="导出 Markdown"
+               onclick="event.stopPropagation()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+            </a>
+        </h3>
         <p class="article-excerpt">${article.description}</p>
         <div class="article-meta">
             <time datetime="${article.date.toISOString()}">${this.formatDate(article.date)}</time>
@@ -627,19 +665,6 @@ class SiteGenerator {
             ${article.tags.length > 0 ? `<div class="tags">${article.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}</div>` : ''}
         </div>
     </div>`;
-    }
-    /**
-     * Escape HTML special characters
-     */
-    escapeHtml(text) {
-        if (!text)
-            return '';
-        return text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
     }
     /**
      * 生成文章ID

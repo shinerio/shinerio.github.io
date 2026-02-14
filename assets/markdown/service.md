@@ -1,0 +1,1 @@
+一个service对外暴露一个`clusterIp:port`，client可以访问这个`clusterIp:port`来实现负载均衡访问后端Pod。一个service对应的“后端”由pod的ip和端口号组成，这在kubernetes中称为endpoint。一组endpoints形如`10.0.95.22:8080,10.0.95.23:8080`，其中`10.0.95.22`和`10.0.95.23`都是podIp。

@@ -1916,11 +1916,11 @@
       "slug": "进程调度策略"
     },
     {
-      "id": "..\\..\\obsidian\\obsidian\\Tech\\security\\Github Oauth",
-      "title": "Github Oauth",
-      "content": "▐▛███▜▌ Claude Code v2.1.34 ▝▜█████▛▘ Opus 4.6 · Claude API ▘▘ ▝▝ C:\\workspace\\code\\shinerio.github.io > 1. 文章详情页，点击划词后，点击使用github登录，页面直接404，需要修复 2. 底部评论功能和TODO页面都已经实现了认证功能，能否服用 ● Explore(Explore text",
+      "id": "..\\..\\obsidian\\obsidian\\Tech\\security\\Device flow",
+      "title": "Device Flow",
+      "content": "GitHub的OAuth Device Flow（设备流，遵循 RFC 8628 标准）是一种专门为输入受限或无浏览器环境设计的授权方式（有时候一些简单个人项目可能也懒得开发独立的登录页面）。简单来说，如果你开发的是一个运行在服务器黑窗口（CLI）或智能电视上的程序，用户没法直接在那个屏幕上输入 GitHub 账号密码或点击“授权”按钮，这时就需要用到 Device Flow。 1. 核心功能与适",
       "tags": [],
-      "slug": "github-oauth"
+      "slug": "device-flow"
     },
     {
       "id": "..\\..\\obsidian\\obsidian\\Tech\\security\\Oauth2.0",

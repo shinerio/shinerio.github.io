@@ -47,6 +47,11 @@ export declare class SiteGenerator {
      */
     copyStaticAssets(outputPath: string): Promise<void>;
     /**
+     * 复制 Markdown 源文件
+     * Copy markdown source files to output directory
+     */
+    private copyMarkdownFiles;
+    /**
      * 转换为完整的文章数据结构
      * Convert parsed articles to full article data structure
      */
@@ -96,10 +101,6 @@ export declare class SiteGenerator {
      * Render article list item
      */
     private renderArticleListItem;
-    /**
-     * Escape HTML special characters
-     */
-    private escapeHtml;
     /**
      * 生成文章ID
      * Generate article ID

@@ -1,0 +1,14 @@
+```text
+2025-08-16T11:02:13.744Z [info] [encrypt-server] Server started and connected successfully
+2025-08-16T11:02:13.803Z [info] [encrypt-server] Message from client: {"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"claude-ai","version":"0.1.0"}},"jsonrpc":"2.0","id":0}
+2025-08-16T11:02:15.985Z [info] [encrypt-server] Message from server: {"jsonrpc":"2.0","id":0,"result":{"protocolVersion":"2025-06-18","capabilities":{"experimental":{},"prompts":{"listChanged":false},"resources":{"subscribe":false,"listChanged":false},"tools":{"listChanged":false}},"serverInfo":{"name":"shinerio's MCP Server","version":"1.12.2"}}}
+2025-08-16T11:02:15.987Z [info] [encrypt-server] Message from client: {"method":"notifications/initialized","jsonrpc":"2.0"}
+2025-08-16T11:02:16.006Z [info] [encrypt-server] Message from client: {"method":"tools/list","params":{},"jsonrpc":"2.0","id":1}
+2025-08-16T11:02:16.006Z [info] [encrypt-server] Message from client: {"method":"resources/list","params":{},"jsonrpc":"2.0","id":2}
+2025-08-16T11:02:16.039Z [info] [encrypt-server] Message from server: {"jsonrpc":"2.0","id":1,"result":{"tools":[{"name":"text_encryption","description":"加密文本字符串","inputSchema":{"properties":{"input":{"title":"Input","type":"string"}},"required":["input"],"title":"encryptArguments","type":"object"},"outputSchema":{"properties":{"result":{"title":"Result","type":"string"}},"required":["result"],"title":"encryptOutput","type":"object"}},{"name":"text_decryption","description":"解密文本字符串","inputSchema":{"properties":{"intput":{"title":"Intput","type":"string"}},"required":["intput"],"title":"decryptArguments","type":"object"},"outputSchema":{"properties":{"result":{"title":"Result","type":"string"}},"required":["result"],"title":"decryptOutput","type":"object"}}]}}
+2025-08-16T11:02:16.039Z [info] [encrypt-server] Message from server: {"jsonrpc":"2.0","id":2,"result":{"resources":[]}}
+2025-08-16T11:02:16.052Z [info] [encrypt-server] Message from client: {"method":"prompts/list","params":{},"jsonrpc":"2.0","id":3}
+2025-08-16T11:02:16.311Z [info] [encrypt-server] Message from server: {"jsonrpc":"2.0","id":3,"result":{"prompts":[]}}
+2025-08-16T11:02:34.667Z [info] [encrypt-server] Message from client: {"method":"tools/call","params":{"name":"text_encryption","arguments":{"input":"hello,shinerio"}},"jsonrpc":"2.0","id":4}
+2025-08-16T11:02:34.709Z [info] [encrypt-server] Message from server: {"jsonrpc":"2.0","id":4,"result":{"content":[{"type":"text","text":"aGVsbG8sc2hpbmVyaW8="}],"structuredContent":{"result":"aGVsbG8sc2hpbmVyaW8="},"isError":false}}
+```
