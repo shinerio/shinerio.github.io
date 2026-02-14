@@ -611,8 +611,15 @@ class SiteGenerator {
      */
     renderArticleListItem(article) {
         return `
-    <div class="article-item">
+    <div class="article-item" data-slug="${article.slug}" data-title="${this.escapeHtml(article.title)}" data-date="${article.date.toISOString()}" data-tags='${JSON.stringify(article.tags)}' data-description="${this.escapeHtml(article.description)}">
         <h3><a href="${article.slug}.html">${article.title}</a></h3>
+        <button class="export-btn" title="导出文章" data-slug="${article.slug}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+        </button>
         <p class="article-excerpt">${article.description}</p>
         <div class="article-meta">
             <time datetime="${article.date.toISOString()}">${this.formatDate(article.date)}</time>
@@ -620,6 +627,19 @@ class SiteGenerator {
             ${article.tags.length > 0 ? `<div class="tags">${article.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}</div>` : ''}
         </div>
     </div>`;
+    }
+    /**
+     * Escape HTML special characters
+     */
+    escapeHtml(text) {
+        if (!text)
+            return '';
+        return text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
     }
     /**
      * 生成文章ID

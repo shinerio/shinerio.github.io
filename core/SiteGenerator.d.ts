@@ -97,6 +97,10 @@ export declare class SiteGenerator {
      */
     private renderArticleListItem;
     /**
+     * Escape HTML special characters
+     */
+    private escapeHtml;
+    /**
      * 生成文章ID
      * Generate article ID
      */
