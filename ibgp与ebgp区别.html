@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"IBGP与EBGP区别","title":"IBGP与EBGP区别","content":"# 1. 使用场景\n**eBGP**主要用于：\n- 不同运营商/组织之间交换路由，例如中国电信与中国联通的互联互通\n- 企业多归属（multihoming）接入多个 ISP\n- IXP（互联网交换点）中各参与方之间的路由交换\n**iBGP** 主要用于：\n- 在一个大型 AS 内部传递从 eBGP 学到的外部路由信息，使 AS 内所有边界路由器共享一致的路由视图\n- 大型 ISP 或企业骨干网内部，配合 IGP（OSPF/IS-IS）协同工作\n- 通常与路由反射器（Route Reflector）或联邦（Confederation）配合部署，解决全互联的扩展性问题\n# 2. 关键原理与行为差异\n\n| 维度                   | eBGP                        | iBGP                                                                      |\n| -------------------- | --------------------------- | ------------------------------------------------------------------------- |\n| **定义**               | 运行在**不同** AS 之间的 BGP        | 运行在**同一个** AS 内部的 BGP                                                     |\n| **主要目的**             | 对外**交换**路由（AS 之间传递信息）       | 对内统一认知，**承载**路由（在AS内部传递外部路由）                                              |\n| **TTL 默认值**          | 1（邻居通常直连）                   | 255（可以跨多跳建立）                                                              |\n| **AS-PATH 行为**       | 发送路由时**添加本地 AS 号**（也用于防环）   | 不修改 AS-PATH                                                               |\n| **防环机制**             | 收到路由后检查AS-PATH，若包含自己的AS号则丢弃 | **水平分割规则**：从 iBGP邻居学到的路由**不再传给其他 iBGP 邻居**。逻辑上要求全互联（Full-Mesh），路由不需要二次传播。 |\n| **Next-Hop 行为**      | 默认改为自身接口地址                  | 默认**不改变** next-hop（保留 eBGP 邻居的地址），通常需要手动 `next-hop-self`                  |\n| **邻居关系要求**           | 一般直连，或用 `ebgp-multihop`     | 逻辑上需要**全互联（full-mesh）**，否则需要 RR 或联邦                                       |\n| **AD（管理距离）**         | 20（更优先）                     | 200（较低优先级）                                                                |\n| **MED 属性**           | 跨AS传递，用于影响入站流量              | 在AS内部传递，保持一致                                                              |\n| **Local Preference** | 不跨 AS 传递                    | 在 iBGP 之间传递，用于 AS 内部选路                                                    |\n\n# 3. 核心原理总结\n1. **eBGP 的防环靠 AS-PATH**：路由每经过一个 AS 就追加该 AS 号，若收到包含自身 AS 号的路由则拒绝，天然防止环路。\n2. **iBGP 的防环靠水平分割**：因为 iBGP 不修改 AS-PATH（AS 号相同，无法靠 AS-PATH 检测环路），所以规定 iBGP 学到的路由不能再转发给其他 iBGP 邻居。这个规则直接导致了**全互联要求**——每台路由器必须和 AS 内所有其他 BGP 路由器建立 iBGP 邻居，否则路由无法传播到所有节点。\n3. **全互联的扩展性问题**：N 台路由器需要 N×(N-1)/2 条 iBGP 会话，因此实际部署中几乎都使用路由反射器（RR）或 BGP 联邦（Confederation）来减少会话数量。\n4. **Next-Hop 的协作逻辑**：iBGP 不改 next-hop，意味着 AS 内部路由器必须通过 IGP 能到达该 next-hop 地址，否则路由不可用。这就是 BGP 和 IGP 必须协同工作的原因"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>IBGP与EBGP区别</h1>
+        <h1>
+            IBGP与EBGP区别
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2026-02-07T14:16:23.418Z">2026年2月7日</time>
         <div class="tags">
             

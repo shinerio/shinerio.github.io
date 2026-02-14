@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"代码示例","title":"代码示例","content":"```go\r\npackage main\r\n\r\nimport (\r\n\t\"context\"\r\n\t\"fmt\"\r\n\t\"log\"\r\n\t\"time\"\r\n\r\n\t\"github.com/go-redis/redis/v8\"\r\n)\r\n\r\nfunc main() {\r\n\tctx := context.Background()\r\n\r\n\t// 创建Redis客户端\r\n\trdb := redis.NewClient(&redis.Options{\r\n\t\tAddr:         \"localhost:6379\",\r\n\t\tDialTimeout:  time.Second * 3,   // 连接超时时间\r\n\t\tReadTimeout:  time.Second * 3,   // 读超时时间\r\n\t\tWriteTimeout: time.Second * 3,   // 写超时时间\r\n\t\tPoolSize:     3,                 // 最大连接池大小\r\n\t\tIdleTimeout:  time.Second * 3,   // 空闲连接的最大存活时间\r\n\t\tMaxConnAge:   time.Second * 300, // 连接最大存活时间，无论连接是否空闲\r\n\t\tPoolTimeout:  time.Second * 30,  // 从连接池中获取连接池超时时间\r\n\t})\r\n\r\n\t// 自动从连接池中获取一个连接，并检查连接\r\n\tif _, err := rdb.Ping(ctx).Result(); err != nil {\r\n\t\tlog.Fatalf(\"无法连接到Redis: %v\", err)\r\n\t}\r\n\r\n\t// 流键和消费者组名称\r\n\tstreamKey := \"mystream\"\r\n\tgroupName := \"mygroup\"\r\n\r\n\t// 创建消费者组（如果不存在）\r\n\t_, err := rdb.XGroupCreateMkStream(ctx, streamKey, groupName, \"$\").Result()\r\n\tif err != nil && err.Error() != \"BUSYGROUP Consumer Group name already exists\" {\r\n\t\tlog.Fatalf(\"创建消费者组失败: %v\", err)\r\n\t}\r\n\r\n\t// 启动多个消费者\r\n\tgo consumer(ctx, rdb, streamKey, groupName, \"consumer-1\", 10)\r\n\tgo consumer(ctx, rdb, streamKey, groupName, \"consumer-2\", 10)\r\n\tgo consumer(ctx, rdb, streamKey, groupName, \"consumer-3\", 2)\r\n\r\n\t// 生产消息\r\n\tgo producer(ctx, rdb, streamKey)\r\n\r\n\t// 保持主程序运行\r\n\tselect {}\r\n}\r\n\r\n// 生产者函数\r\nfunc producer(ctx context.Context, rdb *redis.Client, streamKey string) {\r\n\tfor {\r\n\t\t// 生成消息\r\n\t\tmessage := map[string]interface{}{\r\n\t\t\t\"timestamp\": time.Now().String(),\r\n\t\t\t\"message\":   fmt.Sprintf(\"消息 %d\", time.Now().UnixNano()),\r\n\t\t}\r\n\r\n\t\t// 发送消息到流\r\n\t\tid, err := rdb.XAdd(ctx, &redis.XAddArgs{\r\n\t\t\tStream: streamKey,\r\n\t\t\tValues: message,\r\n\t\t}).Result()\r\n\r\n\t\tif err != nil {\r\n\t\t\tlog.Printf(\"发送消息失败: %v\", err)\r\n\t\t} else {\r\n\t\t\tlog.Printf(\"发送消息成功，ID: %s\", id)\r\n\t\t}\r\n\r\n\t\ttime.Sleep(1 * time.Second)\r\n\t}\r\n}\r\n\r\n// 消费者函数\r\nfunc consumer(ctx context.Context, rdb *redis.Client, streamKey, groupName, consumerName string, maxMsg int) {\r\n\tfor i := 0; i < maxMsg; i++ {\r\n\t\t// 从流中读取消息\r\n\t\tstreams, err := rdb.XReadGroup(ctx, &redis.XReadGroupArgs{\r\n\t\t\tGroup:    groupName,\r\n\t\t\tConsumer: consumerName,\r\n\t\t\tStreams:  []string{streamKey, \">\"}, // \">\" 表示只获取从未分配给其他消费者的新消息\r\n\t\t\tCount:    10,                       // 每次最多获取10条消息\r\n\t\t\tBlock:    0,                        // 不阻塞，立即返回\r\n\t\t}).Result()\r\n\r\n\t\tif err != nil {\r\n\t\t\tlog.Printf(\"消费者 %s 读取消息失败: %v\", consumerName, err)\r\n\t\t\ttime.Sleep(1 * time.Second)\r\n\t\t\tcontinue\r\n\t\t}\r\n\r\n\t\t// 处理消息\r\n\t\tfor _, stream := range streams {\r\n\t\t\tfor _, message := range stream.Messages {\r\n\t\t\t\tlog.Printf(\"消费者 %s 收到消息，ID: %s，内容: %v\", consumerName, message.ID, message.Values)\r\n\r\n\t\t\t\t// 模拟处理时间\r\n\t\t\t\ttime.Sleep(200 * time.Millisecond)\r\n\r\n\t\t\t\t// 确认消息处理完成\r\n\t\t\t\tif _, err := rdb.XAck(ctx, streamKey, groupName, message.ID).Result(); err != nil {\r\n\t\t\t\t\tlog.Printf(\"消费者 %s 确认消息失败: %v\", consumerName, err)\r\n\t\t\t\t} else {\r\n\t\t\t\t\tlog.Printf(\"消费者 %s 确认消息成功，ID: %s\", consumerName, message.ID)\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\r\n\t\t// 短暂休眠，避免CPU占用过高\r\n\t\ttime.Sleep(100 * time.Millisecond)\r\n\t}\r\n}\r\n```"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>代码示例</h1>
+        <h1>
+            代码示例
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             
@@ -141,7 +155,16 @@ func main() {
     // 创建消费者组（如果不存在）
     _, err := rdb.XGroupCreateMkStream(ctx, streamKey, groupName, &amp;quot;&lt;article&gt;
     &lt;header&gt;
-        &lt;h1&gt;代码示例&lt;/h1&gt;
+        &lt;h1&gt;
+            代码示例
+            &lt;a href=&quot;#&quot; class=&quot;export-btn&quot; title=&quot;导出文章&quot; onclick=&quot;exportArticleFromPage(); return false;&quot;&gt;
+                &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                    &lt;path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;/&gt;
+                    &lt;polyline points=&quot;7 10 12 15 17 10&quot;/&gt;
+                    &lt;line x1=&quot;12&quot; y1=&quot;15&quot; x2=&quot;12&quot; y2=&quot;3&quot;/&gt;
+                &lt;/svg&gt;
+            &lt;/a&gt;
+        &lt;/h1&gt;
         &lt;time datetime=&quot;2025-09-17T13:31:12.000Z&quot;&gt;2025年9月17日&lt;/time&gt;
         &lt;div class=&quot;tags&quot;&gt;
             

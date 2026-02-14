@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"变量赋值&结构访问","title":"变量赋值&结构访问","content":"# 1. 取地址与解引用\r\n`&`是取地址符号，放到一个变量前使用就会返回相应变量的内存地址。如`&a`\r\n`*`是指针运算符，一个指针变量指向了一个值的内存地址。放到一个变量前可以对指针解引用，获取指针指向的实际变量。\r\n```go\r\npackage main\r\n\r\nimport \"fmt\"\r\n\r\nfunc main() {\r\n\tvar a int = 20 /* 声明实际变量 */\r\n\tvar ip *int    /* 声明指针变量 */\r\n\r\n\tip = &a /* 指针变量的存储地址 */\r\n\r\n\tfmt.Printf(\"a 变量的地址是: %x\\n\", &a)\r\n\r\n\t/* 指针变量的存储地址 */\r\n\tfmt.Printf(\"ip 变量储存的指针地址: %x\\n\", ip)\r\n\r\n\t/* 使用指针访问值 */\r\n\tfmt.Printf(\"*ip 变量的值: %d\\n\", *ip)\r\n}\r\n```\r\n输出如下\r\n```text\r\na 变量的地址是: c0000120d0\r\nip 变量储存的指针地址: c0000120d0\r\n*ip 变量的值: 20\r\n```\r\n# 2. 变量赋值\r\ngo中直接对结构体进行复制，会进行值拷贝。\r\n```go\r\npackage main\r\n\r\nimport \"fmt\"\r\n\r\ntype Person struct {\r\n\tName string\r\n\tAge  int\r\n}\r\n\r\nfunc main() {\r\n\tp1 := Person{Name: \"张三\", Age: 25}\r\n\tp2 := p1 // 这里是值拷贝\r\n\r\n\t// 修改 p2 不会影响 p1\r\n\tp2.Name = \"李四\"\r\n\tp2.Age = 30\r\n\r\n\tfmt.Println(p1) // 输出: {张三 25}\r\n\tfmt.Println(p2) // 输出: {李四 30}\r\n}\r\n```\r\n结构体的指针属性也会拷贝，但指针指向的地址是相同的\r\n```go\r\npackage main\r\n\r\nimport \"fmt\"\r\n\r\ntype Student struct {\r\n\tName   string\r\n\tScores *[]int\r\n}\r\n\r\nfunc main() {\r\n\tscores := []int{90, 85, 95}\r\n\ts1 := Student{Name: \"小明\", Scores: &scores}\r\n\ts2 := s1 // 结构体是值拷贝，但Scores指针指向同一个切片\r\n\r\n\t(*s2.Scores)[0] = 100 // 通过s2修改切片的内容\r\n\r\n\tfmt.Println(*s1.Scores) // 输出: [100 85 95]\r\n\tfmt.Println(*s2.Scores) // 输出: [100 85 95]\r\n\t// 打印s1和s2的地址\r\n\tfmt.Printf(\"s1的地址: %p\\n\", &s1)\r\n\tfmt.Printf(\"s2的地址: %p\\n\", &s2)\r\n\t// 两个结构体中Scores指针本身的地址不一样，相对s1和s2的地址偏移量是固定的\r\n\tfmt.Printf(\"s1.Scores的指针地址: %p\\n\", &(s1.Scores))\r\n\tfmt.Printf(\"s2.Scores的指针地址: %p\\n\", &(s2.Scores))\r\n\t// 两个指针实际存储（指向）的地址是一样的\r\n\tfmt.Printf(\"s1.Scores的指针指向地址: %p\\n\", s1.Scores)\r\n\tfmt.Printf(\"s2.Scores的指针指向地址: %p\\n\", s2.Scores)\r\n\t// 修改指针指向地址内容，会同时生效\r\n\t(*(s1.Scores))[0] = 1\r\n\tfmt.Printf(\"s1.Scores数组元素: %v\\n\", *s1.Scores) // 输出: [1 85 95]\r\n\tfmt.Printf(\"s2.Scores数组元素: %v\\n\", *s2.Scores) // 输出: [1 85 95]\r\n\r\n\t// 将s1.Scores指针指向新开辟的内存，两个指针实际存储的地址不一样\r\n\ts1.Scores = &[]int{5, 6, 7}\r\n\tfmt.Printf(\"s1.Scores的指针地址: %p\\n\", &(s1.Scores))\r\n\tfmt.Printf(\"s2.Scores的指针地址: %p\\n\", &(s2.Scores))\r\n\tfmt.Printf(\"s1.Scores的指针指向地址: %p\\n\", s1.Scores)\r\n\tfmt.Printf(\"s2.Scores的指针指向地址: %p\\n\", s2.Scores)\r\n\tfmt.Printf(\"s1.Scores数组元素: %v\\n\", *s1.Scores)  // 输出： [5 6 7]\r\n\tfmt.Printf(\"s2.Scores数组元素: %v\\n\", *s2.Scores) //输出: [1 85 95]\r\n}\r\n```\r\n输出如下\r\n```text\r\n100 85 95]\r\n[100 85 95]\r\ns1的地址: 0xc000010030\r\ns2的地址: 0xc000010048\r\ns1.Scores的指针地址: 0xc000010040\r\ns2.Scores的指针地址: 0xc000010058\r\ns1.Scores的指针指向地址: 0xc000010018\r\ns2.Scores的指针指向地址: 0xc000010018\r\ns1.Scores数组元素: [1 85 95]\r\ns2.Scores数组元素: [1 85 95]\r\ns1.Scores的指针地址: 0xc000010040\r\ns2.Scores的指针地址: 0xc000010058\r\ns1.Scores的指针指向地址: 0xc0000100c0\r\ns2.Scores的指针指向地址: 0xc000010018\r\ns1.Scores数组元素: [5 6 7]\r\ns2.Scores数组元素: [1 85 95]\r\n```\r\n如果我们不希望重新分配内存空间、进行值拷贝，使用两个变量引用同一块内存空间，值变化可以联动，则需要考虑使用结构体指针复制，以便进行引用传递\r\n```go\r\npackage main\r\n\r\nimport \"fmt\"\r\n\r\ntype Student struct {\r\n\tName   string\r\n\tScores *[]int\r\n}\r\n\r\nfunc main() {\r\n\tvar p1 = Student{Name: \"张三\"}\r\n\tvar p2 *Student = &p1 // p2是指向p1的指针\r\n\tp2.Name = \"李四\"        // 自动解引用，等同于(*p2).Name = \"李四\"\r\n\r\n\tfmt.Println(p1.Name) // 输出: {李四 25}\r\n\tfmt.Println(p2.Name) // 输出: {李四 25}\r\n}\r\n```\r\n# 3. 结构体元素访问\r\n在Go语言中，结构体指针和结构体对象都可以使用点号(`.`)语法访问结构体成员，这是Go语言的一个语法糖设计，目的是让代码更简洁易读。\r\n1. **简化语法**：如果没有这个特性，使用结构体指针时我们需要先解引用再访问成员，像这样：`(*p).field`。这种写法相对繁琐且容易出错。\r\n2. **一致性体验**：允许指针和值类型使用相同的访问语法，减少了开发者需要记住的特殊情况，使代码更一致。\r\n3. **自动解引用**：当你使用 `p.field` 语法（其中 `p` 是指针）时，Go 编译器会自动将其解释为 `(*p).field`。\r\n```go\r\npackage main\r\n\r\nimport \"fmt\"\r\n\r\ntype Person struct {\r\n\tName string\r\n}\r\n\r\nfunc main() {\r\n\t// 结构体对象\r\n\tp1 := Person{Name: \"张三\"}\r\n\tfmt.Println(p1.Name) // 直接用点号访问\r\n\r\n\t// 结构体指针\r\n\tp2 := &p1\r\n\tfmt.Println(p2.Name) // 也可以用点号访问，编译器会自动转换为 (*p2).Name\r\n\tfmt.Println((*p2).Name)\r\n}\r\n```\r\n输出如下：\r\n```text\r\n张三\r\n张三\r\n张三\r\n```"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>变量赋值&结构访问</h1>
+        <h1>
+            变量赋值&结构访问
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

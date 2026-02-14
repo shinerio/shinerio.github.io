@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"中断","title":"中断","content":"# 1. 中断（Interrupt）的定义\r\n**中断**是计算机系统中一种关键机制，允许处理器**暂停当前执行的任务**，转去处理更高优先级的紧急事件，处理完成后**恢复原任务**。中断机制提高了系统的响应速度和资源利用率，是操作系统实现多任务、实时响应的基础。\r\n# 2. 硬件中断（Hardware Interrupt） vs 软件中断（Software Interrupt）\r\n\r\n| **特征**       | **硬件中断**                                           | **软件中断**                                 |\r\n| ------------ | -------------------------------------------------- | ---------------------------------------- |\r\n| **触发源**      | 外部硬件设备（如键盘、网卡、定时器）                                 | CPU执行特定指令（如`int 0x80`）或程序异常（如除零错误）       |\r\n| **同步性**      | **异步**：随机发生，与CPU当前指令无关                             | **同步**：由正在执行的程序主动触发                      |\r\n| **目的**       | 通知CPU外部事件（如数据到达、设备就绪）                              | 请求系统服务（如系统调用）或处理程序错误                     |\r\n| **中断号（IRQ）** | 由硬件分配固定IRQ（如IRQ1对应键盘）                              | 由软件指定（如Linux系统调用使用`0x80`中断号）             |\r\n| **处理流程**     | 1. 设备发送中断信号到中断控制器（如APIC）  <br>2. CPU保存现场，跳转到中断处理程序 | 1. 执行`int`指令或触发异常  <br>2. CPU直接查表跳转到处理程序 |\r\n| **典型场景**     | 网卡收到数据包、硬盘I/O完成、键盘输入                               | 应用程序调用系统API（如读写文件）、除零错误                  |\r\n| **优先级**      | 可配置优先级（如时钟中断 > 磁盘中断）                               | 通常由操作系统定义（如异常 > 普通系统调用）                  |\r\n| **屏蔽能力**     | 可通过屏蔽中断（CLI指令）临时禁用                                 | 不可屏蔽（如某些异常必须处理）                          |\r\n\r\n# 3. 硬件中断详解\r\n1. **触发过程**：\r\n    - 设备通过物理信号线（如INTR、NMI）或消息信号（如MSI-X）通知中断控制器。\r\n    - 中断控制器仲裁优先级后，向CPU发送中断请求。\r\n2. **处理步骤**：\r\n    - CPU完成当前指令后，保存现场（寄存器、程序计数器）。\r\n    - 根据中断号查询**中断向量表**，跳转到对应的**中断服务程序（ISR）**。\r\n    - ISR处理完成后，通过`IRET`指令恢复现场。\r\n3. **例子**：\r\n    - **时钟中断**：由定时器周期性触发，用于任务调度。\r\n    - **网卡中断**：数据包到达时触发，通知CPU读取数据。\r\n# 4. 软件中断详解\r\n1. **触发方式**：\r\n    - **主动调用**：程序执行`int n`指令（如Linux系统调用`int 0x80`）。\r\n    - **异常触发**：CPU检测到错误（如缺页、除零），自动生成中断。\r\n2. **处理步骤**：\r\n    - CPU直接根据中断号跳转到预设的处理程序（如系统调用处理函数或异常处理程序）。\r\n    - 处理完成后可能终止程序（如段错误）或恢复执行（如缺页处理）。\r\n3. **例子**：\r\n    - **系统调用**：用户程序通过`int 0x80`进入内核态执行特权操作。\r\n    - **断点调试**：调试器利用`int 3`指令触发中断以暂停程序。\r\n# 5. 关键区别总结\r\n1. **触发源**：\r\n    - 硬件中断来自外部设备，软件中断来自CPU内部（指令或异常）。\r\n2. **同步性**：\r\n    - 硬件中断是异步事件，软件中断是同步执行的必然结果。\r\n3. **用途**：\r\n    - 硬件中断处理外部通信，软件中断实现系统服务或错误处理。\r\n4. **响应延迟**：\r\n    - 硬件中断可能被屏蔽或延迟处理，软件中断通常立即响应。\r\n# 6. 实际应用中的协同\r\n- **操作系统内核**：混合使用两者。例如，网卡收到数据时触发硬件中断，内核处理数据后通过软件中断通知用户程序。\r\n- **性能权衡**：高频硬件中断可能引入开销，因此现代网卡支持**轮询模式**或**中断合并**（如NAPI）。"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>中断</h1>
+        <h1>
+            中断
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

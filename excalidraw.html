@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"Excalidraw","title":"Excalidraw","content":"<span class=\"tag\">#obsidian</span> \r\n[Excalidraw](https://github.com/zsviczian/obsidian-excalidraw-plugin)是一个手工风格的白板工具。可以使用`ctrl+p或command+p`呼出命令菜单，输入excalidraw进行创作。\r\n\r\n# library\r\n\r\n[library](https://libraries.excalidraw.com/?target=_blank&referrer=app%3A%2F%2Fobsidian.md&useHash=true&token=dR6oTmJQXvWDH2qCVAbIe&theme=dark&version=2&sort=default)提供了很多公开的模板库可以帮助我们画出很多精美的图案。\r\n\r\n# 导出\r\n可以导出为png或svg\r\n\r\n# 双链\r\n\r\n鼠标右键选中create link，可以在excalidraw中使用双链。和在markdown文档中的使用规则一样，两个中括号中是被引用的文档。同时也可以在markdown中引用excalidraw的图。!<a href=\"excalidraw使用示例.html\" class=\"internal-link\">Excalidraw使用示例</a>\r\n-  按住Command并把鼠标放在图中的双链上就会显示一个小的预览图\r\n-  Command＋鼠标左键就可以打开图中的被引用的文档\r\n-  Command＋Shift＋鼠标左键就可以在新页面打开文档\r\n-  Command＋Shift＋Alt＋鼠标左键就会新建一个当前文本的页面\r\n# Templater 联用\r\n可以联合使用Templater作为模板生成一些常用画图模板。"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Excalidraw</h1>
+        <h1>
+            Excalidraw
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

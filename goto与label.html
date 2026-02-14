@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"goto与label","title":"Goto与Label","content":"Go语言也支持label(标签)语法：分别是`break label`和 `goto label` 、`continue label`。\r\n- break label可以跳出label层级循环\r\n- continue label可以从label继续下一次循环\r\n- goto可以无条件的跳转执行的位置，但是**不能跨函数**，需要配合标签使用\r\n```go\r\npackage gotocase\r\n\r\nimport (\r\n\t\"fmt\"\r\n\t\"testing\"\r\n)\r\n\r\nfunc TestGoto(t *testing.T) {\r\n\tfmt.Println(1)\r\n\tgoto three     //跳转  \r\n\tfmt.Println(2) // 这行将会被跳过\r\nthree:\r\n\tfmt.Println(3)\r\n}\r\n```\r\n执行结果\r\n```\r\n=== RUN   TestGoto\r\n1\r\n3\r\n--- PASS: TestGoto (0.00s)\r\nPASS\r\n```\r\n\r\n```go\r\nfunc TestGoto1(t *testing.T) {\r\none:\r\n\tfmt.Println(1)\r\n\tgoto one     //跳转\r\n\tfmt.Println(2) // 这行将会被跳过\r\n\r\n\tfmt.Println(3)\r\n}\r\n// 循环打印1\r\n```\r\n\r\n```go\r\nfunc TestBreak(t *testing.T) {\r\nOUTER:\r\n\tfor {\r\n\t\tfmt.Println(1)\r\n\t\tfor {\r\n\t\t\tfmt.Println(2)\r\n\t\t\tbreak OUTER\r\n\t\t}\r\n\t}\r\n\tfmt.Println(3)\r\n}\r\n// 依次打印1 2 3\r\n```\r\n\r\n```go\r\nfunc TestContinue(t *testing.T) {\r\n\ta := 1\r\nLabel:\r\n\tfor a < 5 {\r\n\t\tif a == 3 {\r\n\t\t\ta++\r\n\t\t\t//fmt.Println(a)\r\n\t\t\tcontinue Label\r\n\t\t}\r\n\t\tfmt.Println(a)\r\n\t\ta++\r\n\t}\r\n}\r\n```\r\n\r\n输出结果\r\n```go\r\n1\r\n2\r\n4\r\n```"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Goto与Label</h1>
+        <h1>
+            Goto与Label
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

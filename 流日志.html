@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"流日志","title":"流日志","content":"# 1. 格式\r\n\r\n## 1.1. 网络信息7元组\r\ninternal_ip,internal_port,external_ip,external_port,transit_ip,transit_port,protocol\r\n## 1.2. 流量数据\r\npacket_num,byte_size\r\n\r\n## 1.3. 时间信息\r\nstart_time,end_time\r\n\r\n## 1.4. 网元信息\r\n网关id,匹配规则信息\r\n\r\n# 2. google\r\n由于google是采用分布式nat的方案，因此google流日志功能是在虚拟机中实现的。\r\n# 3. 参考链接\r\n[Flow log record examples - Amazon Virtual Private Cloud](https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs-records-examples.html<span class=\"tag\">#flow-log-example-nat</span>)\r\nhttps://cloud.google.com/nat/docs/monitoring?hl=zh-cn"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>流日志</h1>
+        <h1>
+            流日志
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

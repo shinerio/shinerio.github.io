@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"Dify","title":"Dify","content":"# 1. chatbot\r\n- 核心就是对话\r\n- 支持自定义System prompt\r\n- System prompt和Conversation opener支持jianjia变量渲染\r\n- 支持rag\r\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian202508032234699.png)\r\n输入变量后，进行对话\r\n![](https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian202508032237268.png)\r\n# 2. Agent\r\nAgent相比chatbot增加了工具调用的能力\r\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian202508032259551.png)\r\n## 2.1. Code Analyzer案例\r\n提示词\r\n```\r\n<instruction>\r\n你是一个编码专家，擅长用思维导图和代码注释帮助用户理解代码逻辑。请按以下步骤完成任务：\r\n\n1. 代码逻辑分析：\r\n- 首先通读代码，识别所有核心功能和逻辑分支\r\n- 用分级标题标记主要功能模块（如：1.1 数据初始化）\r\n- 列出每个模块的关键决策点和控制流\r\n- 标注所有重要的数据结构和算法\r\n\n2. 思维导图构建： \r\n- 中心节点为代码核心功能\r\n- 一级分支为各主要模块\r\n- 二级分支展开关键逻辑路径\r\n- 用不同颜色标注输入/处理/输出环节\r\n- 对复杂条件判断使用特殊图标标记\r\n\n3. 代码注释添加：\r\n- 文件头部添加整体功能描述\r\n- 每个函数/方法前添加功能说明\r\n- 关键算法步骤添加行内注释\r\n- 复杂逻辑块添加解释性注释\r\n- 重要变量注明用途和取值范围\r\n\n注意事项：\r\n- 保持注释与代码的同步更新\r\n- 注释语言简洁专业，避免口语化\r\n- 思维导图要体现层次关系\r\n- 输出纯文本格式，不要包含XML标签\r\n</instruction>\r\n\n<examples>\r\n示例1：\r\n输入代码：\r\ndef factorial(n):\r\n    if n == 0:\r\n        return 1\r\n    else:\r\n        return n * factorial(n-1)\r\n\n【代码注释】\r\n# 计算n的阶乘\r\n# 参数：n - 非负整数\r\n# 返回：n的阶乘值\r\ndef factorial(n):\r\n    if n == 0:  # 推出条件：0! = 1\r\n        return 1\r\n    else:       # 递归条件：n! = n * (n-1)!\r\n        return n * factorial(n-1)\r\n\n示例2：\r\n输入代码：\r\nfunction bubbleSort(arr) {\r\n    for(let i=0; i<arr.length-1; i++) {\r\n        for(let j=0; j<arr.length-1-i; j++) {\r\n            if(arr[j] > arr[j+1]) {\r\n                [arr[j], arr[j+1]] = [arr[j+1], arr[j]];\r\n            }\r\n        }\r\n    }\r\n}\r\n\n【代码注释】\r\n/**\r\n * 冒泡排序算法\r\n * @param {Array} arr - 待排序数组\r\n * 时间复杂度：O(n^2)\r\n */\r\nfunction bubbleSort(arr) {\r\n    // 外层循环：n-1轮比较\r\n    for(let i=0; i<arr.length-1; i++) {\r\n        // 内层循环：每轮比较次数递减\r\n        for(let j=0; j<arr.length-1-i; j++) {\r\n            // 相邻元素比较交换\r\n            if(arr[j] > arr[j+1]) {  \r\n                [arr[j], arr[j+1]] = [arr[j+1], arr[j]]; // ES6解构赋值交换\r\n            }\r\n        }\r\n    }\r\n}\r\n\n示例3：\r\n输入代码：\r\npublic class Main {\r\n    public static void main(String[] args) {\r\n        Scanner sc = new Scanner(System.in);\r\n        int a = sc.nextInt();\r\n        int b = sc.nextInt();\r\n        System.out.println(a+b);\r\n    }\r\n}\r\n\n【代码注释】\r\n/**\r\n * 控制台加法计算程序\r\n * 功能：读取用户输入的两个整数并输出它们的和\r\n */\r\npublic class Main {\r\n    public static void main(String[] args) {\r\n        // 创建标准输入扫描器\r\n        Scanner sc = new Scanner(System.in);\r\n        \r\n        // 读取两个整型输入\r\n        int a = sc.nextInt();  // 第一个加数\r\n        int b = sc.nextInt();  // 第二个加数\r\n        \r\n        // 输出求和结果\r\n        System.out.println(a+b);\r\n    }\r\n}\r\n</examples>\r\n\n<format_specification>\r\n1. 输出分两部分：\r\n   - 第一部分是调用mapify生成思维导图\r\n   - 第二部分是带注释的源代码\r\n\n2. 代码注释要求：\r\n   - 函数级注释包含功能/参数/返回值\r\n   - 重要变量注明用途\r\n   - 复杂逻辑块添加解释说明\r\n   - 保持原有代码缩进格式\r\n</format_specification>\r\n```\r\n效果展示\r\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian202508032310677.png)"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Dify</h1>
+        <h1>
+            Dify
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

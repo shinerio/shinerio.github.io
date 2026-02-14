@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"Ipv4地址","title":"Ipv4地址","content":"# 1. 特殊ip地址汇总\r\n- 0.0.0.0/8：用于广播信息到当前主机\r\n- 10.0.0.0/8：用于专用网络中的本地通信\r\n- 172.16.0.0/12：用于专用网络中的本地通信\r\n- 192.168.0.0/16：用于专用网络中的本地通信\r\n- 100.64.0.0/10：用于在电信级NAT环境中服务提供商与其用户通信\r\n- 127.0.0.0/8：用于到本地主机的环回地址\r\n- 169.254.0.0/16：用于单链路的两个主机之间的链路本地地址，而没有另外指定IP地址，例如通常从DHCP服务器所检索到的IP地址\r\n- 192.0.0.0/24：用于IANA的IPv4特殊用途地址表\r\n- 192.0.2.0/24：分配为用于文档和示例中的“TEST-NET”（测试网），它不应该被公开使用\r\n- 192.88.99.0/24：用于6to4任播中继，已废弃\r\n- 198.18.0.0/15：用于测试两个不同的子网的网间通信\r\n- 198.51.100.0/24：分配为用于文档和示例中的“TEST-NET-2”（测试-网-2），它不应该被公开使用\r\n- 203.0.113.0/24：分配为用于文档和示例中的“TEST-NET-3”（测试-网-3），它不应该被公开使用\r\n- 224.0.0.0/4：用于多播\r\n- 240.0.0.0/4：用于将来使用\r\n- 255.255.255.255/32：用于受限广播地址"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Ipv4地址</h1>
+        <h1>
+            Ipv4地址
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

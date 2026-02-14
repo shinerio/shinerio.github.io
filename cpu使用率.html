@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"CPU使用率","title":"CPU使用率","content":"# 1. 查看进程CPU使用率\r\n## 1.1. 平均使用率\r\nps命令显示的`%cpu`值是进程的平均CPU使用率，计算公式为:\r\n$\\%CPU=(进程使用的CPU时间​/进程运行的总时间)×100$\r\n如下命令显示CPU占用最高的前几名进程\r\n`ps -eo pid,comm,%cpu --sort=-%cpu | head`\r\n输出如下\r\n```scss\r\nPID COMMAND         %CPU  \r\n1234 firefox         42.3  \r\n5678 chrome          37.5  \r\n9101 java            22.0\r\n```\r\n## 1.2. 瞬时使用率\r\n如果想监控某个进程（比如 `nginx`）的 CPU 使用率\r\n```\r\ntop -p $(pgrep nginx)\r\n```\r\n# 2. 查看系统CPU使用率\r\n## 2.1. 使用 `top` 命令（实时查看）\r\n进入 `top` 界面后，按 **`1`** 可以查看每个CPU核心的使用情况。\r\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images20250302162105169.png)\r\n`Cpu(s)` 行的字段含义：\r\n- **`us`（user）**：用户进程占用 CPU 百分比\r\n- **`sy`（system）**：内核进程占用 CPU 百分比\r\n- **`ni`（nice）**：调整过优先级的用户进程占用 CPU 百分比\r\n- **`id`（idle）**：空闲 CPU 百分比\r\n- **`wa`（iowait）**：等待 I/O 操作的时间\r\n- **`hi`（hardware IRQ）**：硬件中断占用 CPU 百分比\r\n- **`si`（software IRQ）**：软件中断占用 CPU 百分比\r\n- **`st`（steal）**：虚拟化环境中被其他虚拟机抢占的 CPU 百分比\r\n```scss\r\n%Cpu(s):  12.3 us,  4.5 sy,  0.0 ni, 80.1 id,  2.9 wa,  0.0 hi,  0.2 si,  0.0 st\r\n```\r\n- 用户进程占用12.3%CPU\r\n- 内核进程占用4.5%CPU\r\n- 空闲80.1%CPU\r\n## 2.2. 使用 `htop`（更美观的交互界面)\r\n需要手动安装（部分 Linux 发行版可能没有预装）。\r\n```shell\r\nsudo apt install htop \r\n# Ubuntu/Debian \r\nsudo yum install htop  \r\n# CentOS/RHEL sudo dnf install htop  # Fedora`\r\n```\r\n- 显示每个 CPU 核心的负载情况\r\n- 颜色区分不同类型的 CPU 负载\r\n- 支持鼠标操作和快捷键\r\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images20250302162144690.png)\r\n## 2.3. 使用 `vmstat`（监控 CPU 使用情况）\r\n`vmstat 1`\r\n输出如下\r\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images20250302162217345.png)\r\n- **`us`（user）**：用户进程CPU使用率\r\n- **`sy`（system）**：内核进程CPU使用率\r\n- **`id`（idle）**：CPU空闲率\r\n- **`wa`（wait）**：I/O等待占用CPU比例\r\n## 2.4. 使用 `mpstat`（更详细的 CPU 统计信息）\r\n`mpstat -P ALL 1`\r\n**关键参数**\r\n- `-P ALL`：显示所有CPU核心的统计信息\r\n- `1`：每秒刷新一次\r\n安装方式\r\n```shell\r\nsudo apt install sysstat  \r\n# Ubuntu/Debian \r\nsudo yum install sysstat  \r\n# CentOS/RHEL`\r\n```\r\n输出如下\r\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images20250302162355778.png)\r\n## 2.5. 使用 `sar`（历史 CPU 使用情况）\r\n`sar -u 5 3`\r\n- 需要安装 `sysstat`（同 `mpstat`）\r\n- `-u`：显示 CPU 使用情况。\r\n- `5 3`：每 5 秒采样一次，共 3 次。\r\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images20250302162516258.png)\r\ntop是实时显示cpu使用率，而sar适用于**CPU 历史使用情况分析**，可以查看过去的CPU负载趋势。sar从 `sysstat` 日志文件 `/var/log/sysstat/` 读取数据，适合长期分析。\r\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images20250302162750842.png)\r\n## 2.6. 只查看 CPU 使用率数值\r\n如果你只想获取当前的CPU使用率（去掉 `idle` 部分）：\r\n`top -bn1 | grep \"Cpu(s)\" | awk '{print 100 - $8\"%\"}'`\r\n- `$8` 代表 `idle` 值（空闲 CPU）。\r\n- 计算 `100 - idle`，得到 CPU 使用率。\r\n```scss\r\nroot@vultr:~# top -bn1 | grep \"Cpu(s)\" | awk '{print 100 - $8\"%\"}'\r\n16.7%\r\n```\r\n# 3. 总结\r\n\r\n| 命令                                 | 作用                         |\r\n| ---------------------------------- | -------------------------- |\r\n| `top`                              | 实时查看CPU平均使用率，按 `1` 显示各核心情况 |\r\n| `htop`                             | 交互式界面，类似`top`，更美观         |\r\n| `vmstat 1`                         | 每秒显示一次CPU统计信息            |\r\n| `mpstat -P ALL 1`                  | 按 CPU 核心统计使用率              |\r\n| `sar -u 5 3`                       | 采样 CPU 负载历史数据              |\r\n| `top -bn1                          | grep \"Cpu(s)\"              |\r\n| \"ps -eo pid,comm,%cpu --sort=-%cpu \\| head\"  |    查看CPU实时利用率                  |\r\n| `ps -C nginx -o %cpu`              | 查询 `nginx` 进程的 CPU 使用率     |"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>CPU使用率</h1>
+        <h1>
+            CPU使用率
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

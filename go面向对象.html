@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"go面向对象","title":"Go面向对象","content":"# 1. 自定义数据类型\r\n增强代码可读性\r\n```go\r\ntype city string  \r\n  \r\nfunc main() {  \r\n    beijing := city(\"北京\")  \r\n    shanghai := city(\"上海\")  \r\n    fmt.Println(beijing)  // 北京  \r\n    fmt.Println(shanghai) // 上海\r\n}8\r\n```\r\n# 2. 方法接收器\r\n只有自定义类型(或内置类型)才能够绑定方法，从而获得面向对象的特性。例如,为`type User struct {...}` 绑定 `func (u User) Name() string {...}` 方法。,使得User对象实现了Name方法。\r\n```go\r\ntype User struct {  \r\n    name string  \r\n    age  int32  \r\n}  \r\n  \r\nfunc (u User) Name() string {  \r\n    return u.name  \r\n}  \r\n  \r\nfunc main() {  \r\n    userA := User{  \r\n       name: \"jack\",  \r\n       age:  10,  \r\n    }  \r\n  \r\n    fmt.Println(userA.Name()) // jack  \r\n}\r\n```\r\n在Go语言中，接口的实现是隐式的，也就是说只要一个自定义类型实现了接口中声明的所有方法，那么它就被认为实现了该接口，无需显式声明。这种隐式实现的方式，让接口的使用变得非常灵活。\r\n```go\r\n// Shape 接口是一种抽象类型,它定义了一组方法签名,但不包含实现代码  \r\ntype Shape interface {  \r\n    Area() float64  \r\n    Perimeter() float64  \r\n}  \r\n  \r\n// Rectangle 实现了接口中声明的所有方法，那么它就被认为实现了该接口  \r\ntype Rectangle struct {  \r\n    Width, Height float64  \r\n}  \r\n  \r\nfunc (r Rectangle) Area() float64 {  \r\n    return r.Width * r.Height  \r\n}  \r\n  \r\nfunc (r Rectangle) Perimeter() float64 {  \r\n    return 2 * (r.Width + r.Height)  \r\n} \r\n\r\ntype Square struct {  \r\n    edgeSize float64  \r\n}  \r\n  \r\nfunc (r Square) Area() float64 {  \r\n    return r.edgeSize * r.edgeSize  \r\n}\r\n  \r\nfunc printInfo(shape Shape) {  \r\n    fmt.Println(shape.Area())      // 200  \r\n    fmt.Println(shape.Perimeter()) // 60  \r\n}  \r\n  \r\nfunc main() {  \r\n    myRectangle := Rectangle{  \r\n       Width:  10.0,  \r\n       Height: 20.0,  \r\n    }  \r\n    printInfo(myRectangle)  \r\n    \r\n\tmySquare := Square{  \r\n\t    edgeSize: 10,  \r\n\t}  \r\n\t// Cannot use 'mySquare' (type Square) as the type Shape Type does not implement 'Shape'  \r\n\tprintInfo(mySquare)\r\n}\r\n```"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Go面向对象</h1>
+        <h1>
+            Go面向对象
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

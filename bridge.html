@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"bridge","title":"Bridge","content":"# 1. 常见命令\r\n```shell\r\nbrctl add br0\r\nbrctl addif br0 ethx\r\nbrctl showmacs br0\r\nbrctl show br0\r\n```\r\n# 2. 泛洪\r\n- **泛洪机制**：桥接设备会将该数据包从除接收端口之外的所有其他端口发送出去。这样做的目的是确保目的设备无论连接到哪个端口，都有机会接收到这个数据包。例如，在一个包含多个主机的局域网中，如果主机 A 向一个桥接设备发送了一个数据包，而该桥接设备的 FDB 表中没有目的主机的 MAC 地址，那么桥接设备会将这个数据包转发到除了连接主机 A 的端口之外的所有其他端口。\r\n- **学习过程**：在泛洪的同时，桥接设备会学习源 MAC 地址与接收端口的对应关系，并将其添加到 FDB 表中。这样当下次有发往该源 MAC 地址的数据包时，就可以直接根据 FDB 表进行转发，而不需要再泛洪。\r\n- **老化机制**：FDB 表中的条目通常有一个老化时间。如果在一段时间内没有再次收到来自某个 MAC 地址的数据包，对应的表项会被删除。这确保了 FDB 表不会因为长时间未使用的条目而变得臃肿，从而保证桥接设备的高效运行。\r\n# 3. iptables与bridge关系\r\n在 Linux 系统中，网桥（如`br0`）用于连接多个网络接口，在数据链路层（OSI 模型第 2 层）进行数据包转发，类似于硬件交换机的功能。而`iptables`是基于网络层（OSI 模型第 3 层）和传输层（OSI 模型第 4 层）的防火墙工具，用于根据设定的规则过滤和处理数据包。默认情况下，当`net.bridge.bridge-nf-call-iptables`参数的值为`1`（开启状态）时，内核会将桥接的数据包传递给`iptables`进行处理，`iptables`可以根据规则对这些数据包进行过滤、NAT（网络地址转换）等操作。当执行 `sysctl -w net.bridge.bridge-nf-call-iptables=0` 后，内核不再将桥接的数据包提交给`iptables`进行处理。这意味着，无论`iptables`中针对桥接接口（如`br0`）设置了何种规则，都不会对桥接网络中的数据包生效。例如，如果你之前设置了 `iptables -A FORWARD -i br0 -j DROP` 以阻止通过网桥转发的所有数据包，但执行上述命令后，这些数据包将不再受此规则影响，会直接通过网桥进行转发。\r\n\r\n- **INPUT 链**：如果包的目的IP是网桥所在主机自身的 IP 地址，且主机开启了`iptables`的INPUT链规则，那么这些包会经过INPUT链进行规则匹配。例如，当你在网桥上设置了IP地址，并且希望允许或拒绝特定源IP对该网桥 IP 的访问，就可以通过 INPUT 链规则来实现。假设网桥`br0`的 IP 为`192.168.1.1`，若 INPUT 链有规则`iptables -A INPUT -i br0 -p tcp --dport 80 -j DROP`，则从`br0`进入且目的端口为80的TCP包会被丢弃。\r\n- **FORWARD 链**：对于通过网桥转发的包（即源IP和目的IP都不是网桥所在主机的 IP），如果主机充当路由器功能且`iptables`的FORWARD链开启规则，这些包会经过 FORWARD 链。比如，在一个双网卡主机中，一个网卡连接外网，另一个网卡通过网桥连接内网，当内网主机访问外网时，数据包会经过网桥转发，此时若FORWARD链设置了`iptables -A FORWARD -i br0 -o eth0 -j ACCEPT`，则从`br0`进入并从`eth0`出去的包会被允许通过。"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Bridge</h1>
+        <h1>
+            Bridge
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

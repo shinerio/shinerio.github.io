@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"类型断言","title":"类型断言","content":"**类型断言**提供了访问**接口值**底层具体值的方式。\r\n```go\r\nt := i.(T)\r\n```\r\n该语句断言接口值 `i` 保存了具体类型 `T`，并将其底层类型为 `T` 的值赋予变量 `t`。若 `i` 并未保存 `T` 类型的值，该语句就会触发一个 panic。\r\n\r\n为了**判断**一个接口值是否保存了一个特定的类型，类型断言可返回两个值：其底层值以及一个报告断言是否成功的布尔值。\r\nt, ok := i.(T)\r\n若 `i` 保存了一个 `T`，那么 `t` 将会是其底层值，而 `ok` 为 `true`。否则，`ok` 将为 `false` 而 `t` 将为 `T` 类型的零值，程序并不会产生 panic。\r\n```go\r\npackage main\r\n\r\nimport \"fmt\"\r\n\r\nfunc main() {\r\n\tvar i interface{} = \"hello\"\r\n\r\n\ts := i.(string)\r\n\tfmt.Println(s) // hello\r\n\r\n\ts, ok := i.(string)\r\n\tfmt.Println(s, ok) // hello true\r\n\r\n\tf, ok := i.(float64)\r\n\tfmt.Println(f, ok) // o flase\r\n\r\n\tf = i.(float64) // panic\r\n\tfmt.Println(f)\r\n}\r\n```"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>类型断言</h1>
+        <h1>
+            类型断言
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

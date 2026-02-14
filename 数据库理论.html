@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"数据库理论","title":"数据库理论","content":"# 1. 三大范式\r\n\r\n- 第一范式（1NF)\r\n\t保证列的**原子性**，一张表的某个列不能有多个值，不能出现重复列。实际操作中我们可能会违反这个约束，如将列值存成一个json字典，但是我们一定要保证这些值至少是一起读或写的，不存在经常部分更新的场景。\r\n- 第二范式（2NF）：\r\n\t**取消部分依赖**，表中的每个字段都与主键相关，而不能只与主键的某一部分相关（主要针对联合主键而言）。也就是说在一个数据库表中，一个表中只能保存一种数据，不可以把多种数据保存在同一张数据库表中。比如订单表中可以用订单id编号和商品编号做联合主键，这时候表中的商品价格就是部分依赖，其只依赖于商品编号。\r\n- 第三范式（3NF）：\r\n\t**取消传递依赖**，表中的每个字段都与主键直接相关。第三范式最严格，能够最大程度地减少数据冗余，但是也带来了不必要的查询开销。比如订单表中添加客户编号作为外键，但是不能把客户的手机号、地址等信息存入，因为这些额外的信息不依赖订单主键，只依赖于客户编号这个外键，属于传递依赖。所以第三范式使用的时候一定要综合考虑好空间和效率的平衡。\r\n\r\n# 2. DML,DDL,DCL\r\n\r\n- DML（data manipulation language）：SELECT、UPDATE、INSERT、DELETE，就象它的名字一样，这4条命令是用来对数据进行操作的语言\r\n- DDL（data definition language）：\r\n\tDDL比DML要多，主要的命令有CREATE、ALTER、DROP等。DDL主要是用在定义或改变表的结构，数据类型，表之间的链接和约束等初始化工作上，他们大多在建立表或软件版本更新时使用。\r\n- DCL（data control language）：\r\n\tDCL是数据库控制功能，用来设置或更改数据库用户或角色权限的语句，包括grant,deny,revoke等语句。在默认状态下，只有sysadmin,dbcreator,db_owner或db_securityadmin等人员才有权力执行。"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>数据库理论</h1>
+        <h1>
+            数据库理论
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

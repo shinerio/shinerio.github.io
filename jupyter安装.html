@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"jupyter安装","title":"Jupyter安装","content":"z从sqlite官网`cnblogs.com/staff/p/12763019.html`，下载安装最新版本sqlite3\r\n\r\n清理旧版本的sqlite3\r\n```\r\n# 临时重命名或移除系统旧版本（谨慎操作）\r\nsudo mv /usr/lib64/libsqlite3.so /usr/lib64/libsqlite3.so.backup\r\nsudo mv /usr/lib64/libsqlite3.so.0 /usr/lib64/libsqlite3.so.0.backup\r\n\r\n# 更新链接器配置，确保 /usr/local/lib 优先\r\necho \"/usr/local/lib\" | sudo tee -a /etc/ld.so.conf.d/local.conf\r\nsudo ldconfig\r\n\r\n# 验证链接器现在找到的是正确版本\r\nldconfig -p | grep sqlite\r\n```\r\n\r\n安装并编译python环境\r\n```\r\nyum install libffi-devel\r\n\r\n./configure \\\r\n    --enable-optimizations \\\r\n    CPPFLAGS=\"-I/usr/local/include\" \\\r\n    LDFLAGS=\"-L/usr/local/lib\" \\\r\n    SQLITE3_CFLAGS=\"-I/usr/local/include\" \\\r\n    SQLITE3_LIBS=\"-L/usr/local/lib -lsqlite3\"\r\n\r\nmake clean\r\nmake -j$(nproc)\r\nmake altinstall\r\n```\r\n配置jupyter lab\r\n```\r\njupyter lab --generate-config\r\njupyter lab password\r\njupyter lab --ip=0.0.0.0 --port=14445 --no-browser --allow-root\r\n```\r\n\r\n添加python环境\r\n```\r\n/usr/local/bin/pip3.13 install ipykernel\r\n/usr/local/bin/python3.13 -m ipykernel install --user --name=python313\r\n```\r\n\r\n# 1. 格式转换\r\n```\r\njupyter nbconvert --to html vector.ipynb\r\njupyter nbconvert --to markdown vector.ipynb\r\njupyter nbconvert --to pdf vector.ipynb\r\n```"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Jupyter安装</h1>
+        <h1>
+            Jupyter安装
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

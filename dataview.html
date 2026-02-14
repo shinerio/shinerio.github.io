@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"dataview","title":"Dataview","content":"# 1 查询依据\r\nyaml数据/metainfo\r\n# 2 使用查询语言\r\n\r\n使用下列语法创建查询语言代码块\r\n\r\n````text\r\n```dataview\r\n query command\r\n```\r\n````\r\n\r\n## 2.1 examples\r\n\r\n### 2.1.1 列表\r\n\r\n例如，使用以下方式我们可以给每个文件夹创建一个目录\r\n\r\n````text\r\n```dataview\r\n# 文件全路径名包含Note/Obsidian\r\nLIST WHERE contains(file.path, \"Note/Obsidian\")\r\n```\r\n````\r\n\r\n```dataview\r\nLIST WHERE contains(file.path, \"Note/Obsidian\")\r\n```\r\n\r\n# 3 使用内联查询\r\n\r\n内联查询的结果只能是一个，不能查询一个列表。当前页面可以通过`this.`获得，其他页面可以通过双链语法`<a href=\"page-name.html\" class=\"internal-link\">page_name</a>`获得\r\n\r\n通过下列语法创建内联查询：\r\n\r\n```text\r\n`= this.file.name` \r\n```\r\n\r\n此博客文件名：`= this.file.name`\r\n\r\n# 4 使用JavaScript API\r\n\r\n使用下列语法创建JS dataview代码块：\r\n\r\n````text\r\n```dataviewjs\r\n... js code ...\r\n```\r\n````\r\n\r\n# 5 参考链接\r\n[官方文档](https://blacksmithgu.github.io/obsidian-dataview/)"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Dataview</h1>
+        <h1>
+            Dataview
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

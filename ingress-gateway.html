@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"ingress Gateway","title":"Ingress Gateway","content":"在Kubernetes的服务网格架构中，Ingress Gateway是通过Envoy实现的。在Istio中，Ingress Gateway 是用于管理进入服务网格的流量的组件，它基于 Envoy 代理构建。Envoy 是一个高性能的代理，专门设计用于处理服务到服务的通信，支持动态服务发现、负载均衡、TLS 终止、HTTP/2 和 gRPC 代理、熔断器、健康检查、灰度发布、故障注入和丰富的指标收集等功能。\r\n\r\nk8s中istiod和envoy就是典型的控制平面和数据平面的关系。用户通过声明式的方法调用kubernetes api server，istiod将配置转化为数据面能理解的数据，envoy通过xds协议主动从istiod拉去数据。"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Ingress Gateway</h1>
+        <h1>
+            Ingress Gateway
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

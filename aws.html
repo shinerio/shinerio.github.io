@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"aws","title":"Aws","content":"aws的nat网关作为vpc的一个特性，创NAT网关的时候可以选择公网还是私网。流量经过NAT网关，源地址都会转成网关的私网地址，公网NAT后面会经过internate gateway，然后将私网地址转换成公网地址。\r\n# 1. 公网NAT\r\n## 1.1. 性能\r\n- 默认5 Gbps，最高100 Gbps\r\n- pps 1M-10M\r\n- 每一个EIP在目的地址不同情况下支持55000个并发连接。\r\n- 公网NAT支持绑定最多两个ip\r\n- 只允许创建一个snat规则绑定所有ip，不允许创建dnat规则。\r\n## 1.2. other\r\n### 1.2.1. IP占用情况\r\n- 创建网关关联一个EIP，默认占用一个私网地址\r\n- 可以额外多关联一个EIP，会额外再占用一个私网地址\r\n# 2. 私网NAT\r\n创建网关的时候可以选择随机分配，也可以指定ip地址，可以自定义1个主ip地址 + 最多7个副ip地址\r\n## 2.1. 重叠网段互访\r\n两个vpc中各创建一个不冲突的子网，然后各创建一个NAT网关。两个可路由的子网使用Transit gateway(ER)连接，配置两条VPC静态路由。\r\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/202310042245219.png)\r\n\r\n- 默认5 Gbps，最高100 Gbps\r\n- pps 1M-10M\r\n- 每一个EIP在目的地址不同情况下支持55000个并发连接。\r\n- 私网NAT支持最多8个ip。\r\n- 只允许创建一个snat规则绑定所有ip，不允许创建dnat规则。\r\n## 2.2. 指定IP访问IDC\r\n客户端所在子网路由表配置目的地址为对端的送到私网NAT网关；网关所在子网绑定自定义路由表，设置目的地址为对端的送VPN或专线。\r\n# 3. other\r\n## 3.1. 不支持az容灾\r\n要求用户每个az创一个nat网关，然后自己配置路由实现az亲和访问，避免单可用区故障。\r\n## 3.2. 支持NAT64（配合DNS64）\r\n## 3.3. 公网NAT不支持通过其他连接方式过来的流量（如ER/Peering）\r\n## 3.4. transit gateway\r\n类似于ER\r\n# 4. link\r\n[NAT gateways - Amazon Virtual Private Cloud](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html)"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Aws</h1>
+        <h1>
+            Aws
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

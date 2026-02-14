@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"Awesome-tools","title":"Awesome Tools","content":"# 1. 全平台\n- freefilesync，文件夹同步工具\n- ChatGPT流媒体解锁检测脚本：`bash <(curl -L -s media.ispvps.com)`\n- https://gitlab.com/fscarmen/warp解锁应用端chatgpt\n# 2. macos\n## 2.1. 媒体工具\n- snipaste截图软件\n- kap屏幕gif录制工具，对于博客一类对于视频质量要求不高的可以开启Lossy GIF compression来减少体积\n# 3. web\n- [figma](Figma: The Collaborative Interface Design Tool](https://www.figma.com/): 一款UI Design、whiteboard tool\n- [notebooklm](https://notebooklm.google.com/): AI笔记工具\n- [perplexity](www.perplexity.ai): AI搜索工具\n- [google ai studio](https://aistudio.google.com/): google ai实验工具，可以基与实时视频或分享屏幕的方式来交互\n# 4. code\n- [uv](https://docs.astral.sh/uv/) An extremely fast Python package and project manager, written in Rust."}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Awesome Tools</h1>
+        <h1>
+            Awesome Tools
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2026-02-12T15:55:46.098Z">2026年2月12日</time>
         <div class="tags">
             

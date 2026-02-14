@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"NAT高可靠","title":"NAT高可靠","content":"# 1. 双机热备\r\n双机热备对于防火墙来说是一个必不可少的功能，两台防火墙上的NAT配置也需要完全相同，这样就会出现一个问题：如果两个防火墙分别将两条不同的流映射到相同的公网地址，并且端口也相同的话，势必会造成表项的混乱，所以我们引入了地址池优先级的概念。\r\n\r\n在双机热备的环境中，如果地址池被配置为高优先级，在进行端口映射的时候端口取值范围为1024~35000；如果地址池被配置为低优先级，其端口取值范围为35001~65535。这样主备两台防火墙虽然使用相同的NAT地址池中的地址，但是由于地址池的优先级不同，所以就不会出现NAT转换后公网IP和公网端口完全相同的情况了。\r\n\n| 故障场景            | 双层架构                                                                     | 三层架构                                                              |\r\n| ------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------- |\r\n| forwarder单节点故障 | 流量hash到新forwarder节点，director需要承担单节点会话丢失的瞬时upcall        | 流量hash到新forwarder节点，director需要承担单节点会话丢失的瞬时upcall |\r\n| forwarder可用区故障 | 流量hash到另一个可用区的forwarder节点，director需要承受1/2总流量的瞬时upcall | flow master需要承担单节点会话丢失瞬时的upcall                         |\r\n| director故障        | 存量会话不受影响，丢失一半新建能力                                           | 存量会话不受影响，丢失一半新建能力                                    |\r\n| flow master故障     | 不涉及                                                                       | 无影响，另一个flow master承担会话缓存能力                             |\r\n|                     |                                                                              |                                                                       |\r\n\r\n# 2. 分布式源端NAT\r\n典型的是google cloud nat的思路，每个源端节点分配transit_ip的部分端口，相当于把两节点主主式的nat网关节点进一步扩大到N个节点主主式的nat网关。节点的端口段分配策略采用静态分配和动态分配两种。"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>NAT高可靠</h1>
+        <h1>
+            NAT高可靠
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"SCTP","title":"SCTP","content":"SCTP ( Stream Control Transmission Protocol )，即流媒体控制传输协议，是一种可靠的基于无连接数据包网络如IP网络之上传输协议。他被设计用来在IP网络上传输PSTN在窄带信令消息，同时也能支持宽带信令消息的传输。\r\n\r\nSCTP可以看作OSI层次结构中的传输层，它的上层作为SCTP用户应用，下层为分组网络IP层。\r\n\n# 1. 参考链接\r\n[SCTP通用报文格式 (023wg.com)](http://www.023wg.com/message/message/cd_feature_sctp_general.html)\r\n[传输层 - IP报文格式大全(html) - 华为 (huawei.com)](https://support.huawei.com/enterprise/zh/doc/EDOC1100174722?section=j006)"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>SCTP</h1>
+        <h1>
+            SCTP
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

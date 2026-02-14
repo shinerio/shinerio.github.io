@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"系统信息查看命令汇总","title":"系统信息查看命令汇总","content":"在`Linux`系统下经常要查看各种信息，需要使用到各种命令，全部背下来也是一项不小的工作量。每次临时找也比较浪费时间，这里汇总下常用的命令。\r\n\r\n<!--more-->\r\n\r\n# 1. 系统\r\n\r\n## 1.1. 查看linux内核版本\r\n\r\n```shell\r\ncat /proc/version\r\n# Linux version 4.15.0-20-generic (buildd@lgw01-amd64-039) (gcc version 7.3.0 (Ubuntu 7.3.0-16ubuntu3)) <span class=\"tag\">#21-Ubuntu</span> SMP Tue Apr 24 06:16:15 UTC 2018\r\nuname -a\r\n# Linux glowing-kittens-3.localdomain 4.15.0-20-generic <span class=\"tag\">#21-Ubuntu</span> SMP Tue Apr 24 06:16:15 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux\r\n```\r\n\r\n`/proc`文件系统不是普通的文件系统，而是系统内核的映像。也就是说，该目录中的文件是存放在系统内存之中的，它以文件系统的方式为访问系统内核数据的操作提供接口。而我们使用命令`uname -a`的信息就是从该文件获取的，当然用方法二的命令直接查看它的内容也可以达到同等效果.另外，加上参数\"a\"是获得详细信息，如果不加参数为查看系统名称。\r\n\r\n## 1.2. 查看linux系统版本\r\n\r\n```shell\r\nlsb_release -a\r\n# Distributor ID:\tUbuntu\r\n# Description:\tUbuntu 18.04 LTS\r\n# Release:\t18.04\r\n# Codename:\tbionic\r\n# ==========================[STDERR]==========================\r\n# No LSB modules are available.\r\n# ===========================[END]============================\r\n\r\ncat /etc/issue\r\n# Ubuntu 18.04 LTS \\n \\l\r\n```\r\n\r\n## 1.3. 查看系统硬件信息\r\n```shell\r\n# 查看CPU信息\r\ncat /proc/cpuinfo \r\n# 查看内存信息\r\ncat /proc/meminfo\r\n# 列出所有pci设备\r\nlspci -tv \r\n# 列出所有USB设备\r\nlsusb -tv \r\n# 列出加载的内核模块\r\nlsmod \r\n```\r\n\r\n# 2. 资源占用\r\n\r\n```shell\r\n# 查看内存使用量和交换区使用量\r\nfree -m \r\n# 查看各分区使用情况\r\ndf -h \r\n# 查看指定目录的大小\r\ndu -sh <dir> \r\n# 查看系统运行时间、用户数、负载\r\nuptime \r\n# 查看系统负载\r\ncat /proc/loadavg \r\n```\r\n\r\n# 3. 磁盘和分区\r\n\r\n```shell\r\n# 查看挂接的分区状态\r\nmount | column -t \r\n# 查看所有分区\r\nfdisk -l \r\n# 查看所有交换分区\r\nswapon -s \r\n# 查看磁盘参数(仅适用于IDE设备)\r\nhdparm -i /dev/hda \r\n # 查看启动时IDE设备检测状况\r\ndmesg | grep IDE\r\n```\r\n\r\n# 4. 网络\r\n\r\n```shell\r\n# 查看所有网络接口的属性\r\nifconfig \r\nip a\r\n# 查看防火墙设置\r\niptables -L \r\n# 查看路由表\r\nroute -n \r\n```\r\n\r\n# 5. 用户\r\n\r\n```shell\r\n# 查看活动用户\r\nw \r\n# 查看指定用户信息\r\nid <username> \r\n# 查看用户登录日志\r\nlast \r\n# 查看系统所有用户\r\ncut -d: -f1 /etc/passwd \r\n# 查看系统所有组\r\ncut -d: -f1 /etc/group \r\n# 查看当前用户的计划任务\r\ncrontab -l \r\n```"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>系统信息查看命令汇总</h1>
+        <h1>
+            系统信息查看命令汇总
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2023-01-24T00:00:00.000Z">2023年1月24日</time>
         <div class="tags">
             

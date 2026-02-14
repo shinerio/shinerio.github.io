@@ -19,18 +19,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<!-- Text Selection Comment (划词评论) -->
-<link rel="stylesheet" href="assets/css/text-selection-comment.css">
-<script>
-  window.textSelectionCommentConfig = {
-    repo: 'shinerio/shinerio.github.io',
-    label: 'select-annotation',
-    articleSlug: '效率工具',
-    clientId: 'Ov23li65mtWdX973c2zm',
-    oauthProxyUrl: 'https://github-oauth-proxy.jstxshinerio.workers.dev'
-  };
-</script>
-<script src="assets/js/text-selection-comment.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"效率工具","title":"效率工具","content":"# 1. 添加环境变量\n```shell\n[Environment]::SetEnvironmentVariable(\"EDITOR\", \"code --wait\", \"User\")\n```\n# 2. windows命令行代理\n\n```dos\nset http_proxy=http://username:password@proxy.domain.com:8080\nset https_proxy=https://username:password@proxy.domain.com:8080\n```\n\n# 3. git代理\n\n```dos\n# 配置代理\ngit config --global http.proxy http://username:password@proxy.domain.com:8080\ngit config --global https.proxy https://username:password@proxy.domain.com:8080\ngit config --global http.sslverify false\n\n# git config --global https.proxy http://127.0.0.1:7890\n# git config --global https.proxy http://127.0.0.1:7890\n\n# 取消代理\ngit config --global --unset http.proxy\ngit config --global --unset https.proxy\n# 指定网站代理\ngit config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080\n# 取消代理  \ngit config --global --unset http.https://github.com.proxy\n```\n也可以直接编辑~/.gitconfig文件\n# 4. windows配置beyondcompare作为gitdiff\n修改.gitconfig配置文件\n```text\n[diff] \n    tool = bc4 \n[difftool] \n    prompt = false \n[difftool \"bc4\"]\n    cmd = \"\\\"D:/Beyond Compare/bcomp.exe\\\" \\\"$LOCAL\\\" \\\"$REMOTE\\\"\" \n[merge]\n    tool = bc4 [mergetool] prompt = false \n[mergetool \"bc4\"] \n    cmd = \"\\\"D:/Beyond Compare/bcomp.exe\\\" \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" \\\"$MERGED\\\"\" \n    trustExitCode = true\n```\n# 5. 删除重复文件\n```poweshell\n# 预览模式\nGet-ChildItem -Path \"D:\\document\" -File -Recurse | Where-Object {$_.BaseName -match '^.+ \\d{1,2}
 </head>
 <body class="article-page" id="theme-body">
     <div class="page-wrapper">
@@ -60,7 +51,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>效率工具</h1>
+        <h1>
+            效率工具
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             
@@ -151,7 +151,16 @@ git config --global --unset http.https://github.com.proxy
 &lt;pre&gt;&lt;code class=&quot;language-poweshell&quot;&gt;# 预览模式
 Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&lt;article&gt;
     &lt;header&gt;
-        &lt;h1&gt;效率工具&lt;/h1&gt;
+        &lt;h1&gt;
+            效率工具
+            &lt;a href=&quot;#&quot; class=&quot;export-btn&quot; title=&quot;导出文章&quot; onclick=&quot;exportArticleFromPage(); return false;&quot;&gt;
+                &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                    &lt;path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;/&gt;
+                    &lt;polyline points=&quot;7 10 12 15 17 10&quot;/&gt;
+                    &lt;line x1=&quot;12&quot; y1=&quot;15&quot; x2=&quot;12&quot; y2=&quot;3&quot;/&gt;
+                &lt;/svg&gt;
+            &lt;/a&gt;
+        &lt;/h1&gt;
         &lt;time datetime=&quot;2025-09-17T13:31:12.000Z&quot;&gt;2025年9月17日&lt;/time&gt;
         &lt;div class=&quot;tags&quot;&gt;
             
@@ -318,7 +327,16 @@ Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Whe
 # 实际删除（确认无误后使用）
 Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&lt;article&gt;
     &lt;header&gt;
-        &lt;h1&gt;效率工具&lt;/h1&gt;
+        &lt;h1&gt;
+            效率工具
+            &lt;a href=&quot;#&quot; class=&quot;export-btn&quot; title=&quot;导出文章&quot; onclick=&quot;exportArticleFromPage(); return false;&quot;&gt;
+                &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                    &lt;path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;/&gt;
+                    &lt;polyline points=&quot;7 10 12 15 17 10&quot;/&gt;
+                    &lt;line x1=&quot;12&quot; y1=&quot;15&quot; x2=&quot;12&quot; y2=&quot;3&quot;/&gt;
+                &lt;/svg&gt;
+            &lt;/a&gt;
+        &lt;/h1&gt;
         &lt;time datetime=&quot;2025-09-17T13:31:12.000Z&quot;&gt;2025年9月17日&lt;/time&gt;
         &lt;div class=&quot;tags&quot;&gt;
             
@@ -528,7 +546,16 @@ git config --global --unset http.https://github.com.proxy
 &lt;pre&gt;&lt;code class=&quot;language-poweshell&quot;&gt;# 预览模式
 Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&lt;article&gt;
     &lt;header&gt;
-        &lt;h1&gt;效率工具&lt;/h1&gt;
+        &lt;h1&gt;
+            效率工具
+            &lt;a href=&quot;#&quot; class=&quot;export-btn&quot; title=&quot;导出文章&quot; onclick=&quot;exportArticleFromPage(); return false;&quot;&gt;
+                &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                    &lt;path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;/&gt;
+                    &lt;polyline points=&quot;7 10 12 15 17 10&quot;/&gt;
+                    &lt;line x1=&quot;12&quot; y1=&quot;15&quot; x2=&quot;12&quot; y2=&quot;3&quot;/&gt;
+                &lt;/svg&gt;
+            &lt;/a&gt;
+        &lt;/h1&gt;
         &lt;time datetime=&quot;2025-09-17T13:31:12.000Z&quot;&gt;2025年9月17日&lt;/time&gt;
         &lt;div class=&quot;tags&quot;&gt;
             
@@ -695,7 +722,2686 @@ Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Whe
 # 实际删除（确认无误后使用）
 Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&lt;article&gt;
     &lt;header&gt;
-        &lt;h1&gt;效率工具&lt;/h1&gt;
+        &lt;h1&gt;
+            效率工具
+            &lt;a href=&quot;#&quot; class=&quot;export-btn&quot; title=&quot;导出文章&quot; onclick=&quot;exportArticleFromPage(); return false;&quot;&gt;
+                &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                    &lt;path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;/&gt;
+                    &lt;polyline points=&quot;7 10 12 15 17 10&quot;/&gt;
+                    &lt;line x1=&quot;12&quot; y1=&quot;15&quot; x2=&quot;12&quot; y2=&quot;3&quot;/&gt;
+                &lt;/svg&gt;
+            &lt;/a&gt;
+        &lt;/h1&gt;
+        &lt;time datetime=&quot;2025-09-17T13:31:12.000Z&quot;&gt;2025年9月17日&lt;/time&gt;
+        &lt;div class=&quot;tags&quot;&gt;
+            
+        &lt;/div&gt;
+    &lt;/header&gt;
+    &lt;section class=&quot;content&quot;&gt;
+        &lt;h1&gt;1. 添加环境变量&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;[Environment]::SetEnvironmentVariable(&amp;quot;EDITOR&amp;quot;, &amp;quot;code --wait&amp;quot;, &amp;quot;User&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;2. windows命令行代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;3. git代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也可以直接编辑~/.gitconfig文件&lt;/p&gt;
+&lt;h1&gt;4. windows配置beyondcompare作为gitdiff&lt;/h1&gt;
+&lt;p&gt;修改.gitconfig配置文件&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-text&quot;&gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;quot;bc4&amp;quot;]
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot;&amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;quot;bc4&amp;quot;] 
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot; \&amp;quot;$BASE\&amp;quot; \&amp;quot;$MERGED\&amp;quot;&amp;quot; 
+    trustExitCode = true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;5. 删除重复文件&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-poweshell&quot;&gt;# 预览模式
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&amp;lt;h1&amp;gt;1. 添加环境变量&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-shell&amp;quot;&amp;gt;[Environment]::SetEnvironmentVariable(&amp;amp;quot;EDITOR&amp;amp;quot;, &amp;amp;quot;code --wait&amp;amp;quot;, &amp;amp;quot;User&amp;amp;quot;)
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;2. windows命令行代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;3. git代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;p&amp;gt;也可以直接编辑~/.gitconfig文件&amp;lt;/p&amp;gt;
+&amp;lt;h1&amp;gt;4. windows配置beyondcompare作为gitdiff&amp;lt;/h1&amp;gt;
+&amp;lt;p&amp;gt;修改.gitconfig配置文件&amp;lt;/p&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-text&amp;quot;&amp;gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;amp;quot;bc4&amp;amp;quot;]
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot;&amp;amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;amp;quot;bc4&amp;amp;quot;] 
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot; \&amp;amp;quot;$BASE\&amp;amp;quot; \&amp;amp;quot;$MERGED\&amp;amp;quot;&amp;amp;quot; 
+    trustExitCode = true
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;5. 删除重复文件&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-poweshell&amp;quot;&amp;gt;# 预览模式
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Remove-Item -Force
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&amp;lt;h1&amp;gt;1. 添加环境变量&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-shell&amp;quot;&amp;gt;[Environment]::SetEnvironmentVariable(&amp;amp;quot;EDITOR&amp;amp;quot;, &amp;amp;quot;code --wait&amp;amp;quot;, &amp;amp;quot;User&amp;amp;quot;)
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;2. windows命令行代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;3. git代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;p&amp;gt;也可以直接编辑~/.gitconfig文件&amp;lt;/p&amp;gt;
+&amp;lt;h1&amp;gt;4. windows配置beyondcompare作为gitdiff&amp;lt;/h1&amp;gt;
+&amp;lt;p&amp;gt;修改.gitconfig配置文件&amp;lt;/p&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-text&amp;quot;&amp;gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;amp;quot;bc4&amp;amp;quot;]
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot;&amp;amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;amp;quot;bc4&amp;amp;quot;] 
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot; \&amp;amp;quot;$BASE\&amp;amp;quot; \&amp;amp;quot;$MERGED\&amp;amp;quot;&amp;amp;quot; 
+    trustExitCode = true
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;5. 删除重复文件&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-poweshell&amp;quot;&amp;gt;# 预览模式
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Remove-Item -Force
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+#39;} | Remove-Item -Force
+&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;/section&gt;
+&lt;/article&gt;
+
+
+&lt;section class=&quot;comments-section&quot; id=&quot;comments&quot;&gt;
+    &lt;h2 class=&quot;comments-title&quot;&gt;评论&lt;/h2&gt;
+    &lt;div class=&quot;utterances-container&quot;&gt;
+        &lt;script src=&quot;https://utteranc.es/client.js&quot;
+        repo=&quot;shinerio/shinerio.github.io&quot;
+        issue-term=&quot;效率工具&quot;
+        label=&quot;blog-comment&quot;
+        theme=&quot;preferred-color-scheme&quot;
+        crossorigin=&quot;anonymous&quot;
+        async&gt;
+&lt;/script&gt;
+    &lt;/div&gt;
+&lt;/section&gt;amp;#39;} | Remove-Item -Force
+&lt;/code&gt;&lt;/pre&gt;
+#39;} | Remove-Item -Force
+</code></pre>
+
+    </section>
+</article>
+
+
+<section class="comments-section" id="comments">
+    <h2 class="comments-title">评论</h2>
+    <div class="utterances-container">
+        <script src="https://utteranc.es/client.js"
+        repo="shinerio/shinerio.github.io"
+        issue-term="效率工具"
+        label="blog-comment"
+        theme="preferred-color-scheme"
+        crossorigin="anonymous"
+        async>
+</script>
+    </div>
+</section>
+            </div>
+        </main>
+        <footer class="page-footer">
+            <div class="container">
+                <p>&copy; 2026 shinerio. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Theme switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.getElementById('theme-body');
+
+            // Check for saved theme preference or respect OS preference
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+            // Set initial theme
+            if (savedTheme === 'dark' || (!savedTheme && prefersDarkScheme.matches)) {
+                body.setAttribute('data-theme', 'dark');
+            } else {
+                body.removeAttribute('data-theme'); // light theme
+            }
+
+            // Sync Utterances iframe theme
+            function syncUtterancesTheme(isDark) {
+                const utterancesFrame = document.querySelector('.utterances-frame');
+                if (utterancesFrame) {
+                    const theme = isDark ? 'github-dark' : 'github-light';
+                    utterancesFrame.contentWindow.postMessage(
+                        { type: 'set-theme', theme: theme },
+                        'https://utteranc.es'
+                    );
+                }
+            }
+
+            // Listen for Utterances iframe ready to set initial theme
+            window.addEventListener('message', function(event) {
+                if (event.origin !== 'https://utteranc.es') return;
+                const isDark = body.getAttribute('data-theme') === 'dark' ||
+                    (!localStorage.getItem('theme') && prefersDarkScheme.matches);
+                syncUtterancesTheme(isDark);
+            });
+
+            // Toggle theme function
+            function toggleTheme() {
+                if (body.getAttribute('data-theme') === 'dark') {
+                    body.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                    syncUtterancesTheme(false);
+                } else {
+                    body.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    syncUtterancesTheme(true);
+                }
+            }
+
+            // Add event listener to theme toggle button
+            themeToggle.addEventListener('click', toggleTheme);
+
+            // Listen for OS theme changes
+            prefersDarkScheme.addEventListener('change', function(e) {
+                if (!localStorage.getItem('theme')) {
+                    if (e.matches) {
+                        body.setAttribute('data-theme', 'dark');
+                    } else {
+                        body.removeAttribute('data-theme');
+                    }
+                    syncUtterancesTheme(e.matches);
+                }
+            });
+
+            // Sidebar toggle (desktop + mobile)
+            const sidebarToggle = document.querySelector('.sidebar-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarOverlay = document.querySelector('.sidebar-overlay');
+
+            if (sidebarToggle && sidebar) {
+                // Helper function to detect mobile
+                const isMobile = () => window.innerWidth < 768;
+
+                // Function to handle sidebar opening
+                const openSidebar = () => {
+                    sidebar.classList.add('active');
+                    if (sidebarOverlay) {
+                        sidebarOverlay.classList.add('active');
+                        // Ensure overlay doesn't block page interaction when closed
+                        sidebarOverlay.style.pointerEvents = 'auto';
+                    }
+                };
+
+                // Function to handle sidebar closing
+                const closeSidebar = () => {
+                    sidebar.classList.remove('active');
+                    if (sidebarOverlay) {
+                        sidebarOverlay.classList.remove('active');
+                        // Remove overlay when not needed to avoid blocking page
+                        sidebarOverlay.style.pointerEvents = 'none';
+                    }
+                };
+
+                // Restore saved collapse state for desktop
+                if (!isMobile() && localStorage.getItem('sidebar-collapsed') === 'true') {
+                    document.body.classList.add('sidebar-collapsed');
+                }
+
+                sidebarToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (isMobile()) {
+                        // Mobile: overlay drawer behavior
+                        if (sidebar.classList.contains('active')) {
+                            closeSidebar();
+                        } else {
+                            openSidebar();
+                        }
+                    } else {
+                        // Desktop: collapse/expand with body offset
+                        document.body.classList.toggle('sidebar-collapsed');
+                        localStorage.setItem('sidebar-collapsed',
+                            document.body.classList.contains('sidebar-collapsed'));
+                    }
+                });
+
+                // Close sidebar when clicking on overlay
+                if (sidebarOverlay) {
+                    sidebarOverlay.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        closeSidebar();
+                    });
+
+                    // Prevent scroll on overlay
+                    sidebarOverlay.addEventListener('touchmove', function(e) {
+                        e.preventDefault();
+                    }, { passive: false });
+                }
+
+                // Handle resize events to ensure proper behavior when switching between mobile/desktop
+                let resizeTimeout;
+                window.addEventListener('resize', function() {
+                    // Clear any existing timeout
+                    clearTimeout(resizeTimeout);
+
+                    // Use timeout to handle resize efficiently
+                    resizeTimeout = setTimeout(() => {
+                        if (!isMobile()) {
+                            // On desktop view, ensure mobile classes are removed
+                            sidebar.classList.remove('active');
+                            if (sidebarOverlay) {
+                                sidebarOverlay.classList.remove('active');
+                                sidebarOverlay.style.pointerEvents = 'none';
+                            }
+                        }
+                    }, 100);
+                });
+
+                // Close sidebar on orientation change (important for mobile Safari)
+                window.addEventListener('orientationchange', function() {
+                    setTimeout(() => {
+                        if (!isMobile()) {
+                            sidebar.classList.remove('active');
+                            if (sidebarOverlay) {
+                                sidebarOverlay.classList.remove('active');
+                                sidebarOverlay.style.pointerEvents = 'none';
+                            }
+                        }
+                    }, 100);
+                });
+
+                // Close sidebar when clicking anywhere outside of it (on mobile)
+                document.addEventListener('click', function(e) {
+                    // Only handle outside clicks on mobile when sidebar is active
+                    if (isMobile() &&
+                        sidebar.classList.contains('active') &&
+                        !sidebar.contains(e.target) &&
+                        e.target !== sidebarToggle) {
+                        closeSidebar();
+                    }
+                });
+            }
+
+            // Search functionality
+            const searchInput = document.getElementById('search-input');
+            const searchButton = document.getElementById('search-button');
+            const searchResults = document.getElementById('search-results');
+            const searchSuggestions = document.getElementById('search-suggestions');
+            const searchTypeRadios = document.querySelectorAll('input[name="search-type"]');
+
+            if (searchInput && searchButton) {
+                let searchData = null;
+
+                // Load search data
+                async function loadSearchData() {
+                    try {
+                        const response = await fetch('./assets/js/search-data.json');
+                        if (response.ok) {
+                            searchData = await response.json();
+                        } else {
+                            console.error('Failed to load search data:', response.status);
+                        }
+                    } catch (error) {
+                        console.error('Error loading search data:', error);
+                    }
+                }
+
+                // Initialize search data
+                loadSearchData();
+
+                // Debounce function to limit search calls
+                function debounce(func, wait) {
+                    let timeout;
+                    return function executedFunction(...args) {
+                        const later = () => {
+                            clearTimeout(timeout);
+                            func(...args);
+                        };
+                        clearTimeout(timeout);
+                        timeout = setTimeout(later, wait);
+                    };
+                }
+
+                // Get selected search type
+                function getSelectedSearchType() {
+                    const selectedRadio = document.querySelector('input[name="search-type"]:checked');
+                    return selectedRadio ? selectedRadio.value : 'all';
+                }
+
+                // Perform search
+                function performSearch(query) {
+                    if (!searchData || !query.trim()) {
+                        searchResults.innerHTML = '';
+                        searchSuggestions.innerHTML = '';
+                        return;
+                    }
+
+                    const queryTerms = query.toLowerCase().split(/\s+/).filter(term => term.length > 0);
+                    const searchType = getSelectedSearchType();
+
+                    if (queryTerms.length === 0) {
+                        searchResults.innerHTML = '';
+                        return;
+                    }
+
+                    const results = [];
+
+                    // Search through articles
+                    searchData.articles.forEach(article => {
+                        let score = 0;
+                        let snippet = '';
+
+                        // Get content based on search type
+                        const lowerTitle = article.title.toLowerCase();
+                        const lowerContent = article.content.toLowerCase();
+                        const lowerTags = article.tags.join(' ').toLowerCase();
+
+                        queryTerms.forEach(term => {
+                            switch(searchType) {
+                                case 'title':
+                                    // Only title matches count
+                                    if (lowerTitle.includes(term)) {
+                                        score += 10;
+                                    }
+                                    break;
+                                case 'content':
+                                    // Only content matches count (fixed to exclude title matches)
+                                    if (lowerContent.includes(term)) {
+                                        score += 1;
+                                    }
+                                    break;
+                                case 'all':
+                                default:
+                                    // Both title and content matches count
+                                    if (lowerTitle.includes(term)) {
+                                        score += 10;
+                                    }
+                                    if (lowerContent.includes(term)) {
+                                        score += 1;
+                                    }
+                                    // Tag matches get medium-high score
+                                    if (lowerTags.includes(term)) {
+                                        score += 5;
+                                    }
+                                    break;
+                            }
+                        });
+
+                        if (score > 0) {
+                            // Generate snippet based on search type
+                            let content = '';
+
+                            if (searchType === 'title') {
+                                // For title-only search, show title content
+                                content = article.title.substring(0, 200);
+                            } else if (searchType === 'content') {
+                                // For content-only search, show content excerpt
+                                content = article.content.substring(0, 200);
+                            } else {
+                                // For all search, show content with title as context
+                                content = article.content.substring(0, 200);
+                            }
+
+                            // Find first occurrence of query term in content for snippet
+                            queryTerms.forEach(term => {
+                                let searchIn = content.toLowerCase();
+                                if (searchType === 'title') {
+                                    searchIn = lowerTitle;
+                                } else if (searchType === 'content') {
+                                    searchIn = lowerContent;
+                                }
+
+                                const index = searchIn.indexOf(term);
+                                if (index !== -1) {
+                                    // Expand snippet around the match
+                                    let start, end;
+                                    if (searchType === 'title') {
+                                        start = Math.max(0, index - 15);
+                                        end = Math.min(content.length, index + term.length + 35);
+                                    } else {
+                                        start = Math.max(0, index - 30);
+                                        end = Math.min(content.length, index + term.length + 70);
+                                    }
+
+                                    content = (start > 0 ? '...' : '') +
+                                              content.substring(start, end) +
+                                              (end < (searchType === 'title' ? article.title.length : article.content.length) ? '...' : '');
+
+                                    // Highlight the term in the snippet
+                                    const searchContent = searchType === 'title' ? article.title : article.content;
+                                    const adjustedIndex = searchType === 'title' ?
+                                        Math.min(index, article.title.length - 1) :
+                                        Math.min(index, article.content.length - 1);
+
+                                    content = content.replace(
+                                        new RegExp(`(${escapeRegExp(term)})`, 'gi'),
+                                        '<mark>$1</mark>'
+                                    );
+                                }
+                            });
+
+                            results.push({
+                                article: article,
+                                score: score,
+                                snippet: content
+                            });
+                        }
+                    });
+
+                    // Sort results by score
+                    results.sort((a, b) => b.score - a.score);
+
+                    // Display results
+                    displaySearchResults(results);
+                }
+
+                // Display search results
+                function displaySearchResults(results) {
+                    if (results.length === 0) {
+                        searchResults.innerHTML = '<p class="no-results">未找到匹配的文章</p>';
+                        return;
+                    }
+
+                    const resultsHTML = results.map(result => `
+                        <div class="search-result-item">
+                            <h3 class="search-result-title">
+                                <a href="./${result.article.slug}.html">${highlightQueryTerms(result.article.title, document.querySelector('#search-input').value)}</a>
+                            </h3>
+                            <div class="search-result-meta">
+                                ${result.article.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                            </div>
+                            <p class="search-result-excerpt">${result.snippet}</p>
+                        </div>
+                    `).join('');
+
+                    searchResults.innerHTML = resultsHTML;
+                }
+
+                // Highlight query terms in text
+                function highlightQueryTerms(text, query) {
+                    if (!query.trim()) return text;
+
+                    const queryTerms = query.split(/\s+/).filter(term => term.length > 0);
+                    let highlightedText = text;
+
+                    queryTerms.forEach(term => {
+                        const regex = new RegExp(`(${escapeRegExp(term)})`, 'gi');
+                        highlightedText = highlightedText.replace(regex, '<mark>$1</mark>');
+                    });
+
+                    return highlightedText;
+                }
+
+                // Escape special regex characters
+                function escapeRegExp(string) {
+                    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                }
+
+                // Event listener for search button
+                searchButton.addEventListener('click', function() {
+                    const query = searchInput.value;
+                    performSearch(query);
+                });
+
+                // Event listener for Enter key
+                searchInput.addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') {
+                        const query = searchInput.value;
+                        performSearch(query);
+                    }
+                });
+
+                // Add debounced input handler for live search (optional)
+                const debouncedSearch = debounce(function() {
+                    const query = searchInput.value;
+                    performSearch(query);
+                }, 300);
+
+                searchInput.addEventListener('input', debouncedSearch);
+
+                // Add event listeners for search type radios
+                searchTypeRadios.forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        const query = searchInput.value;
+                        if (query.trim()) {
+                            performSearch(query);
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>} | Select-Object FullName\n\n# 实际删除（确认无误后使用）\nGet-ChildItem -Path \"D:\\document\" -File -Recurse | Where-Object {$_.BaseName -match '^.+ \\d{1,2}
+</head>
+<body class="article-page" id="theme-body">
+    <div class="page-wrapper">
+        <div class="sidebar-overlay"></div>
+        <header class="page-header">
+            <div class="container">
+                <nav class="page-nav">
+                    <div class="nav-links">
+                        <button class="sidebar-toggle" aria-label="Toggle sidebar">
+                            <span class="sidebar-toggle-icon"></span>
+                        </button>
+                        <a href="index.html" class="nav-link ">Home</a>
+                        <a href="articles.html" class="nav-link ">Articles</a>
+                        <a href="search.html" class="nav-link ">Search</a>
+                        <a href="todo.html" class="nav-link ">TODO</a>
+                    </div>
+                    <div class="nav-actions">
+                        <button id="theme-toggle" aria-label="Toggle dark mode" class="theme-toggle-btn">
+                            <span class="sun-icon">☀️</span>
+                            <span class="moon-icon">🌙</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <main class="page-main">
+            <div class="container">
+                <article>
+    <header>
+        <h1>
+            效率工具
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
+        <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+        <div class="tags">
+            
+        </div>
+    </header>
+    <section class="content">
+        <h1>1. 添加环境变量</h1>
+<pre><code class="language-shell">[Environment]::SetEnvironmentVariable(&quot;EDITOR&quot;, &quot;code --wait&quot;, &quot;User&quot;)
+</code></pre>
+<h1>2. windows命令行代理</h1>
+<pre><code class="language-dos">set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+</code></pre>
+<h1>3. git代理</h1>
+<pre><code class="language-dos"># 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+</code></pre>
+<p>也可以直接编辑~/.gitconfig文件</p>
+<h1>4. windows配置beyondcompare作为gitdiff</h1>
+<p>修改.gitconfig配置文件</p>
+<pre><code class="language-text">[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &quot;bc4&quot;]
+    cmd = &quot;\&quot;D:/Beyond Compare/bcomp.exe\&quot; \&quot;$LOCAL\&quot; \&quot;$REMOTE\&quot;&quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &quot;bc4&quot;] 
+    cmd = &quot;\&quot;D:/Beyond Compare/bcomp.exe\&quot; \&quot;$LOCAL\&quot; \&quot;$REMOTE\&quot; \&quot;$BASE\&quot; \&quot;$MERGED\&quot;&quot; 
+    trustExitCode = true
+</code></pre>
+<h1>5. 删除重复文件</h1>
+<pre><code class="language-poweshell"># 预览模式
+Get-ChildItem -Path &quot;D:\document&quot; -File -Recurse | Where-Object {$_.BaseName -match &#39;^.+ \d{1,2}&lt;h1&gt;1. 添加环境变量&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;[Environment]::SetEnvironmentVariable(&amp;quot;EDITOR&amp;quot;, &amp;quot;code --wait&amp;quot;, &amp;quot;User&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;2. windows命令行代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;3. git代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也可以直接编辑~/.gitconfig文件&lt;/p&gt;
+&lt;h1&gt;4. windows配置beyondcompare作为gitdiff&lt;/h1&gt;
+&lt;p&gt;修改.gitconfig配置文件&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-text&quot;&gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;quot;bc4&amp;quot;]
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot;&amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;quot;bc4&amp;quot;] 
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot; \&amp;quot;$BASE\&amp;quot; \&amp;quot;$MERGED\&amp;quot;&amp;quot; 
+    trustExitCode = true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;5. 删除重复文件&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-poweshell&quot;&gt;# 预览模式
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&lt;article&gt;
+    &lt;header&gt;
+        &lt;h1&gt;
+            效率工具
+            &lt;a href=&quot;#&quot; class=&quot;export-btn&quot; title=&quot;导出文章&quot; onclick=&quot;exportArticleFromPage(); return false;&quot;&gt;
+                &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                    &lt;path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;/&gt;
+                    &lt;polyline points=&quot;7 10 12 15 17 10&quot;/&gt;
+                    &lt;line x1=&quot;12&quot; y1=&quot;15&quot; x2=&quot;12&quot; y2=&quot;3&quot;/&gt;
+                &lt;/svg&gt;
+            &lt;/a&gt;
+        &lt;/h1&gt;
+        &lt;time datetime=&quot;2025-09-17T13:31:12.000Z&quot;&gt;2025年9月17日&lt;/time&gt;
+        &lt;div class=&quot;tags&quot;&gt;
+            
+        &lt;/div&gt;
+    &lt;/header&gt;
+    &lt;section class=&quot;content&quot;&gt;
+        &lt;h1&gt;1. 添加环境变量&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;[Environment]::SetEnvironmentVariable(&amp;quot;EDITOR&amp;quot;, &amp;quot;code --wait&amp;quot;, &amp;quot;User&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;2. windows命令行代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;3. git代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也可以直接编辑~/.gitconfig文件&lt;/p&gt;
+&lt;h1&gt;4. windows配置beyondcompare作为gitdiff&lt;/h1&gt;
+&lt;p&gt;修改.gitconfig配置文件&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-text&quot;&gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;quot;bc4&amp;quot;]
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot;&amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;quot;bc4&amp;quot;] 
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot; \&amp;quot;$BASE\&amp;quot; \&amp;quot;$MERGED\&amp;quot;&amp;quot; 
+    trustExitCode = true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;5. 删除重复文件&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-poweshell&quot;&gt;# 预览模式
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&amp;lt;h1&amp;gt;1. 添加环境变量&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-shell&amp;quot;&amp;gt;[Environment]::SetEnvironmentVariable(&amp;amp;quot;EDITOR&amp;amp;quot;, &amp;amp;quot;code --wait&amp;amp;quot;, &amp;amp;quot;User&amp;amp;quot;)
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;2. windows命令行代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;3. git代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;p&amp;gt;也可以直接编辑~/.gitconfig文件&amp;lt;/p&amp;gt;
+&amp;lt;h1&amp;gt;4. windows配置beyondcompare作为gitdiff&amp;lt;/h1&amp;gt;
+&amp;lt;p&amp;gt;修改.gitconfig配置文件&amp;lt;/p&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-text&amp;quot;&amp;gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;amp;quot;bc4&amp;amp;quot;]
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot;&amp;amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;amp;quot;bc4&amp;amp;quot;] 
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot; \&amp;amp;quot;$BASE\&amp;amp;quot; \&amp;amp;quot;$MERGED\&amp;amp;quot;&amp;amp;quot; 
+    trustExitCode = true
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;5. 删除重复文件&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-poweshell&amp;quot;&amp;gt;# 预览模式
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Remove-Item -Force
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&amp;lt;h1&amp;gt;1. 添加环境变量&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-shell&amp;quot;&amp;gt;[Environment]::SetEnvironmentVariable(&amp;amp;quot;EDITOR&amp;amp;quot;, &amp;amp;quot;code --wait&amp;amp;quot;, &amp;amp;quot;User&amp;amp;quot;)
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;2. windows命令行代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;3. git代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;p&amp;gt;也可以直接编辑~/.gitconfig文件&amp;lt;/p&amp;gt;
+&amp;lt;h1&amp;gt;4. windows配置beyondcompare作为gitdiff&amp;lt;/h1&amp;gt;
+&amp;lt;p&amp;gt;修改.gitconfig配置文件&amp;lt;/p&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-text&amp;quot;&amp;gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;amp;quot;bc4&amp;amp;quot;]
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot;&amp;amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;amp;quot;bc4&amp;amp;quot;] 
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot; \&amp;amp;quot;$BASE\&amp;amp;quot; \&amp;amp;quot;$MERGED\&amp;amp;quot;&amp;amp;quot; 
+    trustExitCode = true
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;5. 删除重复文件&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-poweshell&amp;quot;&amp;gt;# 预览模式
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Remove-Item -Force
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+#39;} | Remove-Item -Force
+&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;/section&gt;
+&lt;/article&gt;
+
+
+&lt;section class=&quot;comments-section&quot; id=&quot;comments&quot;&gt;
+    &lt;h2 class=&quot;comments-title&quot;&gt;评论&lt;/h2&gt;
+    &lt;div class=&quot;utterances-container&quot;&gt;
+        &lt;script src=&quot;https://utteranc.es/client.js&quot;
+        repo=&quot;shinerio/shinerio.github.io&quot;
+        issue-term=&quot;效率工具&quot;
+        label=&quot;blog-comment&quot;
+        theme=&quot;preferred-color-scheme&quot;
+        crossorigin=&quot;anonymous&quot;
+        async&gt;
+&lt;/script&gt;
+    &lt;/div&gt;
+&lt;/section&gt;amp;#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&lt;article&gt;
+    &lt;header&gt;
+        &lt;h1&gt;
+            效率工具
+            &lt;a href=&quot;#&quot; class=&quot;export-btn&quot; title=&quot;导出文章&quot; onclick=&quot;exportArticleFromPage(); return false;&quot;&gt;
+                &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                    &lt;path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;/&gt;
+                    &lt;polyline points=&quot;7 10 12 15 17 10&quot;/&gt;
+                    &lt;line x1=&quot;12&quot; y1=&quot;15&quot; x2=&quot;12&quot; y2=&quot;3&quot;/&gt;
+                &lt;/svg&gt;
+            &lt;/a&gt;
+        &lt;/h1&gt;
+        &lt;time datetime=&quot;2025-09-17T13:31:12.000Z&quot;&gt;2025年9月17日&lt;/time&gt;
+        &lt;div class=&quot;tags&quot;&gt;
+            
+        &lt;/div&gt;
+    &lt;/header&gt;
+    &lt;section class=&quot;content&quot;&gt;
+        &lt;h1&gt;1. 添加环境变量&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;[Environment]::SetEnvironmentVariable(&amp;quot;EDITOR&amp;quot;, &amp;quot;code --wait&amp;quot;, &amp;quot;User&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;2. windows命令行代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;3. git代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也可以直接编辑~/.gitconfig文件&lt;/p&gt;
+&lt;h1&gt;4. windows配置beyondcompare作为gitdiff&lt;/h1&gt;
+&lt;p&gt;修改.gitconfig配置文件&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-text&quot;&gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;quot;bc4&amp;quot;]
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot;&amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;quot;bc4&amp;quot;] 
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot; \&amp;quot;$BASE\&amp;quot; \&amp;quot;$MERGED\&amp;quot;&amp;quot; 
+    trustExitCode = true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;5. 删除重复文件&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-poweshell&quot;&gt;# 预览模式
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&amp;lt;h1&amp;gt;1. 添加环境变量&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-shell&amp;quot;&amp;gt;[Environment]::SetEnvironmentVariable(&amp;amp;quot;EDITOR&amp;amp;quot;, &amp;amp;quot;code --wait&amp;amp;quot;, &amp;amp;quot;User&amp;amp;quot;)
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;2. windows命令行代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;3. git代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;p&amp;gt;也可以直接编辑~/.gitconfig文件&amp;lt;/p&amp;gt;
+&amp;lt;h1&amp;gt;4. windows配置beyondcompare作为gitdiff&amp;lt;/h1&amp;gt;
+&amp;lt;p&amp;gt;修改.gitconfig配置文件&amp;lt;/p&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-text&amp;quot;&amp;gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;amp;quot;bc4&amp;amp;quot;]
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot;&amp;amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;amp;quot;bc4&amp;amp;quot;] 
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot; \&amp;amp;quot;$BASE\&amp;amp;quot; \&amp;amp;quot;$MERGED\&amp;amp;quot;&amp;amp;quot; 
+    trustExitCode = true
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;5. 删除重复文件&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-poweshell&amp;quot;&amp;gt;# 预览模式
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Remove-Item -Force
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&amp;lt;h1&amp;gt;1. 添加环境变量&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-shell&amp;quot;&amp;gt;[Environment]::SetEnvironmentVariable(&amp;amp;quot;EDITOR&amp;amp;quot;, &amp;amp;quot;code --wait&amp;amp;quot;, &amp;amp;quot;User&amp;amp;quot;)
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;2. windows命令行代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;3. git代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;p&amp;gt;也可以直接编辑~/.gitconfig文件&amp;lt;/p&amp;gt;
+&amp;lt;h1&amp;gt;4. windows配置beyondcompare作为gitdiff&amp;lt;/h1&amp;gt;
+&amp;lt;p&amp;gt;修改.gitconfig配置文件&amp;lt;/p&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-text&amp;quot;&amp;gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;amp;quot;bc4&amp;amp;quot;]
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot;&amp;amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;amp;quot;bc4&amp;amp;quot;] 
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot; \&amp;amp;quot;$BASE\&amp;amp;quot; \&amp;amp;quot;$MERGED\&amp;amp;quot;&amp;amp;quot; 
+    trustExitCode = true
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;5. 删除重复文件&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-poweshell&amp;quot;&amp;gt;# 预览模式
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Remove-Item -Force
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+#39;} | Remove-Item -Force
+&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;/section&gt;
+&lt;/article&gt;
+
+
+&lt;section class=&quot;comments-section&quot; id=&quot;comments&quot;&gt;
+    &lt;h2 class=&quot;comments-title&quot;&gt;评论&lt;/h2&gt;
+    &lt;div class=&quot;utterances-container&quot;&gt;
+        &lt;script src=&quot;https://utteranc.es/client.js&quot;
+        repo=&quot;shinerio/shinerio.github.io&quot;
+        issue-term=&quot;效率工具&quot;
+        label=&quot;blog-comment&quot;
+        theme=&quot;preferred-color-scheme&quot;
+        crossorigin=&quot;anonymous&quot;
+        async&gt;
+&lt;/script&gt;
+    &lt;/div&gt;
+&lt;/section&gt;amp;#39;} | Remove-Item -Force
+&lt;/code&gt;&lt;/pre&gt;
+#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &quot;D:\document&quot; -File -Recurse | Where-Object {$_.BaseName -match &#39;^.+ \d{1,2}&lt;h1&gt;1. 添加环境变量&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;[Environment]::SetEnvironmentVariable(&amp;quot;EDITOR&amp;quot;, &amp;quot;code --wait&amp;quot;, &amp;quot;User&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;2. windows命令行代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;3. git代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也可以直接编辑~/.gitconfig文件&lt;/p&gt;
+&lt;h1&gt;4. windows配置beyondcompare作为gitdiff&lt;/h1&gt;
+&lt;p&gt;修改.gitconfig配置文件&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-text&quot;&gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;quot;bc4&amp;quot;]
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot;&amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;quot;bc4&amp;quot;] 
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot; \&amp;quot;$BASE\&amp;quot; \&amp;quot;$MERGED\&amp;quot;&amp;quot; 
+    trustExitCode = true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;5. 删除重复文件&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-poweshell&quot;&gt;# 预览模式
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&lt;article&gt;
+    &lt;header&gt;
+        &lt;h1&gt;
+            效率工具
+            &lt;a href=&quot;#&quot; class=&quot;export-btn&quot; title=&quot;导出文章&quot; onclick=&quot;exportArticleFromPage(); return false;&quot;&gt;
+                &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                    &lt;path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;/&gt;
+                    &lt;polyline points=&quot;7 10 12 15 17 10&quot;/&gt;
+                    &lt;line x1=&quot;12&quot; y1=&quot;15&quot; x2=&quot;12&quot; y2=&quot;3&quot;/&gt;
+                &lt;/svg&gt;
+            &lt;/a&gt;
+        &lt;/h1&gt;
+        &lt;time datetime=&quot;2025-09-17T13:31:12.000Z&quot;&gt;2025年9月17日&lt;/time&gt;
+        &lt;div class=&quot;tags&quot;&gt;
+            
+        &lt;/div&gt;
+    &lt;/header&gt;
+    &lt;section class=&quot;content&quot;&gt;
+        &lt;h1&gt;1. 添加环境变量&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;[Environment]::SetEnvironmentVariable(&amp;quot;EDITOR&amp;quot;, &amp;quot;code --wait&amp;quot;, &amp;quot;User&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;2. windows命令行代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;3. git代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也可以直接编辑~/.gitconfig文件&lt;/p&gt;
+&lt;h1&gt;4. windows配置beyondcompare作为gitdiff&lt;/h1&gt;
+&lt;p&gt;修改.gitconfig配置文件&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-text&quot;&gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;quot;bc4&amp;quot;]
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot;&amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;quot;bc4&amp;quot;] 
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot; \&amp;quot;$BASE\&amp;quot; \&amp;quot;$MERGED\&amp;quot;&amp;quot; 
+    trustExitCode = true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;5. 删除重复文件&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-poweshell&quot;&gt;# 预览模式
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&amp;lt;h1&amp;gt;1. 添加环境变量&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-shell&amp;quot;&amp;gt;[Environment]::SetEnvironmentVariable(&amp;amp;quot;EDITOR&amp;amp;quot;, &amp;amp;quot;code --wait&amp;amp;quot;, &amp;amp;quot;User&amp;amp;quot;)
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;2. windows命令行代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;3. git代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;p&amp;gt;也可以直接编辑~/.gitconfig文件&amp;lt;/p&amp;gt;
+&amp;lt;h1&amp;gt;4. windows配置beyondcompare作为gitdiff&amp;lt;/h1&amp;gt;
+&amp;lt;p&amp;gt;修改.gitconfig配置文件&amp;lt;/p&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-text&amp;quot;&amp;gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;amp;quot;bc4&amp;amp;quot;]
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot;&amp;amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;amp;quot;bc4&amp;amp;quot;] 
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot; \&amp;amp;quot;$BASE\&amp;amp;quot; \&amp;amp;quot;$MERGED\&amp;amp;quot;&amp;amp;quot; 
+    trustExitCode = true
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;5. 删除重复文件&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-poweshell&amp;quot;&amp;gt;# 预览模式
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Remove-Item -Force
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&amp;lt;h1&amp;gt;1. 添加环境变量&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-shell&amp;quot;&amp;gt;[Environment]::SetEnvironmentVariable(&amp;amp;quot;EDITOR&amp;amp;quot;, &amp;amp;quot;code --wait&amp;amp;quot;, &amp;amp;quot;User&amp;amp;quot;)
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;2. windows命令行代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;3. git代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;p&amp;gt;也可以直接编辑~/.gitconfig文件&amp;lt;/p&amp;gt;
+&amp;lt;h1&amp;gt;4. windows配置beyondcompare作为gitdiff&amp;lt;/h1&amp;gt;
+&amp;lt;p&amp;gt;修改.gitconfig配置文件&amp;lt;/p&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-text&amp;quot;&amp;gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;amp;quot;bc4&amp;amp;quot;]
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot;&amp;amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;amp;quot;bc4&amp;amp;quot;] 
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot; \&amp;amp;quot;$BASE\&amp;amp;quot; \&amp;amp;quot;$MERGED\&amp;amp;quot;&amp;amp;quot; 
+    trustExitCode = true
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;5. 删除重复文件&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-poweshell&amp;quot;&amp;gt;# 预览模式
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Remove-Item -Force
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+#39;} | Remove-Item -Force
+&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;/section&gt;
+&lt;/article&gt;
+
+
+&lt;section class=&quot;comments-section&quot; id=&quot;comments&quot;&gt;
+    &lt;h2 class=&quot;comments-title&quot;&gt;评论&lt;/h2&gt;
+    &lt;div class=&quot;utterances-container&quot;&gt;
+        &lt;script src=&quot;https://utteranc.es/client.js&quot;
+        repo=&quot;shinerio/shinerio.github.io&quot;
+        issue-term=&quot;效率工具&quot;
+        label=&quot;blog-comment&quot;
+        theme=&quot;preferred-color-scheme&quot;
+        crossorigin=&quot;anonymous&quot;
+        async&gt;
+&lt;/script&gt;
+    &lt;/div&gt;
+&lt;/section&gt;amp;#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&lt;article&gt;
+    &lt;header&gt;
+        &lt;h1&gt;
+            效率工具
+            &lt;a href=&quot;#&quot; class=&quot;export-btn&quot; title=&quot;导出文章&quot; onclick=&quot;exportArticleFromPage(); return false;&quot;&gt;
+                &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                    &lt;path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;/&gt;
+                    &lt;polyline points=&quot;7 10 12 15 17 10&quot;/&gt;
+                    &lt;line x1=&quot;12&quot; y1=&quot;15&quot; x2=&quot;12&quot; y2=&quot;3&quot;/&gt;
+                &lt;/svg&gt;
+            &lt;/a&gt;
+        &lt;/h1&gt;
+        &lt;time datetime=&quot;2025-09-17T13:31:12.000Z&quot;&gt;2025年9月17日&lt;/time&gt;
+        &lt;div class=&quot;tags&quot;&gt;
+            
+        &lt;/div&gt;
+    &lt;/header&gt;
+    &lt;section class=&quot;content&quot;&gt;
+        &lt;h1&gt;1. 添加环境变量&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;[Environment]::SetEnvironmentVariable(&amp;quot;EDITOR&amp;quot;, &amp;quot;code --wait&amp;quot;, &amp;quot;User&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;2. windows命令行代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;3. git代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也可以直接编辑~/.gitconfig文件&lt;/p&gt;
+&lt;h1&gt;4. windows配置beyondcompare作为gitdiff&lt;/h1&gt;
+&lt;p&gt;修改.gitconfig配置文件&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-text&quot;&gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;quot;bc4&amp;quot;]
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot;&amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;quot;bc4&amp;quot;] 
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot; \&amp;quot;$BASE\&amp;quot; \&amp;quot;$MERGED\&amp;quot;&amp;quot; 
+    trustExitCode = true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;5. 删除重复文件&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-poweshell&quot;&gt;# 预览模式
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&amp;lt;h1&amp;gt;1. 添加环境变量&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-shell&amp;quot;&amp;gt;[Environment]::SetEnvironmentVariable(&amp;amp;quot;EDITOR&amp;amp;quot;, &amp;amp;quot;code --wait&amp;amp;quot;, &amp;amp;quot;User&amp;amp;quot;)
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;2. windows命令行代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;3. git代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;p&amp;gt;也可以直接编辑~/.gitconfig文件&amp;lt;/p&amp;gt;
+&amp;lt;h1&amp;gt;4. windows配置beyondcompare作为gitdiff&amp;lt;/h1&amp;gt;
+&amp;lt;p&amp;gt;修改.gitconfig配置文件&amp;lt;/p&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-text&amp;quot;&amp;gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;amp;quot;bc4&amp;amp;quot;]
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot;&amp;amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;amp;quot;bc4&amp;amp;quot;] 
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot; \&amp;amp;quot;$BASE\&amp;amp;quot; \&amp;amp;quot;$MERGED\&amp;amp;quot;&amp;amp;quot; 
+    trustExitCode = true
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;5. 删除重复文件&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-poweshell&amp;quot;&amp;gt;# 预览模式
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Remove-Item -Force
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&amp;lt;h1&amp;gt;1. 添加环境变量&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-shell&amp;quot;&amp;gt;[Environment]::SetEnvironmentVariable(&amp;amp;quot;EDITOR&amp;amp;quot;, &amp;amp;quot;code --wait&amp;amp;quot;, &amp;amp;quot;User&amp;amp;quot;)
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;2. windows命令行代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;3. git代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;p&amp;gt;也可以直接编辑~/.gitconfig文件&amp;lt;/p&amp;gt;
+&amp;lt;h1&amp;gt;4. windows配置beyondcompare作为gitdiff&amp;lt;/h1&amp;gt;
+&amp;lt;p&amp;gt;修改.gitconfig配置文件&amp;lt;/p&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-text&amp;quot;&amp;gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;amp;quot;bc4&amp;amp;quot;]
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot;&amp;amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;amp;quot;bc4&amp;amp;quot;] 
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot; \&amp;amp;quot;$BASE\&amp;amp;quot; \&amp;amp;quot;$MERGED\&amp;amp;quot;&amp;amp;quot; 
+    trustExitCode = true
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;5. 删除重复文件&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-poweshell&amp;quot;&amp;gt;# 预览模式
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Remove-Item -Force
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+#39;} | Remove-Item -Force
+&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;/section&gt;
+&lt;/article&gt;
+
+
+&lt;section class=&quot;comments-section&quot; id=&quot;comments&quot;&gt;
+    &lt;h2 class=&quot;comments-title&quot;&gt;评论&lt;/h2&gt;
+    &lt;div class=&quot;utterances-container&quot;&gt;
+        &lt;script src=&quot;https://utteranc.es/client.js&quot;
+        repo=&quot;shinerio/shinerio.github.io&quot;
+        issue-term=&quot;效率工具&quot;
+        label=&quot;blog-comment&quot;
+        theme=&quot;preferred-color-scheme&quot;
+        crossorigin=&quot;anonymous&quot;
+        async&gt;
+&lt;/script&gt;
+    &lt;/div&gt;
+&lt;/section&gt;amp;#39;} | Remove-Item -Force
+&lt;/code&gt;&lt;/pre&gt;
+#39;} | Remove-Item -Force
+</code></pre>
+
+    </section>
+</article>
+
+
+<section class="comments-section" id="comments">
+    <h2 class="comments-title">评论</h2>
+    <div class="utterances-container">
+        <script src="https://utteranc.es/client.js"
+        repo="shinerio/shinerio.github.io"
+        issue-term="效率工具"
+        label="blog-comment"
+        theme="preferred-color-scheme"
+        crossorigin="anonymous"
+        async>
+</script>
+    </div>
+</section>
+            </div>
+        </main>
+        <footer class="page-footer">
+            <div class="container">
+                <p>&copy; 2026 shinerio. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Theme switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.getElementById('theme-body');
+
+            // Check for saved theme preference or respect OS preference
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+            // Set initial theme
+            if (savedTheme === 'dark' || (!savedTheme && prefersDarkScheme.matches)) {
+                body.setAttribute('data-theme', 'dark');
+            } else {
+                body.removeAttribute('data-theme'); // light theme
+            }
+
+            // Sync Utterances iframe theme
+            function syncUtterancesTheme(isDark) {
+                const utterancesFrame = document.querySelector('.utterances-frame');
+                if (utterancesFrame) {
+                    const theme = isDark ? 'github-dark' : 'github-light';
+                    utterancesFrame.contentWindow.postMessage(
+                        { type: 'set-theme', theme: theme },
+                        'https://utteranc.es'
+                    );
+                }
+            }
+
+            // Listen for Utterances iframe ready to set initial theme
+            window.addEventListener('message', function(event) {
+                if (event.origin !== 'https://utteranc.es') return;
+                const isDark = body.getAttribute('data-theme') === 'dark' ||
+                    (!localStorage.getItem('theme') && prefersDarkScheme.matches);
+                syncUtterancesTheme(isDark);
+            });
+
+            // Toggle theme function
+            function toggleTheme() {
+                if (body.getAttribute('data-theme') === 'dark') {
+                    body.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                    syncUtterancesTheme(false);
+                } else {
+                    body.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    syncUtterancesTheme(true);
+                }
+            }
+
+            // Add event listener to theme toggle button
+            themeToggle.addEventListener('click', toggleTheme);
+
+            // Listen for OS theme changes
+            prefersDarkScheme.addEventListener('change', function(e) {
+                if (!localStorage.getItem('theme')) {
+                    if (e.matches) {
+                        body.setAttribute('data-theme', 'dark');
+                    } else {
+                        body.removeAttribute('data-theme');
+                    }
+                    syncUtterancesTheme(e.matches);
+                }
+            });
+
+            // Sidebar toggle (desktop + mobile)
+            const sidebarToggle = document.querySelector('.sidebar-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarOverlay = document.querySelector('.sidebar-overlay');
+
+            if (sidebarToggle && sidebar) {
+                // Helper function to detect mobile
+                const isMobile = () => window.innerWidth < 768;
+
+                // Function to handle sidebar opening
+                const openSidebar = () => {
+                    sidebar.classList.add('active');
+                    if (sidebarOverlay) {
+                        sidebarOverlay.classList.add('active');
+                        // Ensure overlay doesn't block page interaction when closed
+                        sidebarOverlay.style.pointerEvents = 'auto';
+                    }
+                };
+
+                // Function to handle sidebar closing
+                const closeSidebar = () => {
+                    sidebar.classList.remove('active');
+                    if (sidebarOverlay) {
+                        sidebarOverlay.classList.remove('active');
+                        // Remove overlay when not needed to avoid blocking page
+                        sidebarOverlay.style.pointerEvents = 'none';
+                    }
+                };
+
+                // Restore saved collapse state for desktop
+                if (!isMobile() && localStorage.getItem('sidebar-collapsed') === 'true') {
+                    document.body.classList.add('sidebar-collapsed');
+                }
+
+                sidebarToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (isMobile()) {
+                        // Mobile: overlay drawer behavior
+                        if (sidebar.classList.contains('active')) {
+                            closeSidebar();
+                        } else {
+                            openSidebar();
+                        }
+                    } else {
+                        // Desktop: collapse/expand with body offset
+                        document.body.classList.toggle('sidebar-collapsed');
+                        localStorage.setItem('sidebar-collapsed',
+                            document.body.classList.contains('sidebar-collapsed'));
+                    }
+                });
+
+                // Close sidebar when clicking on overlay
+                if (sidebarOverlay) {
+                    sidebarOverlay.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        closeSidebar();
+                    });
+
+                    // Prevent scroll on overlay
+                    sidebarOverlay.addEventListener('touchmove', function(e) {
+                        e.preventDefault();
+                    }, { passive: false });
+                }
+
+                // Handle resize events to ensure proper behavior when switching between mobile/desktop
+                let resizeTimeout;
+                window.addEventListener('resize', function() {
+                    // Clear any existing timeout
+                    clearTimeout(resizeTimeout);
+
+                    // Use timeout to handle resize efficiently
+                    resizeTimeout = setTimeout(() => {
+                        if (!isMobile()) {
+                            // On desktop view, ensure mobile classes are removed
+                            sidebar.classList.remove('active');
+                            if (sidebarOverlay) {
+                                sidebarOverlay.classList.remove('active');
+                                sidebarOverlay.style.pointerEvents = 'none';
+                            }
+                        }
+                    }, 100);
+                });
+
+                // Close sidebar on orientation change (important for mobile Safari)
+                window.addEventListener('orientationchange', function() {
+                    setTimeout(() => {
+                        if (!isMobile()) {
+                            sidebar.classList.remove('active');
+                            if (sidebarOverlay) {
+                                sidebarOverlay.classList.remove('active');
+                                sidebarOverlay.style.pointerEvents = 'none';
+                            }
+                        }
+                    }, 100);
+                });
+
+                // Close sidebar when clicking anywhere outside of it (on mobile)
+                document.addEventListener('click', function(e) {
+                    // Only handle outside clicks on mobile when sidebar is active
+                    if (isMobile() &&
+                        sidebar.classList.contains('active') &&
+                        !sidebar.contains(e.target) &&
+                        e.target !== sidebarToggle) {
+                        closeSidebar();
+                    }
+                });
+            }
+
+            // Search functionality
+            const searchInput = document.getElementById('search-input');
+            const searchButton = document.getElementById('search-button');
+            const searchResults = document.getElementById('search-results');
+            const searchSuggestions = document.getElementById('search-suggestions');
+            const searchTypeRadios = document.querySelectorAll('input[name="search-type"]');
+
+            if (searchInput && searchButton) {
+                let searchData = null;
+
+                // Load search data
+                async function loadSearchData() {
+                    try {
+                        const response = await fetch('./assets/js/search-data.json');
+                        if (response.ok) {
+                            searchData = await response.json();
+                        } else {
+                            console.error('Failed to load search data:', response.status);
+                        }
+                    } catch (error) {
+                        console.error('Error loading search data:', error);
+                    }
+                }
+
+                // Initialize search data
+                loadSearchData();
+
+                // Debounce function to limit search calls
+                function debounce(func, wait) {
+                    let timeout;
+                    return function executedFunction(...args) {
+                        const later = () => {
+                            clearTimeout(timeout);
+                            func(...args);
+                        };
+                        clearTimeout(timeout);
+                        timeout = setTimeout(later, wait);
+                    };
+                }
+
+                // Get selected search type
+                function getSelectedSearchType() {
+                    const selectedRadio = document.querySelector('input[name="search-type"]:checked');
+                    return selectedRadio ? selectedRadio.value : 'all';
+                }
+
+                // Perform search
+                function performSearch(query) {
+                    if (!searchData || !query.trim()) {
+                        searchResults.innerHTML = '';
+                        searchSuggestions.innerHTML = '';
+                        return;
+                    }
+
+                    const queryTerms = query.toLowerCase().split(/\s+/).filter(term => term.length > 0);
+                    const searchType = getSelectedSearchType();
+
+                    if (queryTerms.length === 0) {
+                        searchResults.innerHTML = '';
+                        return;
+                    }
+
+                    const results = [];
+
+                    // Search through articles
+                    searchData.articles.forEach(article => {
+                        let score = 0;
+                        let snippet = '';
+
+                        // Get content based on search type
+                        const lowerTitle = article.title.toLowerCase();
+                        const lowerContent = article.content.toLowerCase();
+                        const lowerTags = article.tags.join(' ').toLowerCase();
+
+                        queryTerms.forEach(term => {
+                            switch(searchType) {
+                                case 'title':
+                                    // Only title matches count
+                                    if (lowerTitle.includes(term)) {
+                                        score += 10;
+                                    }
+                                    break;
+                                case 'content':
+                                    // Only content matches count (fixed to exclude title matches)
+                                    if (lowerContent.includes(term)) {
+                                        score += 1;
+                                    }
+                                    break;
+                                case 'all':
+                                default:
+                                    // Both title and content matches count
+                                    if (lowerTitle.includes(term)) {
+                                        score += 10;
+                                    }
+                                    if (lowerContent.includes(term)) {
+                                        score += 1;
+                                    }
+                                    // Tag matches get medium-high score
+                                    if (lowerTags.includes(term)) {
+                                        score += 5;
+                                    }
+                                    break;
+                            }
+                        });
+
+                        if (score > 0) {
+                            // Generate snippet based on search type
+                            let content = '';
+
+                            if (searchType === 'title') {
+                                // For title-only search, show title content
+                                content = article.title.substring(0, 200);
+                            } else if (searchType === 'content') {
+                                // For content-only search, show content excerpt
+                                content = article.content.substring(0, 200);
+                            } else {
+                                // For all search, show content with title as context
+                                content = article.content.substring(0, 200);
+                            }
+
+                            // Find first occurrence of query term in content for snippet
+                            queryTerms.forEach(term => {
+                                let searchIn = content.toLowerCase();
+                                if (searchType === 'title') {
+                                    searchIn = lowerTitle;
+                                } else if (searchType === 'content') {
+                                    searchIn = lowerContent;
+                                }
+
+                                const index = searchIn.indexOf(term);
+                                if (index !== -1) {
+                                    // Expand snippet around the match
+                                    let start, end;
+                                    if (searchType === 'title') {
+                                        start = Math.max(0, index - 15);
+                                        end = Math.min(content.length, index + term.length + 35);
+                                    } else {
+                                        start = Math.max(0, index - 30);
+                                        end = Math.min(content.length, index + term.length + 70);
+                                    }
+
+                                    content = (start > 0 ? '...' : '') +
+                                              content.substring(start, end) +
+                                              (end < (searchType === 'title' ? article.title.length : article.content.length) ? '...' : '');
+
+                                    // Highlight the term in the snippet
+                                    const searchContent = searchType === 'title' ? article.title : article.content;
+                                    const adjustedIndex = searchType === 'title' ?
+                                        Math.min(index, article.title.length - 1) :
+                                        Math.min(index, article.content.length - 1);
+
+                                    content = content.replace(
+                                        new RegExp(`(${escapeRegExp(term)})`, 'gi'),
+                                        '<mark>$1</mark>'
+                                    );
+                                }
+                            });
+
+                            results.push({
+                                article: article,
+                                score: score,
+                                snippet: content
+                            });
+                        }
+                    });
+
+                    // Sort results by score
+                    results.sort((a, b) => b.score - a.score);
+
+                    // Display results
+                    displaySearchResults(results);
+                }
+
+                // Display search results
+                function displaySearchResults(results) {
+                    if (results.length === 0) {
+                        searchResults.innerHTML = '<p class="no-results">未找到匹配的文章</p>';
+                        return;
+                    }
+
+                    const resultsHTML = results.map(result => `
+                        <div class="search-result-item">
+                            <h3 class="search-result-title">
+                                <a href="./${result.article.slug}.html">${highlightQueryTerms(result.article.title, document.querySelector('#search-input').value)}</a>
+                            </h3>
+                            <div class="search-result-meta">
+                                ${result.article.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                            </div>
+                            <p class="search-result-excerpt">${result.snippet}</p>
+                        </div>
+                    `).join('');
+
+                    searchResults.innerHTML = resultsHTML;
+                }
+
+                // Highlight query terms in text
+                function highlightQueryTerms(text, query) {
+                    if (!query.trim()) return text;
+
+                    const queryTerms = query.split(/\s+/).filter(term => term.length > 0);
+                    let highlightedText = text;
+
+                    queryTerms.forEach(term => {
+                        const regex = new RegExp(`(${escapeRegExp(term)})`, 'gi');
+                        highlightedText = highlightedText.replace(regex, '<mark>$1</mark>');
+                    });
+
+                    return highlightedText;
+                }
+
+                // Escape special regex characters
+                function escapeRegExp(string) {
+                    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                }
+
+                // Event listener for search button
+                searchButton.addEventListener('click', function() {
+                    const query = searchInput.value;
+                    performSearch(query);
+                });
+
+                // Event listener for Enter key
+                searchInput.addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') {
+                        const query = searchInput.value;
+                        performSearch(query);
+                    }
+                });
+
+                // Add debounced input handler for live search (optional)
+                const debouncedSearch = debounce(function() {
+                    const query = searchInput.value;
+                    performSearch(query);
+                }, 300);
+
+                searchInput.addEventListener('input', debouncedSearch);
+
+                // Add event listeners for search type radios
+                searchTypeRadios.forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        const query = searchInput.value;
+                        if (query.trim()) {
+                            performSearch(query);
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>} | Remove-Item -Force\n```"}
+</script>
+
+<!-- Text Selection Comment (划词评论) -->
+<link rel="stylesheet" href="assets/css/text-selection-comment.css">
+<script>
+  window.textSelectionCommentConfig = {
+    repo: 'shinerio/shinerio.github.io',
+    label: 'select-annotation',
+    articleSlug: '效率工具',
+    clientId: 'Ov23li65mtWdX973c2zm',
+    oauthProxyUrl: 'https://github-oauth-proxy.jstxshinerio.workers.dev'
+  };
+</script>
+<script src="assets/js/text-selection-comment.js" defer></script>
+</head>
+<body class="article-page" id="theme-body">
+    <div class="page-wrapper">
+        <div class="sidebar-overlay"></div>
+        <header class="page-header">
+            <div class="container">
+                <nav class="page-nav">
+                    <div class="nav-links">
+                        <button class="sidebar-toggle" aria-label="Toggle sidebar">
+                            <span class="sidebar-toggle-icon"></span>
+                        </button>
+                        <a href="index.html" class="nav-link ">Home</a>
+                        <a href="articles.html" class="nav-link ">Articles</a>
+                        <a href="search.html" class="nav-link ">Search</a>
+                        <a href="todo.html" class="nav-link ">TODO</a>
+                    </div>
+                    <div class="nav-actions">
+                        <button id="theme-toggle" aria-label="Toggle dark mode" class="theme-toggle-btn">
+                            <span class="sun-icon">☀️</span>
+                            <span class="moon-icon">🌙</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <main class="page-main">
+            <div class="container">
+                <article>
+    <header>
+        <h1>
+            效率工具
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
+        <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
+        <div class="tags">
+            
+        </div>
+    </header>
+    <section class="content">
+        <h1>1. 添加环境变量</h1>
+<pre><code class="language-shell">[Environment]::SetEnvironmentVariable(&quot;EDITOR&quot;, &quot;code --wait&quot;, &quot;User&quot;)
+</code></pre>
+<h1>2. windows命令行代理</h1>
+<pre><code class="language-dos">set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+</code></pre>
+<h1>3. git代理</h1>
+<pre><code class="language-dos"># 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+</code></pre>
+<p>也可以直接编辑~/.gitconfig文件</p>
+<h1>4. windows配置beyondcompare作为gitdiff</h1>
+<p>修改.gitconfig配置文件</p>
+<pre><code class="language-text">[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &quot;bc4&quot;]
+    cmd = &quot;\&quot;D:/Beyond Compare/bcomp.exe\&quot; \&quot;$LOCAL\&quot; \&quot;$REMOTE\&quot;&quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &quot;bc4&quot;] 
+    cmd = &quot;\&quot;D:/Beyond Compare/bcomp.exe\&quot; \&quot;$LOCAL\&quot; \&quot;$REMOTE\&quot; \&quot;$BASE\&quot; \&quot;$MERGED\&quot;&quot; 
+    trustExitCode = true
+</code></pre>
+<h1>5. 删除重复文件</h1>
+<pre><code class="language-poweshell"># 预览模式
+Get-ChildItem -Path &quot;D:\document&quot; -File -Recurse | Where-Object {$_.BaseName -match &#39;^.+ \d{1,2}&lt;h1&gt;1. 添加环境变量&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;[Environment]::SetEnvironmentVariable(&amp;quot;EDITOR&amp;quot;, &amp;quot;code --wait&amp;quot;, &amp;quot;User&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;2. windows命令行代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;3. git代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也可以直接编辑~/.gitconfig文件&lt;/p&gt;
+&lt;h1&gt;4. windows配置beyondcompare作为gitdiff&lt;/h1&gt;
+&lt;p&gt;修改.gitconfig配置文件&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-text&quot;&gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;quot;bc4&amp;quot;]
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot;&amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;quot;bc4&amp;quot;] 
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot; \&amp;quot;$BASE\&amp;quot; \&amp;quot;$MERGED\&amp;quot;&amp;quot; 
+    trustExitCode = true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;5. 删除重复文件&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-poweshell&quot;&gt;# 预览模式
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&lt;article&gt;
+    &lt;header&gt;
+        &lt;h1&gt;
+            效率工具
+            &lt;a href=&quot;#&quot; class=&quot;export-btn&quot; title=&quot;导出文章&quot; onclick=&quot;exportArticleFromPage(); return false;&quot;&gt;
+                &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                    &lt;path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;/&gt;
+                    &lt;polyline points=&quot;7 10 12 15 17 10&quot;/&gt;
+                    &lt;line x1=&quot;12&quot; y1=&quot;15&quot; x2=&quot;12&quot; y2=&quot;3&quot;/&gt;
+                &lt;/svg&gt;
+            &lt;/a&gt;
+        &lt;/h1&gt;
+        &lt;time datetime=&quot;2025-09-17T13:31:12.000Z&quot;&gt;2025年9月17日&lt;/time&gt;
+        &lt;div class=&quot;tags&quot;&gt;
+            
+        &lt;/div&gt;
+    &lt;/header&gt;
+    &lt;section class=&quot;content&quot;&gt;
+        &lt;h1&gt;1. 添加环境变量&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;[Environment]::SetEnvironmentVariable(&amp;quot;EDITOR&amp;quot;, &amp;quot;code --wait&amp;quot;, &amp;quot;User&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;2. windows命令行代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;3. git代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也可以直接编辑~/.gitconfig文件&lt;/p&gt;
+&lt;h1&gt;4. windows配置beyondcompare作为gitdiff&lt;/h1&gt;
+&lt;p&gt;修改.gitconfig配置文件&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-text&quot;&gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;quot;bc4&amp;quot;]
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot;&amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;quot;bc4&amp;quot;] 
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot; \&amp;quot;$BASE\&amp;quot; \&amp;quot;$MERGED\&amp;quot;&amp;quot; 
+    trustExitCode = true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;5. 删除重复文件&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-poweshell&quot;&gt;# 预览模式
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&amp;lt;h1&amp;gt;1. 添加环境变量&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-shell&amp;quot;&amp;gt;[Environment]::SetEnvironmentVariable(&amp;amp;quot;EDITOR&amp;amp;quot;, &amp;amp;quot;code --wait&amp;amp;quot;, &amp;amp;quot;User&amp;amp;quot;)
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;2. windows命令行代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;3. git代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;p&amp;gt;也可以直接编辑~/.gitconfig文件&amp;lt;/p&amp;gt;
+&amp;lt;h1&amp;gt;4. windows配置beyondcompare作为gitdiff&amp;lt;/h1&amp;gt;
+&amp;lt;p&amp;gt;修改.gitconfig配置文件&amp;lt;/p&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-text&amp;quot;&amp;gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;amp;quot;bc4&amp;amp;quot;]
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot;&amp;amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;amp;quot;bc4&amp;amp;quot;] 
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot; \&amp;amp;quot;$BASE\&amp;amp;quot; \&amp;amp;quot;$MERGED\&amp;amp;quot;&amp;amp;quot; 
+    trustExitCode = true
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;5. 删除重复文件&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-poweshell&amp;quot;&amp;gt;# 预览模式
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Remove-Item -Force
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&amp;lt;h1&amp;gt;1. 添加环境变量&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-shell&amp;quot;&amp;gt;[Environment]::SetEnvironmentVariable(&amp;amp;quot;EDITOR&amp;amp;quot;, &amp;amp;quot;code --wait&amp;amp;quot;, &amp;amp;quot;User&amp;amp;quot;)
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;2. windows命令行代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;3. git代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;p&amp;gt;也可以直接编辑~/.gitconfig文件&amp;lt;/p&amp;gt;
+&amp;lt;h1&amp;gt;4. windows配置beyondcompare作为gitdiff&amp;lt;/h1&amp;gt;
+&amp;lt;p&amp;gt;修改.gitconfig配置文件&amp;lt;/p&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-text&amp;quot;&amp;gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;amp;quot;bc4&amp;amp;quot;]
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot;&amp;amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;amp;quot;bc4&amp;amp;quot;] 
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot; \&amp;amp;quot;$BASE\&amp;amp;quot; \&amp;amp;quot;$MERGED\&amp;amp;quot;&amp;amp;quot; 
+    trustExitCode = true
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;5. 删除重复文件&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-poweshell&amp;quot;&amp;gt;# 预览模式
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Remove-Item -Force
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+#39;} | Remove-Item -Force
+&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;/section&gt;
+&lt;/article&gt;
+
+
+&lt;section class=&quot;comments-section&quot; id=&quot;comments&quot;&gt;
+    &lt;h2 class=&quot;comments-title&quot;&gt;评论&lt;/h2&gt;
+    &lt;div class=&quot;utterances-container&quot;&gt;
+        &lt;script src=&quot;https://utteranc.es/client.js&quot;
+        repo=&quot;shinerio/shinerio.github.io&quot;
+        issue-term=&quot;效率工具&quot;
+        label=&quot;blog-comment&quot;
+        theme=&quot;preferred-color-scheme&quot;
+        crossorigin=&quot;anonymous&quot;
+        async&gt;
+&lt;/script&gt;
+    &lt;/div&gt;
+&lt;/section&gt;amp;#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&lt;article&gt;
+    &lt;header&gt;
+        &lt;h1&gt;
+            效率工具
+            &lt;a href=&quot;#&quot; class=&quot;export-btn&quot; title=&quot;导出文章&quot; onclick=&quot;exportArticleFromPage(); return false;&quot;&gt;
+                &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                    &lt;path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;/&gt;
+                    &lt;polyline points=&quot;7 10 12 15 17 10&quot;/&gt;
+                    &lt;line x1=&quot;12&quot; y1=&quot;15&quot; x2=&quot;12&quot; y2=&quot;3&quot;/&gt;
+                &lt;/svg&gt;
+            &lt;/a&gt;
+        &lt;/h1&gt;
+        &lt;time datetime=&quot;2025-09-17T13:31:12.000Z&quot;&gt;2025年9月17日&lt;/time&gt;
+        &lt;div class=&quot;tags&quot;&gt;
+            
+        &lt;/div&gt;
+    &lt;/header&gt;
+    &lt;section class=&quot;content&quot;&gt;
+        &lt;h1&gt;1. 添加环境变量&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;[Environment]::SetEnvironmentVariable(&amp;quot;EDITOR&amp;quot;, &amp;quot;code --wait&amp;quot;, &amp;quot;User&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;2. windows命令行代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;3. git代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也可以直接编辑~/.gitconfig文件&lt;/p&gt;
+&lt;h1&gt;4. windows配置beyondcompare作为gitdiff&lt;/h1&gt;
+&lt;p&gt;修改.gitconfig配置文件&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-text&quot;&gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;quot;bc4&amp;quot;]
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot;&amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;quot;bc4&amp;quot;] 
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot; \&amp;quot;$BASE\&amp;quot; \&amp;quot;$MERGED\&amp;quot;&amp;quot; 
+    trustExitCode = true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;5. 删除重复文件&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-poweshell&quot;&gt;# 预览模式
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&amp;lt;h1&amp;gt;1. 添加环境变量&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-shell&amp;quot;&amp;gt;[Environment]::SetEnvironmentVariable(&amp;amp;quot;EDITOR&amp;amp;quot;, &amp;amp;quot;code --wait&amp;amp;quot;, &amp;amp;quot;User&amp;amp;quot;)
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;2. windows命令行代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;3. git代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;p&amp;gt;也可以直接编辑~/.gitconfig文件&amp;lt;/p&amp;gt;
+&amp;lt;h1&amp;gt;4. windows配置beyondcompare作为gitdiff&amp;lt;/h1&amp;gt;
+&amp;lt;p&amp;gt;修改.gitconfig配置文件&amp;lt;/p&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-text&amp;quot;&amp;gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;amp;quot;bc4&amp;amp;quot;]
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot;&amp;amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;amp;quot;bc4&amp;amp;quot;] 
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot; \&amp;amp;quot;$BASE\&amp;amp;quot; \&amp;amp;quot;$MERGED\&amp;amp;quot;&amp;amp;quot; 
+    trustExitCode = true
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;5. 删除重复文件&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-poweshell&amp;quot;&amp;gt;# 预览模式
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Remove-Item -Force
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&amp;lt;h1&amp;gt;1. 添加环境变量&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-shell&amp;quot;&amp;gt;[Environment]::SetEnvironmentVariable(&amp;amp;quot;EDITOR&amp;amp;quot;, &amp;amp;quot;code --wait&amp;amp;quot;, &amp;amp;quot;User&amp;amp;quot;)
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;2. windows命令行代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;3. git代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;p&amp;gt;也可以直接编辑~/.gitconfig文件&amp;lt;/p&amp;gt;
+&amp;lt;h1&amp;gt;4. windows配置beyondcompare作为gitdiff&amp;lt;/h1&amp;gt;
+&amp;lt;p&amp;gt;修改.gitconfig配置文件&amp;lt;/p&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-text&amp;quot;&amp;gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;amp;quot;bc4&amp;amp;quot;]
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot;&amp;amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;amp;quot;bc4&amp;amp;quot;] 
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot; \&amp;amp;quot;$BASE\&amp;amp;quot; \&amp;amp;quot;$MERGED\&amp;amp;quot;&amp;amp;quot; 
+    trustExitCode = true
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;5. 删除重复文件&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-poweshell&amp;quot;&amp;gt;# 预览模式
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Remove-Item -Force
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+#39;} | Remove-Item -Force
+&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;/section&gt;
+&lt;/article&gt;
+
+
+&lt;section class=&quot;comments-section&quot; id=&quot;comments&quot;&gt;
+    &lt;h2 class=&quot;comments-title&quot;&gt;评论&lt;/h2&gt;
+    &lt;div class=&quot;utterances-container&quot;&gt;
+        &lt;script src=&quot;https://utteranc.es/client.js&quot;
+        repo=&quot;shinerio/shinerio.github.io&quot;
+        issue-term=&quot;效率工具&quot;
+        label=&quot;blog-comment&quot;
+        theme=&quot;preferred-color-scheme&quot;
+        crossorigin=&quot;anonymous&quot;
+        async&gt;
+&lt;/script&gt;
+    &lt;/div&gt;
+&lt;/section&gt;amp;#39;} | Remove-Item -Force
+&lt;/code&gt;&lt;/pre&gt;
+#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &quot;D:\document&quot; -File -Recurse | Where-Object {$_.BaseName -match &#39;^.+ \d{1,2}&lt;h1&gt;1. 添加环境变量&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;[Environment]::SetEnvironmentVariable(&amp;quot;EDITOR&amp;quot;, &amp;quot;code --wait&amp;quot;, &amp;quot;User&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;2. windows命令行代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;3. git代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也可以直接编辑~/.gitconfig文件&lt;/p&gt;
+&lt;h1&gt;4. windows配置beyondcompare作为gitdiff&lt;/h1&gt;
+&lt;p&gt;修改.gitconfig配置文件&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-text&quot;&gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;quot;bc4&amp;quot;]
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot;&amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;quot;bc4&amp;quot;] 
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot; \&amp;quot;$BASE\&amp;quot; \&amp;quot;$MERGED\&amp;quot;&amp;quot; 
+    trustExitCode = true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;5. 删除重复文件&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-poweshell&quot;&gt;# 预览模式
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&lt;article&gt;
+    &lt;header&gt;
+        &lt;h1&gt;
+            效率工具
+            &lt;a href=&quot;#&quot; class=&quot;export-btn&quot; title=&quot;导出文章&quot; onclick=&quot;exportArticleFromPage(); return false;&quot;&gt;
+                &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                    &lt;path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;/&gt;
+                    &lt;polyline points=&quot;7 10 12 15 17 10&quot;/&gt;
+                    &lt;line x1=&quot;12&quot; y1=&quot;15&quot; x2=&quot;12&quot; y2=&quot;3&quot;/&gt;
+                &lt;/svg&gt;
+            &lt;/a&gt;
+        &lt;/h1&gt;
+        &lt;time datetime=&quot;2025-09-17T13:31:12.000Z&quot;&gt;2025年9月17日&lt;/time&gt;
+        &lt;div class=&quot;tags&quot;&gt;
+            
+        &lt;/div&gt;
+    &lt;/header&gt;
+    &lt;section class=&quot;content&quot;&gt;
+        &lt;h1&gt;1. 添加环境变量&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;[Environment]::SetEnvironmentVariable(&amp;quot;EDITOR&amp;quot;, &amp;quot;code --wait&amp;quot;, &amp;quot;User&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;2. windows命令行代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;3. git代理&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-dos&quot;&gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也可以直接编辑~/.gitconfig文件&lt;/p&gt;
+&lt;h1&gt;4. windows配置beyondcompare作为gitdiff&lt;/h1&gt;
+&lt;p&gt;修改.gitconfig配置文件&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-text&quot;&gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;quot;bc4&amp;quot;]
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot;&amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;quot;bc4&amp;quot;] 
+    cmd = &amp;quot;\&amp;quot;D:/Beyond Compare/bcomp.exe\&amp;quot; \&amp;quot;$LOCAL\&amp;quot; \&amp;quot;$REMOTE\&amp;quot; \&amp;quot;$BASE\&amp;quot; \&amp;quot;$MERGED\&amp;quot;&amp;quot; 
+    trustExitCode = true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;5. 删除重复文件&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&quot;language-poweshell&quot;&gt;# 预览模式
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&amp;lt;h1&amp;gt;1. 添加环境变量&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-shell&amp;quot;&amp;gt;[Environment]::SetEnvironmentVariable(&amp;amp;quot;EDITOR&amp;amp;quot;, &amp;amp;quot;code --wait&amp;amp;quot;, &amp;amp;quot;User&amp;amp;quot;)
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;2. windows命令行代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;3. git代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;p&amp;gt;也可以直接编辑~/.gitconfig文件&amp;lt;/p&amp;gt;
+&amp;lt;h1&amp;gt;4. windows配置beyondcompare作为gitdiff&amp;lt;/h1&amp;gt;
+&amp;lt;p&amp;gt;修改.gitconfig配置文件&amp;lt;/p&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-text&amp;quot;&amp;gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;amp;quot;bc4&amp;amp;quot;]
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot;&amp;amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;amp;quot;bc4&amp;amp;quot;] 
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot; \&amp;amp;quot;$BASE\&amp;amp;quot; \&amp;amp;quot;$MERGED\&amp;amp;quot;&amp;amp;quot; 
+    trustExitCode = true
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;5. 删除重复文件&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-poweshell&amp;quot;&amp;gt;# 预览模式
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Remove-Item -Force
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&amp;lt;h1&amp;gt;1. 添加环境变量&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-shell&amp;quot;&amp;gt;[Environment]::SetEnvironmentVariable(&amp;amp;quot;EDITOR&amp;amp;quot;, &amp;amp;quot;code --wait&amp;amp;quot;, &amp;amp;quot;User&amp;amp;quot;)
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;2. windows命令行代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;set http_proxy=http://username:password@proxy.domain.com:8080
+set https_proxy=https://username:password@proxy.domain.com:8080
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;3. git代理&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-dos&amp;quot;&amp;gt;# 配置代理
+git config --global http.proxy http://username:password@proxy.domain.com:8080
+git config --global https.proxy https://username:password@proxy.domain.com:8080
+git config --global http.sslverify false
+
+# git config --global https.proxy http://127.0.0.1:7890
+# git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+# 指定网站代理
+git config --global http.https://github.com.proxy http://username:password@proxy.domain.com:8080
+# 取消代理  
+git config --global --unset http.https://github.com.proxy
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;p&amp;gt;也可以直接编辑~/.gitconfig文件&amp;lt;/p&amp;gt;
+&amp;lt;h1&amp;gt;4. windows配置beyondcompare作为gitdiff&amp;lt;/h1&amp;gt;
+&amp;lt;p&amp;gt;修改.gitconfig配置文件&amp;lt;/p&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-text&amp;quot;&amp;gt;[diff] 
+    tool = bc4 
+[difftool] 
+    prompt = false 
+[difftool &amp;amp;quot;bc4&amp;amp;quot;]
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot;&amp;amp;quot; 
+[merge]
+    tool = bc4 [mergetool] prompt = false 
+[mergetool &amp;amp;quot;bc4&amp;amp;quot;] 
+    cmd = &amp;amp;quot;\&amp;amp;quot;D:/Beyond Compare/bcomp.exe\&amp;amp;quot; \&amp;amp;quot;$LOCAL\&amp;amp;quot; \&amp;amp;quot;$REMOTE\&amp;amp;quot; \&amp;amp;quot;$BASE\&amp;amp;quot; \&amp;amp;quot;$MERGED\&amp;amp;quot;&amp;amp;quot; 
+    trustExitCode = true
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&amp;lt;h1&amp;gt;5. 删除重复文件&amp;lt;/h1&amp;gt;
+&amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;language-poweshell&amp;quot;&amp;gt;# 预览模式
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;amp;quot;D:\document&amp;amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;amp;#39;^.+ \d{1,2}$&amp;amp;#39;} | Remove-Item -Force
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+#39;} | Remove-Item -Force
+&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;/section&gt;
+&lt;/article&gt;
+
+
+&lt;section class=&quot;comments-section&quot; id=&quot;comments&quot;&gt;
+    &lt;h2 class=&quot;comments-title&quot;&gt;评论&lt;/h2&gt;
+    &lt;div class=&quot;utterances-container&quot;&gt;
+        &lt;script src=&quot;https://utteranc.es/client.js&quot;
+        repo=&quot;shinerio/shinerio.github.io&quot;
+        issue-term=&quot;效率工具&quot;
+        label=&quot;blog-comment&quot;
+        theme=&quot;preferred-color-scheme&quot;
+        crossorigin=&quot;anonymous&quot;
+        async&gt;
+&lt;/script&gt;
+    &lt;/div&gt;
+&lt;/section&gt;amp;#39;} | Select-Object FullName
+
+# 实际删除（确认无误后使用）
+Get-ChildItem -Path &amp;quot;D:\document&amp;quot; -File -Recurse | Where-Object {$_.BaseName -match &amp;#39;^.+ \d{1,2}&lt;article&gt;
+    &lt;header&gt;
+        &lt;h1&gt;
+            效率工具
+            &lt;a href=&quot;#&quot; class=&quot;export-btn&quot; title=&quot;导出文章&quot; onclick=&quot;exportArticleFromPage(); return false;&quot;&gt;
+                &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
+                    &lt;path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;/&gt;
+                    &lt;polyline points=&quot;7 10 12 15 17 10&quot;/&gt;
+                    &lt;line x1=&quot;12&quot; y1=&quot;15&quot; x2=&quot;12&quot; y2=&quot;3&quot;/&gt;
+                &lt;/svg&gt;
+            &lt;/a&gt;
+        &lt;/h1&gt;
         &lt;time datetime=&quot;2025-09-17T13:31:12.000Z&quot;&gt;2025年9月17日&lt;/time&gt;
         &lt;div class=&quot;tags&quot;&gt;
             

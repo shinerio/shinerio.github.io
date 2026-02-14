@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"Lsof","title":"Lsof","content":"`lsof`（List Open Files）是一个用于列出系统中打开文件的工具。这里的 “文件” 是一个广义的概念，包括常规文件、目录、块设备、字符设备、共享库、网络套接字等。`lsof`会列出系统中当前用户打开的所有文件。\r\n\r\n`-p <pid>`： 列出指定进程 ID 的进程打开的文件\r\n`-u  <username>`：列出指定用户打开的文件\r\n`-c <command>`: 列出正在执行指定命令的进程打开的文件\r\n`-i [protocol][@hostname|hostaddr][:service|port]`: 示例：`lsof -i TCP:80`\r\n\r\n如果要查看fd的创建时间，则可以进入`/proc/${pid}/fd/$fdid`查看文件的创建时间"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Lsof</h1>
+        <h1>
+            Lsof
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

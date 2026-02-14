@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"movie-pilot","title":"Movie Pilot","content":"# 1. docker 安装\r\n注意要通过环境变量配置代理，否则无法访问themoviedb或thetvdb等\r\n```shell\r\n    docker run -itd \\\r\n        --name moviepilot-v2 \\\r\n        --hostname moviepilot-v2 \\\r\n        --network host \\\r\n        -v /vol2/1000/MoviePilot:/media \\\r\n        -v /moviepilot-v2/config:/config \\\r\n        -v /moviepilot-v2/core:/moviepilot/.cache/ms-playwright \\\r\n        -v /var/run/docker.sock:/var/run/docker.sock:ro \\\r\n        -e 'NGINX_PORT=3000' \\\r\n        -e 'PORT=3001' \\\r\n        -e 'PUID=0' \\\r\n        -e 'PGID=0' \\\r\n        -e 'UMASK=000' \\\r\n        -e 'TZ=Asia/Shanghai' \\\r\n        -e 'SUPERUSER=admin' \\\r\n        -e 'http_proxy=http://127.0.0.1:7890' \\\r\n        -e 'https_proxy=http://127.0.0.1:7890' \\\r\n        -e 'PROXY_HOST=http://127.0.0.1:7890' \\\r\n        --restart always \\\r\n        jxxghp/moviepilot-v2:latest\r\n```\r\n\r\n# 2. 下载与整理\r\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory20250521234742.png)\r\n\r\n可以通过软连接目录的方式达到下载目录和mp的/media目录一致。\r\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory20250521234855.png)\r\n\r\n# 3. ref\r\nhttps://wiki.movie-pilot.org/zh/install"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Movie Pilot</h1>
+        <h1>
+            Movie Pilot
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

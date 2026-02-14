@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"BGP路由器分类","title":"BGP路由器分类","content":"在BGP（边界网关协议）中，路由器的分类通常根据其**在自治系统（AS）中的位置**以及**建立邻居关系的方式**来划分。\n# 1. 按协议划分\n## 1.1. EBGP 路由器 (External BGP)\n当两台运行 BGP 的路由器处于**不同的自治系统**（AS）时，它们之间建立的邻居关系称为 EBGP。\n- **位置：** 通常位于 AS 的边界，连接到其他运营商或合作伙伴的网络。\n- **特点：** 默认情况下，EBGP 邻居必须在物理上直连（TTL 值为 1），如果非直连则需要特殊配置（如 `ebgp-multihop`）。\n## 1.2. IBGP 路由器 (Internal BGP)\n当两台运行 BGP 的路由器处于**同一个自治系统**（AS）内时，它们之间建立的邻居关系称为 IBGP。\n- **位置：** 位于 AS 内部，用于在 AS 内部传递从外部学习到的路由。\n- **特点：** IBGP 邻居不需要物理直连，只要 TCP 可达即可。为了防止环路，IBGP 遵循“水平分割”原则：从 IBGP 邻居收到的路由不会再传给另一个 IBGP 邻居。\n# 2. 按照角色划分的特殊路由器\n在大规模网络中，为了解决 IBGP 全互联（Full Mesh）带来的配置复杂和资源消耗问题，会出现以下特殊角色：\n- **路由反射器 (Route Reflector, RR)：** * 作为“中心”节点，它可以打破 IBGP 的水平分割限制，将从一个客户端学习到的路由转发给其他客户端。\n- **角色细分：** 服务端（Server）、客户端（Client）和非客户端（Non-client）。    \n- **联盟路由器 (Confederation Router)：**\n    - 将一个大 AS 划分为多个“子 AS”。在子 AS 内部运行的是联盟 IBGP，子 AS 之间运行的是联盟 EBGP。\n    - 对外看起来仍然是一个单一的 AS，但在内部简化了路由管理。\n# 3. 边界路由器 (Speaker / Border Router)\n- **BGP 发言者 (BGP Speaker)：** 任何运行 BGP 协议的路由器都可以称为 BGP Speaker。\n- **自治系统边界路由器 (ASBR)：** 专门指那些连接了两个或多个不同 AS 的路由器，它是流量进入或离开该 AS 的门户。"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>BGP路由器分类</h1>
+        <h1>
+            BGP路由器分类
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2026-02-13T15:01:03.547Z">2026年2月13日</time>
         <div class="tags">
             

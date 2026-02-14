@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"CPU","title":"CPU","content":"# 1. 基本概念\r\n- Socket: 指的是主板上用于安装物理CPU芯片的接口。每一个这样的接口能够插入一个物理的CPU处理器，一台计算机可以配备多个这样的插槽，进而安装多个物理CPU，以增强系统的计算能力和性能。一个物理CPU可以有多个物理CPU核。\r\n- 物理核(`physical core/processor`): 可以看的到的，真实的cpu核，有独立的电路元件以及L1,L2缓存，可以独立地执行指令。\r\n- 逻辑核( `logical core/processor`，LCPU): 在同一个物理核内，逻辑层面的核。（比喻，像动画片一样，我们看到的“动画”，其实是一帧一帧静态的画面，24帧/s连起来就骗过了人类的眼睛，看起来像动起来一样。逻辑核也一样，物理核通过高速运算，让应用程序以为有两个cpu在运算）。\r\n- 超线程( `Hyper-threading`， HT)：超线程可以在一个逻辑核等待指令执行的间隔(等待从cache或内存中获取下一条指令)，把时间片分配到另一个逻辑核。高速在这两个逻辑核之间切换，让应用程序感知不到这个间隔，误认为自己是独占了一个核。\r\n\r\n> [!tip]\r\n> 一个CPU可以有多个物理核。如果开启了超线程，一个物理核可以分成n个逻辑核，n为超线程的数量。\r\n\r\n下图中有两个物理核，每个核有两个超线程（逻辑核），其中0-3为物理核，而8-11是物理核通过超线程技术模拟出来的逻辑核心。\r\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/202503202314672.png)\r\n\r\n# 2. lscpu命令\r\n```shell\r\nlscpu\r\n```\r\n- `CPU(s)`：表示逻辑CPU的总数。\r\n- `Core(s) per socket`：每个 CPU 插槽的物理核心数。\r\n- `Socket(s)`：CPU 插槽的数量。\r\n- `Thread(s) per core`：每个物理核心的线程数。\r\n物理核心数 = `Core(s) per socket` × `Socket(s)`，下图为2 × 1 = 2\r\n逻辑核心数 = 物理核心数 × Thread(s) per coce，下图为2 x 2 = 4\r\n\r\n示例：\r\n```\r\nCPU(s):                          32\r\nCore(s) per socket:              8\r\nSocket(s):                       2\r\nThread(s) per core:              2\r\n```\r\n- `Socket(s): 2`：表明主板上有2个CPU插槽，并且每个插槽都安装了物理CPU。\r\n- `Core(s) per socket: 8`：意味着每个物理CPU含8个物理核心。\r\n- 综合这两个信息，我们可以算出系统中物理核心的总数为 16（8 核心/插槽 × 2 插槽）。\r\n- `Thread(s) per core: 2` 表示每个物理核心有2个线程，结合前面的物理核心总数，可知逻辑 CPU 的总数为 32（16 物理核心 × 2 线程/核心），这与 `CPU(s): 32 相吻合。\r\n# 3. /proc/cpuinfo文件\r\n```shell\r\ngrep 'physical id' /proc/cpuinfo | sort -u | wc -l # 物理CPU个数\r\ngrep 'core id' /proc/cpuinfo | sort -u | wc -l # 物理核心数\r\ngrep 'processor' /proc/cpuinfo | wc -l # 逻辑核心数\r\n```"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>CPU</h1>
+        <h1>
+            CPU
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"jni","title":"Jni","content":"`System.loadLibrary(\"native_memory_utils\")` 会在`java.library.path`指定的所有目录下查找名为 libnative_memory_utils.so（Linux）或 native_memory_utils.dll（Windows）的文件。\r\n> [!note]\r\n> 在 Linux 下，文件名必须是 libnative_memory_utils.so，不能省略 lib 前缀。\r\n# 1. 编译\r\n定义java方法\r\n```java\r\npublic class NativeMemoryUtils {\r\n    static {\r\n        System.loadLibrary(\"native_memory_utils\");\r\n    }\r\n\r\n    public static native long allocateAndFillMemory(long size, String fill);\r\n    public static native void freeMemory(long address);\r\n}\r\n```\r\n生成头文件\r\n```shell\r\njavac -h . src/main/java/com/example/demo/NativeMemoryUtils.java\r\n```\r\n编写 native_memory_utils.c\r\n```c\r\n<span class=\"tag\">#include</span> <jni.h>\r\n<span class=\"tag\">#include</span> <stdlib.h>\r\n<span class=\"tag\">#include</span> <string.h>\r\n<span class=\"tag\">#include</span> <stdint.h>\r\n<span class=\"tag\">#include</span> \"com_example_demo_NativeMemoryUtils.h\"\r\n\r\nJNIEXPORT jlong JNICALL Java_com_example_demo_NativeMemoryUtils_allocateAndFillMemory\r\n  (JNIEnv *env, jclass clazz, jlong size, jstring fill) {\r\n    const char *fillStr = (*env)->GetStringUTFChars(env, fill, 0);\r\n    size_t fillLen = strlen(fillStr);\r\n    if (fillLen == 0) fillLen = 1;\r\n\r\n    char *mem = (char *)malloc((size_t)size);\r\n    if (!mem) {\r\n        (*env)->ReleaseStringUTFChars(env, fill, fillStr);\r\n        return 0;\r\n    }\r\n    for (jlong i = 0; i < size; ++i) {\r\n        mem[i] = fillStr[i % fillLen];\r\n    }\r\n    (*env)->ReleaseStringUTFChars(env, fill, fillStr);\r\n    return (jlong)(intptr_t)mem;\r\n}\r\n\r\nJNIEXPORT void JNICALL Java_com_example_demo_NativeMemoryUtils_freeMemory\r\n  (JNIEnv *env, jclass clazz, jlong address) {\r\n    if (address != 0) {\r\n        free((void *)(intptr_t)address);\r\n    }\r\n} \r\n```\r\n编译为so\r\n```\r\ngcc -fPIC -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux -shared -o libnative_memory_utils.so native_memory_utils.c\r\n```\r\n# 2. 默认查找路径\r\n- 当前工作目录\r\n- JRE 的 lib 目录\r\n- 环境变量`LD_LIBRARY_PATH`指定的目录\r\n- 启动 JVM 时`-Djava.library.path=`指定的目录\r\n# 3. 匹配逻辑\r\n不要直接写绝对路径，System.loadLibrary 只接受库名，不接受路径。如natvie_memory_utils对应libnative_memory_utils.so"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Jni</h1>
+        <h1>
+            Jni
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

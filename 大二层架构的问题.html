@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"大二层架构的问题","title":"大二层架构的问题","content":"# 1. 历史背景\r\n网关在汇聚上的原因是因为openstack平面约束，要求资源池里面的节点必须在一个二层上。\r\n\r\n管理服务区解大二层原因是管理区容灾1.0方案依赖vip在az间漂移，管理区汇聚下就是一个二层。同时，az之间还需要在两个az的汇聚交换机上通过硬件vxlan打一个二层隧道。\r\n\r\n# 2. 大二层的问题\r\n广播域过大，arp欺骗、广播泛洪、环路等会影响整个广播域。一个广播域其实就是一个故障域。网关在汇聚上，故障会影响和扩散到汇聚下的所有tor下的所有主机。把网关下沉到tor上，缩小广播域，可以降低故障域。\r\n\r\n# 3. 解大二层\r\n管理面，容灾1.1后不再依赖vip\r\n数据面，openstack架构优化，资源池跨三层"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>大二层架构的问题</h1>
+        <h1>
+            大二层架构的问题
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

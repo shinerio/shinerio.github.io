@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"agentkit","title":"Agentkit","content":"![](https://portal.volccdn.com/obj/volcfe/cloud-universal-doc/upload_6a6119e1953b4166cc01e24bcedc79ca.jpg)\r\n# 1. 支持协议：\r\nAgentKit智能体运行时支持**A2A、MCP、标准HTTP**三种通信协议\r\n# 2. agent访问方式\r\n- **公网访问**：默认访问方式。\r\n- **私网访问**：选择同地域中的任意一个VPC和子网，每个可用区支持最多选择一个子网。\r\n# 3. 大模型\r\n通过api endpoint对接的是火山方案\r\n```go\r\n# agentkit\\toolkit\\resources\\samples\\eino_a2a\\agent.go\r\n\tcm, err := chatmodelprovider.NewChatModel(ctx, &chatmodelprovider.Config{\r\n\t\tProvider: os.Getenv(\"MODEL_AGENT_PROVIDER\"),\r\n\t\tAPIKey:   os.Getenv(\"MODEL_AGENT_API_KEY\"),\r\n\t\tModel:    os.Getenv(\"MODEL_AGENT_NAME\"),\r\n\t\tBaseURL:  os.Getenv(\"MODEL_AGENT_API_BASE\"),\r\n\t})\r\n```\r\n## 3.1. 支持模型列表\r\n- doubao\r\n- deepseek\r\n- kimi"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Agentkit</h1>
+        <h1>
+            Agentkit
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2026-01-11T14:05:16.696Z">2026年1月11日</time>
         <div class="tags">
             

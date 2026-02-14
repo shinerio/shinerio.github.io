@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"context","title":"Context","content":"go1.7加入了一个新的标准库context，用来简化对于处理单个请求的多个goroutine之间与请求域的数据、取消信号、截止时间等相关操作，这些操作可能涉及多个API调用。\r\n\r\n<span style=\"background:<span class=\"tag\">#fff88f</span>\">当一个上下文被取消时，它派生的所有上下文也被取消</span>。当context生命周期结束时，可以从`ctx.Done()`管道接收消息，子协程可以判断后进行相应处理。\r\n```go\r\nfunc TestContext(t *testing.T) {  \r\n    parentCtx := context.Background()  \r\n    ctx, cancel := context.WithTimeout(parentCtx, 5*time.Second)  \r\n    defer cancel() // 当函数返回时，确保上下文被取消，释放资源  \r\n  \r\n    go func() {  \r\n       for {  \r\n          select {  \r\n          case <-time.After(time.Second):  \r\n             fmt.Println(\"1 second after.\")  \r\n          case <-ctx.Done():  \r\n             // 当超时发生或者外部取消时，这里会被触发  \r\n             fmt.Println(\"operation cancelled:\", ctx.Err())  \r\n             return  \r\n          }  \r\n       }  \r\n    }()  \r\n  \r\n    time.Sleep(time.Second * 6)  \r\n}\r\n```\r\n主协程中通知子线程取消\r\n```go\r\nfunc TestCancelContext(t *testing.T) {  \r\n    parentContext := context.Background()  \r\n    ctx, cancel := context.WithCancel(parentContext)  \r\n  \r\n    group := sync.WaitGroup{}  \r\n    group.Add(1)  \r\n  \r\n    go func(context context.Context) {  \r\n       for {  \r\n          select {  \r\n          case <-ctx.Done():  \r\n             fmt.Println(\"child exit.\")  \r\n             group.Done()  \r\n             return  \r\n          default:  \r\n             time.Sleep(time.Second)  \r\n             fmt.Println(\"1 second passed.\")  \r\n          }  \r\n  \r\n       }  \r\n    }(ctx)  \r\n  \r\n    time.Sleep(6 * time.Second)  \r\n    cancel()  \r\n    group.Wait()  \r\n    fmt.Println(\"main exit.\")  \r\n}\r\n```\r\n# 1. Backgroud和TODO\r\nGo内置两个函数：`Background()`和`TODO()`，我们代码中最开始都是以这两个内置的上下文对象作为<span style=\"background:<span class=\"tag\">#fff88f</span>\">最顶层的partent context</span>，衍生出更多的子上下文对象。background和todo本质上都是emptyCtx结构体类型，是一个不可取消，没有设置截止时间，没有携带任何值的Context。\r\n## 1.1. Background\r\nBackground()主要用于<span style=\"background:<span class=\"tag\">#fff88f</span>\">main函数</span>、初始化以及测试代码中，作为Context这个树结构的最顶层的Context，也就是根Context。\r\n**使用场景**\r\n- 作为所有`context`树的**顶层根节点**（例如：`main`函数、初始化逻辑、测试代码等）。\r\n- 当没有现成的`context`可用时（比如处理请求的入口处）。\r\n- 常用于启动后台任务或服务的初始化。\r\n## 1.2. TODO()\r\n这个函数也返回一个空的context，可以在不确定该用什么context，或者暂时还没有合适的context可用时，作为<span style=\"background:<span class=\"tag\">#fff88f</span>\">占位使用</span>。不过TODO可能在以后会被替换成具体的context，所以使用TODO的地方需要后续检查是否正确。比如在重构代码的时候，可能<span style=\"background:<span class=\"tag\">#fff88f</span>\">暂时用TODO标记，提醒以后处理</span>。在生产代码中，应该<font color=\"<span class=\"tag\">#ff0000</span>\">避免使用TODO</font>\r\n**使用场景**\r\n- 在代码重构或开发阶段，**临时占位**（例如：函数需要`context`参数，但调用方暂时无法提供合适的`context`）。\r\n- 提醒后续需要替换为更明确的`context`（比如从父`context`派生或传递业务相关的值）。\r\n# 2. With系列函数\r\n此外，context包中还定义了四个With系列函数。\r\n- `withCancel`，可以在父协程中调用返回的cancel函数取消子协程\r\n- `WithDeadline`，和withCancel一样，但是有一个最长的生命周期限制，到达**绝对时间**后子上下文也会被取消，适用于在<font color=\"<span class=\"tag\">#ff0000</span>\">某个时间点</font>之前必须要执行完的任务。\r\n- `WithTimeout`，和withDeadline类似，但是不是以绝对时间为准的，而是以函数被调用时刻为参考的相对时间，适用于执行<font color=\"<span class=\"tag\">#ff0000</span>\">限制任务的最大时长</font>。\r\n- `withValue`，func WithValue(parent Context, key, val interface{}) Context\r\n# 3. context中值传递的原则\r\n- 父context不能获取子context新加的value（每新加一个value就会生成一个新的context）\r\n- 父 Context中某个键对应的值被修改了，子Context可以获取到最新的值。这是因为 Context 中存储的值是通过引用来传递的，而不是通过值传递的方式。当我们使用 `context.WithValue` 函数创建一个新的子 Context 时，实际上是创建了一个新的 Context 对象，该对象包含了父 Context 中所有键值对的引用。建议context中存储不可变的对象，如果需要变，则可以通过全局变量控制。"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Context</h1>
+        <h1>
+            Context
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

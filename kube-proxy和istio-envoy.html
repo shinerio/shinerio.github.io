@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"kube-proxy和istio envoy","title":"Kube Proxy和Istio Envoy","content":"- 每个节点安装了一个kube-proxy\r\n- 每个pod以sidecar的形式部署一个envoy\r\n- kube-proxy拦截的是进出kubernetes节点的流量，envoy拦截的是进出pod的流量。\r\n- istio作为服务网格的一种实现，本质上提供了应用间的流量、安全管理和可观察性。 \r\n# 1. kube-proxy\r\nK8s集群中每个节点部署一个kube-proxy组件，与k8s api server进行通信，获取集群中的服务信息，然后设置iptables规则，将服务请求直接发送到对应的endpoint。\r\n# 2. Istio"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Kube Proxy和Istio Envoy</h1>
+        <h1>
+            Kube Proxy和Istio Envoy
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

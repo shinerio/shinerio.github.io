@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"AgentCore","title":"AgentCore","content":"Amazon Bedrock AgentCore是用于构建、部署、高效运行Agent的最先进的智能化平台，其服务包括Runtime, Gateway, Memory, Identity, Observability, Browser, Code Interpreter, Evaluation, policy.\r\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/20260119234030464.png)\r\n# 1. agentCore identity\r\n简化了agent的访问管理。允许agent安全的访问AWS资源、三方工具以及经用户预先授权的服务。\r\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian202601212216282.png)\r\n\r\n# 2. agentCore gateway\r\nAgentCore Gateway允许Agent安全地访问工具、数据和其他agents，它能够将API和Lambda函数转换为与Agent兼容的工具，并连接到现有的 MCP 服务器。\r\n# 3. agentCore memory\r\n使用Memory来保留整个对话过程中的上下文信息，并在多个代理之间共享这些信息，从而实现多轮对话。\r\n**短期记忆**会在一个会话中存储最近的交互和事件（例如消息或操作），以便快速回忆和提供上下文。\r\n**长期记忆**会随着时间从短期事件中自动生成，并根据你定义的记忆策略总结关键洞察。\r\n# 4. agentCore runtime\r\nruntime是一个安全的、serverless的部署、弹性扩缩**AI Agents**和**tools**的运行时环境。支持低时延、实时交互、最长8小时运行复杂任务的异步。\r\n\n创建的时候需要选择一个IAM ROlE，自动创建的具有以下权限\r\n\r\n| Service         | Access level         | Resource      | Request condition                        |\r\n| --------------- | -------------------- | ------------- | ---------------------------------------- |\r\n| Bedrock         | Limited: Read        | Multiple      | None                                     |\r\n| CloudWatch      | Limited: Write       | All resources | cloudwatch:namespace = bedrock-agentcore |\r\n| CloudWatch Logs | Limited: List, Write | Multiple      | None                                     |\r\n| X-Ray           | Limited: Read, Write | All resources | None                                     |\r\n# 5. agentCore observability\r\n通过全面的运营洞察帮助agent提升性能。通过Amazon CloudWatch平台，AgentCore Observability能能提供运行性能的实时监控看板，包括traces、session数量、latency、duration、token usage、error rates等指标。"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>AgentCore</h1>
+        <h1>
+            AgentCore
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2026-01-19T14:29:59.000Z">2026年1月19日</time>
         <div class="tags">
             

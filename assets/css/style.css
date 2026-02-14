@@ -2309,3 +2309,62 @@ body.todo-page .page-main {
         padding-left: calc(var(--spacing-lg) + 16px + var(--spacing-sm));
     }
 }
+
+/* ======================== */
+/* Export Button Styles     */
+/* ======================== */
+
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-left: var(--spacing-xs);
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-tertiary);
+  transition: all var(--transition-fast);
+  vertical-align: middle;
+  opacity: 0.7;
+}
+
+.export-btn::before {
+  display: none;
+}
+
+.export-btn:hover {
+  color: var(--color-accent-primary);
+  background-color: var(--color-bg-tertiary);
+  transform: translateY(-1px);
+  opacity: 1;
+}
+
+.export-btn svg {
+  display: block;
+}
+
+/* Article list item h3 with export button */
+.article-item h3 {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.article-item h3 a:first-child {
+  flex-shrink: 0;
+}
+
+/* Article header h1 with export button */
+article header h1 {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+article header h1 .export-btn {
+  width: 32px;
+  height: 32px;
+  padding: 6px;
+}

@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"Ubuntu系统备份","title":"Ubuntu系统备份","content":"# 1. 备份\r\n\r\n```shell\r\ndf -h\r\n# 数据盘挂载在/home/shinerio/data\r\n# /dev/sda        3.6T  1.5T  2.0T   43% /home/shinerio/data\r\ntar cvpzf /home/shinerio/data/backup.tar.gz --exclude=/proc --exclude=/lost+found --exclude=/mnt --exclude=/sys --exclude=/media --exclude=/home/shinerio /\r\n```\r\n\r\n# 2. 还原\r\n\r\n```bash\r\ntar xcpfz backup.tar.gz -C /\r\nmkdir proc \r\nmkdir lost+found \r\nmkdir mnt \r\nmkdir sys\r\n```\r\n如果当前启动无法启动，可以通过live cd来启动并执行恢复操作"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Ubuntu系统备份</h1>
+        <h1>
+            Ubuntu系统备份
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

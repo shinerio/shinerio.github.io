@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"测试","title":"测试","content":"Golang单元测试对文件名和方法名，参数都有很严格的要求。\r\n1. 文件名必须以xx_test.go命名\r\n2. 方法参数必须 `t *testing.T`\r\n3. 使用go test执行单元测试\r\n在`*_test.go`文件中有三种类型的函数，单元测试函数、基准测试函数和示例函数。\r\n\r\n| 类型   | 格式              | 作用              |\r\n| ---- | --------------- | --------------- |\r\n| 测试函数 | 函数名前缀为Test      | 测试程序的一些逻辑行为是否正确 |\r\n| 基准函数 | 函数名前缀为Benchmark | 测试函数的性能         |\r\n| 示例函数 | 函数名前缀为Example   | 为文档提供示例文档       |\r\n\r\n```go\r\npackage test  \r\n  \r\nimport (  \r\n    \"reflect\"  \r\n    \"testing\")  \r\n  \r\nfunc TestClosure(t *testing.T) {  \r\n    got := Split(\"a:b:c\", \":\")         // 程序输出的结果  \r\n    want := []string{\"a\", \"b\", \"c\"}   // 期望的结果  \r\n    if !reflect.DeepEqual(want, got) { // 因为slice不能比较直接，借助反射包中的方法比较  \r\n       t.Errorf(\"excepted:%v, got:%v\", want, got) // 测试失败输出错误提示  \r\n    }  \r\n}\r\n```"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>测试</h1>
+        <h1>
+            测试
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"代码坏味道","title":"代码坏味道","content":"# 1. 重复代码\r\n# 2. 长函数\r\n# 3. large class\r\n# 4. Divergent Change(发散式变化)\r\n对程序进行维护时, **如果添加修改组件, 要同时修改一个类中的多个方法**，那么这就是 Divergent Change。举个汽车的例子，某个汽车厂商生产三种品牌的汽车：BMW、Benz和LaoSiLaiSi，每种品牌又可以选择燃油、纯电和混合动力。\r\n\r\n如果某个模块经常因为不同的原因在**不同的方向上发生变化**，发散式变化就出现了。当你看着一个类说：“呃，如果新加入一个数据库，我必须修改这3个函数；如果新出现一种金融工具，我必须修改这 4 个函数。“这就是发散式变化的征兆。<span style=\"background:<span class=\"tag\">#fff88f</span>\">数据库交互和金融逻辑处理是两个不同的上下文，将它们分别搬移到各自独立的模块中，能让程序变得更好</span>：每当要对某个上下文做修改时，我们只需要理解这个上下文，而不必操心另一个。“<span style=\"background:<span class=\"tag\">#fff88f</span>\">每次只关心一个上下文”这一点一直很重要</span>，在如今这个信息爆炸、脑容量不够用的年代就愈发紧要。当然，往往只有在加入新数据库或新金融工具后，你才能发现这个坏味道。在程序刚开发出来还在随着软件系统的能力不断演进时，<span style=\"background:<span class=\"tag\">#fff88f</span>\">上下文边界通常不是那么清晰。</span>\r\n****\r\n优化方案：\r\n- 遵循单一原则，拆分不同模块\r\n# 5. Shotgun Surgery（散弹式修改）\r\n当你实现某个小功能时，你需要在很多不同的类做出小修改。这就是**Shotgun Surgery（散弹式修改）**。这意味着需要修改的代码散布四处，你不但很难找到它们，也很容易错过某个重要的修改。\r\n> [!tip]\r\n> 跟**发散式变化(Divergent Change)** 的区别就是，它指的是同时对**多个类进行单一**的修改，发散式变化指在**一个类中因为不同功能模块变化需要修改多处**。\r\n\r\n优化方案：\r\n1. 所有需要修改的代码放进同一个模块中\r\n\r\n# 6. 基本类型偏执\r\n大多数编程环境都大量使用基本类型，即整数、浮点数和字符串等。一些库会引入一些小对象，如日期。但我们发现一个很有趣的现象：很多程序员不愿意创建对自己的问题域有用的基本类型，如钱、坐标、范围等。于是，我们看到了把钱当作普通数字来计算的情况、计算物理量时无视单位（如把英寸与毫米相加）的情况以及大量类似 if (a < upper && a > lower)这样的代码。\r\n\r\n字符串是这种坏味道的最佳培养皿，比如，电话号码不只是一串字符。一个体面的类型，至少能包含一致的显示逻辑，在用户界面上需要显示时可以使用。“用字符串来代表类似这样的数据”是如此常见的臭味，以至于人们给这类变量专门起了一个名字，叫它们“类字符串类型”（stringly typed）变量。\r\n> [!note]\r\n> 典型的坏味道是喜欢用map作为接口传参"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>代码坏味道</h1>
+        <h1>
+            代码坏味道
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

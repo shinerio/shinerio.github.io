@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"函数","title":"函数","content":"# 1. 结构体返回值\r\n在Go语言中，函数返回结构体时，接收它的变量类型可以是**值类型**或**指针类型**\r\n## 1.1. 使用值类型接收值类型返回值\r\n- **结构体较小**（如 2-3 个字段的结构体），直接复制不会有明显性能影响。\r\n- 结构体的数据不需要在外部修改，返回值是独立的副本。\r\n```go\r\npackage main\r\n\r\nimport (\r\n\t\"fmt\"\r\n\t\"log\"\r\n)\r\n\r\ntype Person struct {\r\n\tName string\r\n\tAge  int\r\n}\r\n\r\nfunc NewPerson() Person {\r\n\tp := Person{Name: \"Alice\", Age: 25}\r\n\tlog.Printf(\"函数内结构体地址, %p\", &p)\r\n\treturn p\r\n}\r\n\r\nfunc main() {\r\n\tp := NewPerson()\r\n\tlog.Printf(\"函数返回值结构体地址, %p\", &p)\r\n\tfmt.Println(p.Name, p.Age)\r\n}\r\n```\r\n输出如下\r\n```text\r\n2025/03/02 07:30:45 函数内结构体地址, 0xc000010030\r\n2025/03/02 07:30:45 函数返回值结构体地址, 0xc000010018\r\nAlice 25\r\n```\r\n## 1.2. 使用指针类型接收指针类型返回值\r\n- **结构体较大**（包含多个字段，或者嵌套结构体），使用指针避免值拷贝的开销。\r\n- **需要修改结构体的字段**，指针允许直接修改原始对象，而不需要显式返回新的值。\r\n```go\r\npackage main\r\n\r\nimport (\r\n\t\"fmt\"\r\n\t\"log\"\r\n)\r\n\r\ntype Person struct {\r\n\tName string\r\n\tAge  int\r\n}\r\n\r\nfunc NewPerson() *Person {\r\n\tp := Person{Name: \"Alice\", Age: 25}\r\n\tlog.Printf(\"函数内结构体地址, %p\", &p)\r\n\treturn &p\r\n}\r\n\r\nfunc main() {\r\n\tp := NewPerson()\r\n\tlog.Printf(\"函数返回值结构体地址, %p\", p)\r\n\tfmt.Println(p.Name, p.Age)\r\n}\r\n```\r\n输出如下\r\n```go\r\n2025/03/02 07:32:30 函数内结构体地址, 0xc000010018\r\n2025/03/02 07:32:30 函数返回值结构体地址, 0xc000010018\r\nAlice 25\r\n```\r\n# 2. 函数入参\r\n## 2.1. 接口类型参数传递\r\n接口本身就是引用类型，接口变量在内部实现上已经包含了一个指向实际数据的指针和一个指向方法表的指针（通常称为iface结构，包含tab和data两个指针）。接口传递是浅复制：当你传递一个接口变量时，只是复制了这两个指针，而不是底层的数据结构，所以传递成本很低。一个典型的使用场景是对`context.Context`参数的传递。\r\n```go\r\npackage main\r\n\r\nimport (\r\n\t\"fmt\"\r\n)\r\n\r\n// Shape 接口是一种抽象类型,它定义了一组方法签名,但不包含实现代码\r\ntype Shape interface {\r\n\tArea() float64\r\n\tPerimeter() float64\r\n}\r\n\r\n// Rectangle 实现了接口中声明的所有方法，那么它就被认为实现了该接口\r\ntype Rectangle struct {\r\n\tWidth, Height float64\r\n}\r\n\r\nfunc (r Rectangle) Area() float64 {\r\n\treturn r.Width * r.Height\r\n}\r\n\r\nfunc (r Rectangle) Perimeter() float64 {\r\n\treturn 2 * (r.Width + r.Height)\r\n}\r\n\r\nfunc main() {\r\n\trect := Rectangle{5.0, 4.0}\r\n\tprint(rect)\r\n}\r\n\r\nfunc print(s Shape) {\r\n\tfmt.Println(\"Area: \", s.Area())\r\n\tfmt.Println(\"Perimeter: \", s.Perimeter())\r\n}\r\n```\r\n输出如下：\r\n```text\r\nArea:  20\r\nPerimeter:  18\r\n```\r\n在Go语言里，函数参数在声明时会指定参数的类型，有时候可以不明确给出参数变量名，在接口定义、参数忽略和代码简洁性方面有重要作用。\r\n## 2.2. 参数类型声明（共用类型）\r\n在Go语言中，当函数的多个相邻参数具有相同类型时，可以只在最后一个参数后面声明类型，前面的参数就不用重复声明该类型了。也就是说，`length, width float64`这种写法等同于`length float64, width float64`\r\n## 2.3. 参数变量声明\r\n### 2.3.1. 方法占位\r\n在 Go 语言中，当你定义一个接口时，接口中的方法可以只声明参数类型而不声明变量名。接口描述的是一组方法的签名，重点在于方法的输入输出类型，而不是具体的参数名。这有助于抽象出通用的行为，让不同的类型可以根据这些方法签名来实现接口。\r\n示例代码\r\n```go\r\npackage main\r\n\r\nimport \"fmt\"\r\n\r\n// Shape 是一个接口，定义了计算面积和周长的方法\r\ntype Shape interface {\r\n    Area(float64, float64) float64\r\n    Perimeter(float64, float64) float64\r\n}\r\n\r\n// Rectangle 是一个结构体，表示矩形\r\ntype Rectangle struct{}\r\n\r\n// Area 实现了 Shape 接口的 Area 方法\r\nfunc (r Rectangle) Area(length, width float64) float64 {\r\n    return length * width\r\n}\r\n\r\n// Perimeter 实现了 Shape 接口的 Perimeter 方法\r\nfunc (r Rectangle) Perimeter(length, width float64) float64 {\r\n    return 2 * (length + width)\r\n}\r\n\r\nfunc main() {\r\n    var s Shape = Rectangle{}\r\n    fmt.Println(\"矩形面积:\", s.Area(5, 3))\r\n    fmt.Println(\"矩形周长:\", s.Perimeter(5, 3))\r\n}\r\n```\r\n在 Shape 接口中，Area 和 Perimeter 方法只声明了参数类型，没有指定参数名。这样做的目的是定义一个通用的方法签名，任何实现 Shape 接口的类型都需要按照这个签名来实现相应的方法。\r\n### 2.3.2. 忽略参数\r\n在某些情况下，函数可能接收了一些参数，但在函数内部并不需要使用这些参数。此时可以不声明参数变量名，以表明这些参数在函数实现中被忽略。\r\n```go\r\npackage main\r\n\r\nimport \"fmt\"\r\n\r\n// 函数接收三个参数，但只使用了其中一个\r\nfunc exampleFunc(int, str string, _ bool) {\r\n    fmt.Println(\"接收到的字符串参数:\", str)\r\n}\r\n\r\nfunc main() {\r\n    exampleFunc(10, \"hello\", true)\r\n}\r\n```\r\n在exampleFunc函数中，第一个参数只声明了类型 int，没有变量名，表示该参数在函数内部不会被使用。第三个参数使用了下划线 _ 作为变量名，这是 Go 语言中用于忽略变量的惯例\r\n### 2.3.3. 代码简洁性\r\n在一些简单的匿名函数或者测试代码中，不声明参数变量名可以让代码更加简洁，突出函数的主要逻辑。\r\n```go\r\npackage main\r\n\r\nimport \"fmt\"\r\nfunc main() {\r\n    // 匿名函数，不声明参数变量名\r\n    add := func(int, int) int {\r\n        return 1 + 2\r\n    }\r\n    result := add(10, 20)\r\n    fmt.Println(\"计算结果:\", result)\r\n}\r\n```\r\n在这个匿名函数中，不声明参数变量名，直接实现了一个简单的加法逻辑。这样代码更加简洁，适用于一些临时的、简单的函数实现。"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>函数</h1>
+        <h1>
+            函数
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

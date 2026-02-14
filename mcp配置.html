@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"MCP配置","title":"MCP配置","content":"# 1. 基本定义\r\n- 每个MCP服务器都是一个独立json对象，以服务器名称作为key\r\n- key在MCP配置文件中以及全局配置文件和项目配置文件中必须是唯一的\r\n- 每个MCP服务器条目对象都必须具有`command`属性\r\n# 2. local mcp server\r\n- `cwd`（可选）：在执行`command`之前，先将进程的工作目录切换到指定路径，类似于先执行`cd`命令。在command或args指定相对路径时有用。\r\n- `command`（必填）：用于启动MCP服务器的命令\r\n- `args`（可选）：启动服务器时要传递给服务器的命令行参数数组。参数按配置文件中定义的确切顺序传递。如果未定义，则不会向服务器传递任何参数。\r\n- `env`（可选）：启动服务器时要设置的环境变量的对象。每个值都必须是一个字符串。如果未定义，则不设置任何环境变量。\r\n- `timeout`（可选）：客户端等待来自MCP服务器的响应以进行工具调用、提示检索或资源检索的最长时间（以毫秒为单位）。这必须是正整数值。如果未定义，则使用默认值 60,000 ms（1 分钟）。\r\n服务器配置示例：\r\n```json\r\n{\r\n  \"mcpServers\": {\r\n    \"stdio-mcp-server-example\": {\r\n    \"cwd\": \"/home/user/projects/my-mcp-project\",\r\n      \"command\": \"mycommand\",\r\n      \"args\": [\r\n        \"arg1\",\r\n        \"arg2\"\r\n      ],\r\n      \"env\": {\r\n        \"API_KEY\": \"value1\",\r\n        \"ENV_VAR1\": \"value1\",\r\n        \"ENV_VAR2\": \"value2\"\r\n      },\r\n      \"timeout\": 60000\r\n    }\r\n  }\r\n}\r\n```\r\n# 3. remote mcp server\r\n如果工具支持配置remote server，可以直接配置\r\n```conf\r\n{\r\n  \"mcpServers\": {\r\n    \"web-search\": {\r\n      \"url\": \"https://remote.mcp.server/sse\"\r\n    }\r\n  }\r\n}\r\n```\r\n如果工具不支持配置remote server，则可以通过[mcp-remote](https://www.npmjs.com/package/mcp-remote)工具作为桥接，实现：\r\n1. MCP客户端 --STDIO--> mcp-remote --HTTP/SSE--> 远程MCP服务器\r\n2. **协议转换**：将远程的HTTP/SSE协议转换为本地的STDIO协议\r\n3. **兼容性**：让不支持远程连接的MCP客户端也能使用远程服务器\r\n```json\r\n{\r\n  \"mcpServers\": {\r\n    \"remote-example\": {\r\n      \"command\": \"npx\",\r\n      \"args\": [\r\n        \"mcp-remote\",\r\n        \"http://remote.mcp.server/sse\",\r\n        \"--header\",\r\n        \"Authorization: Bearer ${AUTH_TOKEN}\",\r\n        \"--allow-http\"\r\n      ],\r\n      \"env\": {\r\n        \"AUTH_TOKEN\": \"...\"\r\n      }\r\n    }\r\n  }\r\n}\r\n```"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>MCP配置</h1>
+        <h1>
+            MCP配置
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2026-01-03T13:04:29.180Z">2026年1月3日</time>
         <div class="tags">
             

@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"ICMP","title":"计算机网络（七）—— 网络层 —— ICMP","content":"互联网控制消息协议（Internet Control Message Protocol，ICMP）是TCP/IP协议族的核心协议之一，用于IP协议中发送控制消息，提供可能发生在通信环境中的各种问题反馈。通过这些消息，使管理者可以对所发生的的问题作出诊断，然后采取适当的措施解决。ICMP可以简单认为是网络环境的DEBUG工具。\n\n<!--more-->\n\n# 1. ICMP报文格式\nICMP是基于IP协议工作的，属于网络层协议。ICMP报文包含在IP数据报中，IP报头在ICMP报文的最前面。当IP报头中的协议字段值为1时，就说明这是一个ICMP报文。ICMP报头从IP报头的第160位开始（IP首部20字节，IP报头使用了可选字段除外）。\n\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/icmp%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F.png)\n\n- <font color=red>Type</font>：ICMP类型\n- <font color=red>Code</font>：进一步划分ICMP类型，用来查找产生错误的原因\n- <font color=red>校验码</font>：通过ICMP报头和数据部分计算得来\n\n ICMP的报文类型有很多种，具体可参考[Wikipedia](https://zh.wikipedia.org/wiki/互联网控制消息协议)。\n \n# 2. ping\n我们用的ping操作中就包括了请求（类型字段值为8）和应答（类型字段值为0）ICMP报文。一台主机向一个节点发送一个类型字段值为8（请求）的ICMP报文，如果途中没有异常（没有被路由丢弃，目标不回应ICMP或者传输失败），则目标返回类型字段值为0（应答）的ICMP报文，说明这台主机存在。一个ping报文如下\n![](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200426202102.png)\n\n## 2.1. ping响应类型\n### 2.1.1. 正常\n```text\n# 请求1\nInternet Control Message Protocol\nType: 8 (Echo (ping) request)\nCode: 0\nChecksum: 0x629d [correct]\n[Checksum Status: Good]\nIdentifier (BE): 7509 (0x1d55)\nIdentifier (LE): 21789 (0x551d)\nSequence number (BE): 0 (0x0000)\nSequence number (LE): 0 (0x0000)\n[Response frame: 34]\nTimestamp from icmp data: Apr 26, 2020 20:40:28.240933000 CST\n[Timestamp from icmp data (relative): 0.000056000 seconds]\nData (48 bytes)\n\n# 响应1\nInternet Control Message Protocol\nType: 0 (Echo (ping) reply)\nCode: 0\nChecksum: 0x6a9d [correct]\n[Checksum Status: Good]\nIdentifier (BE): 7509 (0x1d55)\nIdentifier (LE): 21789 (0x551d)\nSequence number (BE): 0 (0x0000)\nSequence number (LE): 0 (0x0000)\n[Request frame: 31]\n[Response time: 29.529 ms]\nTimestamp from icmp data: Apr 26, 2020 20:40:28.240933000 CST\n[Timestamp from icmp data (relative): 0.029585000 seconds]\nData (48 bytes)\n\n# 请求2\nInternet Control Message Protocol\nType: 8 (Echo (ping) request)\nCode: 0\nChecksum: 0x514a [correct]\n[Checksum Status: Good]\nIdentifier (BE): 7509 (0x1d55)\nIdentifier (LE): 21789 (0x551d)\nSequence number (BE): 1 (0x0001)\nSequence number (LE): 256 (0x0100)\n[Response frame: 50]\nTimestamp from icmp data: Apr 26, 2020 20:40:29.245366000 CST\n[Timestamp from icmp data (relative): 0.000148000 seconds]\nData (48 bytes)\n\n# 响应2\nInternet Control Message Protocol\nType: 0 (Echo (ping) reply)\nCode: 0\nChecksum: 0x594a [correct]\n[Checksum Status: Good]\nIdentifier (BE): 7509 (0x1d55)\nIdentifier (LE): 21789 (0x551d)\nSequence number (BE): 1 (0x0001)\nSequence number (LE): 256 (0x0100)\n[Request frame: 49]\n[Response time: 33.374 ms]\nTimestamp from icmp data: Apr 26, 2020 20:40:29.245366000 CST\n[Timestamp from icmp data (relative): 0.033522000 seconds]\nData (48 bytes)\n```\n\n### 2.1.2. 超时\n\n```\nRequest timeout for icmp_seq 0\nRequest timeout for icmp_seq 1\n```\n\n有以下几种情况可能会导致超时\n- 对方已关机或ip地址根本不存在\n- 对方与自己不在同一网段内，通过路由也无法找到对方\n- 对方确实存在，但设置了ICMP数据包过滤\n\n### 2.1.3. Destination host Unreachable\n\n- 对方与自己不在同一网段内，而自己又未设置默认的路由\n- 网线出了故障\n\n> destination host unreachable和time out的区别在于如果所经过的路由器的路由表中具有到达目标的路由，而目标因为其他原因不可到达，这时候会出现“time out”，如果路由表中连到达目标的路由都没有，那就会出现“destination host unreachable”。\n\n### 2.1.4. Bad IP address\n这个信息表示可能没有连接到DNS服务器，所以无法解析这个IP地址，也可能是IP地址不存在。\n\n### 2.1.5. Source quench received\n这个信息比较特殊，它出现的机率很小。它表示对方或中途的服务器繁忙无法回应。\n\n### 2.1.6. Unknown host\n这种出错信息的意思是，该远程主机的名字不能被域名服务器（DNS）转换成IP地址。故障原因可能是：\n- 域名服务器有故障\n- 域名不存在，无法被解析\n- 网络管理员的系统与远程主机之间的通信线路有故障。\n\n### 2.1.7. No answer\n这种故障说明本地系统有一条通向中心主机的路由，但却接收不到它发给该中心主机的任何信息。故障原因可能是下列之一：\n- 中心主机没有工作；\n- 本地或中心主机网络配置不正确；\n- 本地或中心的路由器没有工作；\n- 通信线路有故障；\n- 中心主机存在路由选择问题。\n\n### 2.1.8. no rout to host\n网卡工作不正常。\n\n### 2.1.9. transmit failed,error code:10043\n网卡驱动不正常。\n\n### 2.1.10. unknown host name\nDNS配置不正确。\n\n### 2.1.11. 不产生ICMP错误报文的情况\n1. 对ICMP差错报文，不再发送ICMP差错报告报文\n2. 对第一个分片的数据报片的所有后续数据报片，都不发送ICMP差错报告报文\n3. 对具有多播地址的数据报，都不发送ICMP差错报告报文\n4. 对具有特殊地址（如127.0.0.0或0.0.0.0）的数据报，不发送ICMP差错报告报文\n\n## 2.2. IP记录路由\nping使用IP首部的选项字段来记录IP报文经过了哪些主机，IP首部中的选项字段最长40字节，可以使用`ping -R`选项开启记录。\n\n# 3. traceroute\n受ip头选项长度的限制，ping不能完全的记录下所经过的路由器，而traceroute是用来检测主机到目的主机之间所经路由情况的重要工具。\n\ntraceroute的原理如下：\n1. 首先给目的主机发送一个TTL=1的UDP数据包，而经过的第一个路由器收到这个数据包以后，就自动把TTL减1，而TTL变为0以后，路由器就把这个包给抛弃了，并同时产生一个主机不可达的ICMP数据报给主机。\n2. 主机收到这个数据报以后再发一个TTL=2的UDP数据报给目的主机，然后触发第二个路由器给主机发ICMP数据报。\n3. 如此往复直到到达目的主机。这样，traceroute就拿到了所有的路由器ip。从而避开了ip头只能记录有限路由IP的问题。\n\n> 源主机如何知道UDP到没到达目的主机呢？这就涉及一个技巧的问题，普通的网络程序只监控少数的几个号码较小的端口，比如说80，23等等。而traceroute发送的是端口号>30000的UDP报，所以到达目的主机的时候，目的主机只能发送一个端口不可达的ICMP数据报给主机。由此，源主机就可以知道数据包到达了目标主机。"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>计算机网络（七）—— 网络层 —— ICMP</h1>
+        <h1>
+            计算机网络（七）—— 网络层 —— ICMP
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2020-04-25T00:00:00.000Z">2020年4月25日</time>
         <div class="tags">
             

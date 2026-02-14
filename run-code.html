@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"run_code","title":"Run Code","content":"run_code是一个来自veadk库的内置工具，它提供了一个安全的代码执行沙箱功能。这个工具允许AI Agent运行用户请求的代码片段（主要是 Python3），并返回执行结果。该工具通过字节跳动云服务的API在远程安全环境中执行代码，并具有会话管理和身份验证功能。\r\n\r\n# 1. 工作原理\r\n## 1.1. 工具注册和描述机制\r\n  在 agent.py 中，run_code工具被显式地注册到 Agent 中`tools=[run_code, mcp_router]`\r\n## 1.2. 工具元数据和功能描述\r\nrun_code 函数本身包含详细的描述信息\r\n```python\r\n  def run_code(\r\n      code: str, language: str, tool_context: ToolContext, timeout: int = 30\r\n  ) -> str:\r\n      \"\"\"Run code in a code sandbox and return the output.\r\n      For C++ code, don't execute it directly, compile and execute via Python; write sources and object files to /tmp.\r\n\r\n      Args:\r\n          code (str): The code to run.\r\n          language (str): The programming language of the code. Language must be one of the supported languages: python3.\r\n          timeout (int, optional): The timeout in seconds for the code execution. Defaults to 30.\r\n\r\n      Returns:\r\n          str: The output of the code execution.\r\n      \"\"\"\r\n```\r\n## 1.3. 提示词(instruction)中的明确指引\r\n在 agent.py中，Agent的instruction明确告诉 LLM 如何使用工具：\r\n```\r\n  instruction=\"\"\"你是一个友好的智能个人助手，请用简洁明了的语言回答用户的问题。\r\n  如果用户询问与知识库相关的信息，请使用知识库检索。\r\n  如果用户提到个人偏好或重要信息，请将其存储到长期记忆中。\r\n  如果需要执行代码生成任务，请使用代码沙箱工具。\r\n  如果需要执行其他任务，请选取合适的MCP工具。\"\"\"\r\n```\r\n## 1.4. 运行时发现和调用机制\r\n  步骤 1: 工具发现\r\n  - 当 Agent 初始化时，所有注册的工具（包括 run_code）的描述信息会被传递给 LLM\r\n  - LLM 学习每个工具的用途、参数要求和返回类型\r\n  步骤 2: 任务识别\r\n  - 当用户提出请求时，LLM 分析用户意图\r\n  - 如果请求涉及计算、编程或代码执行，LLM 会识别出需要使用 run_code 工具\r\n  步骤 3: 代码生成\r\n  - LLM 根据用户需求生成适当的 Python 代码\r\n  - 确保代码符合沙箱环境的限制（如只使用支持的库等）\r\n  步骤 4: 工具调用\r\n  - LLM 以结构化格式（通常是 JSON）指定调用 run_code 工具\r\n  - 提供必要的参数：代码内容、编程语言、可能的超时设置\r\n\r\n**实际工作流程示例**\r\n  用户: \"请帮我计算100以内所有偶数的和\"\r\n\r\n  LLM 思考过程:\r\n  1. 分析问题 → 这是一个数学计算任务\r\n  2. 检查可用工具 → 发现有 run_code 工具\r\n  3. 确定解决方案 → 使用 Python 计算\r\n  4. 生成代码 → 写一个简单的 Python 循环来计算偶数和\r\n  5. 调用工具 → 传入代码和语言类型\r\n\r\n  实际调用类似:\r\n  {\r\n    \"tool_name\": \"run_code\",\r\n    \"arguments\": {\r\n      \"code\": \"total = sum(i for i in range(0, 101, 2))\\nprint(total)\",\r\n      \"language\": \"python3\"\r\n    }\r\n  }\r\n\r\n  沙箱执行后返回结果 → LLM 整理结果返回给用户"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Run Code</h1>
+        <h1>
+            Run Code
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2026-01-25T13:59:16.511Z">2026年1月25日</time>
         <div class="tags">
             

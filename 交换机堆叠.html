@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"交换机堆叠","title":"交换机堆叠","content":"# 1. 背景\r\n主机连接单个交换机，存在单点故障问题（单个交换机故障），解决tor交换机单点故障的思路有两个。\r\n- 上层服务（计算、网络）保证高可用，当一个tor下主机故障时，可以快速在另一台tor下拉起新主机\r\n- 两台tor交换机堆叠，保证tor交换机的高可靠\r\n# 2. 概念\r\n![](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images20250220225558639.png)\r\n交换机堆叠一般是指被**背板堆叠**，通过交换机主板总线引出的一个特殊端口，进行交换机与交换机之间的总线级数据交换，其**带宽取决于交换机的总线带宽**。大概是因为这个特殊的堆叠端口，往往放置在交换机背面，区别于其他网口，所以才叫做背板堆叠。此外，堆叠的线路像一条并口线，很宽，很短（不超过20厘米），所以交换机必须上下紧挨着叠放在机柜中，才能插上这种线，这大概也是堆叠这个词的由来。该功能需要交换机支持，一般都要同品牌甚至同型号的交换机才可以，毕竟各家交换机往往都有自己独特的数据处理模式，所以不是任何两台交换机都能堆叠在一起的。\r\n\r\n堆叠不仅可以堆叠两台交换机，还能一路路串联，堆叠更多交换机。堆叠扩展了交换机的端口范围，比如两台48口的交换机，经过堆叠后，你可以把这一组交换机当做96口的整机来使用。堆叠后的交换机之间的流量都要经过堆叠线路，带宽瓶颈受限于**单台主机的总线带宽**，多个交换机堆叠也无法扩展带宽。\r\n# 3. 存在的问题\r\n堆叠交换机的数据面可以是多个，但是控制面只有一个，控制面出现问题，数据面转发会有异常。因此只能解决数据面单点问题，无法解决控制面单点问题。同时控制面只有一个工作，也存在资源浪费问题。\r\n\r\n主控板故障或堆叠链路中断时，可能触发分裂脑（Split-Brain）问题，导致网络分区。\r\n\r\n【升级困难】交换机操作系统升级冷不丁，需要先堆叠分裂、升级、再重新组堆叠，业务流量会发生多次切换（切换动作非无损） 。"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>交换机堆叠</h1>
+        <h1>
+            交换机堆叠
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

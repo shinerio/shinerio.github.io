@@ -19,6 +19,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/articles-filters.js" defer></script>
+<script type="application/json" id="article-export-data" style="display:none">
+{"id":"velocity","title":"Velocity","content":"# 1. 新建module-a\r\n引入maven依赖\r\n```xml\r\n<dependency>  \r\n    <groupId>org.apache.velocity</groupId>  \r\n    <artifactId>velocity-engine-core</artifactId>  \r\n</dependency>  \r\n<dependency>  \r\n    <groupId>com.google.auto.service</groupId>  \r\n    <artifactId>auto-service</artifactId>  \r\n</dependency>\r\n```\r\n自定义Annotation\r\n```java\r\n@Target(ElementType.TYPE)  \r\n@Retention(RetentionPolicy.SOURCE)  \r\npublic @interface CodeGeneratorAnnotation {  \r\n}\r\n```\r\n继承AbstractProcessor，实现自定义Processor\r\n```java\r\n@AutoService(Processor.class)  \r\n@SupportedAnnotationTypes(\"com.example.CodeGeneratorAnnotation\")  \r\npublic class CodeGenerator extends AbstractProcessor {\r\n}\r\n```\r\n# 2. 新建module-b\r\n添加依赖module-A\r\n\r\n类填写注解，以生成编译后的class。`AlarmGenerator`可以添加些属性，用于编译class时使用。也可以给多个类添加注解以生成多份class.\r\n```java\r\n@AlarmGenerator  \r\npublic class AlarmGeneratedEntity {  \r\n}\r\n```\r\n\r\n>velocity需要使用单独module，这样才能是processor先经过编译，这样再编译其他module的时候才能用上这个已经编译processor"}
+</script>
+
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -60,7 +65,16 @@
             <div class="container">
                 <article>
     <header>
-        <h1>Velocity</h1>
+        <h1>
+            Velocity
+            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </a>
+        </h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             
