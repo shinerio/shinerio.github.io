@@ -50,6 +50,9 @@ export class SiteGenerator {
       // 复制静态资源
       await this.copyStaticAssets(outputPath);
 
+      // 复制 Markdown 源文件
+      await this.copyMarkdownFiles(articles, options, outputPath);
+
       // 生成CNAME文件（如果配置了自定义域名）
       await this.generateCnameFile(options.config, outputPath);
 
@@ -312,6 +315,8 @@ export class SiteGenerator {
           readingTime: article.readingTime,
           wordCount: article.wordCount,
           tags: article.tags,
+          markdownUrl: `assets/markdown/${article.slug}.md`,
+          markdownFilename: `${article.title}.md`,
           tableOfContents: this.generateTableOfContents(article.htmlContent),
           relatedArticles: this.getRelatedArticles(article, articles).slice(0, 3),
           commentsEnabled: options.config.comments?.enabled || false,
@@ -403,10 +408,10 @@ export class SiteGenerator {
     const templatesPath = path.join(process.cwd(), 'templates');
     const assetsSourcePath = path.join(templatesPath, 'assets');
     const assetsDestPath = path.join(outputPath, 'assets');
-    
+
     // 确保目标目录存在
     await fs.ensureDir(assetsDestPath);
-    
+
     // 复制CSS和JS文件
     if (await fs.pathExists(assetsSourcePath)) {
       await fs.copy(assetsSourcePath, assetsDestPath);
@@ -414,6 +419,34 @@ export class SiteGenerator {
       // 如果模板资源不存在，创建基本目录结构
       await fs.ensureDir(path.join(assetsDestPath, 'css'));
       await fs.ensureDir(path.join(assetsDestPath, 'js'));
+    }
+  }
+
+  /**
+   * 复制 Markdown 源文件
+   * Copy markdown source files to output directory
+   */
+  private async copyMarkdownFiles(articles: Article[], options: GenerationOptions, outputPath: string): Promise<void> {
+    const markdownDestPath = path.join(outputPath, 'assets', 'markdown');
+    await fs.ensureDir(markdownDestPath);
+
+    for (const article of articles) {
+      if (!article.isDraft) {
+        try {
+          // 使用 slug 作为文件名以确保 URL 安全
+          const destFilename = `${article.slug}.md`;
+          const destPath = path.join(markdownDestPath, destFilename);
+
+          // 如果 markdown 文件存在则复制
+          if (await fs.pathExists(article.filePath)) {
+            await fs.copy(article.filePath, destPath);
+          } else {
+            console.warn(`Markdown file not found for article "${article.title}": ${article.filePath}`);
+          }
+        } catch (error) {
+          console.warn(`Failed to copy markdown for "${article.title}": ${error instanceof Error ? error.message : String(error)}`);
+        }
+      }
     }
   }
 
@@ -657,7 +690,21 @@ export class SiteGenerator {
   private renderArticleListItem(article: Article): string {
     return `
     <div class="article-item">
-        <h3><a href="${article.slug}.html">${article.title}</a></h3>
+        <h3>
+            <a href="${article.slug}.html">${article.title}</a>
+            <a href="assets/markdown/${article.slug}.md"
+               download="${article.title}.md"
+               class="markdown-export-btn"
+               title="下载 Markdown 源文件"
+               aria-label="导出 Markdown"
+               onclick="event.stopPropagation()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+            </a>
+        </h3>
         <p class="article-excerpt">${article.description}</p>
         <div class="article-meta">
             <time datetime="${article.date.toISOString()}">${this.formatDate(article.date)}</time>

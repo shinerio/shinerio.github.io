@@ -396,7 +396,21 @@ document.addEventListener('DOMContentLoaded', function() {
       articleElement.setAttribute('data-id', article.id);
 
       articleElement.innerHTML = `
-        <h3><a href="${article.slug}.html">${article.title}</a></h3>
+        <h3>
+          <a href="${article.slug}.html">${article.title}</a>
+          <a href="assets/markdown/${article.slug}.md"
+             download="${article.title}.md"
+             class="markdown-export-btn"
+             title="下载 Markdown 源文件"
+             aria-label="导出 Markdown"
+             onclick="event.stopPropagation()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </a>
+        </h3>
         <p class="article-excerpt">${article.description || ''}</p>
         <div class="article-meta">
           <time datetime="${new Date(article.date).toISOString()}">${formatDate(new Date(article.date))}</time>
