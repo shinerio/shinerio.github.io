@@ -52,14 +52,15 @@ class MetadataParser {
      */
     async parseFile(filePath) {
         try {
-            const content = await fs.readFile(filePath, 'utf-8');
-            const parsed = (0, gray_matter_1.default)(content);
+            const rawContent = await fs.readFile(filePath, 'utf-8');
+            const parsed = (0, gray_matter_1.default)(rawContent);
             const metadata = this.extractFrontmatter(parsed.data, filePath);
             const processedContent = this.processMarkdown(parsed.content);
             const wordCount = this.calculateWordCount(processedContent);
             return {
                 metadata,
                 content: processedContent,
+                rawContent, // 保存原始内容（含 frontmatter）
                 filePath,
                 wordCount
             };
