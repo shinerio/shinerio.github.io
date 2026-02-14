@@ -224,6 +224,35 @@ tsc-mark:hover {
   background-color: var(--color-bg-secondary, #f6f8fa);
 }
 
+.tsc-btn-danger {
+  color: #fff;
+  background-color: #d1242f;
+  border-color: #d1242f;
+}
+
+.tsc-btn-danger:hover {
+  background-color: #b51d25;
+  border-color: #b51d25;
+}
+
+/* Delete confirmation */
+.tsc-delete-confirm-text {
+  font-size: 14px;
+  color: var(--color-text-primary, #24292e);
+  margin-bottom: 12px;
+}
+
+.tsc-delete-confirm-quote {
+  padding: 8px 12px;
+  background: var(--color-bg-secondary, #f6f8fa);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--color-text-secondary, #586069);
+  font-style: italic;
+  margin-bottom: 16px;
+  word-break: break-word;
+}
+
 /* Tooltip styles */
 .tsc-tooltip {
   position: absolute;
@@ -272,6 +301,13 @@ tsc-mark:hover {
   font-weight: 600;
 }
 
+.tsc-tooltip-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
 .tsc-tooltip-github-link {
   display: flex;
   align-items: center;
@@ -282,7 +318,6 @@ tsc-mark:hover {
   opacity: 0.6;
   transition: opacity 0.2s ease;
   flex-shrink: 0;
-  margin-left: 8px;
 }
 
 .tsc-tooltip-github-link:hover {
@@ -292,6 +327,37 @@ tsc-mark:hover {
 .tsc-tooltip-github-link svg {
   width: 16px;
   height: 16px;
+}
+
+.tsc-tooltip-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: var(--tsc-tooltip-text);
+  opacity: 0.5;
+  cursor: pointer;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.tsc-tooltip-action-btn:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.tsc-tooltip-action-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.tsc-tooltip-delete-btn:hover {
+  color: #f85149;
+  opacity: 1;
 }
 
 .tsc-tooltip-date {
@@ -332,10 +398,57 @@ tsc-mark:hover {
   margin-bottom: 0;
 }
 
+.tsc-unmatched-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
 .tsc-unmatched-meta {
   font-size: 12px;
   color: var(--tsc-text-muted);
-  margin-bottom: 4px;
+}
+
+.tsc-unmatched-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.tsc-unmatched-item:hover .tsc-unmatched-actions {
+  opacity: 1;
+}
+
+.tsc-unmatched-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: var(--color-text-secondary, #586069);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.tsc-unmatched-action-btn:hover {
+  background-color: var(--color-bg-secondary, #f6f8fa);
+  color: var(--color-text-primary, #24292e);
+}
+
+.tsc-unmatched-action-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.tsc-unmatched-delete-btn:hover {
+  color: #d1242f;
 }
 
 .tsc-unmatched-text {

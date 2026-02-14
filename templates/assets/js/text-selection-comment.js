@@ -51,6 +51,8 @@
     comment: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>',
     close: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>',
     github: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>',
+    edit: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>',
+    delete: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>',
   };
 
   /**
@@ -669,7 +671,11 @@
 
     try {
       // Submit to GitHub
-      await submitCommentToGitHub(commentData);
+      const ghComment = await submitCommentToGitHub(commentData);
+
+      // Store GitHub comment metadata
+      commentData._id = ghComment.id;
+      commentData._url = ghComment.html_url;
 
       // Add to local state
       state.comments.push(commentData);
@@ -781,6 +787,8 @@
       }
       throw new Error(`GitHub API error: ${response.status}`);
     }
+
+    return await response.json();
   }
 
   /**
@@ -1045,14 +1053,37 @@
     const date = new Date(comment.createdAt);
     const dateStr = date.toLocaleDateString('zh-CN');
 
+    const isOwner = state.isAuthenticated && state.currentUser &&
+      comment.author && state.currentUser.login === comment.author;
+
     state.tooltip.innerHTML = `
       <div class="tsc-tooltip-header">
         <div class="tsc-tooltip-author">${escapeHtml(comment.author || '匿名')}</div>
-        ${comment._url ? `<a class="tsc-tooltip-github-link" href="${comment._url}" target="_blank" rel="noopener noreferrer" title="在 GitHub 上查看">${ICONS.github}</a>` : ''}
+        <div class="tsc-tooltip-header-actions">
+          ${comment._url ? `<a class="tsc-tooltip-github-link" href="${comment._url}" target="_blank" rel="noopener noreferrer" title="在 GitHub 上查看">${ICONS.github}</a>` : ''}
+          ${isOwner ? `<button class="tsc-tooltip-action-btn tsc-tooltip-edit-btn" title="编辑">${ICONS.edit}</button>` : ''}
+          ${isOwner ? `<button class="tsc-tooltip-action-btn tsc-tooltip-delete-btn" title="删除">${ICONS.delete}</button>` : ''}
+        </div>
       </div>
       <div class="tsc-tooltip-date">${dateStr}</div>
       <div class="tsc-tooltip-comment">${escapeHtml(comment.comment)}</div>
     `;
+
+    // Bind edit/delete events
+    if (isOwner) {
+      const editBtn = state.tooltip.querySelector('.tsc-tooltip-edit-btn');
+      const deleteBtn = state.tooltip.querySelector('.tsc-tooltip-delete-btn');
+      editBtn.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        state.tooltip.classList.remove('visible');
+        showEditPopover(comment);
+      });
+      deleteBtn.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        state.tooltip.classList.remove('visible');
+        showDeleteConfirm(comment);
+      });
+    }
 
     // Position above the mark
     const tooltipWidth = state.tooltip.offsetWidth || 200;
@@ -1088,6 +1119,199 @@
   }
 
   /**
+   * Show edit popover for a comment
+   */
+  function showEditPopover(comment) {
+    state.popover.innerHTML = `
+      <div class="tsc-popover-header">
+        <span class="tsc-popover-title">编辑评论</span>
+        <button class="tsc-popover-close" title="关闭">${ICONS.close}</button>
+      </div>
+      <div class="tsc-popover-selected-text" style="margin-bottom: 12px; padding: 8px; background: var(--color-bg-secondary, #f6f8fa); border-radius: 6px; font-size: 13px; color: var(--color-text-secondary, #586069); font-style: italic; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+        "${escapeHtml(comment.selectedText)}"
+      </div>
+      <textarea class="tsc-popover-textarea" placeholder="写下你的评论..." rows="3">${escapeHtml(comment.comment)}</textarea>
+      <div class="tsc-popover-actions">
+        <button class="tsc-btn tsc-btn-secondary tsc-btn-cancel">取消</button>
+        <button class="tsc-btn tsc-btn-primary tsc-btn-submit">保存</button>
+      </div>
+    `;
+
+    state.popover.querySelector('.tsc-popover-close').addEventListener('click', hidePopover);
+    state.popover.querySelector('.tsc-btn-cancel').addEventListener('click', hidePopover);
+    state.popover.querySelector('.tsc-btn-submit').addEventListener('click', () => {
+      handleEditSubmit(comment);
+    });
+
+    const textarea = state.popover.querySelector('.tsc-popover-textarea');
+    textarea.focus();
+    textarea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+        handleEditSubmit(comment);
+      }
+    });
+
+    // Position in center of viewport
+    positionPopover(null);
+    state.popover.classList.add('visible');
+  }
+
+  /**
+   * Handle edit comment submission
+   */
+  async function handleEditSubmit(comment) {
+    const textarea = state.popover.querySelector('.tsc-popover-textarea');
+    const newText = textarea.value.trim();
+
+    if (!newText) {
+      textarea.focus();
+      return;
+    }
+
+    if (newText === comment.comment) {
+      hidePopover();
+      return;
+    }
+
+    const submitBtn = state.popover.querySelector('.tsc-btn-submit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '保存中...';
+
+    try {
+      // Build updated comment data
+      const updatedData = {
+        selectedText: comment.selectedText,
+        prefix: comment.prefix,
+        suffix: comment.suffix,
+        paragraphIndex: comment.paragraphIndex,
+        comment: newText,
+        author: comment.author,
+        createdAt: comment.createdAt,
+      };
+
+      await updateCommentOnGitHub(comment._id, updatedData);
+
+      // Update local state
+      comment.comment = newText;
+
+      hidePopover();
+
+      // Re-render all highlights to reflect the change
+      state.unmatchedComments = [];
+      renderAllHighlights();
+    } catch (error) {
+      console.error('[TSC] Failed to edit comment:', error);
+      submitBtn.disabled = false;
+      submitBtn.textContent = '保存';
+      alert('编辑评论失败，请重试');
+    }
+  }
+
+  /**
+   * Update a comment on GitHub
+   */
+  async function updateCommentOnGitHub(commentId, commentData) {
+    const response = await fetch(`https://api.github.com/repos/${CONFIG.repo}/issues/comments/${commentId}`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `token ${state.token}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        body: '```json\n' + JSON.stringify(commentData, null, 2) + '\n```',
+      }),
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        clearAuthState();
+        throw new Error('Authentication expired');
+      }
+      throw new Error(`GitHub API error: ${response.status}`);
+    }
+
+    return await response.json();
+  }
+
+  /**
+   * Show delete confirmation dialog
+   */
+  function showDeleteConfirm(comment) {
+    state.popover.innerHTML = `
+      <div class="tsc-popover-header">
+        <span class="tsc-popover-title">删除评论</span>
+        <button class="tsc-popover-close" title="关闭">${ICONS.close}</button>
+      </div>
+      <div class="tsc-delete-confirm">
+        <p class="tsc-delete-confirm-text">确定要删除这条评论吗？此操作无法撤销。</p>
+        <div class="tsc-delete-confirm-quote">"${escapeHtml(comment.comment)}"</div>
+        <div class="tsc-popover-actions">
+          <button class="tsc-btn tsc-btn-secondary tsc-btn-cancel">取消</button>
+          <button class="tsc-btn tsc-btn-danger tsc-btn-confirm-delete">删除</button>
+        </div>
+      </div>
+    `;
+
+    state.popover.querySelector('.tsc-popover-close').addEventListener('click', hidePopover);
+    state.popover.querySelector('.tsc-btn-cancel').addEventListener('click', hidePopover);
+    state.popover.querySelector('.tsc-btn-confirm-delete').addEventListener('click', () => {
+      handleDeleteConfirm(comment);
+    });
+
+    positionPopover(null);
+    state.popover.classList.add('visible');
+  }
+
+  /**
+   * Handle delete confirmation
+   */
+  async function handleDeleteConfirm(comment) {
+    const deleteBtn = state.popover.querySelector('.tsc-btn-confirm-delete');
+    deleteBtn.disabled = true;
+    deleteBtn.textContent = '删除中...';
+
+    try {
+      await deleteCommentOnGitHub(comment._id);
+
+      // Remove from local state
+      state.comments = state.comments.filter(c => c._id !== comment._id);
+      state.unmatchedComments = state.unmatchedComments.filter(c => c._id !== comment._id);
+
+      hidePopover();
+
+      // Re-render highlights
+      renderAllHighlights();
+    } catch (error) {
+      console.error('[TSC] Failed to delete comment:', error);
+      deleteBtn.disabled = false;
+      deleteBtn.textContent = '删除';
+      alert('删除评论失败，请重试');
+    }
+  }
+
+  /**
+   * Delete a comment on GitHub
+   */
+  async function deleteCommentOnGitHub(commentId) {
+    const response = await fetch(`https://api.github.com/repos/${CONFIG.repo}/issues/comments/${commentId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `token ${state.token}`,
+        'Accept': 'application/vnd.github.v3+json',
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        clearAuthState();
+        throw new Error('Authentication expired');
+      }
+      throw new Error(`GitHub API error: ${response.status}`);
+    }
+  }
+
+  /**
    * Render unmatched comments section
    */
   function renderUnmatchedComments() {
@@ -1098,13 +1322,24 @@
     section.className = 'tsc-unmatched-section';
 
     let itemsHtml = '';
-    state.unmatchedComments.forEach(comment => {
+    state.unmatchedComments.forEach((comment, idx) => {
       const date = new Date(comment.createdAt);
       const dateStr = date.toLocaleDateString('zh-CN');
 
+      const isOwner = state.isAuthenticated && state.currentUser &&
+        comment.author && state.currentUser.login === comment.author;
+
       itemsHtml += `
-        <div class="tsc-unmatched-item">
-          <div class="tsc-unmatched-meta">${escapeHtml(comment.author || '匿名')} · ${dateStr}</div>
+        <div class="tsc-unmatched-item" data-unmatched-idx="${idx}">
+          <div class="tsc-unmatched-header">
+            <div class="tsc-unmatched-meta">${escapeHtml(comment.author || '匿名')} · ${dateStr}</div>
+            ${isOwner ? `
+              <div class="tsc-unmatched-actions">
+                <button class="tsc-unmatched-action-btn tsc-unmatched-edit-btn" title="编辑" data-idx="${idx}">${ICONS.edit}</button>
+                <button class="tsc-unmatched-action-btn tsc-unmatched-delete-btn" title="删除" data-idx="${idx}">${ICONS.delete}</button>
+              </div>
+            ` : ''}
+          </div>
           <div class="tsc-unmatched-text">"${escapeHtml(comment.selectedText)}"</div>
           <div style="margin-top: 8px; color: var(--color-text-primary);">${escapeHtml(comment.comment)}</div>
         </div>
@@ -1115,6 +1350,20 @@
       <div class="tsc-unmatched-title">未定位的评论 (${state.unmatchedComments.length})</div>
       ${itemsHtml}
     `;
+
+    // Bind edit/delete buttons for unmatched comments
+    section.querySelectorAll('.tsc-unmatched-edit-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.idx, 10);
+        showEditPopover(state.unmatchedComments[idx]);
+      });
+    });
+    section.querySelectorAll('.tsc-unmatched-delete-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.idx, 10);
+        showDeleteConfirm(state.unmatchedComments[idx]);
+      });
+    });
 
     contentEl.appendChild(section);
   }
