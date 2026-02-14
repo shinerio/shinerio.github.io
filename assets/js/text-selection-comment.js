@@ -43,6 +43,7 @@
     articleSlug: null,
     deviceModal: null,
     devicePollTimer: null,
+    tooltipHideTimer: null,
   };
 
   // Icons (SVG)
@@ -178,6 +179,14 @@
     state.tooltip = document.createElement('div');
     state.tooltip.className = 'tsc-tooltip';
     document.body.appendChild(state.tooltip);
+
+    // Keep tooltip visible when mouse enters it (for clicking the GitHub link)
+    state.tooltip.addEventListener('mouseenter', () => {
+      clearTimeout(state.tooltipHideTimer);
+    });
+    state.tooltip.addEventListener('mouseleave', () => {
+      state.tooltip.classList.remove('visible');
+    });
   }
 
   /**
@@ -1029,6 +1038,7 @@
    * Show tooltip for a comment
    */
   function showTooltip(e, comment) {
+    clearTimeout(state.tooltipHideTimer);
     const mark = e.target;
     const rect = mark.getBoundingClientRect();
 
@@ -1036,7 +1046,10 @@
     const dateStr = date.toLocaleDateString('zh-CN');
 
     state.tooltip.innerHTML = `
-      <div class="tsc-tooltip-author">${escapeHtml(comment.author || '匿名')}</div>
+      <div class="tsc-tooltip-header">
+        <div class="tsc-tooltip-author">${escapeHtml(comment.author || '匿名')}</div>
+        ${comment._url ? `<a class="tsc-tooltip-github-link" href="${comment._url}" target="_blank" rel="noopener noreferrer" title="在 GitHub 上查看">${ICONS.github}</a>` : ''}
+      </div>
       <div class="tsc-tooltip-date">${dateStr}</div>
       <div class="tsc-tooltip-comment">${escapeHtml(comment.comment)}</div>
     `;
@@ -1064,12 +1077,14 @@
   }
 
   /**
-   * Hide tooltip
+   * Hide tooltip with delay to allow mouse to move to tooltip
    */
   function hideTooltip() {
-    if (state.tooltip) {
-      state.tooltip.classList.remove('visible');
-    }
+    state.tooltipHideTimer = setTimeout(() => {
+      if (state.tooltip) {
+        state.tooltip.classList.remove('visible');
+      }
+    }, 150);
   }
 
   /**
