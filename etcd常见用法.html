@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"etcd常见用法","title":"Etcd常见用法","content":"# 1. 数据put和get\r\n## 1.1. 设置key和value\r\n```shell\r\netcdctl put /app \"myapp\"\r\netcdctl put /app/config/database/host \"127.0.0.1\"\r\netcdctl put /app/config/database/port \"5432\"\r\netcdctl put /app/config/api/timeout \"3000\"\r\netcdctl put /app/config/api/retries \"3\"\r\netcdctl put /app/metrics/requests_count \"100\"\r\netcdctl put /app/metrics/errors_count \"5\"\r\n```\r\n## 1.2. 获取指定key\r\n```shell\r\n# etcdctl get /app\r\n/app\r\nmyapp\r\n```\r\n## 1.3. 获取前缀下所有key\r\n```shell\r\netcdctl get --prefix --keys-only /\r\n/app\r\n/app/config/api/retries\r\n/app/config/api/timeout\r\n/app/config/database/host\r\n/app/config/database/port\r\n/app/metrics/errors_count\r\n/app/metrics/requests_count\r\n```\r\n# 2. 数据过期与续约\r\n## 2.1. 创建租约并设置 TTL（Time To Live）\r\n创建一个 TTL 为 60 秒的租约：\r\n```bash\r\netcdctl lease grant 10\r\n```\r\n 该命令会返回一个租约ID，例如 `lease ID: 694d95c322cd3623`\r\n## 2.2. 查看所有lease\r\n```shell\r\nroot@VM-0-10-ubuntu:/home/ubuntu/etcd# etcdctl lease grant 10\r\nlease 694d95c322cd3645 granted with TTL(10s)\r\nroot@VM-0-10-ubuntu:/home/ubuntu/etcd# etcdctl lease grant 20\r\nlease 694d95c322cd3647 granted with TTL(20s)\r\nroot@VM-0-10-ubuntu:/home/ubuntu/etcd# etcdctl lease list\r\nfound 2 leases\r\n694d95c322cd3645\r\n694d95c322cd3647\r\n```\r\n## 2.3. 将键与租约关联\r\n使用上述租约 ID 将键值对与租约关联\r\n```bash\r\netcdctl put /app/config/database/host \"127.0.0.1\" --lease=694d95c322cd3623\r\n```\r\n 这样，`/app/config/database/host` 这个键值对就与TTL为10秒的租约关联起来了，10秒后如果没有续约，该键值对将被自动删除。\r\n > [!note]\r\n > 1. 数据的过期时间是以lease创建的时间为准。\r\n > 2. 一个lease可以关联多个key，lease到期后，所有的key都会被删除\r\n > 3. 如果lease到期后，再关联数据会报错。Error: etcdserver: requested lease not found\r\n## 2.4. 续约租约\r\n可以在租约到期前通过以下命令续约：\r\n```bash\r\netcdctl lease keep-alive 694d95c322cd3623\r\n```\r\n该命令会重新刷新有效期，如果客户端保持连接并定期发送续约请求，租约就不会过期，与之关联的键值对也会一直存在。\r\n## 2.5. 撤销租约\r\n当需要提前删除与租约关联的键值对时，可以使用以下命令撤销租约：\r\n```bash\r\netcdctl lease revoke 694d95c322cd3623\r\n```\r\n执行该命令后，与该租约关联的所有键值对都会被删除。"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            Etcd常见用法
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>Etcd常见用法</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

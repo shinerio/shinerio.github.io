@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"netstat命令","title":"netstat命令","content":"`netstat`是基于Netstat这个命令行工具的指令，它可以用来查询系统上的网络套接字连接情况，包括`tcp`,`udp`以及`Unix套接字`。另外它还能列出路由表，接口状态和多播成员等信息。\r\n\r\n<!--more-->\r\n\r\n# 1. 参数选项\r\n\r\n| 参数  | 作用                                                                  |     |\r\n| --- | ------------------------------------------------------------------- | --- |\r\n| -n  | 使用数字形式表示网络地址                                                        |     |\r\n| -a  | 可以列出系统中所有的网络连接，包括正在建立的连接、已经建立的连接以及处于监听状态的端口，也包括time-wait状态和udp端口监听。 |     |\r\n| -c  | 每隔一段时间自动执行netstat命令                                                 |     |\r\n| -s  | 按照每隔协议来分类统计                                                         |     |\r\n| -t  | 显示tcp相关选项                                                           |     |\r\n| -u  | 显示udp相关选项                                                           |     |\r\n| -e  | 显示额外信息                                                              |     |\r\n| -p  | 显示与连接有关的程序名和进程                                                      |     |\r\n| -r  | 显示路由信息，等效于`route -n`                                                |     |\r\n| -l  | 显示监控中的服务器的Socket                                                    |     |\r\n\n# 2. 常用命令\r\n## 2.1. 查看udp端口使用情况\r\nnetstat -anpu \r\n## 2.2. 查看所有监听端口\r\nnetstat -lntp \r\n## 2.3. 查看所有已经建立的连接\r\nnetstat -antp\r\n## 2.4. 查看网络统计信息\r\n```shell\r\nnetstat -s\r\nIp:\r\n  184695 total packets received\r\n  0 forwarded\r\n  0 incoming packets discarded\r\n  184687 incoming packets delivered\r\n  143917 requests sent out\r\n  32 outgoing packets dropped\r\n  30 dropped because of missing route\r\nIcmp:\r\n  676 ICMP messages received\r\n  5 input ICMP message failed.\r\n  ICMP input histogram:\r\n    destination unreachable: 44\r\n    echo requests: 287\r\n    echo replies: 345\r\n  304 ICMP messages sent\r\n  0 ICMP messages failed\r\n  ICMP output histogram:\r\n    destination unreachable: 17\r\n    echo replies: 287\r\nTcp:\r\n  473 active connections openings\r\n  28 passive connection openings\r\n  4 failed connection attempts\r\n  11 connection resets received\r\n  1 connections established\r\n  178253 segments received\r\n  137936 segments send out\r\n  29 segments retransmited\r\n  0 bad segments received.\r\n  336 resets sent\r\nUdp:\r\n  5714 packets received\r\n  8 packets to unknown port received.\r\n  0 packet receive errors\r\n  5419 packets sent\r\nTcpExt:\r\n  1 resets received for embryonic SYN_RECV sockets\r\n  ArpFilter: 0\r\n  12 TCP sockets finished time wait in fast timer\r\n  572 delayed acks sent\r\n  3 delayed acks further delayed because of locked socket\r\n  13766 packets directly queued to recvmsg prequeue.\r\n  1101482 packets directly received from backlog\r\n  19599861 packets directly received from prequeue\r\n  46860 packets header predicted\r\n  14541 packets header predicted and directly queued to user\r\n  TCPPureAcks: 12259\r\n  TCPHPAcks: 9119\r\n  TCPRenoRecovery: 0\r\n  TCPSackRecovery: 0\r\n  TCPSACKReneging: 0\r\n  TCPFACKReorder: 0\r\n  TCPSACKReorder: 0\r\n  TCPRenoReorder: 0\r\n  TCPTSReorder: 0\r\n  TCPFullUndo: 0\r\n  TCPPartialUndo: 0\r\n  TCPDSACKUndo: 0\r\n  TCPLossUndo: 0\r\n  TCPLoss: 0\r\n  TCPLostRetransmit: 0\r\n  TCPRenoFailures: 0\r\n  TCPSackFailures: 0\r\n  TCPLossFailures: 0\r\n  TCPFastRetrans: 0\r\n  TCPForwardRetrans: 0\r\n  TCPSlowStartRetrans: 0\r\n  TCPTimeouts: 29\r\n  TCPRenoRecoveryFail: 0\r\n  TCPSackRecoveryFail: 0\r\n  TCPSchedulerFailed: 0\r\n  TCPRcvCollapsed: 0\r\n  TCPDSACKOldSent: 0\r\n  TCPDSACKOfoSent: 0\r\n  TCPDSACKRecv: 0\r\n  TCPDSACKOfoRecv: 0\r\n  TCPAbortOnSyn: 0\r\n  TCPAbortOnData: 1\r\n  TCPAbortOnClose: 0\r\n  TCPAbortOnMemory: 0\r\n  TCPAbortOnTimeout: 3\r\n  TCPAbortOnLinger: 0\r\n  TCPAbortFailed: 3\r\n  TCPMemoryPressures: 0\r\n```"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            netstat命令
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>netstat命令</h1>
         <time datetime="2023-01-24T00:00:00.000Z">2023年1月24日</time>
         <div class="tags">
             

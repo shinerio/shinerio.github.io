@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"DNS配置与匹配规则","title":"DNS配置与匹配规则","content":"# 1. multi dns ip\r\n对于一个主机配置多个DNS IP\r\n## 1.1. 作用\r\n### 1.1.1. 冗余和容错\r\n- 当第一个DNS服务器无法响应时，主机会自动尝试使用第二个、第三个DNS IP\r\n- 提高DNS解析的可靠性，即使一个DNS服务器宕机，仍可通过其他DNS服务器进行域名解析\r\n### 1.1.2. 负载均衡\r\n- 多个DNS IP可以分散解析请求\r\n- 减轻单个DNS服务器的负载压力\r\n## 1.2. 协调机制\r\n- 默认按照配置顺序轮询，解析过程是串行的，而非并行\r\n- 第一个DNS IP优先使用，如果第一个DNS服务器在一定时间内（通常是几秒钟）未响应，则会尝试下一个DNS IP\r\n\r\n域名服务器响应存在以下可能\r\n- 域名不存在(NXDOMAIN)：通常会立即返回错误\r\n- 服务器暂时不可用(SERVFAIL)：会触发切换到备用DNS\r\n> [!note]\r\n> 在NXDOMAIN（Non-Existent Domain）的情况下，不会再通过下一个DNS服务器查询。XDOMAIN表域名definitively不存在，这是一个权威的否定响应，意味着在权威DNS服务器上确认该域名不存在。NXDOMAIN是一个确定性的响应，更换DNS服务器不会改变域名不存在的事实。\r\n# 2. longest_suffix与wildcard \r\n## 2.1. 标准域名分级匹配wildcard\r\n- 基于域名的层次结构，从右到左逐级匹配\r\n- 严格按照域名注册体系的规则进行匹配\r\n- 以\".\"作为分隔符，按照标准TLD（顶级域名）、SLD（二级域名）等层级划分\r\n- 例如：对于 example.com，先匹配 com（TLD），再匹配 example（SLD）\r\n## 2.2. 最长尾缀匹配\r\n- 优先匹配最具体、最长的尾缀部分\r\n- 主要用于公共后缀列表(PSL)如Mozilla维护的列表中\r\n- 能够有效处理特殊情况，如 co.uk、github.io 等公共后缀\r\n- 例如：对于 blog.github.io，传统方法会将io视为TLD，而最长尾缀匹配会将整个 github.io 视为有效公共后缀\r\n## 2.3. 实际应用区别\r\n- 在处理 example.co.uk 时：\r\n    - 标准匹配会将 uk 视为TLD，co 为SLD\r\n    - 最长尾缀匹配会将 co.uk 整体视为有效公共后缀\r\n\r\n最长尾缀匹配在处理现代域名系统中的复杂情况（如国家代码二级域名、新通用顶级域名等）时更为灵活有效，特别是在确定有效注册域名和Cookie域范围时具有明显优势。"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            DNS配置与匹配规则
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>DNS配置与匹配规则</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

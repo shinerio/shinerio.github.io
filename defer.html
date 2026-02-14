@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"defer","title":"Defer","content":"1. 关键字 defer 用于注册延迟调用。\r\n2. 这些调用直到return前才被执。因此，可以用来做资源清理。\r\n3. 多个defer语句，按先进后出的方式执行。\r\n4. defer语句中的变量，在defer声明时就决定了，`defer`语句中的<span style=\"background:<span class=\"tag\">#fff88f</span>\">函数调用参数会在`defer`语句执行时立即求值，并保存下来</span>。这意味着如果在`defer`语句和函数返回之间修改了参数的值，`defer`语句中的函数调用将使用修改前的值。\r\n5. 多个defer注册，哪怕函数或某个延迟调用发生错误，这些调用依旧会被执行。\r\n```go\r\npackage main  \r\n  \r\nfunc deferPrint(x int) {  \r\n    str := \"a\"  \r\n    defer println(str)  \r\n    str = \"aa\"  \r\n    defer println(\"b\")  \r\n  \r\n    defer func() {  \r\n       println(100 / x) // div0 异常未被捕获，逐步往外传递，最终终止进程。  \r\n    }()  \r\n  \r\n    defer println(\"c\")  \r\n}  \r\n  \r\nfunc main() {  \r\n    deferPrint(0)  \r\n}\r\n// c\r\n// b\r\n// a\r\n// panic: runtime error: integer divide by zero\r\n```"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            Defer
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>Defer</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

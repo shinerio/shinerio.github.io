@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"异常处理","title":"异常处理","content":"在Go语言中，`panic`和`error`都是用来处理错误情况的，但是它们的使用场景和应用场合是不同的。\r\n\r\n# 1. panic\r\n`panic`更适用于程序出现不可恢复的错误情况,例如违反了一些重要的前提条件、发生了一些严重错误等。一般来说，如果程序出现了`panic`，就意味着程序已经处于一个不可控的状态，无法继续执行下去。`panic`会导致程序立即终止并打印出错误堆栈信息。\r\n通常,我们会在以下几种情况使用`panic`:\r\n1. 发生了一个不可恢复的错误,如数组越界、空指针引用等。\r\n2. 发生了一些编程错误,如违反了某些前提条件。\r\n3. 当程序处于一种无法继续执行的状态时,需要立即终止程序。\r\n\r\n# 2. error\r\n`error`则更适用于程序出现可以恢复的错误情况，例如打开文件失败、网络请求失败等。使用`error`可以让程序在出现错误时采取一些补救措施或者优雅地处理错误，而不是直接崩溃。\r\n一般来说，如果一个函数可能会失败，它应该返回一个`error`值，以便调用者能够检查并处理该错误。常见的使用`error`的场景包括:\r\n1. 打开文件、网络连接等操作失败。\r\n2. 输入数据格式错误或者不合法。\r\n3. 配置文件解析失败。\r\n4. 数据库操作失败。\r\n总的来说,`panic`应该只被用于真正的异常情况,当程序无法继续执行时才应该触发`panic`。而`error`则更适用于大多数可恢复的错误场景,我们应该优先使用`error`来处理这些错误,而不是直接触发`panic`。合理地使用`panic`和`error`可以使我们的程序更加健壮和易于维护。\r\n\r\n```go\r\npackage main  \r\n  \r\nimport (  \r\n    \"errors\"  \r\n    \"fmt\")  \r\n  \r\nvar ErrDivByZero = errors.New(\"division by zero\")  \r\n  \r\nfunc divide(a, b int) (int, error) {  \r\n    if b == 0 {  \r\n       return 0, ErrDivByZero  \r\n    }  \r\n    return a / b, nil  \r\n}  \r\n  \r\nfunc main() {  \r\n    defer func() {  \r\n       if err := recover(); err != nil {  \r\n          fmt.Println(err)  \r\n       }  \r\n    }()  \r\n  \r\n    _, err := divide(10, 0)  \r\n    fmt.Println(err)  \r\n  \r\n    // 中断性错误  \r\n    panic(\"runtime panic\")  \r\n  \r\n}\r\n// division by zero\r\n// runtime panic\r\n```"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            异常处理
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>异常处理</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

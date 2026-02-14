@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"GCP","title":"GCP","content":"google的NAT网关比较特别，不是一个独立的网关设备，而是做在源计算节点上的源端NAT。Cloud NAT 是一种没有代管式中间代理的软件定义解决方案，采用[无阻塞点设计](https://cloud.google.com/nat/docs/overview?hl=zh-cn<span class=\"tag\">#architecture</span>)，具有高可靠性、高性能和高可伸缩性。\r\n# 1. 公网NAT\r\nPublic NAT 网关会为使用网关创建与互联网的出站连接的每个虚拟机分配一组外部 IP 地址和来源端口。\r\n## 1.1. NAT IP\r\n- 支持自动分配，每个虚拟机分配一段端口\r\n- 当某个EIP没有被任何虚拟机使用时（流量排空），EIP可以被回收，但是当EIP被至少一个虚拟机使用（即使只有一个连接），也不能被释放\r\n\r\n## 1.2. other\r\n### 1.2.1. 仅支持SNAT，不支持DNAT\r\n### 1.2.2. 支持自动伸缩NAT IP数量\r\n### 1.2.3. 支持流日志\r\n### 1.2.4. Cloud NAT 网关与单个地区和单个 VPC 网络中的子网 IP 地址范围相关联\r\n无法给ER/Peering等来源流量做NAT\r\n# 2. 私网NAT\r\n两端各创建一个网段不重叠的子网，然后通过ER之类的设备互联，NAT进行地址转换。\r\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/202310051419188.png)\r\n\r\n## 2.1. ## other\r\n### 2.1.1. 同时支持SNAT和DNAT"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            GCP
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>GCP</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

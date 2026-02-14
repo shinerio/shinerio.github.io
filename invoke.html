@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"invoke","title":"Invoke","content":"```python\r\nimport boto3\r\nimport json\r\n\nclient = boto3.client('bedrock-agentcore', region_name='us-east-1', aws_access_key_id='', aws_secret_access_key='')\r\npayload = json.dumps({\"prompt\": \"Explain machine learning in simple terms\"})\r\n\r\nresponse = client.invoke_agent_runtime(\r\n    agentRuntimeArn='arn:aws:bedrock-agentcore:us-east-1:878065585215:runtime/hosted_agent_1p3c6-ex9ab020d7',\r\n    runtimeSessionId='test-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx0001', # Must be 33+ char. Every new SessionId will create a new MicroVM\r\n    payload=payload,\r\n    qualifier='DEFAULT'\r\n)\r\n\r\nresponse_body = response['response'].read()\r\nresponse_data = json.loads(response_body)\r\nprint(\"Agent Response:\", response_data)\r\n```\r\n调用需要具备以下权限\r\n```json\r\n{\r\n\t\"Version\": \"2012-10-17\",\r\n\t\"Statement\": [\r\n\t\t{\r\n\t\t\t\"Sid\": \"VisualEditor0\",\r\n\t\t\t\"Effect\": \"Allow\",\r\n\t\t\t\"Action\": \"bedrock-agentcore:InvokeAgentRuntime\",\r\n\t\t\t\"Resource\": \"*\"\r\n\t\t}\r\n\t]\r\n}\r\n```"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            Invoke
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>Invoke</h1>
         <time datetime="2026-01-21T15:31:01.000Z">2026年1月21日</time>
         <div class="tags">
             

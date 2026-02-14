@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"业务偶现超时","title":"业务偶现超时","content":"# 1. 现象\r\n客户A通过NAT网关访问客户B业务偶现超时。\r\n\r\n# 2. 抓包分析\r\n中间设备抓包发现，服务端主动断链，发送FIN报文并收到ACK报文完成两次挥手，但客户端并没有随之进行被动关闭，直到约20秒后发出rst报文，在此期间连接一直处于半关闭状态。而NAT网关fin超时时间为5秒，此时会话已经老化，再次建链，端口没有被分配出去，仍可以重用同一端口。\r\n\r\n# 3. 状态分析\r\n客户B作为server端主动断链，发送fin报文，客户A作为client端收到fin报文后回ACK报文，客户B进入fin-wait-2状态，客户A进入close_wait状态。客户A发出rst报文后，server端应该立即释放连接，但实际并没有。后来抓包发现客户B和客户A之间有防火墙，fin状态下会话超时时间为10秒。由于客户B的rst报文，被防火墙丢了，客户B server无法收到rst报文，导致一直处于fin-wait-2状态，直到5分钟超时。\r\n\r\n# 4. 结论\r\n客户A发起新的http请求，由于NAT网关端口分配机制，导致分配到了相同的端口，syn报文到达服务端后，处于该状态下的socket只能收数据，不能发数据。因此一直timeout。\r\n\r\n1. 优化nat端口分配逻辑，随机分配端口\r\n2. 客户端代码发现bug，未主动close"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            业务偶现超时
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>业务偶现超时</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

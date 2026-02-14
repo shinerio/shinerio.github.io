@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"uv","title":"Uv","content":"# 1. 设置pip源\n配置环境变量`UV_DEFAULT_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple`\n# 2. 设置cache位置\n```poweshell\n [Environment]::SetEnvironmentVariable(\"UV_CACHE_DIR\", \"D:\\workspace\\develop\\uvcache\", \"User\")\n```\n# 3. 初始化项目并指定最低python版本\n`uv init python 3.14`\n# 4. 全局安装tool\n如果安装Python包是为了在终端任何地方运行它的命令（比如 `black`, `flake8`, 或者你提到的 `claude-conversation-extractor`），可以使用 `uv tool install`：\n```bash\nuv tool install claude-conversation-extractor\n```\n- **效果：** 它会为这个工具创建一个隐藏的独立环境，但把它的**可执行命令**软链接到全局路径。\n- **优点：** 你可以在任何文件夹直接输入命令使用，且永远不会产生依赖冲突。"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            Uv
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>Uv</h1>
         <time datetime="2026-01-11T14:18:41.000Z">2026年1月11日</time>
         <div class="tags">
             

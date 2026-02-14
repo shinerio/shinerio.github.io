@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"源地址透传","title":"源地址透传","content":"# 1. TOA(TCP Option Address)\r\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/tcp%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F.png)\r\nTOA将源地址放在`tcp option`字段中。option字段最长40字节，每个选项由三部分组成：op-kind、op-length、op-data，我们最常见的MSS字段就是在option里。目前option使用的op-kind并不多，我们只需要构建一个不冲突的op-kind就可以把clientIP填充进去。IPv4 地址占用 4 个字节，[IPv6](https://so.csdn.net/so/search?q=IPv6&spm=1001.2101.3001.7020) 占用 16 字节，填充到 option 中是没有问题的，toa格式如下：\r\n```txt\r\n+----------+----------+--------------------+\r\n|  opcode  |  opsize  |         port       |\r\n+----------+----------+--------------------+\r\n|                clientIP                  |\r\n+------------------------------------------+\r\n```\r\nopcode: 254\r\nopsize: toa大小8字节\r\nport: 客户端端口\r\nclientIP: 客户端IP\r\n# 2. PP(Proxy Protocol)\r\nPP协议原理仅支持tcp协议，原理是在三次握手后，发送请求数据前，在四层头之后插入一个`proxy protocol`数据包，数据包中可以携带`src ip`、`src port`等信息，该协议是由haproxy提出的，目前常见的web服务器都已经支持。\r\n## 2.1. pp协议格式\r\nTCP三次握手建立连接后,发送第一个数据报文的详细流程如下:\r\n1. 客户端向服务器端发送连接请求报文(SYN标志位设置为1,序列号为x)。\r\n2. 服务器向客户端响应报文(SYN和ACK标志位设置为1,序列号为y,确认号为x+1)。\r\n3. 客户端再次响应报文(ACK标志位设置为1,序列号为x+1,确认号为y+1),三次握手完成。\r\n此时TCP连接已建立,客户端可以向服务器发送第一个数据报文了，这个报文中:\r\n- 不会携带SYN标志位\r\n- 会携带ACK标志位\r\n- 序列号为x+1(上次发送的确认号)\r\n- 确认号为y+1(上次接收的确认号)\r\n后续的数据报文都类似,序列号依次增加,确认号也依次增加。所以TCP三次握手完成后发送的第一个数据报文,必须携带ACK标志位,序列号从客户端第三次握手的确认号开始,确认号为服务器第二次握手的确认号+1。这标志着TCP连接已建立,可以开始数据传输了。`PSH`为1的情况，一般只出现在 DATA内容不为0的包中，也就是说PSH为1表示的是有真正的TCP数据包内容被传递。\r\n\r\n!<a href=\"technetwork其他nat封装pp协议mdgroupsk-9cssiobfxp5kcyzwz-1000.html\" class=\"internal-link\">Tech/Network/其他/nat封装pp协议.md#^group=sK_9CSsIObfXp5KCyzwz-|1000</a>\r\n- nat将发送的数据包送到服务端前，将客户端seq号增加pp_len偏移。\r\n- nat将接受数据包发送到客户端前，将ack的seq号减去pp_len。\r\n\r\npp协议中具体数据格式如下：\r\n```text\r\n+----------+--------------------+----------+\r\n|  type    |      Length        |   value  |\r\n+----------+----------+---------+----------+\r\n|                value                     |\r\n+------------------------------------------+\r\n```"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            源地址透传
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>源地址透传</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"https抓包","title":"Https抓包","content":"由于主流浏览器都只支持HTTP/2 Over TLS，也就是说当前HTTP/2网站都使用了HTTPS，数据传输都经过了SSL加密，常规抓包方法并不能看到明文数据。\n# 1. wireshark\nWireshark 的抓包原理是直接读取并分析网卡数据，要想让它解密 HTTPS 流量，有两个办法：  \n1）如果你拥有 HTTPS 网站的加密私钥，可以用来解密这个网站的加密流量；  \n2）某些浏览器支持将 TLS 会话中使用的对称密钥保存在外部文件中，可供 Wireshark 加密使用。\n\nFirefox 和 Chrome 都支持生成上述第二种方式的文件，具体格式见这里：[NSS Key Log Format](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/Key_Log_Format)。  \n但 Firefox 和 Chrome 只会在系统环境变量中存在 SSLKEYLOGFILE 路径时才会生成它，先来加上这个环境变量（以 OSX 为例）：\n```shell\n# 新建sslkeylog.log文件\nmkdir ~/tls && touch ~/tls/sslkeylog.log\n# 添加环境变量\nexport SSLKEYLOGFILE=~/tls/sslkeylog.log\n```\n接着，在 Wireshark选项中按如下设置TLS\n![](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images20241227214238173.png)\n接着控制台打开chrome\n```\nopen /Applications/Google\\ Chrome.app\n```\n## 1.1. windows设置\n```bash\n--ssl-key-log-file=D:\\sslkey.log\n复制代码\n```\n在windows系统下可以右键点击Chrome浏览器的快捷方式进行设置：\n\n![image-20220315102335795](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c03a5f7c5ba24bc7a410d357df2500f3~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.image)"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            Https抓包
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>Https抓包</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

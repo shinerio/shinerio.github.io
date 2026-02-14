@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"watch使用与原理","title":"Watch使用与原理","content":"Watch机制是etcd的核心功能之一，它允许客户端监听指定键或前缀的变化，实现配置变更的实时通知。默认情况下，watch是从<font color=\"<span class=\"tag\">#ff0000</span>\">最新版本</font>开始监听的。\r\n# 1. 使用方式\r\n## 1.1. 基本使用\r\n```shell\r\netcdctl watch --prefix /app\r\n# PUT\r\n# /app\r\n# myapp2\r\n# PUT\r\n# /app/owner\r\n# shinerio\r\n```\r\n添加或修改key\r\n```shell\r\netcdctl put /app myapp2\r\n# OK\r\netcdctl put /app/owner shinerio\r\n# OK\r\n```\r\netcd提供了多种方式使用Watch功能\r\n### 1.1.1. 命令行方式\r\n```shell\r\n# 监听单个键 \r\netcdctl watch mykey \r\n# 监听带有特定前缀的所有键 \r\netcdctl watch --prefix /myapp/ \r\n# 从特定历史版本开始监听 \r\netcdctl watch mykey --rev=3 \r\n# 以JSON格式输出变更 \r\netcdctl -w=json watch mykey\r\n```\r\n### 1.1.2. API调用方式\r\n Go客户端示例\r\n```go\r\n// Go客户端示例\r\nwatcher := clientv3.NewWatcher(client)\r\nwatchChan := watcher.Watch(context.Background(), \"/app\", clientv3.WithPrefix())\r\n\r\nfor watchResp := range watchChan {\r\n    for _, event := range watchResp.Events {\r\n        fmt.Printf(\"Type: %s Key:%s Value:%s\\n\", \r\n                   event.Type, event.Kv.Key, event.Kv.Value)\r\n    }\r\n}\r\n```\r\n支持以下高级选项\r\n1. **指定版本**:\r\n    - 从特定版本开始监听: `WithRev(revision)`\r\n    - 仅获取最新事件: `WithLastRev()`\r\n2. **范围监听**:\r\n    - 前缀监听: `WithPrefix()`\r\n    - 范围监听: `WithRange(endKey)`\r\n3. **事件过滤**:\r\n    - 仅接收PUT事件: `WithFilterPut()`\r\n    - 仅接收DELETE事件: `WithFilterDelete()`\r\n4. **进度通知**:\r\n    - 当没有事件时发送进度更新: `WithProgressNotify()`\r\n    - 用于确认连接活跃性\r\n# 2. 工作原理\r\n## 2.1. 整体架构\r\nWatch机制的核心组件包括：\r\n1. **watchableStore**: 可监听的存储层\r\n2. **watcherGroup**: 监听器群组管理\r\n3. **watcher**: 单个监听器\r\n4. **eventBuffer**: 事件缓冲区\r\n## 2.2. 事件流转过程\r\n1. **客户端发起Watch请求**:\r\n    - 指定key/范围、起始版本等参数\r\n    - 建立长连接(通常基于gRPC流)\r\n2. **服务端注册watcher**:\r\n    - 创建watcher对象\r\n    - 将watcher添加到watcherGroup中\r\n    - 根据起始版本决定是否需要从历史事件开始发送\r\n3. **同步历史事件**:\r\n\t- 如果客户端指定了过去的版本号，服务端会从MVCC存储中查询该版本到当前的所有历史事件，将这些事件发送给客户端。\r\n4. **异步事件通知**:\r\n    - 当etcd处理写请求时，会同时：\r\n        - 应用到存储层\r\n        - 通过触发器(trigger)通知watchableStore\r\n    - watchableStore将事件分发给匹配的watcher\r\n    - 通过长连接将事件推送给客户端\r\n## 2.3. MVCC的重要作用\r\nWatch机制严重依赖etcd的MVCC(多版本并发控制)功能：\r\n1. 每个修改操作都会生成新的版本号(revision)\r\n2. 历史版本使得Watch可以从<font color=\"<span class=\"tag\">#ff0000</span>\">任意点\"回溯\"监听</font>\r\n3. 由于保留了历史版本，即使客户端断开重连，也不会错过事件\r\n## 2.4. 内存和性能优化\r\n为了高效处理大量Watch请求，etcd采用了多种优化：\r\n1. **批处理机制**:\r\n    - 多个事件会被批量发送给客户端\r\n    - 减少网络往返次数\r\n2. **压缩与淘汰**:\r\n    - 基于时间/版本的自动压缩\r\n    - 设置内存上限，超出时淘汰不活跃的watcher\r\n3. **按需机制**:\r\n    - 服务端维护未发送的事件队列\r\n    - 客户端ready时才发送\r\n4. **进度通知**:\r\n    - 定期发送当前进度，避免长时间无事件导致连接失效\r\n## 2.5. 可靠性保障\r\netcd Watch提供高可靠性保证：\r\n1. **断线重连**:\r\n    - 客户端断开连接后可从上次接收到的版本继续监听\r\n    - 不会丢失中间发生的事件\r\n2. **版本保证**:\r\n    - 只要历史版本未被压缩，客户端总能收到完整事件序列\r\n    - 如果请求的版本已被压缩，服务端会返回压缩错误\r\n3. **集群支持**:\r\n    - Watch请求可发送到任何集群成员\r\n    - Leader变更不影响Watch功能\r\n# 3. 常见挑战和解决方案\r\n1. **历史事件压缩**:\r\n    - 问题：如果监听的**起始版本已被压缩，将无法获取完整事件**\r\n    - 解决：合理设置压缩策略，或实现备用同步机制\r\n2. **大量watcher的性能**:\r\n    - 问题：大量watcher可能导致内存压力和事件分发延迟\r\n    - 解决：使用前缀合并，减少watcher数量；合理设置服务端资源限制\r\n3. **网络中断处理**:\r\n    - 问题：长时间网络中断可能丢失事件\r\n    - 解决：实现健壮的重连逻辑，记录最后处理的版本号"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            Watch使用与原理
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>Watch使用与原理</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"channel","title":"Channel","content":"# 1. 声明和初始化\r\n## 1.1. 仅声明（未初始化）\r\n`var ch chan int` 声明一个 int 类型的 channel，但未初始`\r\n- `ch` 是 `nil`，不能直接使用，否则会引发 `panic`。\r\n- 必须用 `make()` 进行初始化后才能使用。\r\n## 1.2. 使用 `make()` 初始化\r\n`ch := make(chan int)` 创建一个无缓冲 channel\r\n- `ch` 现在可以用于发送和接收数据。\r\n- **无缓冲 channel**：发送操作会阻塞，直到有 goroutine 读取数据。\r\n## 1.3. 创建带缓冲的 channel\r\n`ch := make(chan int, 3)`  创建一个容量为3的缓冲channel\r\n- 可以**存储最多 `3` 个元素**，在缓冲区满之前，发送不会阻塞。\r\n - 适用于**生产者-消费者**模型，减少goroutine之间的阻塞等待。\r\n## 1.4. 结合 `var` 进行初始化\r\n`var ch chan int = make(chan int)` 声明并初始化`\r\n`ch := make(chan int)` 等效，但 `var` 方式可以显式定义类型。\r\n## 1.5. 使用 `struct{}` 类型的 channel\r\n`ch := make(chan struct{})`\r\n- `struct{}` 是一个空结构体，不占用内存。 \r\n- 常用于**通知**（如关闭信号、同步 goroutine ）。\r\n# 2. 只读、只写、读写通道\r\n可以通过`chan<-`或`<-chan`的方式定义单向通道，一般用于方法入参\r\n```go\r\npackage main  \r\n  \r\nimport \"fmt\"  \r\n  \r\n// writeOnly chan<- 定义的chan作为入参，只有写权限  \r\nfunc writeOnly(value string, ch chan<- string) {  \r\n    ch <- value  \r\n}  \r\n  \r\n// writeOnly <-chan 定义的chan作为入参，只有读权限  \r\nfunc readOnly(ch <-chan string) {  \r\n    fmt.Println(<-ch)  \r\n}  \r\n  \r\n// readAndWrite chan 定义的入参同事具有读写权限  \r\nfunc readAndWrite(ch chan string) {  \r\n    ch <- \"hello\"  \r\n    fmt.Println(<-ch)  \r\n}  \r\n  \r\nfunc main() {  \r\n    ch := make(chan string, 1)  \r\n    writeOnly(\"hello\", ch)  \r\n    readOnly(ch)  \r\n    readAndWrite(ch)  \r\n}\r\n```\r\n# 3. 非缓冲通道\r\n需要注意的是，程序中必须同时有不同的goroutine对**非缓冲通道**进行发送和接收操作，否则会造成阻塞。\r\n```go\r\n// TestNoBufferChannel fatal error: all goroutines are asleep - deadlock!  \r\nfunc TestNoBufferChannel1(t *testing.T) {\r\n\tch := make(chan string) // no buffer\r\n\tdefer close(ch)\r\n\tch %3C- \"hello world\"\r\n\tfmt.Println(<-ch)\r\n}\r\n\r\n// hello world\r\nfunc TestNoBufferChannel2(t *testing.T) {\r\n\tch := make(chan string)\r\n\tclose(ch)\r\n\tdefer go func() {\r\n\t\tch <- \"hello world\"\r\n\t}()\r\n\tfmt.Println(<-ch)\r\n}>)\r\n```\r\n# 4. 缓冲通道\r\n缓冲通道可以在同一个 goroutine 内接收容量范围内的数据，即便没有另外的 goroutine 进行读取操作。\r\n```go\r\nch := make(chan string, 2) // bufferd channel     缓冲通道\r\nch <- \"a\"\r\nch <- \"b\"\r\n```\r\n可以利用通道的阻塞能力，不关心通道的值，等待通道有数据后，进行下一步操作，如\r\n```go\r\n// 阻塞等待上下文执行，以便执行后续步骤\r\n<-mainCtx.Done()\r\n```\r\n# 5. channel遍历和关闭\r\nclose() 函数可以用于关闭 channel，关闭后的 channel 中如果有缓冲数据，依然可以读取，但是无法再发送数据给已经关闭的channel，可以从已经关闭的channel获取数据，但是会获得零（如果channel类型是string，则是空字符串）。\r\n```go\r\n// 0 1 2 3 4 5 6 7 8 9 read from closed channel 0\r\nfunc TestIterateClosedChannel(t *testing.T) {\r\n\tch := make(chan int, 10)\r\n\tfor i := 0; i %3C 10; i++ {\r\n\t\tch <- i\r\n\t}\r\n\tclose(ch)\r\n\r\n\tfor v := range ch {\r\n\t\tfmt.Printf(\"%d \", v)\r\n\t}\r\n\tfmt.Printf(\"read from closed channel %d\\n\", <-ch)\r\n}\r\n```"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            Channel
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>Channel</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"Obsidian-Tasks","title":"Obsidian Tasks","content":"任务管理\r\n\r\n# 常用语法\r\n\r\n1. 今日之前（包括）已完成，done before <% tp.date.now(\"YYYY-MM-DD\", 1) %> \r\n2. 本周截止当前日（包括）已完成，done after <% tp.date.weekday(\"YYYY-MM-DD\", 0) %> \r\n3. 根据重要性排序，sort by priority reverse\r\n\r\n# 示例\r\n\r\n获取本周所有已经完成的任务，按优先级倒序排列\r\n````text\r\n```tasks\r\ndone before <% tp.date.now(\"YYYY-MM-DD\", 1) %> \r\ndone after <% tp.date.weekday(\"YYYY-MM-DD\", 0) %> \r\nsort by priority reverse\r\n```\r\n````"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            Obsidian Tasks
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>Obsidian Tasks</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

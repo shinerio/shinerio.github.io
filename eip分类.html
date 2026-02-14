@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"EIP分类","title":"EIP分类","content":"# 1. 全动态BGP（多线EIP）\r\n云服务提供商的公网IP地址通过BGP与多个运营线直连的链路播报给多个运营商。BGP类型的带宽具备动态路由收敛能力，可靠性和抗DDos能力好，但价格相对静态BGP来说较贵。云服务提供商可以根据设定的寻路协议实时自动优化网络结构，以保持客户使用的网络持续稳定、高效。\r\n# 2. 静态BGP（单线静态EIP）\r\n静态BGP只与一家运营商线路直连，不具备动态路由收敛能力，可靠性低，无抗DDos能力，价格较低。一般网络结构发生变化时，无法实时自动调整网络设置以保障用户体验。\r\n# 3. 优选BGP（精品EIP）\r\n是特定方向的优质线路。使用BGP协议与多家主流运营商线路互联对接，建立直连中国内地的公网互联路径，提供中国-香港区域与中国内地间的低时延、高质量的网络互通。适用于部署在香港，面向大陆提供优质服务的客户。\r\n# 4. AnycastEip\r\n同一个EIP可以在全球多个POP**同时接入**云厂商网络，将客户端的访问请求通过云厂商骨干网分发至最佳终端节点，减少公网传输时延。适用于后端业务部署在特定区域，但需要面向全球提供高可靠、低时延的服务。\r\n# 5. GlobalEip\r\nGEIP主要是用于同一个城域内通过云内骨干网络进行加速。以华南和华东为例，华南和华东属于两个不同的城域，比如华东-上海一和华东-上海二，均属于华东城域内。GEIP提供**指定POP点接入**，如可以将GEIP在苏州的POP点接入，通过华为云骨干网将流量路由到上海一的后端。适用于将指定区域client的流量快速接入到server所在区域。"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            EIP分类
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>EIP分类</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

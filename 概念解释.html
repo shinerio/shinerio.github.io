@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"概念解释","title":"概念解释","content":"ISP: Internet Service Provider   互联网服务提供商\r\nIXP: Internet eXchange Point    互联网交换点\r\n\r\n通信方式：\r\n- 客户-服务器方式（C/S）\r\n- 对等方式（P2P）\r\n# 1. 电路交换\r\n电路交换必须经过“建立连接(占用 通信资源)一通话(一直占用通信资源)一释放连接(归还迎信资源)”三个步骤。在通话的时间段里面，通信的双方始终占用端到端的通信资源。\r\n\r\n发展历史：\r\n人工交换机 -> 步进制交换机 -> 纵横制自动电话交换机 -> 程控交换机\r\n\r\n多路复用技术：\r\n空分复用、时分复用、波分（频分）复用、码分复用\r\n\r\n传输介质：\r\n电缆、光缆 \r\n\r\n# 2. 分组交换机\r\n不需要建立连接，只有分组报文在链路上传播时才占用带宽。到达路由器时暂存-查表-转发。\r\n\r\n> 若要连续传送大量的数据，且其传送时间远大于连接建立时间，则电路交换的传输速率较快（不需要传输分组交换需要的额外控制信息）。分组交换不需要预先分配传输带宽，在传送突发数据时可提高整个网络的信道的利用率。"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            概念解释
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>概念解释</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

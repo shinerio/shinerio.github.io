@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"4. 变量定义与内存空间分配","title":"4. 变量定义与内存空间分配","content":"C++ 中定义变量时，即使不进行初始化，内存空间通常也会被分配，不过不同类型的变量在分配内存空间的时机和默认初始值方面存在差异。\r\n# 1. 局部变量（自动存储期）\r\n局部变量一般定义在函数内部或者代码块内部，具有自动存储期。当程序执行到定义局部变量的语句时，会立即为其分配内存空间，但不会自动初始化，该内存空间会保留之前存储的 “垃圾值”。\r\n```c++\r\n<span class=\"tag\">#include</span> <iostream>\r\n\r\nvoid exampleFunction() {\r\n    int localVar;  // 定义局部变量，分配内存但未初始化\r\n    std::cout << \"localVar 的值: \" << localVar << std::endl; \r\n}\r\n\r\nint main() {\r\n    exampleFunction();\r\n    return 0;\r\n}\r\n```\r\n在上述代码中，`localVar` 在 `int localVar;` 语句执行时分配内存，由于未初始化，其值是不确定的。\r\n# 2. 静态变量（静态存储期）\r\n静态变量使用 `static` 关键字定义，既可以在函数内部，也可以在全局作用域。静态变量在程序启动时就会分配内存空间，如果未显式初始化，会被自动初始化为其类型的默认值（数值类型为 0，指针类型为 `nullptr` 等）\r\n```c++\r\n<span class=\"tag\">#include</span> <iostream>\r\n\r\nvoid staticExample() {\r\n    static int staticVar;  // 定义静态变量，分配内存并初始化为 0\r\n    std::cout << \"staticVar 的值: \" << staticVar << std::endl; \r\n}\r\n\r\nint main() {\r\n    staticExample();\r\n    return 0;\r\n}\r\n```\r\n这里的 `staticVar` 在程序启动时分配内存，因为未显式初始化，所以默认初始化为 0。\r\n\r\n# 3. 全局变量（静态存储期）\r\n全局变量定义在所有函数外部，同样具有静态存储期。全局变量在程序启动时分配内存，若未显式初始化，也会被自动初始化为默认值。\r\n```c++\r\n<span class=\"tag\">#include</span> <iostream>\r\n\r\nint globalVar;  // 定义全局变量，分配内存并初始化为 0\r\nint main() {\r\n    std::cout << \"globalVar 的值: \" << globalVar << std::endl; \r\n    return 0;\r\n}\r\n```\r\n`globalVar` 在程序启动时分配内存，默认初始化为 0。\r\n# 4. 动态分配的变量（自由存储期）\r\n使用 `new` 运算符动态分配的变量具有自由存储期。当执行 `new` 表达式时，会在堆上分配内存空间。如果使用 `new` 时没有进行初始化，对于内置类型不会进行初始化，对于类类型会调用默认构造函数。\r\n```c++\r\n<span class=\"tag\">#include</span> <iostream>\r\n\r\nint main() {\r\n    int* dynamicVar = new int;  // 动态分配内存，未初始化\r\n    std::cout << \"*dynamicVar 的值: \" << *dynamicVar << std::endl; \r\n    delete dynamicVar;  // 释放内存\r\n    return 0;\r\n}\r\n```\r\n在上述代码中，`new int` 执行时在堆上为 `dynamicVar` 分配内存，由于未初始化，其指向的内存中的值是不确定的。"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            4. 变量定义与内存空间分配
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>4. 变量定义与内存空间分配</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

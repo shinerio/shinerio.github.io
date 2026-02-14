@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"(三)NAT分片报文","title":"NAT分片报文","content":"前文我们聊到，在NAT地址转换中，NAT除了对IP地址转换外，还使用到TCP或UDP报文的端口号、ICMP报文的ICMP头中的identifier字段信息。当一个<a href=\"ip分片报文和tcp分段报文-1ip报文被分成若干片.html\" class=\"internal-link\">IP分片报文和TCP分段报文 1|IP报文被分成若干片</a>之后，这些信息只有首片报文会携带，后续分片报文依靠报文ID、分片标志位、分片偏移量依次关联到前一个分片。\r\n\r\n<!--more-->\r\n\r\n以ICMP分片报文为例，在ICMP报文分片后，只有在首片ICMP报文中包含ICMP头的identifier字段。在首片报文到达NAT设备后，可以按照正常的转换流程，根据源IP地址和identifier信息生成会话表并转发出去。但是在第二个及后续分片到达后，由于只包含IP地址却没有identifier信息，可能因此无法进行NAT转换。解决的办法有两种：\r\n1. 先重组再进行NAT转换，在分片报文到达后，先进缓存，等属于这个IP报文的所有分片到达后进行虚拟分片重组，再进行NAT地址转换。最后将NAT转换完成的IP报文发送出去。\r\n2. 在首片到达并转换后，NAT设备记录并保存转换首片使用的ip及分片identifier信息，并在后续分片到达后应用同样会话表对ip信息进行转换。\r\n# 1. 重组转发\r\n1. 当NAT设备收到一个分片报文时，它会检查该报文是否属于一个已经开始重组的数据包，如果是，就将该报文放入对应的缓存区；如果不是，就为该数据包创建一个新的缓存区，并将该报文放入其中。\r\n2. NAT设备会定期检查缓存区中的分片报文是否已经完整，如果是，就将它们重组成一个完整的数据包，并进行NAT转换，然后将转换后的数据包发送出去；如果不是，就继续等待其他分片报文到达。\r\n3. 如果缓存区中的分片报文在一定时间内没有完整，或者超过了NAT设备能够处理的数量，那么NAT设备会丢弃这些分片报文，并向源主机发送一个ICMP错误消息。\r\n## 1.1. 分片重组失败导致的ICMP查错报文\r\n1. 如果NAT设备丢弃分片报文是因为缓存区已满，那么它会向源主机发送一个ICMP目的不可达消息，类型为3，代码为4，表示分片重组失败。\r\n2. 如果NAT设备丢弃分片报文是因为超时，那么它会向源主机发送一个ICMP超时消息，类型为11，代码为1，表示分片重组超时。\r\n## 1.2. 缺点\r\n分片重组的方式由于需要缓存分片报文，导致增加了NAT设备的内存消耗，延长了分片报文的传输时间。\r\n\r\n# 2. 会话记录ID\r\n正常NAT会话使用五元组`(srcIP,dstIp,srcPort,dstPort,protocol)`来区别不同的流并匹配会话进行转发，分片报文由于没有port和protocol信息，因此可以在会话中添加`identifier`来识别统一条流的不同分片报文以完成后续分片报文的ip替换。"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            NAT分片报文
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>NAT分片报文</h1>
         <time datetime="2023-03-12T00:00:00.000Z">2023年3月12日</time>
         <div class="tags">
             

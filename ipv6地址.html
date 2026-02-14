@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"IPv6地址","title":"IPv6地址","content":"# 1. 地址格式\r\nIPv6地址有128bit，在这128bit中，前64bit是网络前缀，后64bit是接口标识。在前64bit中，前48bit又是全球可汇总地址，在给一个公司分配IPv6地址时，总是分配给它一个前48bit固定的地址，而后面的16bit又可以被该公司用来做子网地址。这样分配，可以方便做路由聚合。\r\n## 1.1. 前导零可以省略\r\n一段内可以省略连续的一个零或多个零\r\n2001:**0**db8:**0**2de:**0000**:**0000**:**0000**:**0000**:**0**e13\r\n2001:db8:2de:**0000**:**0000**:**0000**:**0000**:e13\r\n2001:db8:2de:**000**:**000**:**000**:**000**:e13\r\n2001:db8:2de:**00**:**00**:**00**:**00**:e13\r\n2001:db8:2de:**0**:**0**:**0**:**0**:e13\r\n## 1.2. 双冒号表示一组0或多组连续的零，但只能出现一次\r\n2001:db8:2de:**0**:**0**:**0**:**0**:e13\r\n2001:db8:2de::e13\r\n\r\n可以省略连续的多段零或只省略一段零\r\n2001:0db8:0000:0000:0000:0000:1428:57ab\r\n2001:0db8:0000:0000:0000::1428:57ab\r\n2001:0db8:0:0:0:0:1428:57ab\r\n2001:0db8:0::0:1428:57ab\r\n2001:0db8::1428:57ab\r\n\r\n## 1.3. IPv4 In IPv6\r\nIpv4位址可以很容易的转化为IPv6格式。举例来说，如果IPv4的一个地址为135.75.43.52（十六进制为0x874B2B34），它可以被转化为0000:0000:0000:0000:0000:FFFF:874B:2B34 或者::FFFF:874B:2B34。同时，还可以使用混合符号（IPv4-compatible address），则地址可以为::ffff:135.75.43.52。\r\n# 2. 地址分类\r\n\r\n# 3. 单播地址\r\n## 3.1. GUA\r\nGUA，global unicast address，全球单播地址，该类地址类似于IPv4中的公网地址。\r\n\r\n目前的GUA地址，前3bit固定为001，因此GUA地址范围为：\r\n\r\n```text\r\n2000::  —— 3FFF:FFFF:FFFF:FFFF:FFFF:FFFF\r\n```\r\n\r\nGUA地址一共占1/8的IPv6地址。\r\n\r\n## 3.2. ULA\r\nULA，unique local address，唯一本地地址，该地址类似于IPv4中的私网地址。ULA地址前7为固定，地址格式为：\r\n\r\n```text\r\nFC00::/7\r\n```\r\n  \r\n因此，FC00:/8和FD00:/8都是ULA地址。一般来说，ULA地址只在网络内部使用，但是ULA在配置时，必须先申请一个40bit的Global ID，因此，基本上所有的ULA地址也不会重复，即使不小心将ULA地址发布到公网上去也不会引起太大问题。这一点和IPv4有极大的不同。\r\n\r\n## 3.3. LLA\r\nLLA，Link-Local Address，链路本地地址。该地址只在本地链路上有效，不能跨路由器路由设备。\r\n该地址地址格式为：\r\n```text\r\nFE80::/10\r\n```\r\n一般来说，在路由器上，该地址可以由运行IPv6的协议栈自动生成（根据网卡MAC地址），而在PC主机上，处于保护本地MAC地址的考虑，一般按照特殊的算法计算。\r\n\r\n## 3.4. 其他特殊地址\r\n此外，IPv6还有很多其他的特殊地址，比如`::/128`，该地址为未知地址，类似于IPv4的0.0.0.0，在DHCP阶段发送Discover数据包时会使用。再比如`::1/128`，该地址为本地地址，发往该地址的数据包不会出网卡，类似于IPv4的127.0.0.1，因此。PING该地址常被用来测试自己的PC是否支持IPv6协议栈。\r\n\r\n# 4. 组播地址\r\nIPv6组播地址为：FF00::/8，具体格式如下所示：\r\n\r\n| 8bit，全1 | 4bit, flags | 4bit, scope | Group ID, 112位 |\r\n| --------- | ----------- | ----------- | -------------- |\r\n|           |             |             |                |\r\n\r\n在IPv6组播中，flag占4bit，前3bit为0，最后bit如果为0，则表示永久性多播地址，如果为1，标识临时性多播地址。\r\n\r\n# 5. 任播地址\r\n除了上述地址外，IPv6还支持一种任播地址，IPv6任播地址与IPv6单播地址格式完全相同，没有任何区别，如果要配置一个地址是任播地址，则必须手工指名。\r\n\r\n在IPv6设计中，可以将多个站点配成相同的任播地址，目的地址是任播地址的数据包在转发时，会自动去往最近的站点。这样会起到负载分担和冗余备份的作用。特别适合用于当一个一个站点在多个地区部署CDN网络的类似情景。"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            IPv6地址
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>IPv6地址</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

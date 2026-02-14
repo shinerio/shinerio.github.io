@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"xiaoya","title":"Xiaoya","content":"windows下必须使用bridge模式\r\n# 1. docker安装\r\n```bash\r\n# bridge模式一键安装\r\ndocker run -d --restart=always --name=\"xiaoya\" -p 5678:80 -p 2345:2345 -p 2346:2346 -v D:\\Media\\xiaoya:/data xiaoyaliu/alist:latest\r\n# host模式一键安装\r\nbash -c \"$(curl http://docker.xiaoya.pro/update_new.sh)\" -s host\r\n```\r\n\r\n# 2. 定时清理\r\n\r\n```shell\r\nbash -c \"$(curl -s https://xiaoyahelper.ddsrem.com/aliyun_clear.sh | tail -n +2)\" -s 3\r\n```\r\n\r\n# 3. 获取元数据\r\n在wsl的ubuntu子系统中执行\r\n```shell\r\n# 生成配置，windows下必须使用bridge模式\r\nbash -c \"$(curl http://docker.xiaoya.pro/emby_new.sh)\" -s --config_dir=/mnt/d/Media/xiaoya --media_dir=/mnt/d/Media/xiaoya/media --action=generate_config\r\n# 执行安装\r\nbash -c \"$(curl http://docker.xiaoya.pro/emby_new.sh)\" \r\n\r\n```\r\n\r\n# 4. 参考\r\n[小雅Xiaoya TVbox/Jellyfin/EMBY 进阶之单独安装 Docker /群晖 独家保姆级教程 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/673584505#:~:text=App%20iOS%E3%80%81iPadOS%E3%80%81tvOS%E3%80%81MacOS%20PC%20Android%20TV,%20%20%20%0ADivHub%20%E2%88%9A)\r\n[小雅媒体库终级板emby+infuse | KChen’s Blog](https://blog.kchen.cc/article/xiaoya-emby-media)"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            Xiaoya
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>Xiaoya</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

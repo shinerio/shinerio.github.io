@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"etcd架构","title":"Etcd架构","content":"etcd 集群通过Raft算法实现了 **“动态主从 + 分布式共识”** 的架构，确保数据强一致性和高可用性。etcd 集群在同一时刻**只能有一个主节点（Leader）**，且**写操作必须由该主节点处理**，但读操作可以从任意节点执行。etcd集群中的节点在正常运行时通过Raft算法动态选举 “领导者（Leader）”，其他节点为 “跟随者（Follower）\r\n# 1. 节点角色与职责\r\n## 1.1. Leader 节点\r\n- 唯一负责处理客户端写请求，并将写操作日志同步到Follower节点。\r\n- 维护集群状态，协调日志复制和节点选举。\r\n## 1.2. Follower 节点\r\n- 接收并持久化 Leader 同步的日志，响应客户端读请求（或转发给 Leader）。\r\n- 在 Leader 故障时参与选举，竞争成为新 Leader。\r\n## 1.3. Candidate 节点\r\n选举过程中处于候选状态，向其他节点发送投票请求。\r\n# 2. 数据一致性与高可用性实现\r\n1. 客户端向任意节点发送写请求，节点若为Follower则转发至Leader。\r\n2. Leader 将写日志持久化后，向至少半数以上节点（如3节点集群需2个节点）发送日志复制请求。\r\n3. 当收到半数以上节点的确认后，Leader 提交日志并返回客户端成功。"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            Etcd架构
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>Etcd架构</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

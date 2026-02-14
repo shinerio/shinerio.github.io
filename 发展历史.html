@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"发展历史","title":"发展历史","content":"# 1. 转发平台发展\r\n- 以openvswitch为代表的第一代内核态软件转发平台\r\n- 以dpdk为代表的第二代内核态软件转发平台 \r\n- 以P4或NP为代表的第三代硬件转发平台。\r\n\r\n第一代发展到第二代解决了内核态和用户态上下文切换代价较高的问题；\r\n第二代发展到第三代解决了软件转发平台性能不足的问题。\r\n\r\n第一代到第二代的核心技术是DPDK，DPDK的UIO驱动屏蔽了硬件发出中断，通过用户态主动轮询的方式（PMD，Poll Mode Driver），旁路linux kernel，避免用户态和内核态上下文切换。\r\n\r\n第二代到第三代的核心技术是用可编程硬件转发平台代替软件转发平台，cpu的执行时需要内存参与（获取指令），而硬件转发靠的是数字电子技术（与非门，组合逻辑电路）。\r\n\r\nDSP是在基于底层核心转发平台（DPDK、P4、NP等）提供基本报文转发能力的基础上，站在服务视角抽象出来的上层业务的公共能力，如会话管理、健康检查、负载均衡等，本质上更贴近于一个抽象的lib库。参照管理面开发，举个不太恰当的例子，linux server、P4、NP可以类比于jvm虚拟机，DPDK可以类比于jdk，DSP则贴近于maven管理的各种开源社区的lib库，nat或er或elb的服务数据面则像是我们基于各种lib库组合开发的跑在jvm虚拟机上的spring应用。\r\n\r\n# 2. 网关部署形态发展\r\n## 2.1. 无状态网关主主部署\r\n## 2.2. 有状态网关\r\n### 2.2.1. 单层网关 -> 双层网关\r\n单层到双层发展的核心理念在于将有状态和无状态的部分做切割，forwarder作为无状态的网关负责核心转发功能；director作为有状态网关负责状态管理。这样网络的核心功能和承担主要负载能力的forwarder就做到了主主部署，可以轻松地横向扩容，而ep、nat、elb等有状态的网关只需要开发director层，负责首包的状态管理，其负载很低，对动态扩容的需求也没有那么强烈。\r\n### 2.2.2. 主备部署 -> 主主部署\r\n主备部署到主主部署的核心驱动力是为了充分利用两台主机的性能，避免主备模式下始终有一台主机处于空闲状态，造成资源浪费的尴尬情况。\r\n\r\n# 3. openvswitch\r\n内核态，慢路径要upcall用户态，涉及用户态和内核态上下文切换，比较影响转发性能\r\n!<a href=\"pasted-image-20230720190931png.html\" class=\"internal-link\">Pasted image 20230720190931.png</a>\r\n!<a href=\"pasted-image-20230720190823png.html\" class=\"internal-link\">Pasted image 20230720190823.png</a>\r\n\r\n性能优化：\r\n1. RSS使能网卡多队列\r\n2. 软中断绑核\r\n3. CPU核隔离isolcpus\r\n4. 中断黑名单\r\n\r\n# 4. dpdk\r\ndpdk+ugw\r\n!<a href=\"pasted-image-20230720191122png.html\" class=\"internal-link\">Pasted image 20230720191122.png</a>\r\n\r\ndpdk+ovs+egf\r\n!<a href=\"pasted-image-20230720191257png.html\" class=\"internal-link\">Pasted image 20230720191257.png</a>\r\n\r\ndpdk+lvs(dpvs)：ELB-cvs\r\n\r\ndpdk+gaea: ER\r\n\n## 4.1. dpdk\r\n!<a href=\"pasted-image-20230720191712png.html\" class=\"internal-link\">Pasted image 20230720191712.png</a>\r\n网卡 -> 内核软中断 -> 用户态\r\n网卡 -> 用户态，pmd驱动旁路kernel\r\n\n# 5. DSP\r\n!<a href=\"pasted-image-20230720192506png.html\" class=\"internal-link\">Pasted image 20230720192506.png</a>\r\n\r\n# 6. 网关部署\r\n主主部署 ecmp -> 主备 -> 双层"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            发展历史
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>发展历史</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

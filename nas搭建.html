@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"NAS搭建","title":"NAS搭建","content":"# 1. 主机硬件\r\n\r\n- 主板：微星B360M Mortar\r\n- CPU：i3-8300t\r\n- 内存：金士顿骇客8G * 2 DDR4\r\n- SSD：三星980 NVMe PCIe3.0 500G\r\n- 西数：红盘4T\r\n- 散热器：利民AXP90 X47\r\n- 电源：台达VX350\r\n- 机箱：先马米立方matx\r\n\r\n# 2. ssh登录\r\nubuntu系统，设置仅支持ssh秘钥登录，保证安全性\r\n\r\n# 3. 开启samba共享文件\r\n```shell\r\nvim /etc/samba/smb.conf\r\n```\r\n\r\n# 4. plex\r\n配置ssl加密，在let's encrypt申请证书（p12格式，默认包含公钥、私钥和证书）。\r\n\r\n> 更换绑定证书后需要浏览器清理一下证书缓存。\r\n\r\n外网访问plex统一使用https通道，内网还保留http通道。\r\n# 5. movie-robot\r\n```shell\r\ndocker run -itd --name=movie-robot --restart always --network host -p 1329:1329 -v /home/shinerio/movie-robot:/data -v /home/shinerio/Downloads:/Downloads -v /home/shinerio/data/Media/Movie:/Movie -v /home/shinerio/data/Media/TvShow:/TvShow --env 'LICENSE_KEY=存储在1password' yipengfei/movie-robot:latest\r\n```\r\n\r\n# 6. shadowsocks打通隧道\r\n通过ddns绑定公网ip，端口只映射几个必要的、能够保证安全的端口，其他服务在外网通过ss代理的方式访问。内网主机配置自定义域名解析到192.168.85.0/24内网IP，识别外网环境强制192.168.85.0/24这个网段走家庭网络专用ss代理服务器。\r\n\r\n## 6.1. 端口映射\r\n\r\n| port  | service   | 安全性                                                    |\r\n| ----- | --------- | --------------------------------------------------------- |\r\n| 50000 | tomcat    | 使用tomcat用户启动，无login权限，无sudo权限；三重密码保护 |\r\n| 14443 | ss-server | 高安全性加密算法，复杂密码                                              |\r\n| 32400 | plex      | plex用户启动，无login权限，无sudo权限；两步认证           |\r\n\r\n## 6.2. 域名分配\r\n设备使用自定义域名解析到内网ip，配置场景模式外网环境强制走ss代理，14443端口回家，家庭环境直接走内网，不过路由。\r\n\r\n| ip地址       | 自定义域名      |\r\n| -------------- | --------------- |\r\n| 192.168.85.105 | shinerio.nas    |\r\n| 192.168.85.2   | shinerio.server |\r\n\r\n## 6.3. 外网访问使用的所有自定义域名ss-server也必须可以解析\r\n```shell\r\n# vim /etc/hosts添加\r\n192.168.85.2 shinerio.server\r\nfe80::211a:a1f9:e853:b548 shinerio.server\r\n192.168.85.105 shinerio.nas\r\nfe80::20c:29ff:feb5:ff66 shinerio.nas\r\n```\r\n需要同时添加ipv6的解析，否则ss建连会比较慢\r\n```bash\r\nApr  2 19:40:53 shinerio-ubuntu /usr/local/bin/ss-server[27224]: successfully resolved shinerio.nas\r\nApr  2 19:40:53 shinerio-ubuntu /usr/local/bin/ss-server[27224]: new connection to remote, 1 opened remote connections\r\nApr  2 19:40:53 shinerio-ubuntu /usr/local/bin/ss-server[27224]: failed to lookup v6 address Timeout while contacting DNS servers\r\n```\r\n\r\n# 7. 远程控制\r\n## 7.1. xrdp远程桌面\r\n```shell\r\n# 安装\r\napt install xrdp\r\n# 启动\r\nsystemctl start xrdp\r\n# 开机启动\r\nsystemctl enable xrdp\r\n```\r\n解决黑屏\r\n```shell\r\n# 编辑\r\nvim /etc/xrdp/startwm.sh\r\n# 添加配置\r\nunset DBUS_SESSION_BUS_ADDRESS\r\nunset XDG_RUNTIME_DIR\r\n\r\n# 优化桌面，不做任何配置，启动之后的桌面是非常别扭的，因为是Gnome的原始桌面，没有左侧的任务栏，窗口也没有最小化按钮，等等一些列问题\r\nvim ~/.xsessionrc\r\n\r\n# 添加：\r\nexport GNOME_SHELL_SESSION_MODE=ubuntu\r\nexport XDG_CURRENT_DESKTOP=ubuntu:GNOME\r\nexport XDG_CONFIG_DIRS=/etc/xdg/xdg-ubuntu:/etc/xdg\r\n\r\n# 重启\r\nsystemctl restart xrdp\r\n```\r\n\r\n## 7.2. 通过Guacamole实现web端控制\r\n```shell\r\n# 默认情况下guacamole只监听本地ip\r\n# /etc/guacamole/guacd.conf\r\n[server]\r\nbind_host = 192.168.85.2\r\nbind_port = 4822\r\n```\r\n配置登录信息\r\n```shell\r\nvim /etc/guacamole/user-mapping.xml\r\n```\r\n为了安全尽量不要配置密码，在登录后手动输入\r\n```xml\r\n<user-mapping>\r\n        <authorize password=\"xxxx\" username=\"shinerio\"> <span class=\"tag\">#登录界面账号密码</span>\r\n\r\n        <connection name=\"rdp-shinerio-ubuntu\">\r\n                <protocol>rdp</protocol>  <span class=\"tag\">#RDP协议配置</span>\r\n                <param name=\"hostname\">192.168.85.2</param> <span class=\"tag\">#远程主机IP</span>\r\n                <param name=\"port\">3389</param> <span class=\"tag\">#rdp</span> 默认端口\r\n                <param name=\"username\">your-username</param> <span class=\"tag\">#远程主机用户</span>\r\n                <param name=\"ignore-cert\">true</param>\r\n        </connection>\r\n      </authorize>\r\n</user-mapping>\r\n```\r\n重启\r\nsystemctl restart guacd\r\n\r\n# 8. 群晖（虚拟机）\r\n使用arpl安装。设置复杂密码+两步认证+开启自动封锁\r\n\r\n## 8.1. 安装webDav server\r\n\r\n## 8.2. 设置仅支持ssh秘钥登录\r\n```\r\n# sshd对文件夹权限校验严格，需要将以下目录权限设置正确\r\nchmod 755 /homes/shinerio \r\nchmod 700 ~/.ssh \r\nchmod 600 ~/.ssh/authorized_keys\r\n```\r\n\r\n## 8.3. 安装git备份obsidian笔记\r\n```shell\r\n# 增量同步数据\r\nrsync -r shinerio@192.168.85.2:/home/shinerio/data/Documents/obsidian /var/services/homes/shinerio/Document/note\r\n```\r\n\r\n# 9. 分工原则\r\n\r\nubuntu: 媒体中心，存储电视、电影，通过web控制端兼具远程办公能力\r\nnas: photo备份(google photo同步备份)，重要资料备份中心，document目录1自动同步google drive云备份\r\nobsidian：\r\n1. 全平台所有资料存储本地保存，通过gitee同步。\r\n2. 苹果是主力写作平台，通过icloud同步，同时google drive同步"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            NAS搭建
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>NAS搭建</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"SDD（Spec-Driven-Develop）","title":"SDD（Spec Driven Develop）","content":"Kiro的spec流程被设计为三个步骤：**需求 (requirements.md) → 设计 (design.md) → 任务 (tasks.md)**。每个工作流步骤都由一个Markdown文档表示，Kiro会引导你达成这三个步骤。\r\n\r\n# 1. 需求文档\r\n它被构建为一个需求列表\r\n1. 每个需求代表一个“用户故事” (User Story)，采用“作为...（As a...）”的格式。\r\n2. 每个需求都配有验收标准，采用“假如... (GIVEN...) 当... (WHEN...) 则... (THEN...)”的格式\r\n```\r\n## 介绍\r\n\r\nxxxxx\r\n\r\n## 术语表\r\n\r\n## 需求\r\n\r\n### 需求1: xxx\r\n\r\n**用户故事：**，作为xxx，我希望\r\n\r\n#### 验收标准\r\n\r\n1. WHEN xxxxx THEN xxxx SHALL xxxx\r\n2. WHEN xxxxx THEN xxxx SHALL xxxx\r\n```\r\n\r\n# 2. 设计文档\r\n```\r\n## 概述\r\n\r\n## 架构设计\r\n\r\n### 整体架构\r\n\r\n采用xxx架构\r\n\r\n[组件零层架构图（mermaid图）]\r\n\r\n### 核心组件关系\r\n\r\n[介绍每个组件的作用，及相互之间配合关系]\r\n\r\n### 技术栈选择\r\n\r\n**前端技术**\r\n\r\n**后端技术**\r\n\r\n**部署技术**\r\n\r\n## 组件和接口设计\r\n\r\n[分组件、模块，讲述各自的具体设计和作用]\r\n\r\n## 数据模型设计\r\n\r\n### 领域模型\r\n\r\n### 数据库表结构\r\n\r\n## 目录结构设计\r\n\r\n## 错误处理\r\n\r\n### 错误分类\r\n\r\n### 错误处理策略\r\n\r\n## 测试策略\r\n\r\n### 测试重点\r\n\r\n### 测试覆盖范围\r\n```\r\n\r\n# 3. 任务\r\n将任务按功能模块进行拆解"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            SDD（Spec Driven Develop）
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>SDD（Spec Driven Develop）</h1>
         <time datetime="2026-01-26T15:59:13.000Z">2026年1月26日</time>
         <div class="tags">
             

@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"ConfigMap","title":"ConfigMap","content":"# 1. 创建\r\n## 1.1. 通过kubectl命令行创建\r\n### 1.1.1. --from-file参数从文件中进行创建\r\n```shell\r\n# kubectl create configmap NAME --from-file=[key=]source --from-file=[key=]source\r\nkubectl create configmap application.yml --from-file=server.xml\r\n```\r\n其中key=是可选的，默认key就是文件名，通过key=可以指定key。\r\n### 1.1.2. --from-file参数从目录中进行创建\r\n目录下每个配置文件名都被设置为key，文件的内容设成为value，语法如下：\r\n```shell\r\n# kubectl create configmap NAME --from-file=config-files-dir\r\nkubectl create configmap spring-config --from-file=/etc/config\r\n```\r\n### 1.1.3. --from-literal直接指定key=value\r\n```shell\r\nkubectl create configmap NAME --from-literal=key1=value1 --from-literal=key2=value2\r\n```\r\n## 1.2. 通过yaml文件创建\r\n指定key,value形式\r\n```yaml\r\napiVersion: v1\r\nkind: ConfigMap\r\nmetadata:\r\n  name: spring-appvars\r\ndata:\r\n  apploglevel: info\r\n  appdatadir: /var/data\r\n```\r\n指定配置文件\r\n```yaml\r\napiVersion: v1\r\nkind: ConfigMap\r\nmetadata:\r\n\t  name: spring-configfiles\r\ndata:\r\n  application.yml: |\r\n    server:\r\n      port: 8081\r\n    spring:\r\n      profiles:\r\n        active: prod\r\n```\r\n# 2. 使用\r\n容器应用对configMap使用有以下两种方法\r\n- 通过环境变量获取configMap中的内容\r\n- 通过volume挂载的方式将configmap中的内容挂载为容器内部的文件或目录\r\n## 2.1. 通过环境变量方式使用\r\n创建configMap\r\n```shell\r\nkubectl create configmap active-profile --from-literal=active_profile=prod\r\n```\r\n定义Pod并引用configMap\r\n```yaml\r\napiVersion: v1\r\nkind: Pod\r\nmetadata:\r\n  name: spring-k8s-test\r\nspec:\r\n  containers:\r\n    - name: spring-test\r\n      image: kimb88/hello-world-spring-boot\r\n      ports:\r\n        - containerPort: 8080\r\n\t  envFrom:\r\n\t    - configMapRef:\r\n\t        name: active-profile\r\n```\r\n查看容器环境变量\r\n```bash\r\nroot@spring-k8s-test:/usr/local/tomcat# echo $active_profile\r\nprod\r\n```\r\n### 2.1.1. spring配置文件使用环境变量\r\n在spring中可以通过`${key:defaultValue}`的方式直接引用系统的环境变量\r\n```yaml\r\nserver:\r\n  port: 8080\r\nspring:\r\n  profiles:\r\n    active: ${active_profile}\r\n```\r\n## 2.2. 通过volumeMount方式使用\r\n```yaml\r\napiVersion: v1\r\nkind: Pod\r\nmetadata:\r\n  name: spring-k8s-test\r\nspec:\r\n  containers:\r\n    - name: spring-test\r\n      image: kimb88/hello-world-spring-boot\r\n      ports:\r\n        - containerPort: 8080\r\n      volumeMounts:\r\n        - name: application-prod  # 引用volume名称\r\n          mountPath: /etc/config  # 挂载到容器内目录\r\n  volumes:\r\n    - name: application-prod\r\n      configMap:\r\n        name: spring-configfiles\r\n        items:\r\n          - key: application.yml  # 配置项key\r\n            path: application.yml  # 配置项value的内容将生成到名称application.yml的文件中\r\n```\r\n> 如果不指定items，则使用volumeMount方式在容器内的目录为每个item都生成一个文件名为key的文件。\r\n\r\n```\r\nroot@spring-k8s-test:/usr/local/tomcat# ls /etc/config\r\napplication.yml\r\nroot@spring-k8s-test:/usr/local/tomcat# cat /etc/config/application.yml\r\nserver:\r\n  port: 8081\r\nspring:\r\n  profiles:\r\n    active: prod\r\n```\r\n## 2.3. 限制\r\n- configMap必须在pod之前创建，Pod才能引用\r\n- 如果Pod使用envFrom基与configMap定义的环境变量，则无效的环境变量名称将被忽略，并在事件中被记录为InvalidVariableNames\r\n- configMap受命名空间限制，只有处于相同命名空间中的Pod才可以引用它\r\n- configMap无法用于静态Pod"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            ConfigMap
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>ConfigMap</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

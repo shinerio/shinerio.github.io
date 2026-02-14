@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"用户和权限","title":"用户和权限","content":"使用 Linux 系统，不免会和用户和权限打交道，本文介绍了根权限和文件的权限属性等概念和应用。\r\n\r\n<!--more-->\r\n\r\n# 1. 用户与群组\r\n\r\n使用`cat /etc/passwd`查看所有用户\r\n\r\n![](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20190830142723.png)\r\n\r\n使用`cat /etc/group`查看所有用户组\r\n\r\n![](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20190830142837.png)\r\n\r\n  修改文档所有者或群组\r\n\r\n```shell\r\n# command [-options] [账号/群组] [文件或目录]\r\n# 改变文档所属用户或用户组，-R为可选参数，表示递归表更\r\nchown [-R] [账号] [文件或目录]\r\nchown [-R] [账号]:[群组] [文件或目录]\r\n# 改变文档所属用户组\r\nchgrp [-R] [群组] [文件或目录]\r\n```\r\n\r\n# 2. Linux权限\r\n\r\n命令\r\n```shell\r\nchmod | u g o a | + - = | r w x | 文档路径\r\n# 或\r\nchmod | xxx | 文档路径\r\n```\r\n\r\n- `u，g，o`代表三种身份owner/group/other，a代表全部身份all\r\n- `+-=`代表三种操作行为（添加/删除/设置权限）  \r\n- rwx表示三种权限，也可以使用4/2/1或者他们的和作为权限，如5代表rx\r\n- xxx代表三位数字，rwx分别为4/2/1，三种权限相加可以得出一种身份的权限  \r\n\r\n示例：\r\n\r\n```shell\r\n# 给test文件设置所有人拥有所有权限\r\nchmod u=rwx,g=rwx,0=rwx test\r\nchmod ugo=rwx test\r\nchmod a=rwx test\r\nchmod ugo+rwx test\r\nchmod 777 test\r\n# 所有人添加执行权限\r\nchmod a+x test\r\n# 所有人删除写权限\r\nchmod a-w test\r\n```\r\n\r\n> 对于文件来说x表示文件可以被系统执行的权限，对于目录来说，x代表着可以进入目录的权限，即可以cd进入\r\n\r\n# 3. 文档属性\r\n\r\n使用命令`ls -al --full-time` 或者`ll`可以查看文件或者目录的所有属性\r\n\r\n![](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20190830140704.png)\r\n\r\n共有7列，分别是：\r\n- <font color=red>第一列</font>（共10位） 第1位表示文档类型，`d`表示目录，-表示普通文件，l表示符号链接，s表示套接字，b表示块设备（光驱、磁盘），c表示字符设备（鼠标、键盘），p表示管道。其中s/b/c/p都是伪文件。第2-10位，共9位，分表对应owner/group/others的权限，rwx分表表示readable/writable/excutable，-表示没有当前权限。\r\n- <font color=red>第二列</font> 关联硬链接数，对于一个新建文件夹来说，有两个链接，对于一个新建文件来说，有一个链接。\r\n- <font color=red>第三列</font> 表示文档所属owner\r\n- <font color=red>第四列</font> 表示文档所属group\r\n- <font color=red>第五列</font> 表示文档大小，单位字节，可以通过`ls -h`选项以最合适的单位显示\r\n- <font color=red>第六列</font> 表示文档最后修改时间\r\n- <font color=red>第七列</font> 表示文档名，隐藏文件以`.`开头\r\n\r\n# 4. su 和 sudo\r\n\r\n在 Linux 中，`su`命令和`sudo`命令有着十分巨大的区别：\r\n-   `su`命令会把你切换到根用户`root`\r\n-   `sudo`会使用根权限来执行命令\r\n\r\n我们可以通过修改（需要 root 权限）下列文件的中的用户列表，来决定哪些用户可以执行 sudo 命令：\r\n\r\n```bash\r\nsudo /usr/sbin/visudo\r\n```\r\n\r\n默认情况下，这个列表如下所示：\r\n\r\n```shell\r\n<span class=\"tag\">#User</span> privilege specification\r\nroot ALL=(ALL) ALL\r\n```\r\n  \r\n每一个 sudo 行的语法是：\r\n\r\n```shell\r\nuser machine=(effective_user) command\r\n```\r\n\r\n通过上面的语法，我们可以授予某个用户 root 权限，其中每一个域代表：\r\n-   `user`是新的`sudo`用户的用户名 \r\n-   `machine`是`sudo`生效的主机名   \r\n-   `effective_user`代表被允许执行命令的有效用户  \r\n-   `command`代表这这个用户可以执行的一系列命令\r\n\r\n# 5. 详解 umask\r\n\r\n每一个文件和文件夹在被创建的时候都会被赋予一定的权限属性，这些值可以通过 umask 来指定。正如 umask 的名称所显示的那样，这个值本身其实就是一个可以禁用相应权限属性的掩码。\r\n\r\n> 掩码由一个有效的`4`位`8`进制数值。如果把少于`4`位的数值作为参数传入，高位会被用 0 补全。\r\n\r\n默认情况下，文件夹在被创建的时候能获取的权限属性是`777(rwxrwxrwx)`，文件在被创建的时候能获取的权限属性是`666(rw-rw-rw-)`，二者的值都可以被被 umask 的掩码给减掉。\r\n\r\n我们可以这样来查看当前的`umask`值：\r\n\r\n```shell\r\n$ umask\r\n022\r\n$ touch text_file\r\n$ mkdir text_dir\r\n$ ls -l\r\ndrwxr-xr-x  2 zhangrui  staff  64 Jan 22 23:15 text_dir\r\n-rw-r--r--  1 zhangrui  staff   0 Jan 22 23:15 text_file\r\n```\r\n\r\n我们可以通过如下方式修改`umask`值：\r\n```shell\r\n# 当前会话中的umask设定为077\r\n$ umask 077\r\n# 所有者添加所有权限，删除组或其他用户的所有权限\r\n$ umask u+rwx,g-rwx,o-rwx\r\n# 设置所有者具有所有权限，设置组或其他用户不具有任何权限\r\n$ umask u=rwx,g=,o=\r\ndrwx------  2 zhangrui  staff  64 Jan 22 23:26 **test_dir**\r\n-rw-------  1 zhangrui  staff   0 Jan 22 23:25 test_file\r\n```\r\n\r\n> 注意默认情况下文件创建不具备x权限，通过umask并不能给文件创建添加x权限，umask只能用来减权限，不能用于添加权限。\r\n\r\n如果想要系统上的所有用户或者指定用户都使用设定的`umask`值的话，我们需要把相应的设定写入`/etc/profile`或者指定的`~/.bashrc`文件中去。"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            用户和权限
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>用户和权限</h1>
         <time datetime="2023-01-23T00:00:00.000Z">2023年1月23日</time>
         <div class="tags">
             

@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"BGP基础概念","title":"BGP基础概念","content":"# 1. AS\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/202503192202966.png)\n- OSPF、IS-IS等IGP路由协议在组织机构网络**内部**广泛应用，随着网络规模扩大，网络中路由数量不断增长，IGP已无法管理大规模网络，AS的概念由此诞生。\n- AS指的是在同一个组织管理下，使用统一选路策略的设备集合。\n> [!question]\n不同的AS之间需要进行通信，在AS之间应该使用何种路由协议进行路由的传递？\n# 2. 什么是BGP\nBGP（Border Gateway Protocol，边界网关协议）是互联网上一个核心的**去中心化自治路由协议**。\n- 当网络过大的时候，会导致路由表过大而难以维护，这时候采用<font color=\"<span class=\"tag\">#ff0000</span>\">分治</font>的方法，将一个**大网络划分为若干个小网络**，这些小网络称为自治系统(AS)，BGP的诞生就是用于自治**系统间的通信**。\n- 它通过维护**IP路由表或前缀表**来实现自治系统（AS）之间的可达性，属于矢量路由协议。\n- 大多数互联网服务提供商必须使用BGP来与其他ISP创建路由连接，特大型的私有IP网络也可以使用BGP，将若干个大型的OSPF网络进行合并。\nBGP是**应用层协议**，其传输层使用TCP，默认端口号是**179**。TCP连接的窗口是65K字节，也就是说TCP连接允许在没有确认包的情况下，连续发送65K的数据。而其他的路由协议，例如OSPF的窗口只有一个数据包，也就是说前一个数据包收到确认包之后，才会发送下一个数据包。当网络规模巨大时，需要传输的数据也相应变大，这样效率是非常低的，这也是它不适合大规模网络的原因之一。而正是由于TCP可以可靠的传输大量数据，且互联网的路由信息是巨大的，TCP被选为BGP的传输层协议，并且BGP适合大规模网络环境。\n# 3. BGP与IGP\n## 3.1. 使用IGP传递路由\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/202503192211312.png)\n- AS之间需要<font color=\"<span class=\"tag\">#ff0000</span>\">直连链路</font>，或通过VPN协议构造逻辑直连（例如GRE Tunnel）进行邻居建立。\n- AS之间可能是不同的机构、公司，相互之间无法完全信任，使用IGP可能存在<font color=\"<span class=\"tag\">#ff0000</span>\">暴露AS内部的网络信息</font>的风险。\n- 整个网络规模扩大，路由数量进一步增加，路由表规模变大，<font color=\"<span class=\"tag\">#ff0000</span>\">路由收敛变慢</font>，设备性能消耗加大。\n## 3.2. 使用BGP传递路由\n![image.png](https://shinerio.oss-cn-beijing.aliyuncs.com/obsidian/202503192212190.png)\n考虑到IGP在AS间传递路由的各种问题，网络专家们发明了BGP（Border Gateway Protocol，边界网关协议）协议进行路由传递，相较于传统的IGP协议：\n- 【不需要直连链路】BGP基于TCP，只要能够建立TCP连接即可建立BGP。\n- 【不暴露网络结构】只传递路由信息，不参与路由发现和计算，不会暴露AS内的拓扑信息。\n- 【不需要周期性更新】触发式更新，而不是进行周期性更新。\n## 3.3. 核心区别\n### 3.3.1. 路由处理策略\nIGP核心在于发现和计算路由，<font color=\"<span class=\"tag\">#ff0000</span>\">BGP的核心在于通告和控制路由</font>。IGP协议会互相通告自己的全部链接状态，交互的是整个网络拓扑信息，无法应对整个互联网错综复杂的网络结构。BGP并不关心AS内部的网络结构，只关心某段IP送到某个边界路由器上就行了。\n### 3.3.2. 是否中心化\nBGP是<font color=\"<span class=\"tag\">#ff0000</span>\">去中心化</font>的。因为BGP交换的数据是AS之间的路由表，AS通常都是一个国家或者一个大型的运营商，AS之间的**地位是对等**的。一个AS是否要接入到另外一个AS，不需要更高层次的网络管理者的授权。而OSPF/ISIS就不行，OSPF/ISIS是中心化的，**OSPF需要area0交换数据，ISIS需要骨干区**，这些都是中心化的配置，如果国际互联网用OSPF/ISIS，那么就意味着很多数据流量就不得不通过某个中心区域，如果中心区域故障，那么全球互联网就瘫痪了。同时，**OSPF和ISIS在一个area里都需要一个核心路由器**，OSPF叫DR，ISIS叫DIS，尤其是在一个广播网络，DR/DIS非常重要，他们负责通告给其它路由器area里的路由表。有了核心路由器，OSPF/ISIS才能计算出当前arae的拓扑结构。但BGP不行，如果BGP里有类似DR/DIS的角色，那么这个网络就不再是去中心化的了，DR/DIS的选举和变化会导致网络波动，对于BGP这种拥有大规模路由表（上万条）的协议来说，这种波动的影响会非常巨大。去中心化意味着BGP的每个路由器，只能自己算自己的路由表，如果BGP也负责计算到peer端的路由，那么每个BGP路由器计算出来的结果是没办法统一的（没有DR/DIS），所以BGP为了去中心化，放弃了计算到peer路由的过程，把这个工作交给了IGP来实现。\n### 3.3.3. 协议开销\n**IGP协议报文开销太大**。BGP的报文格式中，是以属性为单位进行通告的，`属性+路由条目*N`的这种格式。OSPF的LSA和ISIS的LSP都是带有一定链接状态的数据，格式相当于`(路由条目+属性)*N`的格式，如果路由表数量巨大，那么OSPF/ISIS需要非常多的通信才能完成路由交换。如果是外部路由，那么为了描述一条路由信息，OSPF/ISIS需要更长的报文。同时OSPF/ISIS，**都存在老化时间**，需要周期性的刷新，BGP不需要。一个国家级别的网络，路由表的规模可能是上万条的，全球互联网的路由表可能是几十万甚至上百万条的，这种情况下，使用OSPF/ISIS的话，性能就不太好了。\n### 3.3.4. 网络设计目标\n**BGP不关注网络内部的可达性**。这种设计主要是为了“**过境流量**”。举例：中国到美国的数据流量，主要走中美海底光缆。但如果这条光缆中断了，那么，还可以走中国-日本-美国；中国-欧洲-美国；中国-新加坡-美国……那么当数据流量在日本、欧洲、新加坡中转时，BGP协议不关注这些过境流量如何通过内部网络，换句话说，中国的路由器上，不需要知道日本、欧洲、新加坡的内部网络的路由，只需要知道边界在哪里，边界是否可达即可。BGP的这种特性还可以用来做网络调优。购买VPS/虚拟主机服务的时候，肯定听说过BGP机房的说法，所谓的BGP机房，就是在机房的出口处，配置一台运行IBGP的路由器，直接连通到EBGP的出口，那么对于跨AS的访问，只需要一跳就可以进入另外一个AS，不需要在运营商网络内部绕路。\n### 3.3.5. 邻居建立\nBGP有别于IGP的一大特点是他的对等体或者说邻居建立，是<font color=\"<span class=\"tag\">#ff0000</span>\">不需要直连</font>的，ospf，eigrp这些邻居建立都必须直连，而bgp两个邻居只要update地址三层可达即可。可别小看这个特点，这个在mpls vpn的控制层面上跨iP设备传递vpnv4路由，以及在mpls域间option c方案中都是必须利用到的特点。\n### 3.3.6. BGP路径属性丰富\nbgp有强大的路由操控性，具有**多种选路原则**。本地优先级，as号长度，origin属性，med等等原则。\nIS-IS、OSPF只能通过Cost控制路径选择\n### 3.3.7. 拓展性\nbgp有丰富的拓展性，支持ipv4，ipv6，vpnv4，vpnv6，evpn，vpls等等，在运营商，数据中心，校园网，企业网里都有丰富的使用场景。而ospf这种就完全做不到了，甚至像ipv6这种，都必须基于ospfv3才能实现了。\n# 4. BGP对等体\nBGP有两种邻居\n- **IBGP(Interior BGP)**，运行在同一个AS内的BGP路由器之间的BGP邻接关系。\n- **EBGP(Exterior BGP)**，运行在不同AS间的BGP路由器之间的BGP对等关系，必须满足以下两个条件：\n\t1. 两个路由器所属AS不同\n\t2. peer命令指定的对等体IP地址要求路由可达，并且TCP连接能够正确建立\n\n![](https://shinerio.oss-cn-beijing.aliyuncs.com/blog_images/uncategory/20200427213611.png)"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            BGP基础概念
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>BGP基础概念</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

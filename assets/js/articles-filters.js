@@ -1,49 +1,3 @@
-// Export article as Markdown
-window.downloadMarkdown = function(filename, content) {
-  const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-};
-
-// Export article from article list page
-window.exportArticle = function(articleId) {
-  const articleDataElement = document.getElementById('article-data');
-  if (!articleDataElement) return;
-
-  try {
-    const articles = JSON.parse(articleDataElement.textContent);
-    const article = articles.find(a => a.id === articleId);
-    if (article && article.content) {
-      const filename = `${article.title}.md`;
-      window.downloadMarkdown(filename, article.content);
-    }
-  } catch (e) {
-    console.error('Failed to export article:', e);
-  }
-};
-
-// Export article from article detail page
-window.exportArticleFromPage = function() {
-  const exportDataElement = document.getElementById('article-export-data');
-  if (!exportDataElement) return;
-
-  try {
-    const data = JSON.parse(exportDataElement.textContent);
-    if (data && data.content) {
-      const filename = `${data.title}.md`;
-      window.downloadMarkdown(filename, data.content);
-    }
-  } catch (e) {
-    console.error('Failed to export article:', e);
-  }
-};
-
 // Articles page filtering, sorting, and pagination functionality
 document.addEventListener('DOMContentLoaded', function() {
   // Retrieve article data from the hidden script element
@@ -442,16 +396,7 @@ document.addEventListener('DOMContentLoaded', function() {
       articleElement.setAttribute('data-id', article.id);
 
       articleElement.innerHTML = `
-        <h3>
-          <a href="${article.slug}.html">${article.title}</a>
-          <a href="#" class="export-btn" title="导出文章" onclick="exportArticle('${article.id}'); return false;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7 10 12 15 17 10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
-          </a>
-        </h3>
+        <h3><a href="${article.slug}.html">${article.title}</a></h3>
         <p class="article-excerpt">${article.description || ''}</p>
         <div class="article-meta">
           <time datetime="${new Date(article.date).toISOString()}">${formatDate(new Date(article.date))}</time>

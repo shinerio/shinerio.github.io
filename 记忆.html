@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"记忆","title":"记忆","content":"# 1. 短期记忆\r\nLLM的核心架构在推理时，每一轮都是独立的计算过程。因此如果不把所有对话历史都带上的话，LLM就只能针对当前问题就会回答，无法感知历史对话。\r\n\r\n在AI中，短期记忆通常指“对话上下文”，包括：\r\n- prompt\r\n- 对话历史\r\n- 前序大模型推理结果\r\n- 前序工具执行结果\r\n\r\n短期记忆有两种存储方式：\r\n- 内存：进程重启后丢失\r\n- 数据库：进程重启后可以根据thread_id找回\r\n## 1.1. 局限性\r\n**LLM上下文窗口大小有限**：容易造成上下文污染，大模型找不到重点。\r\n- 滑动窗口：仅保留最近N轮对话\r\n- 总结压缩：先让LLM将之前的对话总结成一段简短的摘要\r\n# 2. 对比\r\n\r\n| **特性**   | **短期记忆 (Checkpoint/Postgres)**       | **长期记忆 (Long-term Memory)**  |\r\n| -------- | ------------------------------------ | ---------------------------- |\r\n| **存储内容** | 逐字逐句的对话记录、节点状态                       | 事实、用户偏好、总结后的知识               |\r\n| **技术实现** | **内存**或**PostgreSQL (Checkpointer)** | **向量数据库 (Vector DB)** 或 关系型表 |\r\n| **检索方式** | 按 `thread_id` 全量加载                   | 按语义相关性检索 (RAG)               |\r\n| **典型例子** | “他刚才说他叫小明”                           | “用户在三个月前提到过他花生过敏”            |\r\n| **容量限制** | 受模型上下文窗口限制                           | 理论上无限                        |"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            记忆
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>记忆</h1>
         <time datetime="2026-01-18T12:47:14.000Z">2026年1月18日</time>
         <div class="tags">
             

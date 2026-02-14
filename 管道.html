@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"管道","title":"管道","content":"# 1. client\r\n```python\r\n# 客户端代码\r\nimport subprocess\r\nimport json\r\n\r\n# 启动服务器进程（创建两个管道）\r\nprocess = subprocess.Popen(\r\n    ['python', 'server.py'],\r\n    stdin=subprocess.PIPE,\r\n    stdout=subprocess.PIPE,\r\n    text=True\r\n)\r\n\r\n# 发送请求（写入stdin管道）\r\nrequest = {\"jsonrpc\": \"2.0\", \"method\": \"tools/list\", \"id\": 1}\r\nprocess.stdin.write(json.dumps(request) + '\\n')\r\nprocess.stdin.flush()\r\n\r\n# 接收响应（读取stdout管道）\r\nresponse_line = process.stdout.readline()\r\nresponse = json.loads(response_line)\r\nprint(response)\r\n```\r\n# 2. server\r\n```python\r\n# 服务器代码\r\nimport sys\r\nimport json\r\n\r\ndef handle_request(request):\r\n    # 简单返回一个工具列表作为示例\r\n    if request.get(\"method\") == \"tools/list\":\r\n        return [\"tool1\", \"tool2\"]\r\n    return None\r\n\r\n# 接收请求（读取stdin管道）\r\nrequest_line = sys.stdin.readline()\r\nrequest = json.loads(request_line)\r\n\r\n# 处理请求\r\nresult = handle_request(request)\r\n\r\n# 发送响应（写入stdout管道）\r\nresponse = {\r\n    \"jsonrpc\": \"2.0\",\r\n    \"result\": result,\r\n    \"id\": request.get(\"id\")\r\n}\r\nsys.stdout.write(json.dumps(response) + '\\n')\r\nsys.stdout.flush()\r\n```\r\n# 3. ouput\r\n```\r\n{'jsonrpc': '2.0', 'result': ['tool1', 'tool2'], 'id': 1}\r\n```\r\n数据直接在内存中的管道缓冲区传输\r\n```\r\n服务器进程                    客户端进程\r\n    ↓                           ↑\r\nprint(\"data\")              readline()\r\n    ↓                           ↑\r\nstdout buffer    →    pipe buffer    →    stdin buffer\r\n (进程内存)        (内核空间)        (进程内存)\r\n```"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            管道
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>管道</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

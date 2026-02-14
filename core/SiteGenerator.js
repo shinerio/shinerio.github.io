@@ -192,8 +192,7 @@ class SiteGenerator {
             readingTime: article.readingTime,
             slug: article.slug,
             description: article.description,
-            relativePath: path.relative(options.config.vaultPath, article.filePath).replace(/\\/g, '/'),
-            content: article.content
+            relativePath: path.relative(options.config.vaultPath, article.filePath).replace(/\\/g, '/')
         }));
         const sidebar = this.renderSidebar(articles, options);
         const content = `
@@ -316,12 +315,6 @@ class SiteGenerator {
                     commentsEnabled: options.config.comments?.enabled || false,
                     commentsScript: this.generateCommentsScript(options.config, article.title)
                 });
-                // 文章原始内容（用于导出）
-                const articleExportData = JSON.stringify({
-                    id: article.id,
-                    title: article.title,
-                    content: article.content
-                });
                 const html = this.renderTemplate(layoutTemplate, {
                     title: article.title,
                     siteTitle: options.config.siteTitle,
@@ -344,12 +337,7 @@ class SiteGenerator {
 <link rel="stylesheet" id="hljs-dark" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" disabled>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
-<script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-${articleExportData}
-</script>
-${this.generateTextSelectionCommentHead(options.config, article.slug)}`
+<script src="assets/js/image-enhance.js" defer></script>${this.generateTextSelectionCommentHead(options.config, article.slug)}`
                 });
                 await fs.writeFile(path.join(outputPath, `${article.slug}.html`), html);
             }
@@ -624,16 +612,7 @@ ${this.generateTextSelectionCommentHead(options.config, article.slug)}`
     renderArticleListItem(article) {
         return `
     <div class="article-item">
-        <h3>
-            <a href="${article.slug}.html">${article.title}</a>
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticle('${article.id}'); return false;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h3>
+        <h3><a href="${article.slug}.html">${article.title}</a></h3>
         <p class="article-excerpt">${article.description}</p>
         <div class="article-meta">
             <time datetime="${article.date.toISOString()}">${this.formatDate(article.date)}</time>

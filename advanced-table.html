@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"Advanced Table","title":"Advanced Table","content":"<span class=\"tag\">#obsidian</span> \r\n# 功能\r\n- 自动化格式表格\r\n- Excel样式的表格导航，即使用Tab和Enter在行和列之间导航\r\n- 对指定的列进行函数求值\r\n- 添加、删除、移动行和列\r\n- 设置列的对齐方式\r\n- 对指定列进行排序\r\n- 将表格导出为CSV格式\r\n\r\n# 公式\r\n\r\n[公式](https://github.com/tgrosinger/md-advanced-tables/blob/main/docs/formulas.md)基本格式如下：\r\n\r\n`<!-- TBLFM: 结果存放单元格=计算式 -->`\r\n\r\n如`<!-- TBLFM: @>$2=sum(@I..@-1) -->`中的 `@>$2` 代表最后一行、第二列，右边的 `sum` 代表计算，整个公式意思是右边的计算部分放到左边指定单元格里。\r\n\r\n## 单元格引用\r\n\r\n### 绝对引用\r\n-   指定行\r\n    -   `@n` 代表第 n 行\r\n    -   `@<` 代表第一行\r\n    -   `@>` 代表最后一行\r\n    -   `@I` 表示表头与内容分隔线\r\n-   指定列\r\n    -   `$n` 表示第 n 列\r\n    -   `$<` 表示第一列\r\n    -   `$>` 表示最后一列\r\n\r\n### 相对引用\r\n\r\n相对引用意思是引用单元格在当前单元格的某个位置。\r\n\r\n-   `@-1` 表示引用单元格在当前单元格同一列，但在最后一行\r\n-   `$+1` 表示引用单元格在当前单元格同一行，但在最后右边两列\r\n\r\n使用引用单元格时，行或列（和当前单元格相同部分）往往是不用写明的。\r\n\r\n### 范围引用\r\n\r\n`@I..@-1` 这样两个点表示引用一个范围。\r\n\r\n> 注意，范围只允许行到行、列到列、单元格到单元格。\r\n\r\n| 姓名 | 成绩 |\r\n| ---- | ---- |\r\n| 张一 | 100  |\r\n| 张二 | 200  |\r\n| 张三 | 300  |\r\n| 综合 | 600  |\r\n<!-- TBLFM: @>$>=sum(@I..@-1) -->"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            Advanced Table
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>Advanced Table</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             
@@ -137,16 +123,7 @@
 &lt;li&gt;&lt;code&gt;$n&lt;/code&gt; 表示第 n 列&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;&lt;article&gt;
     &lt;header&gt;
-        &lt;h1&gt;
-            Advanced Table
-            &lt;a href=&quot;#&quot; class=&quot;export-btn&quot; title=&quot;导出文章&quot; onclick=&quot;exportArticleFromPage(); return false;&quot;&gt;
-                &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
-                    &lt;path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;/&gt;
-                    &lt;polyline points=&quot;7 10 12 15 17 10&quot;/&gt;
-                    &lt;line x1=&quot;12&quot; y1=&quot;15&quot; x2=&quot;12&quot; y2=&quot;3&quot;/&gt;
-                &lt;/svg&gt;
-            &lt;/a&gt;
-        &lt;/h1&gt;
+        &lt;h1&gt;Advanced Table&lt;/h1&gt;
         &lt;time datetime=&quot;2025-09-17T13:31:12.000Z&quot;&gt;2025年9月17日&lt;/time&gt;
         &lt;div class=&quot;tags&quot;&gt;
             
@@ -377,16 +354,7 @@
 &lt;/section&gt;amp;lt;&lt;/code&gt; 表示第一列&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;&lt;article&gt;
     &lt;header&gt;
-        &lt;h1&gt;
-            Advanced Table
-            &lt;a href=&quot;#&quot; class=&quot;export-btn&quot; title=&quot;导出文章&quot; onclick=&quot;exportArticleFromPage(); return false;&quot;&gt;
-                &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
-                    &lt;path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;/&gt;
-                    &lt;polyline points=&quot;7 10 12 15 17 10&quot;/&gt;
-                    &lt;line x1=&quot;12&quot; y1=&quot;15&quot; x2=&quot;12&quot; y2=&quot;3&quot;/&gt;
-                &lt;/svg&gt;
-            &lt;/a&gt;
-        &lt;/h1&gt;
+        &lt;h1&gt;Advanced Table&lt;/h1&gt;
         &lt;time datetime=&quot;2025-09-17T13:31:12.000Z&quot;&gt;2025年9月17日&lt;/time&gt;
         &lt;div class=&quot;tags&quot;&gt;
             
@@ -656,16 +624,7 @@
 &lt;/tbody&gt;&lt;/table&gt;
 &lt;!-- TBLFM: @&gt;&lt;article&gt;
     &lt;header&gt;
-        &lt;h1&gt;
-            Advanced Table
-            &lt;a href=&quot;#&quot; class=&quot;export-btn&quot; title=&quot;导出文章&quot; onclick=&quot;exportArticleFromPage(); return false;&quot;&gt;
-                &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
-                    &lt;path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;/&gt;
-                    &lt;polyline points=&quot;7 10 12 15 17 10&quot;/&gt;
-                    &lt;line x1=&quot;12&quot; y1=&quot;15&quot; x2=&quot;12&quot; y2=&quot;3&quot;/&gt;
-                &lt;/svg&gt;
-            &lt;/a&gt;
-        &lt;/h1&gt;
+        &lt;h1&gt;Advanced Table&lt;/h1&gt;
         &lt;time datetime=&quot;2025-09-17T13:31:12.000Z&quot;&gt;2025年9月17日&lt;/time&gt;
         &lt;div class=&quot;tags&quot;&gt;
             
@@ -923,16 +882,7 @@
 &lt;li&gt;&lt;code&gt;$n&lt;/code&gt; 表示第 n 列&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;&lt;article&gt;
     &lt;header&gt;
-        &lt;h1&gt;
-            Advanced Table
-            &lt;a href=&quot;#&quot; class=&quot;export-btn&quot; title=&quot;导出文章&quot; onclick=&quot;exportArticleFromPage(); return false;&quot;&gt;
-                &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
-                    &lt;path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;/&gt;
-                    &lt;polyline points=&quot;7 10 12 15 17 10&quot;/&gt;
-                    &lt;line x1=&quot;12&quot; y1=&quot;15&quot; x2=&quot;12&quot; y2=&quot;3&quot;/&gt;
-                &lt;/svg&gt;
-            &lt;/a&gt;
-        &lt;/h1&gt;
+        &lt;h1&gt;Advanced Table&lt;/h1&gt;
         &lt;time datetime=&quot;2025-09-17T13:31:12.000Z&quot;&gt;2025年9月17日&lt;/time&gt;
         &lt;div class=&quot;tags&quot;&gt;
             
@@ -1163,16 +1113,7 @@
 &lt;/section&gt;amp;lt;&lt;/code&gt; 表示第一列&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;&lt;article&gt;
     &lt;header&gt;
-        &lt;h1&gt;
-            Advanced Table
-            &lt;a href=&quot;#&quot; class=&quot;export-btn&quot; title=&quot;导出文章&quot; onclick=&quot;exportArticleFromPage(); return false;&quot;&gt;
-                &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
-                    &lt;path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;/&gt;
-                    &lt;polyline points=&quot;7 10 12 15 17 10&quot;/&gt;
-                    &lt;line x1=&quot;12&quot; y1=&quot;15&quot; x2=&quot;12&quot; y2=&quot;3&quot;/&gt;
-                &lt;/svg&gt;
-            &lt;/a&gt;
-        &lt;/h1&gt;
+        &lt;h1&gt;Advanced Table&lt;/h1&gt;
         &lt;time datetime=&quot;2025-09-17T13:31:12.000Z&quot;&gt;2025年9月17日&lt;/time&gt;
         &lt;div class=&quot;tags&quot;&gt;
             
@@ -1442,16 +1383,7 @@
 &lt;/tbody&gt;&lt;/table&gt;
 &lt;!-- TBLFM: @&gt;&lt;article&gt;
     &lt;header&gt;
-        &lt;h1&gt;
-            Advanced Table
-            &lt;a href=&quot;#&quot; class=&quot;export-btn&quot; title=&quot;导出文章&quot; onclick=&quot;exportArticleFromPage(); return false;&quot;&gt;
-                &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;
-                    &lt;path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;/&gt;
-                    &lt;polyline points=&quot;7 10 12 15 17 10&quot;/&gt;
-                    &lt;line x1=&quot;12&quot; y1=&quot;15&quot; x2=&quot;12&quot; y2=&quot;3&quot;/&gt;
-                &lt;/svg&gt;
-            &lt;/a&gt;
-        &lt;/h1&gt;
+        &lt;h1&gt;Advanced Table&lt;/h1&gt;
         &lt;time datetime=&quot;2025-09-17T13:31:12.000Z&quot;&gt;2025年9月17日&lt;/time&gt;
         &lt;div class=&quot;tags&quot;&gt;
             

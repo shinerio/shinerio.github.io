@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"sort","title":"Sort","content":"-f  ：忽略大小写的差异，例如 A 与 a 视为编码相同；\r\n-b  ：忽略最前面的空格符部分；\r\n-M  ：以月份的名字来排序，例如 JAN, DEC 等等的排序方法；\r\n-n  ：使用『纯数字』进行排序(默认是以文字型态来排序的)；\r\n-r  ：反向排序；\r\n-u  ：就是 uniq ，去重，相同的数据中，仅出现一行代表；\r\n-t  ：分隔符，默认是用 [tab] 键来分隔；\r\n-k  ：以那个区间 (field) 来进行排序的意思\r\n# 1. 示例\r\n排序\r\n```shell\r\n╭─zhangrui@zhangruideMacBook-Pro ~/test\r\n╰─$ ll |sort -r\r\ntotal 0\r\n-rw-r--r--  1 zhangrui  staff     0B Mar 20 23:41 ba\r\n-rw-r--r--  1 zhangrui  staff     0B Mar 20 23:41 a1\r\n-rw-r--r--  1 zhangrui  staff     0B Mar 20 23:41 1a\r\n-rw-r--r--  1 zhangrui  staff     0B Mar 20 23:41 1\r\n-rw-r--r--  1 zhangrui  staff     0B Mar 20 23:40 b\r\n-rw-r--r--  1 zhangrui  staff     0B Mar 20 23:40 ab\r\n-rw-r--r--  1 zhangrui  staff     0B Mar 20 23:40 a\r\n╭─zhangrui@zhangruideMacBook-Pro ~/test\r\n╰─$ ll |sort\r\n-rw-r--r--  1 zhangrui  staff     0B Mar 20 23:40 a\r\n-rw-r--r--  1 zhangrui  staff     0B Mar 20 23:40 ab\r\n-rw-r--r--  1 zhangrui  staff     0B Mar 20 23:40 b\r\n-rw-r--r--  1 zhangrui  staff     0B Mar 20 23:41 1\r\n-rw-r--r--  1 zhangrui  staff     0B Mar 20 23:41 1a\r\n-rw-r--r--  1 zhangrui  staff     0B Mar 20 23:41 a1\r\n-rw-r--r--  1 zhangrui  staff     0B Mar 20 23:41 ba\r\ntotal 0\r\n```\r\n去重排序\r\n```shell\r\n╭─zhangrui@zhangruideMacBook-Pro ~/test\r\n╰─$ cat test_file\r\na\r\nb\r\nc\r\nb\r\na\r\n╭─zhangrui@zhangruideMacBook-Pro ~/test\r\n╰─$ cat test_file|sort -r\r\nc\r\nb\r\nb\r\na\r\na\r\n╭─zhangrui@zhangruideMacBook-Pro ~/test\r\n╰─$ cat test_file|sort -ru\r\nc\r\nb\r\na\r\n```"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            Sort
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>Sort</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             

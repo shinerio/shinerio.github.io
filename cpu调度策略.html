@@ -19,11 +19,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/articles-filters.js" defer></script>
-<script type="application/json" id="article-export-data" style="display:none">
-{"id":"CPU调度策略","title":"CPU调度策略","content":"# 1. MLFQ（Multi-Level Feedback Queue）\r\n- 系统中存在多个就绪队列，每个队列有不同的优先级，高优先级队列中的进程会优先获得 CPU 执行。\r\n- 进程在队列之间可以移动，根据其行为（如 CPU 占用时间、I/O 操作等）动态调整优先级。\r\n## 1.1. 规则\r\n### 1.1.1. 优先规则\r\n1. 如果进程A的优先级高于进程B，则A先运行\r\n2. 如果进程A和进程B的优先级相同，则采用round-robin\r\n### 1.1.2. 初始队队列\r\n1. 新创建的进程进入最高优先级队列\r\n### 1.1.3. 降级规则\r\n1. 每个进程在某个优先级队列中的配额是固定的，如果一个进程用完了其在当前队列中的时间配额，则降低其优先级，移入下一个低优先级队列。\r\n降级规则是为了防止长任务一直占用 CPU，让短任务和交互式任务也有机会运行。\r\n### 1.1.4. 升级规则\r\n1. 如果一个进程在等待 I/O 完成后回到就绪队列，可以将其优先级提高。\r\n2. 如果一个进程长时间没有获得 CPU 时间，可以将其优先级提高。\r\n升级规则的目的是为了提高交互式任务的响应速度，并避免长任务被“饿死”。"}
-</script>
-
 <!-- Text Selection Comment (划词评论) -->
 <link rel="stylesheet" href="assets/css/text-selection-comment.css">
 <script>
@@ -65,16 +60,7 @@
             <div class="container">
                 <article>
     <header>
-        <h1>
-            CPU调度策略
-            <a href="#" class="export-btn" title="导出文章" onclick="exportArticleFromPage(); return false;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </a>
-        </h1>
+        <h1>CPU调度策略</h1>
         <time datetime="2025-09-17T13:31:12.000Z">2025年9月17日</time>
         <div class="tags">
             
