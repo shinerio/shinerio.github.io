@@ -7,6 +7,7 @@ import { ArticleMetadata, ParsedArticle, ParseError } from '../types';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import matter from 'gray-matter';
+import { execSync } from 'child_process';
 
 export class MetadataParser {
   /**
@@ -42,16 +43,9 @@ export class MetadataParser {
    */
   extractFrontmatter(data: any, filePath: string): ArticleMetadata {
     const fileName = path.basename(filePath, path.extname(filePath));
-    
-    // 从文件统计信息获取默认日期
-    let defaultDate: Date;
-    try {
-      const stats = fs.statSync(filePath);
-      // 使用文件创建时间，如果创建时间不可用则使用修改时间
-      defaultDate = stats.birthtime && stats.birthtime.getTime() > 0 ? stats.birthtime : stats.mtime;
-    } catch {
-      defaultDate = new Date();
-    }
+
+    // 获取默认日期：优先使用 git 第一次 commit 时间，其次使用文件系统时间
+    const defaultDate = this.getFileDate(filePath);
 
     return {
       title: this.extractTitle(data, fileName),
@@ -61,6 +55,82 @@ export class MetadataParser {
       draft: this.extractDraft(data),
       slug: this.extractSlug(data, fileName)
     };
+  }
+
+  /**
+   * 获取文件日期：优先 git 第一次 commit 时间，其次文件系统时间
+   * Get file date: prefer git first commit time, fallback to file system time
+   */
+  private getFileDate(filePath: string): Date {
+    // 1. 尝试从 git 获取第一次 commit 时间
+    const gitDate = this.getGitFirstCommitDate(filePath);
+    if (gitDate) {
+      return gitDate;
+    }
+
+    // 2. 回退到文件系统时间
+    try {
+      const stats = fs.statSync(filePath);
+      // 使用文件创建时间，如果创建时间不可用则使用修改时间
+      return stats.birthtime && stats.birthtime.getTime() > 0 ? stats.birthtime : stats.mtime;
+    } catch {
+      return new Date();
+    }
+  }
+
+  /**
+   * 获取文件的 git 第一次 commit 时间
+   * Get git first commit date for the file
+   */
+  private getGitFirstCommitDate(filePath: string): Date | null {
+    try {
+      // 首先找到 git 仓库的根目录
+      const absolutePath = path.resolve(filePath);
+      const fileDir = path.dirname(absolutePath);
+
+      // 获取 git 仓库根目录
+      const gitRoot = execSync('git rev-parse --show-toplevel', {
+        encoding: 'utf-8',
+        cwd: fileDir,
+        stdio: ['pipe', 'pipe', 'ignore'],
+        timeout: 2000
+      }).trim();
+
+      if (!gitRoot) {
+        return null;
+      }
+
+      // 计算文件相对于仓库根目录的相对路径
+      const relativePath = path.relative(gitRoot, absolutePath);
+
+      // 使用 git log 获取文件的第一次 commit 时间
+      // --follow: 跟踪文件重命名
+      // --format=%aI: 输出 ISO 8601 格式的作者时间
+      // --reverse: 反向排序（从最早到最新）
+      // -- <file>: 指定文件路径（相对路径）
+      const command = `git log --follow --format=%aI --reverse -- "${relativePath}"`;
+      const output = execSync(command, {
+        encoding: 'utf-8',
+        cwd: gitRoot, // 使用仓库根目录作为工作目录
+        stdio: ['pipe', 'pipe', 'ignore'], // 忽略 stderr 避免非 git 仓库报错
+        timeout: 5000 // 5秒超时
+      }).trim();
+
+      if (output) {
+        // 取第一行（最早的 commit）
+        const firstCommitDate = output.split('\n')[0];
+        const date = new Date(firstCommitDate);
+
+        if (!isNaN(date.getTime())) {
+          return date;
+        }
+      }
+    } catch (error) {
+      // 如果不是 git 仓库或其他错误，静默失败，返回 null
+      // 这样会回退到文件系统时间
+    }
+
+    return null;
   }
 
   /**
@@ -123,16 +193,19 @@ export class MetadataParser {
 
   /**
    * 提取日期
-   * Extract date from frontmatter or file stats
+   * Extract date from frontmatter, with fallback to defaultDate
+   * Priority: frontmatter.date > frontmatter.created > defaultDate (git commit time or file system time)
    */
   private extractDate(data: any, defaultDate: Date): Date {
+    // 优先级1: frontmatter 中的 date 字段
     if (data.date) {
       const date = new Date(data.date);
       if (!isNaN(date.getTime())) {
         return date;
       }
     }
-    
+
+    // 优先级2: frontmatter 中的 created 字段（兼容性）
     if (data.created) {
       const date = new Date(data.created);
       if (!isNaN(date.getTime())) {
@@ -140,6 +213,7 @@ export class MetadataParser {
       }
     }
 
+    // 优先级3: defaultDate（已包含 git commit 时间 > 文件系统时间的逻辑）
     return defaultDate;
   }
 

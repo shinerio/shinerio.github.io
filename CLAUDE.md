@@ -79,6 +79,7 @@ The search system uses a two-engine weighted approach via `SearchCoordinator`:
 
 - Automatic scanning of Obsidian vault markdown files
 - YAML frontmatter metadata parsing (title, date, tags, description, draft, slug)
+- Smart article date handling: frontmatter date > git first commit time > file system time (see `docs/DATE_HANDLING.md`)
 - Obsidian internal link (`[[text]]`) and hashtag processing
 - Mixed Chinese/English word counting
 - Responsive design for desktop, tablet, and mobile
