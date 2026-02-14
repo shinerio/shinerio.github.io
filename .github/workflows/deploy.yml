@@ -61,7 +61,7 @@ jobs:
       - name: Generate blog
         run: |
           cd code/shinerio.github.io
-          npx obsidian-blog generate -c blog.config.json
+          node dist/cli.js generate -c blog.config.json
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
