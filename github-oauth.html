@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    <title>Github Oauth - Shinerio's Blog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/style-addition.css">
+    <meta property="og:title" content="Github Oauth">
+<meta property="og:description" content="▐▛███▜▌ Claude Code v2.1.34 ▝▜█████▛▘ Opus 4.6 · Claude API ▘▘ ▝▝ C:\workspace\code\shinerio.github.io > 1. 文章详情页，点击划词后，点击使用github登录，页面直接404，需要修复 2. 底...">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-02-14T05:38:37.051Z">
+<meta property="article:author" content="shinerio">
+<link rel="stylesheet" id="hljs-light" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+<link rel="stylesheet" id="hljs-dark" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" disabled>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+<script src="assets/js/code-enhance.js" defer></script>
+<script src="assets/js/image-enhance.js" defer></script>
+<!-- Text Selection Comment (划词评论) -->
+<link rel="stylesheet" href="assets/css/text-selection-comment.css">
+<script>
+  window.textSelectionCommentConfig = {
+    repo: 'shinerio/shinerio.github.io',
+    label: 'select-annotation',
+    articleSlug: 'github-oauth',
+    clientId: 'Ov23li65mtWdX973c2zm',
+    oauthProxyUrl: 'https://github-oauth-proxy.jstxshinerio.workers.dev'
+  };
+</script>
+<script src="assets/js/text-selection-comment.js" defer></script>
+</head>
+<body class="article-page" id="theme-body">
+    <div class="page-wrapper">
+        <div class="sidebar-overlay"></div>
+        <header class="page-header">
+            <div class="container">
+                <nav class="page-nav">
+                    <div class="nav-links">
+                        <button class="sidebar-toggle" aria-label="Toggle sidebar">
+                            <span class="sidebar-toggle-icon"></span>
+                        </button>
+                        <a href="index.html" class="nav-link ">Home</a>
+                        <a href="articles.html" class="nav-link ">Articles</a>
+                        <a href="search.html" class="nav-link ">Search</a>
+                        <a href="todo.html" class="nav-link ">TODO</a>
+                    </div>
+                    <div class="nav-actions">
+                        <button id="theme-toggle" aria-label="Toggle dark mode" class="theme-toggle-btn">
+                            <span class="sun-icon">☀️</span>
+                            <span class="moon-icon">🌙</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <main class="page-main">
+            <div class="container">
+                <article>
+    <header>
+        <h1>Github Oauth</h1>
+        <time datetime="2026-02-14T05:38:37.051Z">2026年2月14日</time>
+        <div class="tags">
+            
+        </div>
+    </header>
+    <section class="content">
+        <p>▐▛███▜▌   Claude Code v2.1.34<br>▝▜█████▛▘  Opus 4.6 · Claude API<br>  ▘▘ ▝▝    C:\workspace\code\shinerio.github.io</p>
+<blockquote>
+<ol>
+<li>文章详情页，点击划词后，点击使用github登录，页面直接404，需要修复  2.<br>  底部评论功能和TODO页面都已经实现了认证功能，能否服用</li>
+</ol>
+</blockquote>
+<p>● Explore(Explore text selection comment auth)<br>  ⎿  Done (21 tool uses · 84.3k tokens · 3m 52s)</p>
+<p>● Let me read the key files to understand the exact implementation details.</p>
+<p>● Read 2 files (ctrl+o to expand)</p>
+<p>● Now let me look at the TODO page&#39;s OAuth implementation and the config file.</p>
+<p>● Read 3 files (ctrl+o to expand)</p>
+<p>● Now I have a clear picture. Here&#39;s the problem and solution:</p>
+<p>  Root cause: The text selection comment feature uses OAuth Authorization Code<br>  Flow that redirects to /oauth-callback.html after GitHub auth, but this page<br>  doesn&#39;t exist in the codebase -- hence the 404.</p>
+<p>  Solution: Switch to Device Flow (same approach as TODO page), reusing the same<br>   Cloudflare Worker proxy (oauthProxyUrl). This eliminates the need for a<br>  callback page entirely.</p>
+<p>  Let me implement the fix.</p>
+<p>● Now let me make all the config-level changes in parallel.</p>
+<p>● Update(src\types\index.ts)<br>  ⎿  Added 1 line<br>      14      enabled: boolean;          // 是否启用划词评论<br>      15      label?: string;            // 用于划词评论的 GitHub label，<br>          默认 &#39;text-annotation&#39;<br>      16      oauthClientId?: string;    // GitHub OAuth App Client ID<br>      17 +    oauthProxyUrl?: string;    // Cloudflare Worker URL for OAu<br>         +th proxy<br>      18    };<br>      19  }<br>      20  </p>
+<p>● Update(blog.config.json)<br>  ⎿  Added 2 lines, removed 1 line<br>      20      &quot;annotation&quot;: {<br>      21        &quot;enabled&quot;: true,<br>      22        &quot;label&quot;: &quot;select-annotation&quot;,<br>      23 -      &quot;oauthClientId&quot;: &quot;Ov23li65mtWdX973c2zm&quot;<br>      23 +      &quot;oauthClientId&quot;: &quot;Ov23li65mtWdX973c2zm&quot;,<br>      24 +      &quot;oauthProxyUrl&quot;: &quot;<a href="https://github-oauth-proxy.jstxshinerio">https://github-oauth-proxy.jstxshinerio</a><br>         +.workers.dev&quot;<br>      25      }<br>      26    },<br>      27    &quot;todo&quot;: {</p>
+<p>● Update(src\core\SiteGenerator.ts)<br>  ⎿  Added 3 lines, removed 1 line<br>      761      const repo = config.comments.repo;<br>      762      const annotationLabel = config.comments.annotation.label |<br>           | &#39;text-annotation&#39;;<br>      763      const oauthClientId = config.comments.annotation.oauthClie<br>           ntId || &#39;&#39;;<br>      764 +    const oauthProxyUrl = config.comments.annotation.oauthProx<br>          +yUrl || &#39;&#39;;<br>      765<br>      766      return <code>       767  &lt;!-- Text Selection Comment (划词评论) --&gt;      ...       771      repo: &#39;${repo}&#39;,       772      label: &#39;${annotationLabel}&#39;,       773      articleSlug: &#39;${articleSlug}&#39;,       773 -    clientId: &#39;${oauthClientId}&#39;                                     774 +    clientId: &#39;${oauthClientId}&#39;,                                    775 +    oauthProxyUrl: &#39;${oauthProxyUrl}&#39;                                776    };       777  &lt;/script&gt;       778  &lt;script src=&quot;assets/js/text-selection-comment.js&quot; defer&gt;&lt;/scri            pt&gt;</code>;</p>
+<p>● Now let me rewrite the auth flow in text-selection-comment.js to use Device<br>  Flow.</p>
+<p>● Update(templates\assets\js\text-selection-comment.js)<br>  ⎿  Added 182 lines, removed 11 lines<br>      334    }<br>      335<br>      336    /**<br>      337 -   * Handle GitHub auth click<br>      337 +   * Handle GitHub auth click - starts Device Flow<br>      338     <em>/<br>      339    function handleAuthClick() {<br>      340 -    // Generate OAuth state<br>      341 -    const stateParam = btoa(Math.random().toString(36)).substr<br>          -ing(0, 16);<br>      342 -    sessionStorage.setItem(&#39;tsc_oauth_state&#39;, stateParam);<br>      340 +    hidePopover();<br>      341 +    startDeviceFlow();<br>      342 +  }<br>      343<br>      344 -    // Store current URL to redirect back<br>      345 -    sessionStorage.setItem(&#39;tsc_redirect_url&#39;, window.location<br>          -.href);<br>      344 +  /</em>*<br>      345 +   * Create the device flow modal<br>      346 +   <em>/<br>      347 +  function createDeviceModal() {<br>      348 +    if (state.deviceModal) return;<br>      349<br>      347 -    // Build OAuth URL<br>      350 +    state.deviceModal = document.createElement(&#39;div&#39;);<br>      351 +    state.deviceModal.className = &#39;tsc-device-modal&#39;;<br>      352 +    state.deviceModal.innerHTML = <code>                                 353 +      &lt;div class=&quot;tsc-device-modal-content&quot;&gt;                         354 +        &lt;div class=&quot;tsc-popover-header&quot;&gt;                             355 +          &lt;span class=&quot;tsc-popover-title&quot;&gt;GitHub 授权&lt;/span&gt;         356 +          &lt;button class=&quot;tsc-popover-close tsc-device-cancel&quot;            +title=&quot;关闭&quot;&gt;${ICONS.close}&lt;/button&gt;                                 357 +        &lt;/div&gt;                                                       358 +        &lt;div class=&quot;tsc-device-body&quot;&gt;                                359 +          &lt;p class=&quot;tsc-device-instruction&quot;&gt;请访问以下链接并输           +入授权码：&lt;/p&gt;                                                       360 +          &lt;a class=&quot;tsc-device-link&quot; href=&quot;https://github.com/           +login/device&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;github           +.com/login/device&lt;/a&gt;                                                361 +          &lt;div class=&quot;tsc-device-code&quot;&gt;&lt;/div&gt;                        362 +          &lt;button class=&quot;tsc-device-copy-btn&quot;&gt;复制授权码&lt;/butt           +on&gt;                                                                  363 +          &lt;p class=&quot;tsc-device-status&quot;&gt;等待授权中...&lt;/p&gt;             364 +        &lt;/div&gt;                                                       365 +      &lt;/div&gt;                                                         366 +   </code>;<br>      367 +    document.body.appendChild(state.deviceModal);<br>      368 +<br>      369 +    // Bind close/cancel<br>      370 +    state.deviceModal.querySelector(&#39;.tsc-device-cancel&#39;).addE<br>          +ventListener(&#39;click&#39;, cancelDeviceFlow);<br>      371 +    state.deviceModal.addEventListener(&#39;click&#39;, (e) =&gt; {<br>      372 +      if (e.target === state.deviceModal) cancelDeviceFlow();<br>      373 +    });<br>      374 +<br>      375 +    // Bind copy button<br>      376 +    state.deviceModal.querySelector(&#39;.tsc-device-copy-btn&#39;).ad<br>          +dEventListener(&#39;click&#39;, () =&gt; {<br>      377 +      const code = state.deviceModal.querySelector(&#39;.tsc-devic<br>          +e-code&#39;).textContent;<br>      378 +      navigator.clipboard.writeText(code).then(() =&gt; {<br>      379 +        const btn = state.deviceModal.querySelector(&#39;.tsc-devi<br>          +ce-copy-btn&#39;);<br>      380 +        btn.textContent = &#39;已复制!&#39;;<br>      381 +        setTimeout(() =&gt; { btn.textContent = &#39;复制授权码&#39;; },<br>          +2000);<br>      382 +      }).catch(() =&gt; {});<br>      383 +    });<br>      384 +  }<br>      385 +<br>      386 +  /</em>*<br>      387 +   * Start OAuth Device Flow<br>      388 +   <em>/<br>      389 +  async function startDeviceFlow() {<br>      390      const clientId = CONFIG.clientId || &#39;&#39;;<br>      349 -    const redirectUri = encodeURIComponent(window.location.ori<br>          -gin + &#39;/oauth-callback.html&#39;);<br>      350 -    const scope = encodeURIComponent(&#39;public_repo&#39;);<br>      391 +    const proxyUrl = CONFIG.oauthProxyUrl || &#39;&#39;;<br>      392<br>      352 -    const authUrl = <code>https://github.com/login/oauth/authorize?           -client_id=${clientId}&amp;redirect_uri=${redirectUri}&amp;scope=${scop           -e}&amp;state=${stateParam}</code>;<br>      393 +    if (!clientId || !proxyUrl) {<br>      394 +      console.error(&#39;[TSC] OAuth not configured: missing clien<br>          +tId or oauthProxyUrl&#39;);<br>      395 +      alert(&#39;OAuth 未配置，无法登录&#39;);<br>      396 +      return;<br>      397 +    }<br>      398<br>      354 -    window.location.href = authUrl;<br>      399 +    createDeviceModal();<br>      400 +<br>      401 +    try {<br>      402 +      const resp = await fetch(proxyUrl + &#39;/device/code&#39;, {<br>      403 +        method: &#39;POST&#39;,<br>      404 +        headers: { &#39;Content-Type&#39;: &#39;application/json&#39; },<br>      405 +        body: JSON.stringify({<br>      406 +          client_id: clientId,<br>      407 +          scope: &#39;public_repo&#39;<br>      408 +        })<br>      409 +      });<br>      410 +<br>      411 +      if (!resp.ok) {<br>      412 +        const errorText = await resp.text();<br>      413 +        console.error(&#39;[TSC] Device flow error:&#39;, errorText);<br>      414 +        alert(&#39;启动授权失败，请重试&#39;);<br>      415 +        return;<br>      416 +      }<br>      417 +<br>      418 +      const data = await resp.json();<br>      419 +<br>      420 +      if (data.error) {<br>      421 +        console.error(&#39;[TSC] GitHub error:&#39;, data);<br>      422 +        alert(&#39;授权错误: &#39; + (data.error_description || data.e<br>          +rror));<br>      423 +        return;<br>      424 +      }<br>      425 +<br>      426 +      // Show modal with device code<br>      427 +      state.deviceModal.querySelector(&#39;.tsc-device-code&#39;).text<br>          +Content = data.user_code;<br>      428 +      const linkEl = state.deviceModal.querySelector(&#39;.tsc-dev<br>          +ice-link&#39;);<br>      429 +      linkEl.href = data.verification_uri || &#39;<a href="https://github.c">https://github.c</a><br>          +om/login/device&#39;;<br>      430 +      state.deviceModal.querySelector(&#39;.tsc-device-status&#39;).te<br>          +xtContent = &#39;等待授权中...&#39;;<br>      431 +      state.deviceModal.classList.add(&#39;visible&#39;);<br>      432 +<br>      433 +      // Start polling for token<br>      434 +      pollForToken(data.device_code, data.interval || 5);<br>      435 +    } catch (e) {<br>      436 +      console.error(&#39;[TSC] Device flow exception:&#39;, e);<br>      437 +      alert(&#39;授权请求失败: &#39; + e.message);<br>      438 +    }<br>      439    }<br>      440<br>      441    /</em>*<br>      442 +   * Poll for access token during Device Flow<br>      443 +   <em>/<br>      444 +  function pollForToken(deviceCode, interval) {<br>      445 +    if (state.devicePollTimer) clearInterval(state.devicePollT<br>          +imer);<br>      446 +<br>      447 +    const clientId = CONFIG.clientId || &#39;&#39;;<br>      448 +    const proxyUrl = CONFIG.oauthProxyUrl || &#39;&#39;;<br>      449 +<br>      450 +    state.devicePollTimer = setInterval(async () =&gt; {<br>      451 +      try {<br>      452 +        const resp = await fetch(proxyUrl + &#39;/access_token&#39;, {<br>      453 +          method: &#39;POST&#39;,<br>      454 +          headers: { &#39;Content-Type&#39;: &#39;application/json&#39; },<br>      455 +          body: JSON.stringify({<br>      456 +            client_id: clientId,<br>      457 +            device_code: deviceCode,<br>      458 +            grant_type: &#39;urn:ietf:params:oauth:grant-type:devi<br>          +ce_code&#39;<br>      459 +          })<br>      460 +        });<br>      461 +<br>      462 +        if (!resp.ok) return;<br>      463 +<br>      464 +        const data = await resp.json();<br>      465 +<br>      466 +        if (data.access_token) {<br>      467 +          clearInterval(state.devicePollTimer);<br>      468 +          state.devicePollTimer = null;<br>      469 +<br>      470 +          // Fetch user info and save auth state<br>      471 +          try {<br>      472 +            const userResp = await fetch(&#39;<a href="https://api.github.c">https://api.github.c</a><br>          +om/user&#39;, {<br>      473 +              headers: { &#39;Authorization&#39;: &#39;token &#39; + data.acce<br>          +ss_token }<br>      474 +            });<br>      475 +            if (userResp.ok) {<br>      476 +              const user = await userResp.json();<br>      477 +              saveAuthState(data.access_token, {<br>      478 +                login: user.login,<br>      479 +                avatarUrl: user.avatar_url,<br>      480 +                id: user.id<br>      481 +              });<br>      482 +            } else {<br>      483 +              saveAuthState(data.access_token, null);<br>      484 +            }<br>      485 +          } catch (e) {<br>      486 +            saveAuthState(data.access_token, null);<br>      487 +          }<br>      488 +<br>      489 +          // Hide modal<br>      490 +          state.deviceModal.classList.remove(&#39;visible&#39;);<br>      491 +<br>      492 +          // If we had a pending selection, show the comment p<br>          +opover<br>      493 +          if (state.currentSelection) {<br>      494 +            showCommentPopover();<br>      495 +          }<br>      496 +        } else if (data.error === &#39;authorization_pending&#39;) {<br>      497 +          // Keep waiting<br>      498 +        } else if (data.error === &#39;slow_down&#39;) {<br>      499 +          state.deviceModal.querySelector(&#39;.tsc-device-status&#39;<br>          +).textContent = &#39;请稍候...&#39;;<br>      500 +        } else if (data.error === &#39;expired_token&#39;) {<br>      501 +          clearInterval(state.devicePollTimer);<br>      502 +          state.devicePollTimer = null;<br>      503 +          state.deviceModal.querySelector(&#39;.tsc-device-status&#39;<br>          +).textContent = &#39;授权码已过期，请重新操作&#39;;<br>      504 +        } else if (data.error === &#39;access_denied&#39;) {<br>      505 +          clearInterval(state.devicePollTimer);<br>      506 +          state.devicePollTimer = null;<br>      507 +          state.deviceModal.querySelector(&#39;.tsc-device-status&#39;<br>          +).textContent = &#39;授权被拒绝&#39;;<br>      508 +        }<br>      509 +      } catch (e) {<br>      510 +        console.error(&#39;[TSC] Token polling error:&#39;, e);<br>      511 +      }<br>      512 +    }, (interval + 1) * 1000);<br>      513 +  }<br>      514 +<br>      515 +  /</em>*<br>      516 +   * Cancel the device flow<br>      517 +   <em>/<br>      518 +  function cancelDeviceFlow() {<br>      519 +    if (state.devicePollTimer) {<br>      520 +      clearInterval(state.devicePollTimer);<br>      521 +      state.devicePollTimer = null;<br>      522 +    }<br>      523 +    if (state.deviceModal) {<br>      524 +      state.deviceModal.classList.remove(&#39;visible&#39;);<br>      525 +    }<br>      526 +  }<br>      527 +<br>      528 +  /</em>*<br>      529     * Show comment input popover<br>      530     */<br>      531    function showCommentPopover() {</p>
+<p>● Now I need to add deviceModal and devicePollTimer to the state, and add<br>  oauthProxyUrl to CONFIG reading.</p>
+<p>● Update(templates\assets\js\text-selection-comment.js)<br>  ⎿  Added 2 lines<br>      41      popover: null,<br>      42      tooltip: null,<br>      43      articleSlug: null,<br>      44 +    deviceModal: null,<br>      45 +    devicePollTimer: null,<br>      46    };<br>      47<br>      48    // Icons (SVG)</p>
+<p>● Now add oauthProxyUrl to the CONFIG initialization from the page config.</p>
+<p>● Update(templates\assets\js\text-selection-comment.js)<br>  ⎿  Added 2 lines<br>      62      const pageConfig = window.textSelectionCommentConfig || {};<br>      63      CONFIG.repo = pageConfig.repo || CONFIG.repo;<br>      64      CONFIG.label = pageConfig.label || CONFIG.label;<br>      65 +    CONFIG.clientId = pageConfig.clientId || &#39;&#39;;<br>      66 +    CONFIG.oauthProxyUrl = pageConfig.oauthProxyUrl || &#39;&#39;;<br>      67      state.articleSlug = pageConfig.articleSlug || getArticleSlu<br>          g();<br>      68<br>      69      if (!CONFIG.repo) {</p>
+<p>● Now let me read the CSS file and add the device modal styles.</p>
+<p>● Read 1 file (ctrl+o to expand)</p>
+<p>● Update(templates\assets\css\text-selection-comment.css)<br>  ⎿  Added 91 lines<br>      351    height: 18px;<br>      352  }<br>      353<br>      354 +/* Device Flow Modal <em>/<br>      355 +.tsc-device-modal {<br>      356 +  display: none;<br>      357 +  position: fixed;<br>      358 +  top: 0;<br>      359 +  left: 0;<br>      360 +  right: 0;<br>      361 +  bottom: 0;<br>      362 +  z-index: 1003;<br>      363 +  align-items: center;<br>      364 +  justify-content: center;<br>      365 +  background: rgba(0, 0, 0, 0.5);<br>      366 +  backdrop-filter: blur(2px);<br>      367 +}<br>      368 +<br>      369 +.tsc-device-modal.visible {<br>      370 +  display: flex;<br>      371 +}<br>      372 +<br>      373 +.tsc-device-modal-content {<br>      374 +  width: 360px;<br>      375 +  max-width: calc(100vw - 40px);<br>      376 +  padding: 20px;<br>      377 +  background: var(--tsc-popover-bg);<br>      378 +  border: 1px solid var(--tsc-popover-border);<br>      379 +  border-radius: 12px;<br>      380 +  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);<br>      381 +}<br>      382 +<br>      383 +.tsc-device-body {<br>      384 +  text-align: center;<br>      385 +  padding: 8px 0;<br>      386 +}<br>      387 +<br>      388 +.tsc-device-instruction {<br>      389 +  font-size: 14px;<br>      390 +  color: var(--color-text-secondary, <span class="tag">#586069</span>);<br>      391 +  margin-bottom: 12px;<br>      392 +}<br>      393 +<br>      394 +.tsc-device-link {<br>      395 +  display: inline-block;<br>      396 +  font-size: 14px;<br>      397 +  color: var(--color-primary, <span class="tag">#0366d6</span>);<br>      398 +  text-decoration: none;<br>      399 +  margin-bottom: 16px;<br>      400 +}<br>      401 +<br>      402 +.tsc-device-link:hover {<br>      403 +  text-decoration: underline;<br>      404 +}<br>      405 +<br>      406 +.tsc-device-code {<br>      407 +  font-family: &#39;SFMono-Regular&#39;, Consolas, &#39;Liberation Mono&#39;,<br>          +Menlo, monospace;<br>      408 +  font-size: 28px;<br>      409 +  font-weight: 700;<br>      410 +  letter-spacing: 4px;<br>      411 +  color: var(--color-text-primary, <span class="tag">#24292e</span>);<br>      412 +  background: var(--color-bg-secondary, <span class="tag">#f6f8fa</span>);<br>      413 +  border: 1px solid var(--color-border, <span class="tag">#e1e4e8</span>);<br>      414 +  border-radius: 8px;<br>      415 +  padding: 12px 20px;<br>      416 +  margin-bottom: 12px;<br>      417 +  user-select: all;<br>      418 +}<br>      419 +<br>      420 +.tsc-device-copy-btn {<br>      421 +  display: inline-flex;<br>      422 +  align-items: center;<br>      423 +  justify-content: center;<br>      424 +  padding: 6px 14px;<br>      425 +  font-size: 13px;<br>      426 +  font-weight: 500;<br>      427 +  color: var(--color-text-secondary, <span class="tag">#586069</span>);<br>      428 +  background: transparent;<br>      429 +  border: 1px solid var(--color-border, <span class="tag">#e1e4e8</span>);<br>      430 +  border-radius: 6px;<br>      431 +  cursor: pointer;<br>      432 +  transition: background-color 0.2s ease;<br>      433 +  margin-bottom: 16px;<br>      434 +}<br>      435 +<br>      436 +.tsc-device-copy-btn:hover {<br>      437 +  background-color: var(--color-bg-secondary, <span class="tag">#f6f8fa</span>);<br>      438 +}<br>      439 +<br>      440 +.tsc-device-status {<br>      441 +  font-size: 13px;<br>      442 +  color: var(--tsc-text-muted);<br>      443 +}<br>      444 +<br>      445  /</em> Mobile adaptations */<br>      446  @media (max-width: 768px) {<br>      447    .tsc-toolbar {</p>
+<p>● Now add the device modal to print styles so it doesn&#39;t show in print.</p>
+<p>● Update(templates\assets\css\text-selection-comment.css)<br>  ⎿  Added 1 line<br>      469    .tsc-toolbar,<br>      470    .tsc-popover,<br>      471    .tsc-tooltip,<br>      472 +  .tsc-device-modal,<br>      473    tsc-mark {<br>      474      display: none !important;<br>      475    }</p>
+<p>● Let me verify the changes build correctly.</p>
+<p>● Bash(npm run build 2&gt;&amp;1)<br>  ⎿  &gt; <a href="mailto:obsidian-blog-generator@1.0.0">obsidian-blog-generator@1.0.0</a> build<br>     &gt; tsc<br>  ⎿  (timeout 30s)</p>
+<p>● Build succeeds. Let me verify the final state of the changed files.</p>
+<p>● Read 1 file (ctrl+o to expand)</p>
+<p>● The implementation looks correct. Here&#39;s a summary of all the changes made:</p>
+<hr>
+<p>  问题分析</p>
+<p>  404 原因：划词评论的 handleAuthClick() 使用 Authorization Code<br>  Flow，将用户重定向到 GitHub 授权后，回调到<br>  /oauth-callback.html，但该页面不存在，导致 404。</p>
+<p>  修复方案</p>
+<p>  将划词评论的认证方式从 Authorization Code Flow 改为 Device Flow，复用 TODO<br>  页面已经验证通过的 Cloudflare Worker 代理（oauthProxyUrl），完全消除对<br>  oauth-callback.html 的依赖。</p>
+<p>  修改的文件</p>
+<ol>
+<li>src/types/index.ts</li>
+</ol>
+<ul>
+<li>CommentsConfig.annotation 新增 oauthProxyUrl?: string 字段</li>
+</ul>
+<ol start="2">
+<li>blog.config.json</li>
+</ol>
+<ul>
+<li>comments.annotation 新增 oauthProxyUrl，值与 TODO 配置共享同一个 Cloudflare<br>  Worker 地址</li>
+</ul>
+<ol start="3">
+<li>src/core/SiteGenerator.ts</li>
+</ol>
+<ul>
+<li>generateTextSelectionCommentHead() 将 oauthProxyUrl 注入到<br>  window.textSelectionCommentConfig</li>
+</ul>
+<ol start="4">
+<li>templates/assets/js/text-selection-comment.js</li>
+</ol>
+<ul>
+<li>从 window.textSelectionCommentConfig 读取 clientId 和 oauthProxyUrl</li>
+<li>handleAuthClick() 改为调用 startDeviceFlow() 而非重定向到 GitHub OAuth</li>
+<li>新增 createDeviceModal() - 创建授权码展示弹窗</li>
+<li>新增 startDeviceFlow() - 通过 Cloudflare Worker 获取 device code</li>
+<li>新增 pollForToken() - 轮询等待用户完成授权，获取 access token</li>
+<li>新增 cancelDeviceFlow() - 取消授权流程</li>
+<li>授权成功后自动获取用户信息并保存，如果有待提交的选择文本则自动弹出评论框</li>
+</ul>
+<ol start="5">
+<li>templates/assets/css/text-selection-comment.css</li>
+</ol>
+<ul>
+<li>新增 Device Flow 弹窗样式（.tsc-device-modal、.tsc-device-code 等）</li>
+<li>支持深色/浅色主题</li>
+<li>打印时隐藏弹窗</li>
+</ul>
+<p>  用户操作流程（修复后）</p>
+<ol>
+<li>选择文章中的文字 → 出现评论按钮</li>
+<li>点击评论按钮 → 弹出登录提示</li>
+<li>点击「使用 GitHub 登录」→ 弹出授权码弹窗（非跳转页面）</li>
+<li>用户访问 github.com/login/device 并输入授权码</li>
+<li>授权完成后自动获取 token，弹出评论输入框</li>
+</ol>
+<p>✻ Cogitated for 8m 14s</p>
+<p>● Background command &quot;grep -r &quot;oauth&quot; &quot;C:\workspace\code\shinerio.github.io&quot;<br>--include=&quot;<em>.ts&quot; --include=&quot;</em>.js&quot; --include=&quot;*.html&quot; 2&gt;/dev/null | grep -v<br>node_modules | grep -v dist | head -40&quot; completed (exit code 0)</p>
+<p>● The changes are complete. Let me know if you&#39;d like to review anything or if<br>  you want me to build and deploy the site.</p>
+<blockquote>
+<p>评论后，点击提交，看上去没有效果 </p>
+</blockquote>
+<p>● Let me check the submit flow. I suspect the issue is that<br>  state.currentSelection gets cleared when the user interacts with the popover<br>  textarea.</p>
+<p>● Read 1 file (ctrl+o to expand)</p>
+<p>● Found the bug. Here&#39;s what happens:</p>
+<ol>
+<li>User selects text → state.currentSelection is stored</li>
+<li>User clicks comment button → popover opens with textarea</li>
+<li>User clicks/types in the textarea → browser clears the text selection</li>
+<li>handleMouseUp/handleSelectionChange fires → checkSelection() runs</li>
+<li>Selection is now empty → state.currentSelection = null</li>
+<li>User clicks submit → if (!state.currentSelection) is true → silently hides<br>  popover, does nothing</li>
+</ol>
+<p>  The fix is to not clear state.currentSelection when the popover is open.</p>
+<p>● Update(templates\assets\js\text-selection-comment.js)<br>  ⎿  Added 10 lines, removed 2 lines<br>      223     * Check current text selection and show/hide toolbar<br>      224     */<br>      225    function checkSelection() {<br>      226 +    // Don&#39;t clear selection while popover or device modal is<br>          +visible (user is interacting with them)<br>      227 +    const popoverVisible = state.popover &amp;&amp; state.popover.clas<br>          +sList.contains(&#39;visible&#39;);<br>      228 +    const deviceModalVisible = state.deviceModal &amp;&amp; state.devi<br>          +ceModal.classList.contains(&#39;visible&#39;);<br>      229 +<br>      230      const selection = window.getSelection();<br>      231      const text = selection.toString().trim();<br>      232<br>     ...<br>      234      const contentEl = document.querySelector(CONFIG.contentSel<br>           ector);<br>      235      if (!contentEl || text.length === 0) {<br>      236        hideToolbar();<br>      233 -      state.currentSelection = null;<br>      237 +      if (!popoverVisible &amp;&amp; !deviceModalVisible) {<br>      238 +        state.currentSelection = null;<br>      239 +      }<br>      240        return;<br>      241      }<br>      242<br>     ...<br>      244      const range = selection.getRangeAt(0);<br>      245      if (!contentEl.contains(range.commonAncestorContainer)) {<br>      246        hideToolbar();<br>      241 -      state.currentSelection = null;<br>      247 +      if (!popoverVisible &amp;&amp; !deviceModalVisible) {<br>      248 +        state.currentSelection = null;<br>      249 +      }<br>      250        return;<br>      251      }<br>      252  </p>
+<p>● Now let me verify the build still passes.</p>
+<p>● Bash(npm run build 2&gt;&amp;1)<br>  ⎿  &gt; <a href="mailto:obsidian-blog-generator@1.0.0">obsidian-blog-generator@1.0.0</a> build<br>     &gt; tsc<br>  ⎿  (timeout 30s)</p>
+<p>● Build passes. The fix is straightforward: checkSelection() now checks whether<br>  the popover or device modal is visible before clearing state.currentSelection.<br>   This way, when the user clicks on the textarea to type their comment, the<br>  original text selection data is preserved and available when they click<br>  submit.</p>
+<p>✻ Sautéed for 56s</p>
+<blockquote>
+<p>悬浮评论框，增加一个点击可以直接跳转github issues的功能 </p>
+</blockquote>
+<p>● Read 1 file (ctrl+o to expand)</p>
+<p>● 每条评论加载时已经存了 _url（GitHub issue comment 的链接），直接在 tooltip<br>  里加一个跳转链接即可。</p>
+<p>● Update(templates\assets\js\text-selection-comment.js)<br>  ⎿  Added 4 lines, removed 1 line<br>      1036      const dateStr = date.toLocaleDateString(&#39;zh-CN&#39;);<br>      1037<br>      1038      state.tooltip.innerHTML = <code>      1039 -      &lt;div class=&quot;tsc-tooltip-author&quot;&gt;${escapeHtml(comment.au            -thor || &#39;匿名&#39;)}&lt;/div&gt;                                              1039 +      &lt;div class=&quot;tsc-tooltip-header&quot;&gt;                              1040 +        &lt;div class=&quot;tsc-tooltip-author&quot;&gt;${escapeHtml(comment.            +author || &#39;匿名&#39;)}&lt;/div&gt;                                            1041 +        ${comment._url ?</code>&lt;a class=&quot;tsc-tooltip-github-link&quot;<br>           +href=&quot;${comment._url}&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferr<br>           +er&quot; title=&quot;在 GitHub 上查看&quot;&gt;${ICONS.github}</a><code>: &#39;&#39;}             1042 +      &lt;/div&gt;                                                        1043        &lt;div class=&quot;tsc-tooltip-date&quot;&gt;${dateStr}&lt;/div&gt;       1044        &lt;div class=&quot;tsc-tooltip-comment&quot;&gt;${escapeHtml(comment.c             omment)}&lt;/div&gt;       1045     </code>;</p>
+<p>● Tooltip 目前是 pointer-events:<br>  none（鼠标穿透），需要改为可交互，同时调整隐藏逻辑避免鼠标移到 tooltip<br>  时立刻消失。</p>
+<p>● Read 1 file (ctrl+o to expand)</p>
+<p>● Update(templates\assets\css\text-selection-comment.css)<br>  ⎿  Added 1 line<br>      245  .tsc-tooltip.visible {<br>      246    opacity: 1;<br>      247    transform: translateY(0);<br>      248 +  pointer-events: auto;<br>      249  }<br>      250<br>      251  .tsc-tooltip::before {</p>
+<p>● Now add styles for the tooltip header and the GitHub link.</p>
+<p>● Update(templates\assets\css\text-selection-comment.css)<br>  ⎿  Added 29 lines, removed 1 line<br>      261    border-top: 6px solid var(--tsc-tooltip-bg);<br>      262  }<br>      263<br>      264 +.tsc-tooltip-header {<br>      265 +  display: flex;<br>      266 +  align-items: center;<br>      267 +  justify-content: space-between;<br>      268 +  margin-bottom: 4px;<br>      269 +}<br>      270 +<br>      271  .tsc-tooltip-author {<br>      272    font-weight: 600;<br>      266 -  margin-bottom: 4px;<br>      273  }<br>      274<br>      275 +.tsc-tooltip-github-link {<br>      276 +  display: flex;<br>      277 +  align-items: center;<br>      278 +  justify-content: center;<br>      279 +  width: 20px;<br>      280 +  height: 20px;<br>      281 +  color: var(--tsc-tooltip-text);<br>      282 +  opacity: 0.6;<br>      283 +  transition: opacity 0.2s ease;<br>      284 +  flex-shrink: 0;<br>      285 +  margin-left: 8px;<br>      286 +}<br>      287 +<br>      288 +.tsc-tooltip-github-link:hover {<br>      289 +  opacity: 1;<br>      290 +}<br>      291 +<br>      292 +.tsc-tooltip-github-link svg {<br>      293 +  width: 16px;<br>      294 +  height: 16px;<br>      295 +}<br>      296 +<br>      297  .tsc-tooltip-date {<br>      298    font-size: 11px;<br>      299    opacity: 0.8;</p>
+<p>● Now update the JS to handle tooltip hover — keep tooltip visible when the<br>  mouse moves from the mark to the tooltip itself.</p>
+<p>● Read 1 file (ctrl+o to expand)</p>
+<p>● Update(templates\assets\js\text-selection-comment.js)<br>  ⎿  Added 6 lines, removed 4 lines<br>      1067    }<br>      1068<br>      1069    /**<br>      1070 -   * Hide tooltip<br>      1070 +   * Hide tooltip with delay to allow mouse to move to toolti<br>           +p<br>      1071     <em>/<br>      1072    function hideTooltip() {<br>      1073 -    if (state.tooltip) {<br>      1074 -      state.tooltip.classList.remove(&#39;visible&#39;);<br>      1075 -    }<br>      1073 +    state.tooltipHideTimer = setTimeout(() =&gt; {<br>      1074 +      if (state.tooltip) {<br>      1075 +        state.tooltip.classList.remove(&#39;visible&#39;);<br>      1076 +      }<br>      1077 +    }, 150);<br>      1078    }<br>      1079<br>      1080    /</em>*</p>
+<p>● Now add tooltip hover listeners in the createTooltip function to cancel the<br>  hide timer when hovering the tooltip, and hide when leaving.</p>
+<p>● Read 1 file (ctrl+o to expand)</p>
+<p>● Update(templates\assets\js\text-selection-comment.js)<br>  ⎿  Added 8 lines<br>      178      state.tooltip = document.createElement(&#39;div&#39;);<br>      179      state.tooltip.className = &#39;tsc-tooltip&#39;;<br>      180      document.body.appendChild(state.tooltip);<br>      181 +<br>      182 +    // Keep tooltip visible when mouse enters it (for clicking<br>          + the GitHub link)<br>      183 +    state.tooltip.addEventListener(&#39;mouseenter&#39;, () =&gt; {<br>      184 +      clearTimeout(state.tooltipHideTimer);<br>      185 +    });<br>      186 +    state.tooltip.addEventListener(&#39;mouseleave&#39;, () =&gt; {<br>      187 +      state.tooltip.classList.remove(&#39;visible&#39;);<br>      188 +    });<br>      189    }<br>      190<br>      191    /**</p>
+<p>● Also need to cancel the hide timer when re-entering a mark (in showTooltip).</p>
+<p>● Read 1 file (ctrl+o to expand)</p>
+<p>● Update(templates\assets\js\text-selection-comment.js)<br>  ⎿  Added 1 line<br>      1037     * Show tooltip for a comment<br>      1038     */<br>      1039    function showTooltip(e, comment) {<br>      1040 +    clearTimeout(state.tooltipHideTimer);<br>      1041      const mark = e.target;<br>      1042      const rect = mark.getBoundingClientRect();<br>      1043  </p>
+<p>● Add tooltipHideTimer to state initialization.</p>
+<p>● Update(templates\assets\js\text-selection-comment.js)<br>  ⎿  Added 1 line<br>      43      articleSlug: null,<br>      44      deviceModal: null,<br>      45      devicePollTimer: null,<br>      46 +    tooltipHideTimer: null,<br>      47    };<br>      48<br>      49    // Icons (SVG)</p>
+<p>● Let me verify the build.</p>
+<p>● Bash(npm run build 2&gt;&amp;1)<br>  ⎿  &gt; <a href="mailto:obsidian-blog-generator@1.0.0">obsidian-blog-generator@1.0.0</a> build<br>     &gt; tsc<br>  ⎿  (timeout 30s)</p>
+<p>● Done.改动点：</p>
+<ol>
+<li>Tooltip 内容 — 标题行右侧新增 GitHub 图标链接，点击直接跳转到对应的 GitHub<br>  Issue Comment 页面</li>
+<li>Tooltip 可交互 — visible 状态下 pointer-events: auto，链接可点击</li>
+<li>延迟隐藏 — 鼠标离开高亮文字时延迟 150ms 再隐藏<br>  tooltip，让用户有时间将鼠标移到 tooltip 上；鼠标进入 tooltip 后取消隐藏，离开<br>  tooltip 后才真正隐藏</li>
+</ol>
+<p>✻ Worked for 1m 53s</p>
+<blockquote>
+<p>/shinerio-code-plugin:gitacp </p>
+</blockquote>
+<p>● Let me first analyze what we did in this conversation:</p>
+<ol>
+<li>Fixed the 404 issue with text selection comment GitHub login by switching<br>  from Authorization Code Flow to Device Flow</li>
+<li>Fixed the bug where state.currentSelection was being cleared when user<br>  interacts with the popover textarea</li>
+<li>Added a GitHub link to the tooltip for jumping to the GitHub issue</li>
+</ol>
+<p>  Let me generate the summary and title, then check/create the changelog file,<br>  and execute git commands.</p>
+<p>  Title: 划词评论功能修复与增强<br>  Summary:</p>
+<ul>
+<li>修复划词评论GitHub登录404问题：将OAuth认证方式从Authorization Code<br>  Flow改为Device Flow，复用TODO页面的Cloudflare Worker代理</li>
+<li>修复评论提交无效的问题：防止popover/device modal可见时清除currentSelection</li>
+<li>悬浮评论框新增GitHub Issue跳转链接，tooltip改为可交互（延迟隐藏）</li>
+<li>配置层新增oauthProxyUrl字段（types、blog.config.json、SiteGenerator注入）</li>
+</ul>
+<p>  Let me check if the changelog file exists.</p>
+<p>  Let me analyze the changes and prepare the commit.</p>
+<p>● Bash(git -C &quot;C:\workspace\code\shinerio.github.io&quot; status)<br>  ⎿  On branch master<br>     Your branch is ahead of &#39;origin/master&#39; by 1 commit.<br>       (use &quot;git push&quot; to publish your local commits)<br>     … +16 lines (ctrl+o to expand)</p>
+<p>● Bash(git -C &quot;C:\workspace\code\shinerio.github.io&quot; diff --stat)<br>  ⎿  README.md                                          | 60 ++++++++++++++<br>    ++++++<br>     blog.config.json                                   | 12 +++-<br>    … +8 lines (ctrl+o to expand)</p>
+<p>● Searched for 1 pattern, read 1 file (ctrl+o to expand)</p>
+<p>● Bash(git -C &quot;C:\workspace\code\shinerio.github.io&quot; log --oneline -5)<br>  ⎿  0f8e2fa comment<br>     bba30e6 image<br>     c5ecd08 修复代码块样式：加载附加CSS与消除双边框<br>     … +2 lines (ctrl+o to expand)</p>
+<p>● Update(changelog\change_202602.md)<br>  ⎿  Added 4 lines<br>      1 +## 划词评论功能修复与增强<br>      2 +date: 2026-02-14<br>      3 +修复划词评论GitHub登录404问题：将OAuth认证方式从Authorization Co<br>        +de Flow改为Device Flow，复用TODO页面已有的Cloudflare Worker代理<br>        +（oauthProxyUrl），彻底消除对不存在的oauth-callback.html页面的依<br>        +赖。修复评论提交无效的问题：当popover或device modal可见时不再清<br>        +除currentSelection，确保用户在输入框中交互后仍能正常提交评论。悬<br>        +浮评论框新增GitHub Issue跳转链接（GitHub图标），tooltip改为可交<br>        +互模式并增加150ms延迟隐藏，方便用户点击链接。配置层新增oauthProx<br>        +yUrl字段（types定义、blog.config.json、SiteGenerator页面注入）。<br>      4 +<br>      5  ## 修复代码块样式：加载附加CSS与消除双边框<br>      6  date: 2026-02-13<br>      7  在layout.html中引入style-addition.css，使语言badge定位（左上角）<br>         、复制按钮定位（右上角）及hover显隐行为生效。同时在style.css的pr<br>         e code规则中添加border: none，消除pre与内部code元素的双边框问题<br>         。</p>
+<p>● Bash(cd &quot;C:\workspace\code\shinerio.github.io&quot; &amp;&amp; git add -A &amp;&amp; git commit -m<br>      &quot;划词评论功能修复与增强…)<br>  ⎿  [master 63f51be] 划词评论功能修复与增强<br>      8 files changed, 1826 insertions(+), 34 deletions(-)<br>      create mode 100644 templates/assets/css/text-selection-comment.css<br>     … +10 lines (ctrl+o to expand)</p>
+<p>● Bash(cd &quot;C:\workspace\code\shinerio.github.io&quot; &amp;&amp; git push)<br>  ⎿  To github.com:shinerio/shinerio.github.io.git<br>        bba30e6..63f51be  master -&gt; master<br>  ⎿  (timeout 30s)</p>
+<p>● 已完成 git add、commit、push：</p>
+<ul>
+<li>commit: 63f51be 划词评论功能修复与增强</li>
+<li>changelog: 已写入 changelog/change_202602.md</li>
+<li>push: 已推送至 origin/master</li>
+</ul>
+<p>✻ Worked for 1m 5s</p>
+<blockquote>
+<p>device flow和code flow功能的区别是什么？为什么文章底部的评论功能的认证和<br>  划词评论和TODO页面的不一样                                                </p>
+</blockquote>
+<p>● Device Flow vs Authorization Code Flow<br>  Column 1: 流程<br>  Authorization Code Flow: 跳转 GitHub 授权页 → 回调到你的网站 → 用 code 换<br>  token<br>  Device Flow: 显示一个授权码 → 用户去 github.com/login/device 输入 → 轮询获取<br>    token<br>  ────────────────────────────────────────<br>  Column 1: 需要回调页<br>  Authorization Code Flow: 需要（/oauth-callback.html）<br>  Device Flow: 不需要<br>  ────────────────────────────────────────<br>  Column 1: 需要后端<br>  Authorization Code Flow: 需要（code 换 token 时必须带<br>    client_secret，不能暴露在前端）<br>  Device Flow: 不需要 client_secret（GitHub Device Flow 设计上就支持公开客户端）<br>  ────────────────────────────────────────<br>  Column 1: 用户体验<br>  Authorization Code Flow: 更流畅，一次跳转即完成<br>  Device Flow: 需要用户手动去另一个页面输入码<br>  ────────────────────────────────────────<br>  Column 1: 适用场景<br>  Authorization Code Flow: 有后端的 Web 应用<br>  Device Flow: CLI 工具、IoT 设备、纯静态站点<br>  Authorization Code Flow 404 的根本原因：它需要一个回调页来接收 GitHub 返回的<br>  code，而你的站是 纯静态站（GitHub<br>  Pages），之前没有创建这个页面，也没有后端来完成 code → token 的交换（需要<br>  client_secret）。</p>
+<p>  三种认证方式为什么不一样</p>
+<ol>
+<li>文章底部评论（Utterances）</li>
+</ol>
+<p>  Utterances 是一个独立的第三方服务。它通过 <script> 标签嵌入一个<br>  iframe，所有认证逻辑都在 Utterances 自己的服务器上完成：</p>
+<p>  用户点击登录 → 跳转到 utteranc.es 的后端 → GitHub OAuth → utteranc.es 后端用<br>  client_secret 换 token → 写入 iframe</p>
+<p>  Utterances 有自己的后端服务器，所以它可以用 Authorization Code<br>  Flow。你不需要管它的认证，它全部自己处理。</p>
+<ol start="2">
+<li>TODO 页面 & 划词评论</li>
+</ol>
+<p>  这两个是你自己实现的功能，运行在纯静态站上，没有后端。所以：</p>
+<ul>
+<li>不能用 Authorization Code Flow（没有后端持有 client_secret）</li>
+<li>用 Device Flow + Cloudflare Worker 代理（Worker 持有 secret，代理转发请求到<br>  GitHub）</li>
+</ul>
+<p>  总结<br>  功能: 底部评论 (Utterances)<br>  认证方式: Authorization Code Flow（由 Utterances 后端完成）<br>  原因: 第三方服务自带后端<br>  ────────────────────────────────────────<br>  功能: TODO 页面<br>  认证方式: Device Flow + Cloudflare Worker<br>  原因: 自建功能，纯静态站无后端<br>  ────────────────────────────────────────<br>  功能: 划词评论<br>  认证方式: Device Flow + Cloudflare Worker<br>  原因: 同上，复用相同的 Worker<br>  核心区别在于：有没有后端来安全地持有 client_secret。Utterances<br>  自带后端所以透明处理了，而自建功能只能借助 Cloudflare Worker<br>  充当轻量后端，配合不需要 secret 的 Device Flow。</p>
+<blockquote>
+<p>那自建的cloudflare worker持有client_secret安全吗 </p>
+</blockquote>
+<p>● 安全的，这是业界标准做法。本质上 Cloudflare Worker 就是充当了一个轻量后端。</p>
+<p>  为什么安全</p>
+<p>  Client Secret 存储在 Worker 的环境变量中，不会出现在：</p>
+<ul>
+<li>前端代码中</li>
+<li>Git 仓库中</li>
+<li>网络请求的响应中</li>
+<li>浏览器可访问的任何地方</li>
+</ul>
+<p>  用户浏览器只和 Worker 通信，Worker 再带上 secret 去调 GitHub API，整个过程<br>  secret 只在 Worker 运行时的服务端内存中存在：</p>
+<p>  浏览器 ──(device_code)──→ Cloudflare Worker ──(device_code + client_secret)──→<br>   GitHub API<br>  浏览器 ←──(access_token)── Cloudflare Worker ←──(access_token)────────────────<br>   GitHub API</p>
+<p>  和传统后端的对比<br>  ┌──────────────┬───────────────────────────┬─────────────────────────────┐<br>  │              │  传统后端 (Node/Python)   │      Cloudflare Worker      │<br>  ├──────────────┼───────────────────────────┼─────────────────────────────┤<br>  │ Secret 存储  │ 环境变量 / Secret Manager │ 环境变量 (Wrangler Secrets) │<br>  ├──────────────┼───────────────────────────┼─────────────────────────────┤<br>  │ 运行环境     │ 你自己的服务器            │ Cloudflare 边缘节点         │<br>  ├──────────────┼───────────────────────────┼─────────────────────────────┤<br>  │ 可被反编译？ │ 不能（服务端代码）        │ 不能（服务端代码）          │<br>  ├──────────────┼───────────────────────────┼─────────────────────────────┤<br>  │ 安全等级     │ 相同                      │ 相同                        │<br>  └──────────────┴───────────────────────────┴─────────────────────────────┘<br>  两者在安全模型上没有区别，Worker 代码运行在 Cloudflare<br>  的服务端，和传统后端一样不可被客户端访问。</p>
+<p>  需要注意的点</p>
+<p>  唯一需要关注的是 Worker 本身的接口设计，确保它不会把 secret 泄露出去：</p>
+<ul>
+<li>Worker 不应在响应中返回 secret</li>
+<li>应该限制 CORS（只允许你自己的域名调用）</li>
+<li>只代理必要的 GitHub OAuth 端点，不做通用代理</li>
+</ul>
+<p>  如果你想确认一下你的 Worker 实现，可以看一下它的源码是否符合这些原则。</p>
+<blockquote>
+<p>那worker怎么验证我的身份呢？是否所有能访问我worker的人都能拿到我身份 </p>
+</blockquote>
+<p>● 好问题。简短回答：别人调你的 Worker 拿不到你的身份，但有其他风险值得关注。</p>
+<p>  Worker 不持有你的身份</p>
+<p>  Worker 里只有 client_secret（OAuth App 的密钥），不是你的个人<br>  token。整个流程中，token 的获取必须经过用户本人在 GitHub 上的显式授权：</p>
+<p>  攻击者调用 Worker /device/code → 拿到一个 device code<br>                                      ↓<br>                           必须有人去 GitHub 手动输入这个 code 并点击授权<br>                                      ↓<br>                           token 属于点击授权的那个人，不是你</p>
+<p>  没有任何人在 GitHub 上点授权，这个 device code 就会过期作废。Worker<br>  自始至终不持有、也不会返回任何人的个人 token。</p>
+<p>  真正的风险</p>
+<p>  风险不在于"偷你身份"，而在于 滥用你的 OAuth App：<br>  风险: 钓鱼<br>  说明: 攻击者用你的 Worker 发起授权，用户在 GitHub 授权页看到的是你的 App<br>    名字，可能误以为是你的网站在请求，从而授权。攻击者拿到的是受害者自己的<br>    token<br>  严重程度: 中<br>  ────────────────────────────────────────<br>  风险: 刷量<br>  说明: 大量请求 /device/code，耗尽 GitHub API 的速率限制<br>  严重程度: 低<br>  ────────────────────────────────────────<br>  风险: App 被封<br>  说明: 如果被滥用，GitHub 可能禁用你的 OAuth App<br>  严重程度: 中<br>  建议加固措施</p>
+<ol>
+<li>CORS 限制（最重要） — 只允许你自己的域名调用 Worker：</li>
+</ol>
+<p>  // Worker 中<br>  const ALLOWED_ORIGINS = ['<a href="https://shinerio.site'%5D">https://shinerio.site&#39;]</a>;</p>
+<p>  if (!ALLOWED_ORIGINS.includes(request.headers.get('Origin'))) {<br>    return new Response('Forbidden', { status: 403 });<br>  }</p>
+<p>  这样浏览器端只有你的网站能调用，其他域名的请求会被拒绝。</p>
+<ol start="2">
+<li>Referer 检查 — 双重验证来源：</li>
+</ol>
+<p>  const referer = request.headers.get('Referer') || '';<br>  if (!referer.startsWith('<a href="https://shinerio.site">https://shinerio.site</a>')) {<br>    return new Response('Forbidden', { status: 403 });<br>  }</p>
+<ol start="3">
+<li>速率限制 — Cloudflare Workers 支持 Rate Limiting，防止刷量。</li>
+</ol>
+<p>  注意：CORS 只能防浏览器端的跨域调用。攻击者用 curl 等工具仍可直接请求<br>  Worker，但这种情况下拿到 device code 也没什么用——还是需要用户自己去 GitHub<br>  授权才能获得 token。所以实际风险很低，加上 CORS 就已经足够了。</p>
+<p>✻ Worked for 31s</p>
+
+    </section>
+</article>
+
+
+<section class="comments-section" id="comments">
+    <h2 class="comments-title">评论</h2>
+    <div class="utterances-container">
+        <script src="https://utteranc.es/client.js"
+        repo="shinerio/shinerio.github.io"
+        issue-term="Github Oauth"
+        label="blog-comment"
+        theme="preferred-color-scheme"
+        crossorigin="anonymous"
+        async>
+</script>
+    </div>
+</section>
+            </div>
+        </main>
+        <footer class="page-footer">
+            <div class="container">
+                <p>&copy; 2026 shinerio. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Theme switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.getElementById('theme-body');
+
+            // Check for saved theme preference or respect OS preference
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+            // Set initial theme
+            if (savedTheme === 'dark' || (!savedTheme && prefersDarkScheme.matches)) {
+                body.setAttribute('data-theme', 'dark');
+            } else {
+                body.removeAttribute('data-theme'); // light theme
+            }
+
+            // Sync Utterances iframe theme
+            function syncUtterancesTheme(isDark) {
+                const utterancesFrame = document.querySelector('.utterances-frame');
+                if (utterancesFrame) {
+                    const theme = isDark ? 'github-dark' : 'github-light';
+                    utterancesFrame.contentWindow.postMessage(
+                        { type: 'set-theme', theme: theme },
+                        'https://utteranc.es'
+                    );
+                }
+            }
+
+            // Listen for Utterances iframe ready to set initial theme
+            window.addEventListener('message', function(event) {
+                if (event.origin !== 'https://utteranc.es') return;
+                const isDark = body.getAttribute('data-theme') === 'dark' ||
+                    (!localStorage.getItem('theme') && prefersDarkScheme.matches);
+                syncUtterancesTheme(isDark);
+            });
+
+            // Toggle theme function
+            function toggleTheme() {
+                if (body.getAttribute('data-theme') === 'dark') {
+                    body.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                    syncUtterancesTheme(false);
+                } else {
+                    body.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    syncUtterancesTheme(true);
+                }
+            }
+
+            // Add event listener to theme toggle button
+            themeToggle.addEventListener('click', toggleTheme);
+
+            // Listen for OS theme changes
+            prefersDarkScheme.addEventListener('change', function(e) {
+                if (!localStorage.getItem('theme')) {
+                    if (e.matches) {
+                        body.setAttribute('data-theme', 'dark');
+                    } else {
+                        body.removeAttribute('data-theme');
+                    }
+                    syncUtterancesTheme(e.matches);
+                }
+            });
+
+            // Sidebar toggle (desktop + mobile)
+            const sidebarToggle = document.querySelector('.sidebar-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarOverlay = document.querySelector('.sidebar-overlay');
+
+            if (sidebarToggle && sidebar) {
+                // Helper function to detect mobile
+                const isMobile = () => window.innerWidth < 768;
+
+                // Function to handle sidebar opening
+                const openSidebar = () => {
+                    sidebar.classList.add('active');
+                    if (sidebarOverlay) {
+                        sidebarOverlay.classList.add('active');
+                        // Ensure overlay doesn't block page interaction when closed
+                        sidebarOverlay.style.pointerEvents = 'auto';
+                    }
+                };
+
+                // Function to handle sidebar closing
+                const closeSidebar = () => {
+                    sidebar.classList.remove('active');
+                    if (sidebarOverlay) {
+                        sidebarOverlay.classList.remove('active');
+                        // Remove overlay when not needed to avoid blocking page
+                        sidebarOverlay.style.pointerEvents = 'none';
+                    }
+                };
+
+                // Restore saved collapse state for desktop
+                if (!isMobile() && localStorage.getItem('sidebar-collapsed') === 'true') {
+                    document.body.classList.add('sidebar-collapsed');
+                }
+
+                sidebarToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (isMobile()) {
+                        // Mobile: overlay drawer behavior
+                        if (sidebar.classList.contains('active')) {
+                            closeSidebar();
+                        } else {
+                            openSidebar();
+                        }
+                    } else {
+                        // Desktop: collapse/expand with body offset
+                        document.body.classList.toggle('sidebar-collapsed');
+                        localStorage.setItem('sidebar-collapsed',
+                            document.body.classList.contains('sidebar-collapsed'));
+                    }
+                });
+
+                // Close sidebar when clicking on overlay
+                if (sidebarOverlay) {
+                    sidebarOverlay.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        closeSidebar();
+                    });
+
+                    // Prevent scroll on overlay
+                    sidebarOverlay.addEventListener('touchmove', function(e) {
+                        e.preventDefault();
+                    }, { passive: false });
+                }
+
+                // Handle resize events to ensure proper behavior when switching between mobile/desktop
+                let resizeTimeout;
+                window.addEventListener('resize', function() {
+                    // Clear any existing timeout
+                    clearTimeout(resizeTimeout);
+
+                    // Use timeout to handle resize efficiently
+                    resizeTimeout = setTimeout(() => {
+                        if (!isMobile()) {
+                            // On desktop view, ensure mobile classes are removed
+                            sidebar.classList.remove('active');
+                            if (sidebarOverlay) {
+                                sidebarOverlay.classList.remove('active');
+                                sidebarOverlay.style.pointerEvents = 'none';
+                            }
+                        }
+                    }, 100);
+                });
+
+                // Close sidebar on orientation change (important for mobile Safari)
+                window.addEventListener('orientationchange', function() {
+                    setTimeout(() => {
+                        if (!isMobile()) {
+                            sidebar.classList.remove('active');
+                            if (sidebarOverlay) {
+                                sidebarOverlay.classList.remove('active');
+                                sidebarOverlay.style.pointerEvents = 'none';
+                            }
+                        }
+                    }, 100);
+                });
+
+                // Close sidebar when clicking anywhere outside of it (on mobile)
+                document.addEventListener('click', function(e) {
+                    // Only handle outside clicks on mobile when sidebar is active
+                    if (isMobile() &&
+                        sidebar.classList.contains('active') &&
+                        !sidebar.contains(e.target) &&
+                        e.target !== sidebarToggle) {
+                        closeSidebar();
+                    }
+                });
+            }
+
+            // Search functionality
+            const searchInput = document.getElementById('search-input');
+            const searchButton = document.getElementById('search-button');
+            const searchResults = document.getElementById('search-results');
+            const searchSuggestions = document.getElementById('search-suggestions');
+            const searchTypeRadios = document.querySelectorAll('input[name="search-type"]');
+
+            if (searchInput && searchButton) {
+                let searchData = null;
+
+                // Load search data
+                async function loadSearchData() {
+                    try {
+                        const response = await fetch('./assets/js/search-data.json');
+                        if (response.ok) {
+                            searchData = await response.json();
+                        } else {
+                            console.error('Failed to load search data:', response.status);
+                        }
+                    } catch (error) {
+                        console.error('Error loading search data:', error);
+                    }
+                }
+
+                // Initialize search data
+                loadSearchData();
+
+                // Debounce function to limit search calls
+                function debounce(func, wait) {
+                    let timeout;
+                    return function executedFunction(...args) {
+                        const later = () => {
+                            clearTimeout(timeout);
+                            func(...args);
+                        };
+                        clearTimeout(timeout);
+                        timeout = setTimeout(later, wait);
+                    };
+                }
+
+                // Get selected search type
+                function getSelectedSearchType() {
+                    const selectedRadio = document.querySelector('input[name="search-type"]:checked');
+                    return selectedRadio ? selectedRadio.value : 'all';
+                }
+
+                // Perform search
+                function performSearch(query) {
+                    if (!searchData || !query.trim()) {
+                        searchResults.innerHTML = '';
+                        searchSuggestions.innerHTML = '';
+                        return;
+                    }
+
+                    const queryTerms = query.toLowerCase().split(/\s+/).filter(term => term.length > 0);
+                    const searchType = getSelectedSearchType();
+
+                    if (queryTerms.length === 0) {
+                        searchResults.innerHTML = '';
+                        return;
+                    }
+
+                    const results = [];
+
+                    // Search through articles
+                    searchData.articles.forEach(article => {
+                        let score = 0;
+                        let snippet = '';
+
+                        // Get content based on search type
+                        const lowerTitle = article.title.toLowerCase();
+                        const lowerContent = article.content.toLowerCase();
+                        const lowerTags = article.tags.join(' ').toLowerCase();
+
+                        queryTerms.forEach(term => {
+                            switch(searchType) {
+                                case 'title':
+                                    // Only title matches count
+                                    if (lowerTitle.includes(term)) {
+                                        score += 10;
+                                    }
+                                    break;
+                                case 'content':
+                                    // Only content matches count (fixed to exclude title matches)
+                                    if (lowerContent.includes(term)) {
+                                        score += 1;
+                                    }
+                                    break;
+                                case 'all':
+                                default:
+                                    // Both title and content matches count
+                                    if (lowerTitle.includes(term)) {
+                                        score += 10;
+                                    }
+                                    if (lowerContent.includes(term)) {
+                                        score += 1;
+                                    }
+                                    // Tag matches get medium-high score
+                                    if (lowerTags.includes(term)) {
+                                        score += 5;
+                                    }
+                                    break;
+                            }
+                        });
+
+                        if (score > 0) {
+                            // Generate snippet based on search type
+                            let content = '';
+
+                            if (searchType === 'title') {
+                                // For title-only search, show title content
+                                content = article.title.substring(0, 200);
+                            } else if (searchType === 'content') {
+                                // For content-only search, show content excerpt
+                                content = article.content.substring(0, 200);
+                            } else {
+                                // For all search, show content with title as context
+                                content = article.content.substring(0, 200);
+                            }
+
+                            // Find first occurrence of query term in content for snippet
+                            queryTerms.forEach(term => {
+                                let searchIn = content.toLowerCase();
+                                if (searchType === 'title') {
+                                    searchIn = lowerTitle;
+                                } else if (searchType === 'content') {
+                                    searchIn = lowerContent;
+                                }
+
+                                const index = searchIn.indexOf(term);
+                                if (index !== -1) {
+                                    // Expand snippet around the match
+                                    let start, end;
+                                    if (searchType === 'title') {
+                                        start = Math.max(0, index - 15);
+                                        end = Math.min(content.length, index + term.length + 35);
+                                    } else {
+                                        start = Math.max(0, index - 30);
+                                        end = Math.min(content.length, index + term.length + 70);
+                                    }
+
+                                    content = (start > 0 ? '...' : '') +
+                                              content.substring(start, end) +
+                                              (end < (searchType === 'title' ? article.title.length : article.content.length) ? '...' : '');
+
+                                    // Highlight the term in the snippet
+                                    const searchContent = searchType === 'title' ? article.title : article.content;
+                                    const adjustedIndex = searchType === 'title' ?
+                                        Math.min(index, article.title.length - 1) :
+                                        Math.min(index, article.content.length - 1);
+
+                                    content = content.replace(
+                                        new RegExp(`(${escapeRegExp(term)})`, 'gi'),
+                                        '<mark>$1</mark>'
+                                    );
+                                }
+                            });
+
+                            results.push({
+                                article: article,
+                                score: score,
+                                snippet: content
+                            });
+                        }
+                    });
+
+                    // Sort results by score
+                    results.sort((a, b) => b.score - a.score);
+
+                    // Display results
+                    displaySearchResults(results);
+                }
+
+                // Display search results
+                function displaySearchResults(results) {
+                    if (results.length === 0) {
+                        searchResults.innerHTML = '<p class="no-results">未找到匹配的文章</p>';
+                        return;
+                    }
+
+                    const resultsHTML = results.map(result => `
+                        <div class="search-result-item">
+                            <h3 class="search-result-title">
+                                <a href="./${result.article.slug}.html">${highlightQueryTerms(result.article.title, document.querySelector('#search-input').value)}</a>
+                            </h3>
+                            <div class="search-result-meta">
+                                ${result.article.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                            </div>
+                            <p class="search-result-excerpt">${result.snippet}</p>
+                        </div>
+                    `).join('');
+
+                    searchResults.innerHTML = resultsHTML;
+                }
+
+                // Highlight query terms in text
+                function highlightQueryTerms(text, query) {
+                    if (!query.trim()) return text;
+
+                    const queryTerms = query.split(/\s+/).filter(term => term.length > 0);
+                    let highlightedText = text;
+
+                    queryTerms.forEach(term => {
+                        const regex = new RegExp(`(${escapeRegExp(term)})`, 'gi');
+                        highlightedText = highlightedText.replace(regex, '<mark>$1</mark>');
+                    });
+
+                    return highlightedText;
+                }
+
+                // Escape special regex characters
+                function escapeRegExp(string) {
+                    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                }
+
+                // Event listener for search button
+                searchButton.addEventListener('click', function() {
+                    const query = searchInput.value;
+                    performSearch(query);
+                });
+
+                // Event listener for Enter key
+                searchInput.addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') {
+                        const query = searchInput.value;
+                        performSearch(query);
+                    }
+                });
+
+                // Add debounced input handler for live search (optional)
+                const debouncedSearch = debounce(function() {
+                    const query = searchInput.value;
+                    performSearch(query);
+                }, 300);
+
+                searchInput.addEventListener('input', debouncedSearch);
+
+                // Add event listeners for search type radios
+                searchTypeRadios.forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        const query = searchInput.value;
+                        if (query.trim()) {
+                            performSearch(query);
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
