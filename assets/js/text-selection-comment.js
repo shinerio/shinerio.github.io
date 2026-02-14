@@ -223,6 +223,10 @@
    * Check current text selection and show/hide toolbar
    */
   function checkSelection() {
+    // Don't clear selection while popover or device modal is visible (user is interacting with them)
+    const popoverVisible = state.popover && state.popover.classList.contains('visible');
+    const deviceModalVisible = state.deviceModal && state.deviceModal.classList.contains('visible');
+
     const selection = window.getSelection();
     const text = selection.toString().trim();
 
@@ -230,7 +234,9 @@
     const contentEl = document.querySelector(CONFIG.contentSelector);
     if (!contentEl || text.length === 0) {
       hideToolbar();
-      state.currentSelection = null;
+      if (!popoverVisible && !deviceModalVisible) {
+        state.currentSelection = null;
+      }
       return;
     }
 
@@ -238,7 +244,9 @@
     const range = selection.getRangeAt(0);
     if (!contentEl.contains(range.commonAncestorContainer)) {
       hideToolbar();
-      state.currentSelection = null;
+      if (!popoverVisible && !deviceModalVisible) {
+        state.currentSelection = null;
+      }
       return;
     }
 
