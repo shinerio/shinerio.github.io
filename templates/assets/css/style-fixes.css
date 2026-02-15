@@ -1,0 +1,1156 @@
+/* ===========================
+   🔧 样式修复补丁
+   修复日落橙主题升级后的样式问题
+   =========================== */
+
+/* ===========================
+   🏠 Home 页面优化
+   =========================== */
+
+/* 1. 进一步减小 Hero 区域的尺寸和留白 */
+.hero {
+    padding: var(--spacing-xl) 0 !important;  /* 进一步减少: 2xl → xl (64px → 40px) */
+    margin-bottom: var(--spacing-lg) !important; /* 进一步减少: xl → lg (40px → 28px) */
+}
+
+.hero::before {
+    display: none !important; /* 移除背景光晕以减少视觉高度 */
+}
+
+.hero h1 {
+    font-size: var(--font-size-3xl) !important; /* 进一步减小: 4xl → 3xl (52px → 40px) */
+    margin-bottom: var(--spacing-sm) !important; /* 进一步减少: md → sm (16px → 10px) */
+}
+
+.hero p {
+    font-size: var(--font-size-base) !important; /* 进一步减小: lg → base (21px → 18px) */
+    max-width: 600px !important;
+}
+
+/* 2. 移除"最新文章"标题下的下划线 */
+.recent-articles h2::after,
+.article-list h2::after {
+    display: none !important;
+}
+
+.recent-articles h2,
+.article-list h2 {
+    margin-bottom: var(--spacing-lg) !important;
+}
+
+/* ===========================
+   1️⃣ 分页样式 - 增大尺寸，增加间距
+   =========================== */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-md) 0;
+    flex-wrap: wrap;
+}
+
+.pagination-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.75rem;          /* 增大 from 2.25rem */
+    height: 2.75rem;             /* 增大 from 2.25rem */
+    padding: 0 var(--spacing-md); /* 增大 from sm */
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-base); /* 增大 from sm */
+    font-family: var(--font-display);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    line-height: 1;
+}
+
+.pagination-btn:hover:not(:disabled):not(.active) {
+    background-color: var(--color-accent-soft);
+    border-color: var(--color-accent-primary);
+    color: var(--color-accent-primary);
+    transform: translateY(-2px);
+}
+
+.pagination-btn.active {
+    background-color: var(--color-accent-primary);
+    border-color: var(--color-accent-primary);
+    color: white;
+    font-weight: 700;
+    box-shadow: var(--shadow-sm);
+}
+
+.pagination-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.pagination-prev,
+.pagination-next {
+    padding: 0 var(--spacing-lg);
+    font-weight: 600;
+}
+
+.pagination-ellipsis {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.75rem;
+    height: 2.75rem;
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-base);
+    user-select: none;
+}
+
+/* ===========================
+   2️⃣ Articles 筛选器样式优化
+   =========================== */
+
+.articles-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end; /* 3. 底部对齐视图切换按钮和下拉菜单 */
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-xl);
+    background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg-primary) 100%);
+    border-radius: var(--radius-xl);
+    border: 1.5px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    min-width: 200px;
+}
+
+.filter-group label {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-base);
+    letter-spacing: 0.02em;
+}
+
+.filter-select {
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: var(--font-size-base);
+    font-weight: 600; /* 2. 增强字重 */
+    line-height: 1.5; /* 2. 增加行高 */
+    min-width: 240px; /* 2. 进一步增加最小宽度: 200px → 240px */
+    height: 56px; /* 2. 进一步增加高度: 52px → 56px */
+    transition: all var(--transition-normal);
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23FF8C42' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--spacing-md) center;
+    padding-right: calc(var(--spacing-lg) + 32px); /* 2. 增加右侧padding */
+}
+
+/* 3. 下拉选项样式 - 增强对比度 */
+.filter-select option {
+    background-color: var(--color-bg-primary); /* 3. 白色背景 */
+    color: var(--color-text-primary); /* 3. 深色文字 */
+    padding: var(--spacing-md);
+    font-weight: 500;
+}
+
+.filter-select option:checked,
+.filter-select option:hover {
+    background-color: var(--color-accent-primary) !important; /* 3. 橙色背景 */
+    color: white !important; /* 3. 白色文字 */
+    font-weight: 700;
+}
+
+/* Firefox 特殊处理 */
+.filter-select option:checked {
+    background: var(--color-accent-primary) linear-gradient(0deg, var(--color-accent-primary) 0%, var(--color-accent-primary) 100%);
+}
+
+/* Chrome/Safari 下拉框背景 */
+.filter-select:focus option:checked {
+    background-color: var(--color-accent-primary);
+    color: white;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--color-accent-primary);
+    box-shadow: 0 0 0 4px var(--color-accent-soft);
+}
+
+.filter-select:hover {
+    border-color: var(--color-accent-primary);
+    background-color: var(--color-accent-soft);
+}
+
+.filter-select:active {
+    background-color: var(--color-bg-tertiary);
+}
+
+/* Filter chips for active filters */
+.active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-sm) 0;
+}
+
+.filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--color-accent-primary);
+    color: white;
+    border-radius: var(--radius-2xl);
+    font-family: var(--font-display);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.filter-chip:hover {
+    background-color: var(--color-accent-secondary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.filter-chip .remove-filter {
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: var(--spacing-xs);
+    opacity: 0.8;
+    transition: opacity var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    line-height: 1;
+}
+
+.filter-chip .remove-filter:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.35);
+}
+
+.article-list {
+    display: grid;
+    gap: var(--spacing-xl);
+}
+
+.no-results {
+    text-align: center;
+    padding: var(--spacing-3xl);
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-lg);
+    font-style: italic;
+}
+
+/* ===========================
+   3️⃣ 视图切换按钮 - 增大尺寸，优化样式
+   =========================== */
+
+.view-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-left: auto;
+}
+
+.view-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;              /* 更新：与新的下拉菜单高度一致 */
+    height: 56px;             /* 更新：与新的下拉菜单高度一致 */
+    padding: 0;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.view-toggle-btn:hover {
+    border-color: var(--color-accent-primary);
+    color: var(--color-accent-primary);
+    background-color: var(--color-accent-soft);
+    transform: scale(1.05);
+}
+
+.view-toggle-btn.active {
+    border-color: var(--color-accent-primary);
+    color: white;
+    background-color: var(--color-accent-primary);
+    box-shadow: var(--shadow-warm);
+}
+
+/* 移除点击后的橙色边框 */
+.view-toggle-btn:focus {
+    outline: none !important;
+}
+
+.view-toggle-btn:focus-visible {
+    outline: 2px solid var(--color-accent-primary);
+    outline-offset: 3px;
+}
+
+.view-toggle-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* ===========================
+   4️⃣ 搜索界面优化
+   =========================== */
+
+/* 4. 修复搜索控件布局，消除留白 */
+.search-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0 !important; /* 4. 移除间距 */
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 2px solid var(--color-border);
+    transition: all var(--transition-normal);
+    background-color: var(--color-bg-primary);
+}
+
+.search-input-container {
+    display: flex;
+    align-items: stretch;
+    position: relative;
+}
+
+.search-input {
+    flex: 1;
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border: none;
+    outline: none;
+    font-size: var(--font-size-lg);
+    font-family: var(--font-body);
+    background-color: transparent;
+    color: var(--color-text-primary);
+    min-height: 56px;
+}
+
+.search-input::placeholder {
+    color: var(--color-text-tertiary);
+}
+
+.search-button {
+    padding: var(--spacing-md) var(--spacing-xl);  /* 减小 from lg */
+    background: var(--color-accent-primary);
+    border: none;
+    border-left: 2px solid var(--color-border);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    position: relative;
+}
+
+.search-button::after {
+    content: '搜索';
+    font-family: var(--font-display);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: white;
+    margin-left: var(--spacing-sm);
+}
+
+.search-button:hover {
+    background: var(--color-accent-secondary);
+    transform: scale(1.02);
+}
+
+.search-button:active {
+    transform: scale(0.98);
+}
+
+.search-icon {
+    width: 20px;
+    height: 20px;
+    color: white;
+}
+
+.search-options {
+    display: flex;
+    border-top: 2px solid var(--color-border); /* 4. 与外框保持一致 */
+    background-color: var(--color-bg-secondary);
+    margin: 0 !important; /* 4. 移除可能的外边距 */
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-md) var(--spacing-lg);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+    height: 100%;
+    border-right: 1px solid var(--color-border);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    font-family: var(--font-display);
+}
+
+.radio-option:last-child {
+    border-right: none;
+}
+
+.radio-option:hover {
+    background-color: var(--color-bg-tertiary);
+}
+
+.radio-option input[type="radio"] {
+    margin-right: var(--spacing-xs);
+    cursor: pointer;
+}
+
+.radio-text {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+}
+
+.radio-option input[type="radio"]:checked + .radio-text {
+    color: var(--color-accent-primary);
+    font-weight: 700;
+}
+
+/* ===========================
+   5️⃣ TODO 页面完整样式
+   =========================== */
+
+/* 覆盖 max-width */
+body.todo-page .page-main {
+    max-width: 100%;
+}
+
+.todo-section {
+    width: 100%;
+    padding: var(--spacing-lg);
+}
+
+.todo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+}
+
+.todo-title {
+    margin: 0;
+    font-size: var(--font-size-2xl);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-weight: 800;
+}
+
+.todo-title a {
+    color: inherit;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-fast);
+}
+
+.todo-title a:hover {
+    color: var(--color-accent-primary);
+    background-color: var(--color-accent-soft);
+}
+
+.todo-title-icon {
+    opacity: 0.4;
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.todo-title a:hover .todo-title-icon {
+    opacity: 1;
+    transform: translate(3px, -3px);
+}
+
+.todo-auth {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.todo-user {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.todo-user-avatar {
+    width: 36px;              /* 减小 from 过大 */
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--color-accent-primary);
+}
+
+.todo-user-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-base);
+}
+
+/* 按钮样式 */
+.todo-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--transition-normal);
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+}
+
+.todo-btn:hover {
+    transform: translateY(-2px);
+    background: var(--color-bg-tertiary);
+    box-shadow: var(--shadow-sm);
+}
+
+.todo-btn::before {
+    display: none;
+}
+
+.todo-btn-primary {
+    background: var(--color-accent-primary);
+    color: white;
+    border-color: var(--color-accent-primary);
+}
+
+.todo-btn-primary:hover {
+    background: var(--color-accent-secondary);
+    border-color: var(--color-accent-secondary);
+    color: white;
+    box-shadow: var(--shadow-warm);
+}
+
+.todo-btn-accent {
+    background: var(--color-bg-primary);
+    color: var(--color-accent-primary);
+    border-color: var(--color-accent-primary);
+}
+
+.todo-btn-accent:hover {
+    background: var(--color-accent-primary);
+    color: white;
+}
+
+.todo-btn-small {
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: var(--font-size-sm);
+}
+
+.todo-btn-danger {
+    color: #ef4444;
+    border-color: #ef4444;
+}
+
+.todo-btn-danger:hover {
+    background: #ef4444;
+    color: white;
+}
+
+/* Loading */
+.todo-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-3xl);
+    color: var(--color-text-secondary);
+}
+
+.todo-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--color-border);
+    border-top-color: var(--color-accent-primary);
+    border-radius: 50%;
+    animation: todoSpin 0.8s linear infinite;
+    margin-bottom: var(--spacing-md);
+}
+
+@keyframes todoSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* Error */
+.todo-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-xl);
+    background: var(--color-bg-secondary);
+    border: 2px solid #ef4444;
+    border-radius: var(--radius-xl);
+    color: #ef4444;
+    text-align: center;
+}
+
+/* Kanban Board */
+.todo-board {
+    display: flex;
+    gap: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    min-height: calc(100vh - 280px);
+}
+
+.todo-column {
+    flex: 1;
+    min-width: 0;
+    background: var(--color-bg-secondary);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-sm);
+}
+
+.todo-column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-lg);
+    border-bottom: 1.5px solid var(--color-border);
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.todo-column-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-caps);
+}
+
+.todo-column-count {
+    background: var(--color-accent-primary);
+    color: white;
+    font-family: var(--font-display);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: var(--radius-2xl);
+    min-width: 24px;
+    text-align: center;
+}
+
+.todo-column-items {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+/* Item Cards */
+.todo-item {
+    background: var(--color-bg-primary);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    transition: all var(--transition-normal);
+    display: flex;
+    gap: var(--spacing-sm);
+    position: relative;
+}
+
+.todo-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-accent-primary);
+}
+
+.todo-item-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-sm);
+    word-break: break-word;
+}
+
+.todo-item-title a {
+    color: var(--color-accent-primary);
+}
+
+.todo-item-body {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-sm);
+    line-height: 1.6;
+    word-break: break-word;
+}
+
+.todo-item-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid var(--color-border);
+}
+
+/* Modal */
+.todo-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(45, 24, 16, 0.75);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: var(--spacing-md);
+}
+
+.todo-modal-content {
+    background: var(--color-bg-primary);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-2xl);
+    max-width: 520px;
+    width: 100%;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+}
+
+.todo-modal-content h2 {
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Device Code Display */
+.todo-device-code {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--color-accent-primary);
+    letter-spacing: 0.2em;
+    padding: var(--spacing-xl);
+    background: var(--color-bg-secondary);
+    border: 2px dashed var(--color-accent-primary);
+    border-radius: var(--radius-xl);
+    margin: var(--spacing-lg) 0;
+    user-select: all;
+}
+
+.todo-device-status {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-base);
+    margin: var(--spacing-md) 0;
+}
+
+/* Form Styles */
+.todo-form-group {
+    margin-bottom: var(--spacing-lg);
+    text-align: left;
+}
+
+.todo-form-group label {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.todo-form-input,
+.todo-form-textarea,
+.todo-form-select {
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-body);
+    font-size: var(--font-size-base);
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    transition: all var(--transition-normal);
+    box-sizing: border-box;
+}
+
+.todo-form-input:focus,
+.todo-form-textarea:focus,
+.todo-form-select:focus {
+    border-color: var(--color-accent-primary);
+    box-shadow: 0 0 0 4px var(--color-accent-soft);
+    outline: none;
+}
+
+.todo-form-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.todo-form-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: flex-end;
+    margin-top: var(--spacing-xl);
+}
+
+/* Column header layout */
+.todo-column-header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+/* Add button in column header */
+.todo-column-add-btn {
+    background: none;
+    border: 1.5px solid var(--color-border);
+    color: var(--color-text-secondary);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    padding: 0;
+}
+
+.todo-column-add-btn:hover {
+    background: var(--color-accent-primary);
+    border-color: var(--color-accent-primary);
+    color: white;
+    transform: scale(1.1);
+}
+
+.todo-column-add-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Drag and drop styles */
+.todo-item[draggable="true"] {
+    cursor: grab;
+}
+
+.todo-item.dragging {
+    opacity: 0.6;
+    cursor: grabbing;
+    transform: rotate(3deg);
+}
+
+.todo-item-drag-handle {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 6px;
+    color: var(--color-text-tertiary);
+    cursor: grab;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.todo-item:hover .todo-item-drag-handle {
+    opacity: 1;
+}
+
+.todo-item.dragging .todo-item-drag-handle {
+    cursor: grabbing;
+}
+
+.todo-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.todo-column-items.drag-over {
+    background: var(--color-bg-tertiary);
+    border: 2px dashed var(--color-accent-primary);
+    border-radius: var(--radius-md);
+    min-height: 120px;
+}
+
+/* ===========================
+   📁 文件夹树视图样式
+   =========================== */
+
+.folder-tree-container {
+    min-height: 200px;
+}
+
+.folder-tree-root {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.folder-tree-level {
+    list-style: none;
+    padding-left: var(--spacing-2xl);
+    margin: 0;
+}
+
+.folder-tree-folder {
+    margin-bottom: var(--spacing-xs);
+}
+
+.folder-tree-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    user-select: none;
+    transition: all var(--transition-fast);
+}
+
+.folder-tree-header:hover {
+    background-color: var(--color-accent-soft);
+}
+
+.folder-tree-chevron {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    transition: transform var(--transition-normal);
+    color: var(--color-text-tertiary);
+}
+
+.folder-tree-header.expanded .folder-tree-chevron {
+    transform: rotate(90deg);
+}
+
+.folder-tree-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--color-accent-primary);
+}
+
+.folder-tree-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.folder-tree-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-base);
+}
+
+.folder-tree-article {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    padding-left: calc(var(--spacing-lg) + 20px + var(--spacing-md));
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-fast);
+}
+
+.folder-tree-article:hover {
+    background-color: var(--color-accent-soft);
+}
+
+.folder-tree-article .folder-tree-icon {
+    color: var(--color-text-tertiary);
+}
+
+.folder-tree-article .folder-tree-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.folder-tree-link {
+    color: var(--color-text-primary);
+    text-decoration: none;
+    font-size: var(--font-size-base);
+    transition: color var(--transition-fast);
+}
+
+.folder-tree-link:hover {
+    color: var(--color-accent-primary);
+}
+
+/* Responsive: folder tree on small screens */
+@media (max-width: 576px) {
+    .folder-tree-level {
+        padding-left: var(--spacing-xl);
+    }
+
+    .folder-tree-article {
+        padding-left: calc(var(--spacing-xl) + 20px + var(--spacing-md));
+    }
+}
+
+/* ===========================
+   6️⃣ 移除/隐藏数字后缀
+   =========================== */
+
+/* 文件夹树的数字后缀 - 隐藏 */
+.folder-tree-count {
+    display: none !important;
+}
+
+/* 如果需要显示，使用更优雅的样式 */
+.folder-tree-count.show {
+    display: inline-block !important;
+    font-family: var(--font-display);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-tertiary);
+    background-color: var(--color-bg-tertiary);
+    padding: 2px 8px;
+    border-radius: var(--radius-2xl);
+    margin-left: var(--spacing-xs);
+    font-weight: 600;
+}
+
+/* ===========================
+   📱 响应式优化
+   =========================== */
+
+@media (max-width: 767px) {
+    /* TODO 页面移动端 */
+    .todo-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .todo-board {
+        flex-direction: column;
+        gap: var(--spacing-lg);
+    }
+
+    .todo-column {
+        min-height: 300px;
+    }
+
+    .todo-device-code {
+        font-size: var(--font-size-2xl);
+    }
+
+    /* 分页移动端 */
+    .pagination {
+        gap: var(--spacing-xs);
+    }
+
+    .pagination-btn {
+        min-width: 2.5rem;
+        height: 2.5rem;
+        padding: 0 var(--spacing-sm);
+        font-size: var(--font-size-sm);
+    }
+
+    /* 视图切换按钮移动端 */
+    .view-toggle-btn {
+        width: 44px;
+        height: 44px;
+    }
+
+    /* 筛选器移动端 */
+    .articles-filters {
+        flex-direction: column;
+    }
+
+    .filter-group {
+        min-width: 100%;
+    }
+}
+
+/* Dark mode adjustments */
+
+/* 暗色模式下的下拉选项 */
+[data-theme="dark"] .filter-select option {
+    background-color: var(--color-dark-bg-primary);
+    color: var(--color-dark-text-primary);
+}
+
+[data-theme="dark"] .filter-select option:checked,
+[data-theme="dark"] .filter-select option:hover {
+    background-color: var(--color-dark-accent-primary) !important;
+    color: white !important;
+}
+
+[data-theme="dark"] .todo-error {
+    background: var(--color-dark-bg-secondary);
+    border-color: #f87171;
+}
+
+[data-theme="dark"] .todo-btn-danger {
+    color: #f87171;
+    border-color: #f87171;
+}
+
+[data-theme="dark"] .todo-btn-danger:hover {
+    background: #ef4444;
+    color: white;
+}
+
+[data-theme="dark"] .todo-modal {
+    background: rgba(26, 15, 8, 0.85);
+}
+
+[data-theme="dark"] .todo-column-add-btn {
+    border-color: var(--color-dark-border);
+    color: var(--color-dark-text-secondary);
+}
+
+[data-theme="dark"] .todo-column-add-btn:hover {
+    background: var(--color-dark-accent-primary);
+    border-color: var(--color-dark-accent-primary);
+    color: white;
+}
+
+[data-theme="dark"] .todo-column-items.drag-over {
+    background: var(--color-dark-bg-tertiary);
+    border-color: var(--color-dark-accent-primary);
+}

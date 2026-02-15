@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博客设计预览 - 日落橙主题</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./templates/assets/css/style.css">
+    <style>
+        /* Additional preview styles */
+        .preview-section {
+            margin-bottom: var(--spacing-3xl);
+            padding: var(--spacing-2xl) 0;
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .preview-header {
+            font-family: var(--font-display);
+            font-size: var(--font-size-xl);
+            color: var(--color-text-tertiary);
+            text-align: center;
+            margin-bottom: var(--spacing-md);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-caps);
+            font-weight: 600;
+        }
+
+        .color-swatches {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: var(--spacing-md);
+            margin: var(--spacing-xl) 0;
+        }
+
+        .color-swatch {
+            text-align: center;
+        }
+
+        .color-box {
+            height: 100px;
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-sm);
+            border: 1.5px solid var(--color-border);
+            box-shadow: var(--shadow-sm);
+            transition: transform var(--transition-fast);
+        }
+
+        .color-box:hover {
+            transform: scale(1.05);
+        }
+
+        .color-label {
+            font-family: var(--font-mono);
+            font-size: var(--font-size-xs);
+            color: var(--color-text-tertiary);
+            font-weight: 500;
+        }
+
+        .demo-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+            justify-content: center;
+        }
+
+        .demo-button {
+            padding: var(--spacing-md) var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            border: 1.5px solid var(--color-border);
+            background: var(--color-bg-secondary);
+            color: var(--color-text-primary);
+            font-family: var(--font-display);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .demo-button:hover {
+            background: var(--color-accent-primary);
+            color: white;
+            border-color: var(--color-accent-primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-warm);
+        }
+
+        .demo-button.primary {
+            background: var(--color-accent-primary);
+            color: white;
+            border-color: var(--color-accent-primary);
+        }
+
+        .demo-button.primary:hover {
+            background: var(--color-accent-secondary);
+        }
+    </style>
+</head>
+<body id="theme-body">
+    <div class="page-wrapper">
+        <!-- Header -->
+        <header class="page-header">
+            <div class="container">
+                <nav class="page-nav">
+                    <div class="nav-links">
+                        <a href="#" class="nav-link active">Home</a>
+                        <a href="#" class="nav-link">Articles</a>
+                        <a href="#" class="nav-link">Search</a>
+                    </div>
+                    <div class="nav-actions">
+                        <button id="theme-toggle" aria-label="Toggle dark mode" class="theme-toggle-btn">
+                            <span class="sun-icon">☀️</span>
+                            <span class="moon-icon">🌙</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="page-main">
+            <div class="container">
+                <!-- Hero Section -->
+                <section class="hero">
+                    <h1>设计系统预览</h1>
+                    <p>温暖的日落橙色主题 · 现代极简美学 · 精致微动效</p>
+                </section>
+
+                <!-- Color Palette -->
+                <div class="preview-section">
+                    <div class="preview-header">🎨 配色方案</div>
+                    <div class="color-swatches">
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #FF8C42;"></div>
+                            <div class="color-label">#FF8C42<br>主色调</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #FF6F1E;"></div>
+                            <div class="color-label">#FF6F1E<br>深橙色</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #FFB380;"></div>
+                            <div class="color-label">#FFB380<br>浅橙色</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #FFE5D3;"></div>
+                            <div class="color-label">#FFE5D3<br>柔和橙</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #FFFCF9; border: 2px solid #F4D4C0;"></div>
+                            <div class="color-label">#FFFCF9<br>背景色</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #2D1810;"></div>
+                            <div class="color-label">#2D1810<br>文字色</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Typography -->
+                <div class="preview-section">
+                    <div class="preview-header">✍️ 字体系统</div>
+                    <h1>标题 H1 - Outfit 800</h1>
+                    <h2>标题 H2 - Outfit 700</h2>
+                    <h3>标题 H3 - Outfit 600</h3>
+                    <p style="font-size: var(--font-size-lg);">正文采用 Crimson Pro 衬线字体,优雅而易读。这是一个专为长文阅读优化的字体,具有出色的可读性和温暖的人文气息。字号为 21px,行高 1.8,为读者提供舒适的阅读体验。</p>
+                    <code>代码使用 JetBrains Mono 等宽字体</code>
+                </div>
+
+                <!-- Buttons & Interactive Elements -->
+                <div class="preview-section">
+                    <div class="preview-header">🎯 交互元素</div>
+                    <div class="demo-buttons">
+                        <button class="demo-button primary">主要按钮</button>
+                        <button class="demo-button">次要按钮</button>
+                        <button class="demo-button">悬停试试</button>
+                    </div>
+                </div>
+
+                <!-- Article Cards -->
+                <div class="preview-section">
+                    <div class="preview-header">📝 文章卡片</div>
+                    <div class="articles-grid">
+                        <article class="article-card">
+                            <h3><a href="#">现代 Web 设计趋势</a></h3>
+                            <time>2025年1月15日</time>
+                            <p>探索 2025 年最新的网页设计趋势,包括极简主义、渐变色彩和微交互设计。</p>
+                            <div class="tags">
+                                <span class="tag">设计</span>
+                                <span class="tag">Web</span>
+                                <span class="tag">趋势</span>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <h3><a href="#">CSS 动画最佳实践</a></h3>
+                            <time>2025年1月10日</time>
+                            <p>学习如何创建流畅、高性能的 CSS 动画,提升用户体验和界面交互感。</p>
+                            <div class="tags">
+                                <span class="tag">CSS</span>
+                                <span class="tag">动画</span>
+                                <span class="tag">前端</span>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <h3><a href="#">优雅的色彩系统</a></h3>
+                            <time>2025年1月5日</time>
+                            <p>如何为你的设计项目构建一个温暖、和谐且可扩展的色彩系统。</p>
+                            <div class="tags">
+                                <span class="tag">配色</span>
+                                <span class="tag">设计系统</span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <!-- Article Content Preview -->
+                <div class="preview-section">
+                    <div class="preview-header">📄 文章内容</div>
+                    <article>
+                        <header>
+                            <div class="article-header-wrapper">
+                                <h1>文章详情页示例</h1>
+                            </div>
+                            <time>2025年1月20日</time>
+                            <div class="tags">
+                                <span class="tag">设计</span>
+                                <span class="tag">开发</span>
+                            </div>
+                        </header>
+
+                        <section class="content">
+                            <p>这是文章正文的第一段。使用 Crimson Pro 字体,字号 21px,行高 1.8,营造舒适的阅读体验。温暖的日落橙色主题让整个页面充满活力。</p>
+
+                            <h2>二级标题展示</h2>
+                            <p>这是二级标题下的内容。我们采用慷慨的间距设计,让内容有足够的呼吸空间。</p>
+
+                            <h3>三级标题展示</h3>
+                            <p>这是三级标题的内容示例。注意字体层级和间距的精心设计。</p>
+
+                            <blockquote>
+                                <p>这是一个引用块示例。采用斜体样式,左侧有橙色边框,背景使用渐变效果。</p>
+                            </blockquote>
+
+                            <p>下面是一个代码示例:</p>
+
+                            <pre><code>function greet(name) {
+    return `Hello, ${name}! 欢迎来到日落橙主题博客。`;
+}
+
+console.log(greet('世界'));</code></pre>
+
+                            <p>这是列表示例:</p>
+                            <ul>
+                                <li>温暖的日落橙色调 (#FF8C42)</li>
+                                <li>精致的微动效设计</li>
+                                <li>优雅的 Outfit + Crimson Pro 字体组合</li>
+                                <li>慷慨的留白和清晰的层次</li>
+                            </ul>
+                        </section>
+                    </article>
+                </div>
+
+                <!-- Recent Articles List -->
+                <div class="preview-section">
+                    <div class="preview-header">📚 最近文章列表</div>
+                    <section class="recent-articles">
+                        <h2>Recent Articles</h2>
+                        <ul>
+                            <li>
+                                <a href="#">打造完美的博客设计系统</a>
+                                <time>2025-01-20</time>
+                            </li>
+                            <li>
+                                <a href="#">现代 CSS 布局技巧</a>
+                                <time>2025-01-18</time>
+                            </li>
+                            <li>
+                                <a href="#">色彩心理学在设计中的应用</a>
+                                <time>2025-01-15</time>
+                            </li>
+                            <li>
+                                <a href="#">微交互设计指南</a>
+                                <time>2025-01-12</time>
+                            </li>
+                        </ul>
+                    </section>
+                </div>
+
+                <!-- Design Notes -->
+                <div class="preview-section" style="border: none;">
+                    <div class="preview-header">📋 设计说明</div>
+                    <div style="background: var(--color-bg-secondary); padding: var(--spacing-xl); border-radius: var(--radius-xl); border: 1.5px solid var(--color-border);">
+                        <h3 style="color: var(--color-accent-primary); margin-top: 0;">🌅 日落橙主题特点</h3>
+                        <ul style="font-size: var(--font-size-base); color: var(--color-text-secondary);">
+                            <li><strong>温暖配色:</strong> 以 #FF8C42 日落橙为主色调,营造温暖舒适的视觉氛围</li>
+                            <li><strong>优雅字体:</strong> Outfit (标题) + Crimson Pro (正文) 的组合,兼具现代感和可读性</li>
+                            <li><strong>精致微动效:</strong> 卡片悬停、导航高亮、按钮交互都有流畅的过渡动画</li>
+                            <li><strong>慷慨留白:</strong> 充足的间距设计,让内容有呼吸感</li>
+                            <li><strong>层次分明:</strong> 通过颜色、大小、间距构建清晰的视觉层级</li>
+                            <li><strong>暗色模式:</strong> 完整的暗色主题支持,保持温暖调性</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="page-footer">
+            <div class="container">
+                <p>&copy; 2025 你的博客. 日落橙主题设计预览</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.getElementById('theme-body');
+
+        themeToggle.addEventListener('click', function() {
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            body.setAttribute('data-theme', 'dark');
+        }
+
+        // Add staggered animation to article cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.article-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.animation = `fadeInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 0.15}s forwards`;
+            });
+        });
+    </script>
+</body>
+</html>

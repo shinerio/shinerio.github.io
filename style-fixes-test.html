@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>样式修复测试 - 日落橙主题</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./templates/assets/css/style.css">
+    <link rel="stylesheet" href="./templates/assets/css/style-fixes.css">
+    <style>
+        .test-section {
+            margin-bottom: var(--spacing-3xl);
+            padding: var(--spacing-xl);
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-xl);
+            border: 1.5px solid var(--color-border);
+        }
+        .test-label {
+            font-family: var(--font-display);
+            font-size: var(--font-size-sm);
+            color: var(--color-text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-caps);
+            margin-bottom: var(--spacing-md);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body id="theme-body" class="home-page">
+    <div class="page-wrapper">
+        <!-- Header -->
+        <header class="page-header">
+            <div class="container">
+                <nav class="page-nav">
+                    <div class="nav-links">
+                        <a href="#" class="nav-link active">测试页</a>
+                    </div>
+                    <div class="nav-actions">
+                        <button id="theme-toggle" aria-label="Toggle dark mode" class="theme-toggle-btn">
+                            <span class="sun-icon">☀️</span>
+                            <span class="moon-icon">🌙</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="page-main">
+            <div class="container">
+                <!-- 修复1&2: Hero 区域优化 -->
+                <div class="test-section">
+                    <div class="test-label">✅ 修复 1&2: Hero 区域 - 大幅减小尺寸和留白</div>
+                    <section class="hero">
+                        <h1>Shinerio's Blog</h1>
+                        <p>Code flows with ease, and life unfolds in beauty</p>
+                    </section>
+                    <p style="color: var(--color-accent-primary); margin-top: var(--spacing-md); font-family: var(--font-display); font-weight: 600;">
+                        ✓ 标题: 72px → 40px (减少 44%)<br>
+                        ✓ 上下内边距: 96px → 40px (减少 58%)<br>
+                        ✓ 背景光晕已移除
+                    </p>
+                    <section class="recent-articles" style="margin-top: var(--spacing-xl);">
+                        <h2>最新文章</h2>
+                        <p style="color: var(--color-text-secondary);">✓ 标题下方橙色下划线已移除</p>
+                    </section>
+                </div>
+
+                <!-- 修复3&4&5: Articles 筛选器 -->
+                <div class="test-section">
+                    <div class="test-label">✅ 修复 3&4&5: Articles 筛选器 - 字体完整显示，对齐优化，对比度增强</div>
+                    <div class="articles-filters">
+                        <div class="filter-group">
+                            <label for="test-tag">按标签筛选</label>
+                            <select id="test-tag" class="filter-select">
+                                <option value="">全部标签 All Tags</option>
+                                <option value="design">设计 Design</option>
+                                <option value="development">开发 Development</option>
+                                <option value="testing">前端开发与测试 Frontend Dev</option>
+                                <option value="long">这是一个很长的标签文字测试</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="test-sort">排序方式</label>
+                            <select id="test-sort" class="filter-select">
+                                <option value="date-desc">日期降序 (最新优先)</option>
+                                <option value="date-asc">日期升序 (最早优先)</option>
+                                <option value="title">标题排序 A-Z</option>
+                                <option value="reading">阅读时间 Reading Time</option>
+                            </select>
+                        </div>
+
+                        <div class="view-toggle">
+                            <button class="view-toggle-btn active" title="列表视图">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                                    <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                    <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                    <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                                </svg>
+                            </button>
+                            <button class="view-toggle-btn" title="文件夹视图">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div style="margin-top: var(--spacing-lg); padding: var(--spacing-md); background: var(--color-accent-soft); border-radius: var(--radius-md);">
+                        <p style="color: var(--color-text-primary); margin: 0; font-family: var(--font-display); font-weight: 600;">
+                            ✓ 下拉框高度: 56px，最小宽度: 240px<br>
+                            ✓ 视图按钮: 56px × 56px (完美对齐)<br>
+                            ✓ 点击下拉框测试: 选中项为橙色背景 + 白色文字 (强对比)<br>
+                            ✓ 字体完整显示，无截断
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 修复5: Search 页面 -->
+                <div class="test-section">
+                    <div class="test-label">✅ 修复 5: 搜索界面 - 按钮与单选框无缝贴合</div>
+                    <div class="search-section">
+                        <h2 class="search-title">搜索文章</h2>
+                        <div class="search-controls">
+                            <div class="search-input-container">
+                                <input type="text" id="test-search" class="search-input" placeholder="输入关键词搜索...">
+                                <button class="search-button">
+                                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <path d="m21 21-4.35-4.35"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="search-options">
+                                <label class="radio-option">
+                                    <input type="radio" name="test-search-type" value="all" checked>
+                                    <span class="radio-text">全部</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="test-search-type" value="title">
+                                    <span class="radio-text">标题</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="test-search-type" value="content">
+                                    <span class="radio-text">内容</span>
+                                </label>
+                            </div>
+                        </div>
+                        <p style="color: var(--color-text-secondary); margin-top: var(--spacing-md);">
+                            检查: 搜索按钮和单选框之间无留白，完全贴合
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 分页测试 -->
+                <div class="test-section">
+                    <div class="test-label">✅ 分页样式 - 增大尺寸和间距</div>
+                    <div class="pagination">
+                        <button class="pagination-btn pagination-prev" disabled>上一页</button>
+                        <button class="pagination-btn active">1</button>
+                        <button class="pagination-btn">2</button>
+                        <button class="pagination-btn">3</button>
+                        <span class="pagination-ellipsis">...</span>
+                        <button class="pagination-btn">10</button>
+                        <button class="pagination-btn pagination-next">下一页</button>
+                    </div>
+                </div>
+
+                <!-- 总结 -->
+                <div class="test-section" style="border: 2px solid var(--color-accent-primary);">
+                    <h2 style="color: var(--color-accent-primary); margin-top: 0;">✅ 所有修复已完成 (第二轮优化)</h2>
+                    <ul style="font-size: var(--font-size-base); color: var(--color-text-secondary); line-height: 1.8;">
+                        <li><strong>Hero 区域:</strong> 标题从 72px 大幅减小到 40px (减少 44%)，留白从 96px 减小到 40px (减少 58%)，移除背景光晕</li>
+                        <li><strong>最新文章:</strong> 标题下方的橙色下划线已移除</li>
+                        <li><strong>筛选器尺寸:</strong> 下拉菜单高度增加到 56px，最小宽度 240px，字体完整显示</li>
+                        <li><strong>筛选器对比度:</strong> 点击后选中项为橙色背景 + 白色文字 (强对比)，默认白色背景 + 深色文字</li>
+                        <li><strong>视图按钮:</strong> 尺寸调整为 56px，与下拉菜单完美对齐</li>
+                        <li><strong>搜索框:</strong> 按钮和单选框完全贴合，无留白</li>
+                        <li><strong>分页:</strong> 按钮尺寸增大，间距优化</li>
+                    </ul>
+                    <div style="margin-top: var(--spacing-lg); padding: var(--spacing-lg); background: linear-gradient(135deg, var(--color-accent-soft), var(--color-bg-tertiary)); border-radius: var(--radius-lg);">
+                        <p style="margin: 0; font-family: var(--font-display); font-weight: 700; font-size: var(--font-size-lg); color: var(--color-accent-primary);">
+                            🎉 第二轮优化重点:<br>
+                            <span style="font-size: var(--font-size-base); font-weight: 600; color: var(--color-text-primary);">
+                                1️⃣ Hero 区域大幅压缩，页面更紧凑<br>
+                                2️⃣ 下拉菜单空间更大，字体完整显示<br>
+                                3️⃣ 选项对比度大幅提升，易于阅读
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="page-footer">
+            <div class="container">
+                <p>&copy; 2025 样式修复测试页</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.getElementById('theme-body');
+
+        themeToggle.addEventListener('click', function() {
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+            }
+        });
+    </script>
+</body>
+</html>
