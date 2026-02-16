@@ -774,6 +774,42 @@ body.article-page article .content li {
     margin-bottom: 0.25rem;
 }
 
+body.article-page article .content table {
+    width: 100%;
+    display: block;
+    overflow-x: auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin: 0.7rem 0;
+    background-color: var(--color-bg-primary);
+}
+
+body.article-page article .content th,
+body.article-page article .content td {
+    padding: 0.45rem 0.6rem;
+    border-right: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    text-align: left;
+    white-space: nowrap;
+}
+
+body.article-page article .content th {
+    font-family: var(--font-display);
+    font-weight: 700;
+    background-color: var(--color-bg-secondary);
+}
+
+body.article-page article .content tr:last-child td {
+    border-bottom: none;
+}
+
+body.article-page article .content th:last-child,
+body.article-page article .content td:last-child {
+    border-right: none;
+}
+
 body.article-page article .content img,
 body.article-page section.content img {
     margin: 0.65rem auto;
