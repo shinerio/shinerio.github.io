@@ -734,11 +734,14 @@ body.article-page pre {
     border: 1.5px solid var(--color-border);
     border-radius: var(--radius-lg);
     padding: 0.75rem 0.9rem;
-    overflow-x: auto;
+    overflow-x: visible;
     font-family: var(--font-mono);
     line-height: var(--line-height-code);
     margin: 0.7rem 0;
     box-shadow: var(--shadow-sm);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 pre code {
@@ -746,6 +749,12 @@ pre code {
     padding: 0;
     border: none;
     font-size: var(--font-size-sm);
+}
+
+body.article-page pre code {
+    white-space: inherit;
+    overflow-wrap: inherit;
+    word-break: inherit;
 }
 
 /* Blockquotes */
@@ -776,8 +785,8 @@ body.article-page article .content li {
 
 body.article-page article .content table {
     width: 100%;
-    display: block;
-    overflow-x: auto;
+    display: table;
+    overflow-x: visible;
     border-collapse: separate;
     border-spacing: 0;
     border: 1.5px solid var(--color-border);
@@ -792,7 +801,9 @@ body.article-page article .content td {
     border-right: 1px solid var(--color-border);
     border-bottom: 1px solid var(--color-border);
     text-align: left;
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 body.article-page article .content th {
