@@ -4,6 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <title>{{title}} - {{siteTitle}}</title>
+    <script>
+        // Apply theme before stylesheets load to avoid light-theme flash.
+        (function() {
+            var savedTheme = null;
+            var prefersDark = false;
+            try {
+                savedTheme = localStorage.getItem('theme');
+            } catch (e) {}
+            try {
+                prefersDark = window.matchMedia &&
+                    window.matchMedia('(prefers-color-scheme: dark)').matches;
+            } catch (e) {}
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+            }
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -52,17 +71,38 @@
         // Theme switching functionality
         document.addEventListener('DOMContentLoaded', function() {
             const themeToggle = document.getElementById('theme-toggle');
+            const root = document.documentElement;
             const body = document.getElementById('theme-body');
 
             // Check for saved theme preference or respect OS preference
             const savedTheme = localStorage.getItem('theme');
             const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
 
+            function applyTheme(isDark) {
+                if (isDark) {
+                    root.setAttribute('data-theme', 'dark');
+                    body.setAttribute('data-theme', 'dark');
+                } else {
+                    root.removeAttribute('data-theme');
+                    body.removeAttribute('data-theme');
+                }
+            }
+
+            function isDarkTheme() {
+                return body.getAttribute('data-theme') === 'dark' ||
+                    root.getAttribute('data-theme') === 'dark';
+            }
+
             // Set initial theme
             if (savedTheme === 'dark' || (!savedTheme && prefersDarkScheme.matches)) {
-                body.setAttribute('data-theme', 'dark');
+                applyTheme(true);
             } else {
-                body.removeAttribute('data-theme'); // light theme
+                applyTheme(false);
+            }
+
+            // Keep body in sync with early bootstrapped <html data-theme>.
+            if (root.getAttribute('data-theme') === 'dark') {
+                body.setAttribute('data-theme', 'dark');
             }
 
             // Sync Utterances iframe theme
@@ -80,19 +120,19 @@
             // Listen for Utterances iframe ready to set initial theme
             window.addEventListener('message', function(event) {
                 if (event.origin !== 'https://utteranc.es') return;
-                const isDark = body.getAttribute('data-theme') === 'dark' ||
+                const isDark = isDarkTheme() ||
                     (!localStorage.getItem('theme') && prefersDarkScheme.matches);
                 syncUtterancesTheme(isDark);
             });
 
             // Toggle theme function
             function toggleTheme() {
-                if (body.getAttribute('data-theme') === 'dark') {
-                    body.removeAttribute('data-theme');
+                if (isDarkTheme()) {
+                    applyTheme(false);
                     localStorage.setItem('theme', 'light');
                     syncUtterancesTheme(false);
                 } else {
-                    body.setAttribute('data-theme', 'dark');
+                    applyTheme(true);
                     localStorage.setItem('theme', 'dark');
                     syncUtterancesTheme(true);
                 }
@@ -104,11 +144,7 @@
             // Listen for OS theme changes
             prefersDarkScheme.addEventListener('change', function(e) {
                 if (!localStorage.getItem('theme')) {
-                    if (e.matches) {
-                        body.setAttribute('data-theme', 'dark');
-                    } else {
-                        body.removeAttribute('data-theme');
-                    }
+                    applyTheme(e.matches);
                     syncUtterancesTheme(e.matches);
                 }
             });

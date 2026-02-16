@@ -5,9 +5,16 @@ document.addEventListener('DOMContentLoaded', function () {
   // --- Theme sync for Highlight.js stylesheets ---
   var lightSheet = document.getElementById('hljs-light');
   var darkSheet = document.getElementById('hljs-dark');
+  var root = document.documentElement;
+  var themeBody = document.getElementById('theme-body');
+
+  function isDarkTheme() {
+    return (themeBody && themeBody.getAttribute('data-theme') === 'dark') ||
+      root.getAttribute('data-theme') === 'dark';
+  }
 
   function syncHljsTheme() {
-    var isDark = document.getElementById('theme-body').getAttribute('data-theme') === 'dark';
+    var isDark = isDarkTheme();
     if (lightSheet && darkSheet) {
       lightSheet.disabled = isDark;
       darkSheet.disabled = !isDark;
@@ -17,10 +24,15 @@ document.addEventListener('DOMContentLoaded', function () {
   // Set initial theme
   syncHljsTheme();
 
-  // Observe data-theme changes on <body> to stay in sync with toggle
-  var themeBody = document.getElementById('theme-body');
+  // Observe data-theme changes on <body> and <html> to stay in sync with toggle.
   if (themeBody && typeof MutationObserver !== 'undefined') {
     new MutationObserver(syncHljsTheme).observe(themeBody, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    });
+  }
+  if (typeof MutationObserver !== 'undefined') {
+    new MutationObserver(syncHljsTheme).observe(root, {
       attributes: true,
       attributeFilter: ['data-theme']
     });
