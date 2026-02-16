@@ -18,17 +18,21 @@
     --color-accent-highlight: #FFB380;      /* Lighter peachy orange */
     --color-accent-soft: #FFE5D3;           /* Very soft orange tint */
 
-    /* Dark mode colors - Cozy Night */
-    --color-dark-bg-primary: #1A0F08;
-    --color-dark-bg-secondary: #2D1810;
-    --color-dark-bg-tertiary: #3D2417;
-    --color-dark-text-primary: #F5EDE6;
-    --color-dark-text-secondary: #D4C4B8;
-    --color-dark-text-tertiary: #A3938A;
-    --color-dark-border: #4D3426;
-    --color-dark-accent-primary: #FFA466;
-    --color-dark-accent-secondary: #FFB888;
-    --color-dark-accent-highlight: #FF8C42;
+    /* Dark mode colors - Neutral Standard Dark */
+    --color-dark-bg-primary: #0B0F14;
+    --color-dark-bg-secondary: #131A22;
+    --color-dark-bg-tertiary: #1D2633;
+    --color-dark-text-primary: #F5F7FA;
+    --color-dark-text-secondary: #D3D9E3;
+    --color-dark-text-tertiary: #AAB4C3;
+    --color-dark-border: #2A3442;
+    --color-dark-accent-primary: #7AA2FF;
+    --color-dark-accent-secondary: #5C8DFF;
+    --color-dark-accent-highlight: #9DBBFF;
+    --color-dark-accent-soft: #1A2433;
+    --color-dark-overlay: rgba(5, 8, 12, 0.72);
+    --color-dark-header-bg: rgba(11, 15, 20, 0.88);
+    --color-dark-hero-glow: rgba(122, 162, 255, 0.18);
 
     /* Component-specific colors */
     --color-card-bg: var(--color-bg-secondary);
@@ -60,6 +64,10 @@
     --shadow-md: 0 4px 16px rgba(255, 140, 66, 0.12), 0 2px 8px rgba(45, 24, 16, 0.04);
     --shadow-lg: 0 12px 32px rgba(255, 140, 66, 0.16), 0 4px 16px rgba(45, 24, 16, 0.06);
     --shadow-warm: 0 8px 24px rgba(255, 140, 66, 0.24);
+    --shadow-dark-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+    --shadow-dark-md: 0 8px 20px rgba(0, 0, 0, 0.4);
+    --shadow-dark-lg: 0 16px 36px rgba(0, 0, 0, 0.46);
+    --shadow-dark-warm: 0 10px 24px rgba(36, 74, 153, 0.35);
 
     /* Transitions */
     --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -125,8 +133,13 @@
         --color-accent-primary: var(--color-dark-accent-primary);
         --color-accent-secondary: var(--color-dark-accent-secondary);
         --color-accent-highlight: var(--color-dark-accent-highlight);
+        --color-accent-soft: var(--color-dark-accent-soft);
         --color-card-bg: var(--color-bg-secondary);
         --color-card-border: var(--color-border);
+        --shadow-sm: var(--shadow-dark-sm);
+        --shadow-md: var(--shadow-dark-md);
+        --shadow-lg: var(--shadow-dark-lg);
+        --shadow-warm: var(--shadow-dark-warm);
     }
 }
 
@@ -141,8 +154,13 @@
     --color-accent-primary: var(--color-dark-accent-primary);
     --color-accent-secondary: var(--color-dark-accent-secondary);
     --color-accent-highlight: var(--color-dark-accent-highlight);
+    --color-accent-soft: var(--color-dark-accent-soft);
     --color-card-bg: var(--color-bg-secondary);
     --color-card-border: var(--color-border);
+    --shadow-sm: var(--shadow-dark-sm);
+    --shadow-md: var(--shadow-dark-md);
+    --shadow-lg: var(--shadow-dark-lg);
+    --shadow-warm: var(--shadow-dark-warm);
 }
 
 /* ===========================
@@ -275,7 +293,7 @@ body {
 }
 
 [data-theme="dark"] .page-header {
-    background-color: rgba(26, 15, 8, 0.85);
+    background-color: var(--color-dark-header-bg);
 }
 
 .page-nav {
@@ -459,6 +477,10 @@ body.search-page .sidebar-toggle {
     background: radial-gradient(circle, rgba(255, 140, 66, 0.12) 0%, transparent 70%);
     pointer-events: none;
     animation: fadeIn 1s ease-out;
+}
+
+[data-theme="dark"] .hero::before {
+    background: radial-gradient(circle, var(--color-dark-hero-glow) 0%, transparent 70%);
 }
 
 .hero h1 {
@@ -861,7 +883,7 @@ body.article-page .comments-title {
     overflow-y: auto;
     -ms-overflow-style: none;
     scrollbar-width: none;
-    box-shadow: 2px 0 12px rgba(255, 140, 66, 0.08);
+    box-shadow: 2px 0 12px rgba(15, 23, 42, 0.16);
     border-right: 1px solid var(--color-border);
 }
 
@@ -1287,7 +1309,7 @@ body.search-page.sidebar-collapsed .sidebar {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(45, 24, 16, 0.6);
+    background: var(--color-dark-overlay);
     backdrop-filter: blur(4px);
     z-index: 999;
     transition: opacity var(--transition-normal);

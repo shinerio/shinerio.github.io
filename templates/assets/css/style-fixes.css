@@ -750,7 +750,7 @@ body.todo-page .page-main {
 .todo-modal {
     position: fixed;
     inset: 0;
-    background: rgba(45, 24, 16, 0.75);
+    background: var(--color-dark-overlay);
     backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
@@ -1174,7 +1174,7 @@ body.todo-page .page-main {
 }
 
 [data-theme="dark"] .todo-modal {
-    background: rgba(26, 15, 8, 0.85);
+    background: var(--color-dark-overlay);
 }
 
 [data-theme="dark"] .todo-column-add-btn {
