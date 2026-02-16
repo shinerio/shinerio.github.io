@@ -788,8 +788,14 @@ li {
     top: 0;
     height: 100vh;
     overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
     box-shadow: 2px 0 12px rgba(255, 140, 66, 0.08);
     border-right: 1px solid var(--color-border);
+}
+
+.sidebar::-webkit-scrollbar {
+    display: none;
 }
 
 body.home-page,
