@@ -347,6 +347,8 @@
     display: flex;
     align-items: stretch;
     position: relative;
+    width: 100%;
+    min-width: 0;
 }
 
 .search-input {
@@ -359,6 +361,7 @@
     background-color: transparent;
     color: var(--color-text-primary);
     min-height: 56px;
+    min-width: 0;
 }
 
 .search-input::placeholder {
@@ -377,6 +380,7 @@
     justify-content: center;
     min-width: 80px;
     position: relative;
+    flex: 0 0 auto;
 }
 
 .search-button::after {
@@ -1108,6 +1112,35 @@ body.todo-page .page-main {
 
     .filter-group {
         min-width: 100%;
+    }
+}
+
+@media (max-width: 767px) {
+    .search-section {
+        padding: var(--spacing-lg);
+    }
+
+    .search-button {
+        min-width: 56px;
+        padding: var(--spacing-md);
+    }
+
+    .search-button::after {
+        display: none;
+    }
+
+    .search-options {
+        flex-direction: column;
+    }
+
+    .radio-option {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .radio-option:last-child {
+        border-bottom: none;
     }
 }
 
