@@ -644,16 +644,15 @@ a:hover {
 
 .page-main {
     flex: 1;
-    padding: var(--spacing-2xl) 0;
+    padding: var(--spacing-xl) 0;
     max-width: 85ch;
     margin: 0 auto;
     width: 100%;
 }
 
 article header {
-    margin-bottom: var(--spacing-2xl);
-    padding-bottom: var(--spacing-xl);
-    border-bottom: 2px solid var(--color-border);
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
 }
 
 .article-header-wrapper {
@@ -666,7 +665,7 @@ article header {
 .article-header-wrapper h1 {
     flex: 1;
     margin: 0;
-    font-size: var(--font-size-4xl);
+    font-size: var(--font-size-2xl);
     line-height: 1.15;
 }
 
@@ -680,24 +679,32 @@ article time {
 }
 
 article .content {
-    font-size: var(--font-size-lg);
-    line-height: 1.8;
+    font-size: var(--font-size-base);
+    line-height: 1.7;
 }
 
 article .content p {
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+article .content h1 {
+    font-size: var(--font-size-2xl);
+    margin-top: var(--spacing-xl);
+    margin-bottom: var(--spacing-md);
 }
 
 article .content h2 {
-    margin-top: var(--spacing-2xl);
-    margin-bottom: var(--spacing-lg);
-    padding-top: var(--spacing-lg);
-    border-top: 1px solid var(--color-border);
+    font-size: var(--font-size-xl);
+    margin-top: var(--spacing-xl);
+    margin-bottom: var(--spacing-md);
+    padding-top: 0;
+    border-top: none;
 }
 
 article .content h3 {
-    margin-top: var(--spacing-xl);
-    margin-bottom: var(--spacing-md);
+    font-size: var(--font-size-lg);
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
 }
 
 /* Code blocks */
