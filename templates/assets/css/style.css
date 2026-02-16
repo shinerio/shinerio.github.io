@@ -1101,6 +1101,66 @@ body.search-page.sidebar-collapsed .sidebar {
    =========================== */
 
 @media (max-width: 767px) {
+    .page-header {
+        padding: var(--spacing-sm) 0;
+    }
+
+    .page-header .container {
+        padding: 0 var(--spacing-sm);
+    }
+
+    .page-nav {
+        gap: var(--spacing-sm);
+    }
+
+    .nav-links {
+        flex: 1 1 auto;
+        min-width: 0;
+        gap: 0.25rem;
+    }
+
+    .sidebar-toggle {
+        width: 34px;
+        height: 34px;
+        flex: 0 0 34px;
+    }
+
+    .sidebar-toggle-icon,
+    .sidebar-toggle-icon::before,
+    .sidebar-toggle-icon::after {
+        width: 18px;
+        height: 2px;
+    }
+
+    .sidebar-toggle-icon::before {
+        top: -5px;
+    }
+
+    .sidebar-toggle-icon::after {
+        top: 5px;
+    }
+
+    .nav-link {
+        font-size: 0.72rem;
+        padding: 0.22rem 0.36rem;
+        border-radius: var(--radius-sm);
+        letter-spacing: 0;
+        white-space: nowrap;
+    }
+
+    .theme-toggle-btn {
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        border-radius: var(--radius-md);
+        flex: 0 0 34px;
+    }
+
+    .sun-icon,
+    .moon-icon {
+        font-size: 1rem;
+    }
+
     body.home-page,
     body.articles-page,
     body.search-page {
