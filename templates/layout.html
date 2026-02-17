@@ -16,11 +16,10 @@
                 prefersDark = window.matchMedia &&
                     window.matchMedia('(prefers-color-scheme: dark)').matches;
             } catch (e) {}
-            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-            } else {
-                document.documentElement.removeAttribute('data-theme');
-            }
+            var initialTheme = (savedTheme === 'dark' || (!savedTheme && prefersDark))
+                ? 'dark'
+                : 'light';
+            document.documentElement.setAttribute('data-theme', initialTheme);
         })();
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -79,13 +78,9 @@
             const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
 
             function applyTheme(isDark) {
-                if (isDark) {
-                    root.setAttribute('data-theme', 'dark');
-                    body.setAttribute('data-theme', 'dark');
-                } else {
-                    root.removeAttribute('data-theme');
-                    body.removeAttribute('data-theme');
-                }
+                const theme = isDark ? 'dark' : 'light';
+                root.setAttribute('data-theme', theme);
+                body.setAttribute('data-theme', theme);
             }
 
             function isDarkTheme() {
@@ -101,9 +96,7 @@
             }
 
             // Keep body in sync with early bootstrapped <html data-theme>.
-            if (root.getAttribute('data-theme') === 'dark') {
-                body.setAttribute('data-theme', 'dark');
-            }
+            body.setAttribute('data-theme', root.getAttribute('data-theme') || 'light');
 
             // Sync Utterances iframe theme
             function syncUtterancesTheme(isDark) {
@@ -139,7 +132,9 @@
             }
 
             // Add event listener to theme toggle button
-            themeToggle.addEventListener('click', toggleTheme);
+            if (themeToggle) {
+                themeToggle.addEventListener('click', toggleTheme);
+            }
 
             // Listen for OS theme changes
             prefersDarkScheme.addEventListener('change', function(e) {

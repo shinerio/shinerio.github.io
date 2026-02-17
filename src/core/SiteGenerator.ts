@@ -610,7 +610,7 @@ export class SiteGenerator {
     let fallbackIndex = 0;
 
     const content = htmlContent.replace(
-      /<h([2-3])([^>]*)>([\s\S]*?)<\/h\1>/gi,
+      /<h([1-3])([^>]*)>([\s\S]*?)<\/h\1>/gi,
       (match, levelStr, attrs, innerHtml) => {
         const level = parseInt(levelStr, 10);
         const text = innerHtml.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();

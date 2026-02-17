@@ -122,7 +122,7 @@
    =========================== */
 
 @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme]) {
         --color-bg-primary: var(--color-dark-bg-primary);
         --color-bg-secondary: var(--color-dark-bg-secondary);
         --color-bg-tertiary: var(--color-dark-bg-tertiary);

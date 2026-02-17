@@ -53,7 +53,7 @@ describe('Article TOC Generation', () => {
     await fs.remove(tempDir);
   });
 
-  it('builds H2/H3 anchors and TOC links with unique ids', async () => {
+  it('builds H1/H2/H3 anchors and TOC links with unique ids', async () => {
     const article: ParsedArticle = {
       metadata: {
         title: 'TOC Test',
@@ -75,10 +75,12 @@ describe('Article TOC Generation', () => {
     await generator.generateSite(options);
 
     const html = await fs.readFile(path.join(mockConfig.outputPath, 'toc-test.html'), 'utf-8');
+    expect(html).toContain('<h1 id="main">Main</h1>');
     expect(html).toContain('<h2 id="section-one">Section One</h2>');
     expect(html).toContain('<h2 id="section-one-2">Section One</h2>');
     expect(html).toContain('<h3 id="child">Child</h3>');
     expect(html).toContain('<h4>Ignore Level 4</h4>');
+    expect(html).toContain('href="#main"');
     expect(html).toContain('href="#section-one"');
     expect(html).toContain('href="#section-one-2"');
     expect(html).toContain('href="#child"');
