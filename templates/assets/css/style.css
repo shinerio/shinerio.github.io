@@ -962,17 +962,22 @@ body.search-page.sidebar-collapsed .sidebar {
 
 .sidebar-stats {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
     justify-content: center;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-xs);
     font-size: var(--font-size-xs);
     color: var(--color-text-secondary);
     margin-bottom: var(--spacing-lg);
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-md);
     background: var(--color-bg-tertiary);
     border-radius: var(--radius-md);
     font-family: var(--font-display);
     font-weight: 500;
+}
+
+.stat-item {
+    text-align: left;
 }
 
 .sidebar-widget .tag-cloud {

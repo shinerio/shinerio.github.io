@@ -147,7 +147,8 @@
       "Bash(grep:*)",
       "Bash(test:*)",
       "Bash(npm test:*)",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "Skill(shinerio-code-plugin:gitacp)"
     ]
   }
 }

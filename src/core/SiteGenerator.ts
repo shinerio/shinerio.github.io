@@ -90,9 +90,8 @@ export class SiteGenerator {
         </div>
 
         <div class="sidebar-stats">
-          <span>文章: ${articles.filter(a => !a.isDraft).length}</span>
-          <span class="stats-dot">·</span>
-          <span>更新: ${this.formatDate(new Date())}</span>
+          <div class="stat-item">文章: ${articles.filter(a => !a.isDraft).length}</div>
+          <div class="stat-item">更新: ${this.formatDate(new Date())}</div>
         </div>
 
         <div class="sidebar-widget">
