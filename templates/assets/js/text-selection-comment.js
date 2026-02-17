@@ -552,6 +552,12 @@
    * Show comment input popover
    */
   function showCommentPopover() {
+    // Save scroll position before any changes
+    const scrollPos = {
+      scrollX: window.scrollX || window.pageXOffset,
+      scrollY: window.scrollY || window.pageYOffset
+    };
+
     const rect = state.currentSelection ? state.currentSelection.rect : null;
     const selectedText = state.currentSelection ? state.currentSelection.text : '';
 
@@ -575,22 +581,44 @@
     state.popover.querySelector('.tsc-btn-cancel').addEventListener('click', hidePopover);
     state.popover.querySelector('.tsc-btn-submit').addEventListener('click', handleSubmitComment);
 
+    positionPopover(rect);
+    state.popover.classList.add('visible');
+
     const textarea = state.popover.querySelector('.tsc-popover-textarea');
-    textarea.focus();
+    // Use preventScroll to avoid page jumping when focusing
+    try {
+      textarea.focus({ preventScroll: true });
+    } catch (e) {
+      // Fallback for older browsers
+      textarea.focus();
+    }
+    // Restore scroll position as a safeguard
+    window.scrollTo(scrollPos.scrollX, scrollPos.scrollY);
+
     textarea.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
         handleSubmitComment();
       }
     });
-
-    positionPopover(rect);
-    state.popover.classList.add('visible');
   }
 
   /**
    * Position the popover
    */
   function positionPopover(rect) {
+    // Make sure position is set to absolute before measuring
+    state.popover.style.position = 'absolute';
+    // Temporarily show with opacity 0 to get accurate dimensions
+    const wasVisible = state.popover.classList.contains('visible');
+    if (!wasVisible) {
+      state.popover.style.opacity = '0';
+      state.popover.style.pointerEvents = 'none';
+      state.popover.classList.add('visible');
+    }
+
+    // Force a reflow to get accurate dimensions
+    state.popover.offsetHeight;
+
     if (!rect) {
       // Center in viewport
       const viewportWidth = window.innerWidth;
@@ -600,33 +628,37 @@
 
       state.popover.style.left = `${(viewportWidth - popoverWidth) / 2}px`;
       state.popover.style.top = `${(viewportHeight - popoverHeight) / 2 + window.scrollY}px`;
-      state.popover.style.position = 'absolute';
-      return;
+    } else {
+      const popoverWidth = state.popover.offsetWidth || 320;
+      const popoverHeight = state.popover.offsetHeight || 200;
+
+      // Position below selection by default
+      let left = rect.left + rect.width / 2 - popoverWidth / 2;
+      let top = rect.bottom + 10;
+
+      // Ensure it stays within viewport
+      const viewportWidth = window.innerWidth;
+      if (left < 10) left = 10;
+      if (left + popoverWidth > viewportWidth - 10) {
+        left = viewportWidth - popoverWidth - 10;
+      }
+
+      // If it would go off the bottom, position above instead
+      const viewportHeight = window.innerHeight;
+      if (top + popoverHeight > window.scrollY + viewportHeight - 10) {
+        top = rect.top - popoverHeight - 10;
+      }
+
+      state.popover.style.left = `${left}px`;
+      state.popover.style.top = `${top + window.scrollY}px`;
     }
 
-    const popoverWidth = state.popover.offsetWidth || 320;
-    const popoverHeight = state.popover.offsetHeight || 200;
-
-    // Position below selection by default
-    let left = rect.left + rect.width / 2 - popoverWidth / 2;
-    let top = rect.bottom + 10;
-
-    // Ensure it stays within viewport
-    const viewportWidth = window.innerWidth;
-    if (left < 10) left = 10;
-    if (left + popoverWidth > viewportWidth - 10) {
-      left = viewportWidth - popoverWidth - 10;
+    // Restore visibility state if we temporarily modified it
+    if (!wasVisible) {
+      state.popover.classList.remove('visible');
+      state.popover.style.opacity = '';
+      state.popover.style.pointerEvents = '';
     }
-
-    // If it would go off the bottom, position above instead
-    const viewportHeight = window.innerHeight;
-    if (top + popoverHeight > window.scrollY + viewportHeight - 10) {
-      top = rect.top - popoverHeight - 10;
-    }
-
-    state.popover.style.left = `${left}px`;
-    state.popover.style.top = `${top + window.scrollY}px`;
-    state.popover.style.position = 'absolute';
   }
 
   /**
@@ -1122,6 +1154,12 @@
    * Show edit popover for a comment
    */
   function showEditPopover(comment) {
+    // Save scroll position before any changes
+    const scrollPos = {
+      scrollX: window.scrollX || window.pageXOffset,
+      scrollY: window.scrollY || window.pageYOffset
+    };
+
     state.popover.innerHTML = `
       <div class="tsc-popover-header">
         <span class="tsc-popover-title">编辑评论</span>
@@ -1143,17 +1181,26 @@
       handleEditSubmit(comment);
     });
 
+    // Position in center of viewport
+    positionPopover(null);
+    state.popover.classList.add('visible');
+
     const textarea = state.popover.querySelector('.tsc-popover-textarea');
-    textarea.focus();
+    // Use preventScroll to avoid page jumping when focusing
+    try {
+      textarea.focus({ preventScroll: true });
+    } catch (e) {
+      // Fallback for older browsers
+      textarea.focus();
+    }
+    // Restore scroll position as a safeguard
+    window.scrollTo(scrollPos.scrollX, scrollPos.scrollY);
+
     textarea.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
         handleEditSubmit(comment);
       }
     });
-
-    // Position in center of viewport
-    positionPopover(null);
-    state.popover.classList.add('visible');
   }
 
   /**
