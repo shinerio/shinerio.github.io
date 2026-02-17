@@ -1,36 +1,51 @@
-<article>
-    <header>
-        <div class="article-header-wrapper">
-            <h1>{{title}}</h1>
-            <a href="{{markdownUrl}}"
-               download="{{markdownFilename}}"
-               class="markdown-export-btn"
-               title="下载 Markdown 源文件"
-               aria-label="导出 Markdown">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
-            </a>
-        </div>
-        <time datetime="{{dateISO}}">{{date}}</time>
-        <div class="tags">
-            {{#each tags}}
-            <span class="tag">{{this}}</span>
-            {{/each}}
-        </div>
-    </header>
-    <section class="content">
-        {{content}}
-    </section>
-</article>
+<div class="article-page-layout">
+    <div class="article-main-column">
+        <article>
+            <header>
+                <div class="article-header-wrapper">
+                    <h1>{{title}}</h1>
+                    <a href="{{markdownUrl}}"
+                       download="{{markdownFilename}}"
+                       class="markdown-export-btn"
+                       title="下载 Markdown 源文件"
+                       aria-label="导出 Markdown">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </a>
+                </div>
+                <time datetime="{{dateISO}}">{{date}}</time>
+                <div class="tags">
+                    {{#each tags}}
+                    <span class="tag">{{this}}</span>
+                    {{/each}}
+                </div>
+            </header>
+            <section class="content">
+                {{content}}
+            </section>
+        </article>
 
-{{#if commentsEnabled}}
-<section class="comments-section" id="comments">
-    <h2 class="comments-title">评论</h2>
-    <div class="utterances-container">
-        {{commentsScript}}
+        {{#if commentsEnabled}}
+        <section class="comments-section" id="comments">
+            <h2 class="comments-title">评论</h2>
+            <div class="utterances-container">
+                {{commentsScript}}
+            </div>
+        </section>
+        {{/if}}
     </div>
-</section>
-{{/if}}
+
+    {{#if tableOfContents}}
+    <aside class="article-toc-sidebar" aria-label="Table of contents">
+        <div class="article-toc-card">
+            <h2 class="article-toc-title">Ŀ¼</h2>
+            <nav class="article-toc-nav">
+                {{tableOfContents}}
+            </nav>
+        </div>
+    </aside>
+    {{/if}}
+</div>

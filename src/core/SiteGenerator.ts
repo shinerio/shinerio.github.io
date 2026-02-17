@@ -305,10 +305,11 @@ export class SiteGenerator {
       if (!article.isDraft) {
         // 处理文章内容中的Obsidian链接
         const processedContent = this.processObsidianLinks(article.htmlContent, articles);
+        const articleWithToc = this.buildArticleContentWithToc(processedContent);
 
         const content = this.renderTemplate(articleTemplate, {
           title: article.title,
-          content: processedContent,
+          content: articleWithToc.content,
           date: this.formatDate(article.date),
           dateISO: article.date.toISOString(),
           readingTime: article.readingTime,
@@ -316,7 +317,7 @@ export class SiteGenerator {
           tags: article.tags,
           markdownUrl: `assets/markdown/${article.slug}.md`,
           markdownFilename: `${article.title}.md`,
-          tableOfContents: this.generateTableOfContents(article.htmlContent),
+          tableOfContents: articleWithToc.tableOfContents,
           relatedArticles: this.getRelatedArticles(article, articles).slice(0, 3),
           commentsEnabled: options.config.comments?.enabled || false,
           commentsScript: this.generateCommentsScript(options.config, article.title)
@@ -344,7 +345,8 @@ export class SiteGenerator {
 <link rel="stylesheet" id="hljs-dark" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" disabled>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
-<script src="assets/js/image-enhance.js" defer></script>${this.generateTextSelectionCommentHead(options.config, article.slug)}`
+<script src="assets/js/image-enhance.js" defer></script>
+<script src="assets/js/article-toc.js" defer></script>${this.generateTextSelectionCommentHead(options.config, article.slug)}`
         });
 
         await fs.writeFile(path.join(outputPath, `${article.slug}.html`), html);
@@ -602,26 +604,50 @@ export class SiteGenerator {
    * 生成目录
    * Generate table of contents
    */
-  private generateTableOfContents(htmlContent: string): string {
-    const headings = htmlContent.match(/<h([1-6])[^>]*>(.*?)<\/h[1-6]>/g);
-    if (!headings) return '';
-    
-    const tocItems = headings.map(heading => {
-      const level = parseInt(heading.match(/<h([1-6])/)?.[1] || '1');
-      const text = heading.replace(/<[^>]*>/g, '');
-      const id = this.createSlug(text);
-      return { level, text, id };
-    });
-    
-    let toc = '<ul class="toc-list">';
-    for (const item of tocItems) {
-      toc += `<li class="toc-level-${item.level}">
-        <a href="#${item.id}" class="toc-link">${item.text}</a>
-      </li>`;
+  private buildArticleContentWithToc(htmlContent: string): { content: string; tableOfContents: string } {
+    const tocItems: Array<{ level: number; text: string; id: string }> = [];
+    const usedIds = new Map<string, number>();
+    let fallbackIndex = 0;
+
+    const content = htmlContent.replace(
+      /<h([2-3])([^>]*)>([\s\S]*?)<\/h\1>/gi,
+      (match, levelStr, attrs, innerHtml) => {
+        const level = parseInt(levelStr, 10);
+        const text = innerHtml.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+        const baseId = this.createSlug(text) || `section-${++fallbackIndex}`;
+        const id = this.ensureUniqueId(baseId, usedIds);
+        const safeText = text || `Section ${fallbackIndex}`;
+        const attrsWithoutId = attrs.replace(/\sid=(["']).*?\1/i, '');
+
+        tocItems.push({ level, text: safeText, id });
+        return `<h${level}${attrsWithoutId} id="${id}">${innerHtml}</h${level}>`;
+      }
+    );
+
+    if (tocItems.length === 0) {
+      return { content, tableOfContents: '' };
     }
-    toc += '</ul>';
-    
-    return toc;
+
+    const tableOfContents = `<ul class="toc-list">${tocItems
+      .map(item => `<li class="toc-level-${item.level}"><a href="#${item.id}" class="toc-link">${this.escapeHtml(item.text)}</a></li>`)
+      .join('')}</ul>`;
+
+    return { content, tableOfContents };
+  }
+
+  private ensureUniqueId(baseId: string, usedIds: Map<string, number>): string {
+    const count = usedIds.get(baseId) || 0;
+    usedIds.set(baseId, count + 1);
+    return count === 0 ? baseId : `${baseId}-${count + 1}`;
+  }
+
+  private escapeHtml(value: string): string {
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#x27;');
   }
 
   /**

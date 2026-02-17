@@ -1363,3 +1363,92 @@ html {
     outline: 2px solid var(--color-accent-primary);
     outline-offset: 3px;
 }
+
+/* ===========================
+   Article TOC Sidebar
+   =========================== */
+
+body.article-page .page-main {
+    max-width: var(--container-max-width);
+}
+
+body.article-page .article-page-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: var(--spacing-xl);
+    align-items: start;
+}
+
+body.article-page .article-main-column {
+    min-width: 0;
+}
+
+body.article-page .article-toc-sidebar {
+    position: sticky;
+    top: 96px;
+}
+
+body.article-page .article-toc-card {
+    background: var(--color-bg-primary);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: var(--spacing-md);
+}
+
+body.article-page .article-toc-title {
+    margin: 0 0 var(--spacing-sm);
+    font-size: var(--font-size-base);
+    font-family: var(--font-display);
+    font-weight: 700;
+}
+
+body.article-page .article-toc-nav .toc-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+body.article-page .article-toc-nav .toc-list li {
+    margin: 0;
+}
+
+body.article-page .article-toc-nav .toc-level-3 {
+    padding-left: var(--spacing-md);
+}
+
+body.article-page .article-toc-nav .toc-link {
+    display: block;
+    padding: 0.35rem 0.45rem;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    line-height: 1.45;
+}
+
+body.article-page .article-toc-nav .toc-link:hover {
+    color: var(--color-accent-secondary);
+    background: var(--color-accent-soft);
+}
+
+body.article-page .article-toc-nav .toc-link.active {
+    color: var(--color-accent-secondary);
+    background: var(--color-accent-soft);
+    font-weight: 600;
+}
+
+body.article-page article .content h2,
+body.article-page article .content h3 {
+    scroll-margin-top: 92px;
+}
+
+@media (max-width: 767px) {
+    body.article-page .article-page-layout {
+        display: block;
+    }
+
+    body.article-page .article-toc-sidebar {
+        display: none;
+    }
+}
