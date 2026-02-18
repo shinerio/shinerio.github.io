@@ -148,7 +148,10 @@
       "Bash(test:*)",
       "Bash(npm test:*)",
       "Bash(node -e:*)",
-      "Skill(shinerio-code-plugin:gitacp)"
+      "Skill(shinerio-code-plugin:gitacp)",
+      "WebFetch(domain:publish-01.obsidian.md)",
+      "Bash(git stash:*)",
+      "Bash(powershell -Command:*)"
     ]
   }
 }

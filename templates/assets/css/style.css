@@ -794,6 +794,95 @@ blockquote p:last-child {
     margin-bottom: 0;
 }
 
+/* Callouts (Obsidian-style admonitions) */
+.callout {
+    --callout-color: 68, 138, 255;
+    margin: 0.75rem 0;
+    padding: 0;
+    border-left: 4px solid rgb(var(--callout-color));
+    background: rgba(var(--callout-color), 0.08);
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    font-style: normal;
+    overflow: hidden;
+}
+
+.callout .callout {
+    margin: 0.5rem 0;
+}
+
+.callout-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    font-weight: 600;
+    color: rgb(var(--callout-color));
+}
+
+.callout-icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.callout-icon svg {
+    color: rgb(var(--callout-color));
+}
+
+.callout-title-text {
+    flex: 1;
+}
+
+.callout-content {
+    padding: 0 0.9rem 0.6rem;
+}
+
+.callout-content > p:first-child {
+    margin-top: 0;
+}
+
+.callout-content > p:last-child {
+    margin-bottom: 0;
+}
+
+/* Foldable callout (details/summary) */
+.callout details > summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+.callout details > summary::-webkit-details-marker {
+    display: none;
+}
+
+.callout details > summary::after {
+    content: '';
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    margin-left: auto;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat center;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat center;
+    transition: transform 0.2s ease;
+    transform: rotate(-90deg);
+    flex-shrink: 0;
+}
+
+.callout details[open] > summary::after {
+    transform: rotate(0deg);
+}
+
+/* Callout type colors */
+.callout-note, .callout-info, .callout-todo { --callout-color: 68, 138, 255; }
+.callout-abstract, .callout-tip { --callout-color: 0, 191, 165; }
+.callout-success { --callout-color: 76, 175, 80; }
+.callout-question, .callout-warning { --callout-color: 255, 145, 0; }
+.callout-failure, .callout-bug { --callout-color: 233, 30, 99; }
+.callout-danger { --callout-color: 244, 67, 54; }
+.callout-example { --callout-color: 124, 77, 255; }
+.callout-quote { --callout-color: 158, 158, 158; }
+
 /* Lists */
 body.article-page article .content ul,
 body.article-page article .content ol {

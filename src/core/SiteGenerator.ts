@@ -14,6 +14,52 @@ marked.setOptions({
   breaks: true
 });
 
+// 自定义marked扩展：LaTeX数学公式支持
+// Custom marked extensions for LaTeX math support
+marked.use({
+  extensions: [
+    {
+      name: 'blockMath',
+      level: 'block',
+      start(src: string) { return src.indexOf('$$'); },
+      tokenizer(src: string) {
+        const match = src.match(/^\$\$([\s\S]+?)\$\$/);
+        if (match) {
+          return { type: 'blockMath', raw: match[0], math: match[1] };
+        }
+        return undefined;
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      renderer(token: any) {
+        const escaped = (token.math as string)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return `<div class="math-display">${escaped}</div>\n`;
+      }
+    },
+    {
+      name: 'inlineMath',
+      level: 'inline',
+      start(src: string) {
+        const idx = src.indexOf('$');
+        return idx === -1 ? -1 : idx;
+      },
+      tokenizer(src: string) {
+        const match = src.match(/^\$([^$\n]+?)\$/);
+        if (match) {
+          return { type: 'inlineMath', raw: match[0], math: match[1] };
+        }
+        return undefined;
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      renderer(token: any) {
+        const escaped = (token.math as string)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return `<span class="math-inline">${escaped}</span>`;
+      }
+    }
+  ]
+});
+
 export class SiteGenerator {
   private templateCache: Map<string, string> = new Map();
   
@@ -343,10 +389,22 @@ export class SiteGenerator {
 <meta property="article:author" content="${options.config.author || options.config.siteTitle}">
 <link rel="stylesheet" id="hljs-light" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
 <link rel="stylesheet" id="hljs-dark" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" disabled>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" defer></script>
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
-<script src="assets/js/article-toc.js" defer></script>${this.generateTextSelectionCommentHead(options.config, article.slug)}`
+<script src="assets/js/article-toc.js" defer></script>
+<script defer>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.math-display').forEach(function(el) {
+    try { katex.render(el.textContent, el, { displayMode: true, throwOnError: false }); } catch(e) {}
+  });
+  document.querySelectorAll('.math-inline').forEach(function(el) {
+    try { katex.render(el.textContent, el, { displayMode: false, throwOnError: false }); } catch(e) {}
+  });
+});
+</script>${this.generateTextSelectionCommentHead(options.config, article.slug)}`
         });
 
         await fs.writeFile(path.join(outputPath, `${article.slug}.html`), html);
@@ -570,11 +628,154 @@ export class SiteGenerator {
   }
 
   /**
+   * Callout type aliases mapping to canonical types
+   */
+  private static readonly CALLOUT_ALIASES: Record<string, string> = {
+    summary: 'abstract', tldr: 'abstract',
+    hint: 'tip', important: 'tip',
+    check: 'success', done: 'success',
+    help: 'question', faq: 'question',
+    caution: 'warning', attention: 'warning',
+    fail: 'failure', missing: 'failure',
+    error: 'danger',
+    cite: 'quote'
+  };
+
+  /**
+   * Default title and inline SVG icon for each callout type
+   */
+  private static readonly CALLOUT_DEFAULTS: Record<string, { title: string; icon: string }> = {
+    note: {
+      title: 'Note',
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="2" x2="22" y2="6"/><path d="M7.5 20.5 19 9l-4-4L3.5 16.5 2 22z"/></svg>'
+    },
+    abstract: {
+      title: 'Abstract',
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="7" y1="16" x2="13" y2="16"/></svg>'
+    },
+    info: {
+      title: 'Info',
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+    },
+    todo: {
+      title: 'Todo',
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>'
+    },
+    tip: {
+      title: 'Tip',
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7z"/><line x1="9" y1="21" x2="15" y2="21"/></svg>'
+    },
+    success: {
+      title: 'Success',
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
+    },
+    question: {
+      title: 'Question',
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+    },
+    warning: {
+      title: 'Warning',
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+    },
+    failure: {
+      title: 'Failure',
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+    },
+    danger: {
+      title: 'Danger',
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>'
+    },
+    bug: {
+      title: 'Bug',
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="6" width="8" height="14" rx="4"/><path d="M19 10h2"/><path d="M3 10h2"/><path d="M19 14h2"/><path d="M3 14h2"/><path d="M5 6l2 2"/><path d="M17 6l2-2"/><path d="M5 18l2-2"/><path d="M17 18l2 2"/></svg>'
+    },
+    example: {
+      title: 'Example',
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>'
+    },
+    quote: {
+      title: 'Quote',
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3z"/></svg>'
+    }
+  };
+
+  /**
    * 转换Markdown为HTML
    * Convert markdown to HTML
    */
   private convertMarkdownToHtml(markdown: string): string {
-    return marked(markdown);
+    const html = marked(markdown);
+    return this.processCallouts(html);
+  }
+
+  /**
+   * 处理 Obsidian Callout 语法
+   * Post-process HTML to transform blockquote callouts into styled div elements.
+   * Loops to handle nested callouts (innermost first).
+   */
+  processCallouts(html: string): string {
+    // Pattern matches <blockquote> containing a first <p> that starts with [!type]
+    const calloutRegex = /<blockquote>\s*<p>\[!(\w+)\]([-+])?\s*(.*?)<\/p>([\s\S]*?)<\/blockquote>/g;
+
+    let result = html;
+    let prevResult = '';
+
+    // Loop to handle nested callouts - process innermost first
+    while (result !== prevResult) {
+      prevResult = result;
+      result = result.replace(calloutRegex, (_match, rawType: string, fold: string | undefined, titleText: string, body: string) => {
+        return this.buildCalloutHtml(rawType, fold, titleText, body);
+      });
+    }
+
+    return result;
+  }
+
+  /**
+   * 构建 Callout HTML
+   * Build the callout HTML div structure
+   */
+  private buildCalloutHtml(rawType: string, fold: string | undefined, customTitle: string, body: string): string {
+    const lowerType = rawType.toLowerCase();
+    const canonicalType = SiteGenerator.CALLOUT_ALIASES[lowerType] || lowerType;
+    const defaults = SiteGenerator.CALLOUT_DEFAULTS[canonicalType] || SiteGenerator.CALLOUT_DEFAULTS['note'];
+    const icon = defaults.icon;
+
+    // Handle <br> in the title text: text before first <br> is title, rest is body content
+    // marked renders `> [!type]\n> body` as `<p>[!type]<br>body</p>`
+    let title: string;
+    let inlineBody = '';
+    const brMatch = customTitle.match(/^(.*?)<br\s*\/?>([\s\S]*)$/i);
+    if (brMatch) {
+      title = brMatch[1].trim() || defaults.title;
+      inlineBody = brMatch[2].trim();
+    } else {
+      title = customTitle.trim() || defaults.title;
+    }
+
+    // Combine inline body (from <br> split) with any additional body paragraphs
+    const bodyParts: string[] = [];
+    if (inlineBody) bodyParts.push(`<p>${inlineBody}</p>`);
+    if (body.trim()) bodyParts.push(body.trim());
+    const fullBody = bodyParts.join('\n');
+
+    const titleHtml = `<span class="callout-icon">${icon}</span><span class="callout-title-text">${title}</span>`;
+    const contentHtml = fullBody ? `<div class="callout-content">${fullBody}</div>` : '';
+
+    if (fold === '+' || fold === '-') {
+      const openAttr = fold === '+' ? ' open' : '';
+      return `<div class="callout callout-${canonicalType}" data-callout="${canonicalType}">` +
+        `<details${openAttr}>` +
+        `<summary class="callout-title">${titleHtml}</summary>` +
+        contentHtml +
+        `</details>` +
+        `</div>`;
+    }
+
+    return `<div class="callout callout-${canonicalType}" data-callout="${canonicalType}">` +
+      `<div class="callout-title">${titleHtml}</div>` +
+      contentHtml +
+      `</div>`;
   }
 
   /**
