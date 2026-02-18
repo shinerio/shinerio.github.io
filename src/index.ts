@@ -118,6 +118,10 @@ export class ObsidianBlogGenerator {
         const filePath = scanResult.files[i];
         try {
           const article = await this.metadataParser.parseFile(filePath);
+          if (!article.content.trim()) {
+            console.log(`   跳过空文件: ${path.basename(filePath)}`);
+            continue;
+          }
           articles.push(article);
 
           // 报告解析进度
