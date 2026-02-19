@@ -43,6 +43,54 @@ document.addEventListener('DOMContentLoaded', function () {
     hljs.highlightAll();
   }
 
+  // --- SVG icons ---
+  var ICON_COPY = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+  var ICON_COPIED = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+  var ICON_EXPAND = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>';
+
+  // --- Fullscreen overlay (shared singleton) ---
+  var overlay = null;
+
+  function openFullscreen(preEl) {
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.className = 'code-fullscreen-overlay';
+      var closeBtn = document.createElement('button');
+      closeBtn.className = 'code-fullscreen-close';
+      closeBtn.innerHTML = '&times;';
+      closeBtn.setAttribute('aria-label', 'Close fullscreen');
+      closeBtn.addEventListener('click', closeFullscreen);
+      overlay.appendChild(closeBtn);
+      overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) closeFullscreen();
+      });
+      document.body.appendChild(overlay);
+    }
+    // Remove previous code content if any
+    var oldPre = overlay.querySelector('pre');
+    if (oldPre) overlay.removeChild(oldPre);
+    // Clone the pre element without the header
+    var clone = document.createElement('pre');
+    var codeClone = preEl.querySelector('code').cloneNode(true);
+    clone.appendChild(codeClone);
+    overlay.appendChild(clone);
+    // Activate
+    document.body.classList.add('code-fullscreen-body');
+    // Force reflow before adding active class for transition
+    overlay.offsetHeight;
+    overlay.classList.add('active');
+  }
+
+  function closeFullscreen() {
+    if (!overlay) return;
+    overlay.classList.remove('active');
+    document.body.classList.remove('code-fullscreen-body');
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeFullscreen();
+  });
+
   // --- Enhance each code block ---
   var codeBlocks = document.querySelectorAll('pre > code');
   codeBlocks.forEach(function (codeEl) {
@@ -50,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!preEl) return;
     preEl.style.position = 'relative';
 
-    // Detect language from hljs result class (e.g. "hljs language-javascript" or "language-python")
+    // Detect language
     var lang = '';
     var classes = codeEl.className.split(/\s+/);
     for (var i = 0; i < classes.length; i++) {
@@ -61,26 +109,53 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
 
-    // --- Language badge ---
+    // --- Build header bar ---
+    var header = document.createElement('div');
+    header.className = 'code-header';
+
+    // Window dots
+    var dots = document.createElement('span');
+    dots.className = 'code-window-dots';
+    dots.innerHTML = '<span></span><span></span><span></span>';
+    header.appendChild(dots);
+
+    // Language badge (centered via flex auto margins)
     if (lang) {
       var badge = document.createElement('span');
       badge.className = 'code-lang-badge';
       badge.textContent = lang;
-      preEl.appendChild(badge);
+      header.appendChild(badge);
     }
 
-    // --- Copy button ---
-    var btn = document.createElement('button');
-    btn.className = 'code-copy-btn';
-    btn.setAttribute('aria-label', 'Copy code');
-    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+    // Action buttons container
+    var actions = document.createElement('span');
+    actions.className = 'code-header-actions';
 
-    btn.addEventListener('click', function () {
-      var text = codeEl.textContent || '';
-      copyToClipboard(text, btn);
+    // Fullscreen button
+    var fsBtn = document.createElement('button');
+    fsBtn.className = 'code-fullscreen-btn';
+    fsBtn.setAttribute('aria-label', 'Fullscreen');
+    fsBtn.innerHTML = ICON_EXPAND;
+    fsBtn.addEventListener('click', function () {
+      openFullscreen(preEl);
     });
+    actions.appendChild(fsBtn);
 
-    preEl.appendChild(btn);
+    // Copy button
+    var copyBtn = document.createElement('button');
+    copyBtn.className = 'code-copy-btn';
+    copyBtn.setAttribute('aria-label', 'Copy code');
+    copyBtn.innerHTML = ICON_COPY;
+    copyBtn.addEventListener('click', function () {
+      var text = codeEl.textContent || '';
+      copyToClipboard(text, copyBtn);
+    });
+    actions.appendChild(copyBtn);
+
+    header.appendChild(actions);
+
+    // Insert header as first child of pre
+    preEl.insertBefore(header, preEl.firstChild);
   });
 
   // --- Clipboard helper ---
@@ -113,10 +188,10 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function showCopied(btn) {
-    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+    btn.innerHTML = ICON_COPIED;
     btn.classList.add('copied');
     setTimeout(function () {
-      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+      btn.innerHTML = ICON_COPY;
       btn.classList.remove('copied');
     }, 2000);
   }

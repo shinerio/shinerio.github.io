@@ -8,96 +8,198 @@ body.home-page main.page-main > div.home-layout {
 
 /* ===== Code Block Enhancements ===== */
 
-/* Pre block: relative positioning for badge and button */
+/* Pre block: relative positioning, space for header bar, remove outer border */
 pre {
     position: relative;
-    padding-top: 2.2em !important;
+    padding-top: 2.5em !important;
+    border-radius: 0 0 var(--radius-lg, 8px) var(--radius-lg, 8px) !important;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    border-radius: var(--radius-lg, 8px) !important;
+    box-shadow: none !important;
 }
 
-/* Language badge */
-.code-lang-badge {
+/* macOS-style header bar */
+.code-header {
     position: absolute;
     top: 0;
     left: 0;
-    padding: 0.15em 0.7em;
+    right: 0;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    background: var(--color-bg-tertiary, #e8ecf1);
+    border: none;
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
+    border-radius: var(--radius-lg, 8px) var(--radius-lg, 8px) 0 0;
+    user-select: none;
+    box-sizing: border-box;
+}
+
+[data-theme="dark"] .code-header {
+    background: var(--color-dark-bg-tertiary, #1e293b);
+    border-bottom-color: var(--color-dark-border, #334155);
+}
+
+[data-theme="dark"] pre {
+    border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+
+/* Window dots */
+.code-window-dots {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-left: 2px;
+    flex-shrink: 0;
+}
+
+.code-window-dots span {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: block;
+}
+
+.code-window-dots span:nth-child(1) { background: #fc625d; }
+.code-window-dots span:nth-child(2) { background: #fdbc40; }
+.code-window-dots span:nth-child(3) { background: #35cd4b; }
+
+/* Language badge inside header - left-aligned after dots */
+.code-header .code-lang-badge {
+    position: static;
+    margin-left: 10px;
+    padding: 0;
     font-size: 0.75rem;
     font-family: var(--font-mono, monospace);
-    line-height: 1.6;
+    line-height: 1;
     color: var(--color-text-secondary, #64748b);
-    background: var(--color-bg-tertiary, #f1f5f9);
-    border-bottom: 1px solid var(--color-border, #e2e8f0);
-    border-right: 1px solid var(--color-border, #e2e8f0);
-    border-radius: 0 0 var(--radius-sm, 4px) 0;
-    user-select: none;
+    background: none;
+    border: none;
     pointer-events: none;
 }
 
-[data-theme="dark"] .code-lang-badge {
+[data-theme="dark"] .code-header .code-lang-badge {
     color: var(--color-dark-text-secondary, #94a3b8);
-    background: var(--color-dark-bg-tertiary, #334155);
-    border-bottom-color: var(--color-dark-border, #334155);
-    border-right-color: var(--color-dark-border, #334155);
 }
 
-/* Copy button */
-.code-copy-btn {
-    position: absolute;
-    top: 0.35em;
-    right: 0.5em;
+/* Action buttons container in header */
+.code-header-actions {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+/* Shared style for header action buttons */
+.code-header-actions button {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 30px;
+    width: 26px;
+    height: 26px;
     padding: 0;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: none;
     border-radius: var(--radius-sm, 4px);
-    background: var(--color-bg-secondary, #f8fafc);
+    background: transparent;
     color: var(--color-text-secondary, #64748b);
     cursor: pointer;
     opacity: 0;
     transition: opacity 0.2s, background-color 0.2s, color 0.2s;
 }
 
-pre:hover .code-copy-btn {
+pre:hover .code-header-actions button {
     opacity: 1;
 }
 
-.code-copy-btn:hover {
-    background: var(--color-bg-tertiary, #f1f5f9);
+.code-header-actions button:hover {
+    background: rgba(0, 0, 0, 0.08);
     color: var(--color-text-primary, #1e293b);
 }
 
 .code-copy-btn.copied {
-    color: #22c55e;
-    border-color: #22c55e;
+    color: #22c55e !important;
 }
 
-[data-theme="dark"] .code-copy-btn {
-    border-color: var(--color-dark-border, #334155);
-    background: var(--color-dark-bg-secondary, #1e293b);
+[data-theme="dark"] .code-header-actions button {
     color: var(--color-dark-text-secondary, #94a3b8);
 }
 
-[data-theme="dark"] pre:hover .code-copy-btn {
+[data-theme="dark"] pre:hover .code-header-actions button {
     opacity: 1;
 }
 
-[data-theme="dark"] .code-copy-btn:hover {
-    background: var(--color-dark-bg-tertiary, #334155);
+[data-theme="dark"] .code-header-actions button:hover {
+    background: rgba(255, 255, 255, 0.1);
     color: var(--color-dark-text-primary, #f8fafc);
 }
 
 [data-theme="dark"] .code-copy-btn.copied {
-    color: #22c55e;
-    border-color: #22c55e;
+    color: #22c55e !important;
 }
 
-/* Mobile: always show copy button for touch devices */
+/* Mobile: always show action buttons for touch devices */
 @media (max-width: 768px) {
-    .code-copy-btn {
+    .code-header-actions button {
         opacity: 0.7;
     }
+}
+
+/* ===== Fullscreen Code Overlay ===== */
+.code-fullscreen-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.92);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.code-fullscreen-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.code-fullscreen-overlay pre {
+    flex: 1;
+    margin: 2rem;
+    padding: 1.5em !important;
+    padding-top: 1.5em !important;
+    border-radius: var(--radius-lg, 8px) !important;
+    overflow: auto;
+    font-size: 1rem;
+}
+
+.code-fullscreen-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    z-index: 1;
+}
+
+.code-fullscreen-close:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+body.code-fullscreen-body {
+    overflow: hidden;
 }
 
 /* Ensure hljs backgrounds don't clash with our pre styling */

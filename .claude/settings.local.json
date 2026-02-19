@@ -151,7 +151,10 @@
       "Skill(shinerio-code-plugin:gitacp)",
       "WebFetch(domain:publish-01.obsidian.md)",
       "Bash(git stash:*)",
-      "Bash(powershell -Command:*)"
+      "Bash(powershell -Command:*)",
+      "Skill(gitacp)",
+      "Bash(/c/workspace/code/shinerio.github.io/changelog/change_202602.md:*)",
+      "mcp__chrome-devtools__press_key"
     ]
   }
 }
