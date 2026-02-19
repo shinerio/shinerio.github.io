@@ -172,8 +172,18 @@ export class SiteGenerator {
       <div class="home-layout">
         <main class="home-main">
           <section class="hero">
-            <h1 class="hero-title">${options.config.siteTitle}</h1>
-            <p class="hero-subtitle">${options.config.siteDescription}</p>
+            <div class="meteor-shower" aria-hidden="true">
+              <span class="meteor"></span>
+              <span class="meteor"></span>
+              <span class="meteor"></span>
+              <span class="meteor"></span>
+              <span class="meteor"></span>
+              <span class="meteor"></span>
+              <span class="meteor"></span>
+              <span class="meteor"></span>
+            </div>
+            <h1>${options.config.siteTitle}</h1>
+            <p class="hero-description">${options.config.siteDescription}</p>
           </section>
 
           <section class="recent-articles">
