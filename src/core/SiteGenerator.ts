@@ -60,6 +60,18 @@ marked.use({
   ]
 });
 
+// 自定义marked渲染器：Mermaid图表支持
+// Override code renderer to render mermaid blocks as <pre class="mermaid">
+const renderer = new marked.Renderer();
+const originalCodeRenderer = renderer.code.bind(renderer);
+renderer.code = function(code: string, infostring: string | undefined, escaped: boolean) {
+  if (infostring === 'mermaid') {
+    return `<pre class="mermaid">${code}</pre>\n`;
+  }
+  return originalCodeRenderer(code, infostring, escaped);
+};
+marked.use({ renderer });
+
 export class SiteGenerator {
   private templateCache: Map<string, string> = new Map();
   
@@ -405,6 +417,11 @@ export class SiteGenerator {
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
 <script src="assets/js/article-toc.js" defer></script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+mermaid.initialize({ startOnLoad: true, theme: isDark ? 'dark' : 'default' });
+</script>
 <script defer>
 document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.math-display').forEach(function(el) {
