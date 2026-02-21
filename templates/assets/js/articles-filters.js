@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const sortFunctions = {
     'date-desc': (a, b) => new Date(b.date) - new Date(a.date),
     'date-asc': (a, b) => new Date(a.date) - new Date(b.date),
+    'modified-desc': (a, b) => new Date(b.modifiedDate || b.date) - new Date(a.modifiedDate || a.date),
     'title-asc': (a, b) => a.title.localeCompare(b.title),
     'title-desc': (a, b) => b.title.localeCompare(a.title),
     'readtime-asc': (a, b) => (a.readingTime || 0) - (b.readingTime || 0),
@@ -315,6 +316,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (currentState.sortBy !== 'date-desc') {
       const sortOptions = {
         'date-asc': '最早发布',
+        'modified-desc': '最近修改',
         'title-asc': '标题 A-Z',
         'title-desc': '标题 Z-A',
         'readtime-asc': '阅读时间 (短至长)',

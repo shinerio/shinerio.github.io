@@ -12,6 +12,7 @@ import { execSync } from 'child_process';
 export class MetadataParser {
   private gitRootCache: string | null | undefined = undefined; // undefined = 未初始化, null = 不是 git 仓库, string = git 根目录
   private gitDateCache: Map<string, Date> = new Map(); // 批量缓存所有文件的 git 第一次 commit 时间
+  private gitLastDateCache: Map<string, Date> = new Map(); // 批量缓存所有文件的 git 最后一次 commit 时间
 
   /**
    * 批量构建所有文件的 Git 日期缓存（性能优化）
@@ -34,61 +35,72 @@ export class MetadataParser {
         path.relative(gitRoot, path.resolve(filePath))
       );
 
-      // 批量执行 git log 获取所有文件的第一次 commit 时间
-      // 使用 --name-only 和 --diff-filter=A 找出每个文件的第一次添加时间
-      const command = `git log --all --name-only --diff-filter=A --format=%aI`;
+      // 1. 批量获取第一次 commit 时间 (Creation Date)
+      this.fetchGitDates(gitRoot, filePaths, relativePaths, true);
 
-      const output = execSync(command, {
-        encoding: 'utf-8',
-        cwd: gitRoot,
-        stdio: ['pipe', 'pipe', 'ignore'],
-        timeout: 10000 // 10秒超时（批量查询需要更长时间）
-      }).trim();
+      // 2. 批量获取最后一次 commit 时间 (Modification Date)
+      this.fetchGitDates(gitRoot, filePaths, relativePaths, false);
 
-      if (!output) {
-        return;
-      }
-
-      // 解析输出：格式为 "日期\n文件名\n文件名\n...\n日期\n文件名\n..."
-      const lines = output.split('\n');
-      let currentDate: string | null = null;
-
-      for (const line of lines) {
-        const trimmedLine = line.trim();
-        if (!trimmedLine) {
-          continue;
-        }
-
-        // 检查是否是日期行（ISO 8601 格式）
-        if (/^\d{4}-\d{2}-\d{2}T/.test(trimmedLine)) {
-          currentDate = trimmedLine;
-        } else if (currentDate) {
-          // 这是一个文件路径
-          const normalizedPath = trimmedLine.replace(/\\/g, '/');
-
-          // 检查这个文件是否在我们要处理的文件列表中
-          const matchedIndex = relativePaths.findIndex(relPath =>
-            relPath.replace(/\\/g, '/') === normalizedPath
-          );
-
-          if (matchedIndex !== -1) {
-            const absolutePath = path.resolve(filePaths[matchedIndex]);
-
-            // 只缓存第一次出现的日期（最早的添加时间）
-            if (!this.gitDateCache.has(absolutePath)) {
-              const date = new Date(currentDate);
-              if (!isNaN(date.getTime())) {
-                this.gitDateCache.set(absolutePath, date);
-              }
-            }
-          }
-        }
-      }
-
-      console.log(`   Git 日期缓存: ${this.gitDateCache.size}/${filePaths.length} 个文件`);
+      console.log(`   Git 日期缓存: 创:${this.gitDateCache.size} 改:${this.gitLastDateCache.size} / ${filePaths.length} 个文件`);
     } catch (error) {
       // 批量查询失败，回退到单文件查询模式（保持兼容性）
       console.warn('   Git 批量查询失败，将使用单文件查询模式');
+    }
+  }
+
+  /**
+   * 执行 git log 获取日期并填充缓存
+   */
+  private fetchGitDates(gitRoot: string, filePaths: string[], relativePaths: string[], isFirst: boolean): void {
+    const filter = isFirst ? '--diff-filter=A' : '';
+    const cache = isFirst ? this.gitDateCache : this.gitLastDateCache;
+    // 如果是获取最后一次，不需要 --diff-filter=A，且 git log 默认就是从新到旧
+    const command = `git log --all --name-only ${filter} --format=%aI`;
+
+    const output = execSync(command, {
+      encoding: 'utf-8',
+      cwd: gitRoot,
+      stdio: ['pipe', 'pipe', 'ignore'],
+      timeout: 15000
+    }).trim();
+
+    if (!output) return;
+
+    const lines = output.split('\n');
+    let currentDate: string | null = null;
+
+    for (const line of lines) {
+      const trimmedLine = line.trim();
+      if (!trimmedLine) continue;
+
+      if (/^\d{4}-\d{2}-\d{2}T/.test(trimmedLine)) {
+        currentDate = trimmedLine;
+      } else if (currentDate) {
+        const normalizedPath = trimmedLine.replace(/\\/g, '/');
+        const matchedIndex = relativePaths.findIndex(relPath =>
+          relPath.replace(/\\/g, '/') === normalizedPath
+        );
+
+        if (matchedIndex !== -1) {
+          const absolutePath = path.resolve(filePaths[matchedIndex]);
+          // 对于第一次 commit，我们需要最旧的（在 log 末尾，但 A 过滤通常只有一条）
+          // 对于最后一次 commit，我们需要最新的（在 log 开头）
+          if (isFirst) {
+             // 如果已经有了，不覆盖，因为 log --all 可能会有多次 A (比如删除后又添加)，
+             // 但通常我们想要最早的那个
+             if (!cache.has(absolutePath)) {
+               const date = new Date(currentDate);
+               if (!isNaN(date.getTime())) cache.set(absolutePath, date);
+             }
+          } else {
+             // 只有第一次遇到该文件时才设置（即最新的 commit）
+             if (!cache.has(absolutePath)) {
+               const date = new Date(currentDate);
+               if (!isNaN(date.getTime())) cache.set(absolutePath, date);
+             }
+          }
+        }
+      }
     }
   }
 
@@ -128,10 +140,12 @@ export class MetadataParser {
 
     // 获取默认日期：优先使用 git 第一次 commit 时间，其次使用文件系统时间
     const defaultDate = this.getFileDate(filePath);
+    const defaultModifiedDate = this.getFileModifiedDate(filePath);
 
     return {
       title: this.extractTitle(data, fileName),
       date: this.extractDate(data, defaultDate),
+      modifiedDate: this.extractModifiedDate(data, defaultModifiedDate),
       tags: this.extractTags(data),
       description: this.extractDescription(data),
       draft: this.extractDraft(data),
@@ -158,6 +172,41 @@ export class MetadataParser {
     } catch {
       return new Date();
     }
+  }
+
+  /**
+   * 获取文件最后修改日期：优先 git 最后一次 commit 时间，其次文件系统时间
+   */
+  private getFileModifiedDate(filePath: string): Date {
+    // 1. 尝试从 git 获取最后一次 commit 时间
+    const gitDate = this.getGitLastCommitDate(filePath);
+    if (gitDate) {
+      return gitDate;
+    }
+
+    // 2. 回退到文件系统时间
+    try {
+      const stats = fs.statSync(filePath);
+      return stats.mtime;
+    } catch {
+      return new Date();
+    }
+  }
+
+  /**
+   * 提取最后修改日期
+   * Priority: frontmatter.updated > frontmatter.modified > defaultModifiedDate
+   */
+  private extractModifiedDate(data: any, defaultModifiedDate: Date): Date {
+    if (data.updated) {
+      const date = new Date(data.updated);
+      if (!isNaN(date.getTime())) return date;
+    }
+    if (data.modified) {
+      const date = new Date(data.modified);
+      if (!isNaN(date.getTime())) return date;
+    }
+    return defaultModifiedDate;
   }
 
   /**
@@ -243,6 +292,41 @@ export class MetadataParser {
       // 如果不是 git 仓库或其他错误，静默失败，返回 null
       // 这样会回退到文件系统时间
     }
+
+    return null;
+  }
+
+  /**
+   * 获取文件的 git 最后一次 commit 时间
+   */
+  private getGitLastCommitDate(filePath: string): Date | null {
+    const absolutePath = path.resolve(filePath);
+
+    if (this.gitLastDateCache.has(absolutePath)) {
+      return this.gitLastDateCache.get(absolutePath) || null;
+    }
+
+    try {
+      const gitRoot = this.getGitRoot(filePath);
+      if (!gitRoot) return null;
+
+      const relativePath = path.relative(gitRoot, absolutePath);
+      const command = `git log -1 --format=%aI -- "${relativePath}"`;
+      const output = execSync(command, {
+        encoding: 'utf-8',
+        cwd: gitRoot,
+        stdio: ['pipe', 'pipe', 'ignore'],
+        timeout: 3000
+      }).trim();
+
+      if (output) {
+        const date = new Date(output);
+        if (!isNaN(date.getTime())) {
+          this.gitLastDateCache.set(absolutePath, date);
+          return date;
+        }
+      }
+    } catch (error) {}
 
     return null;
   }

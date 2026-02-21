@@ -78,6 +78,7 @@ export interface FileStats {
 export interface ArticleMetadata {
   title: string;
   date: Date;
+  modifiedDate: Date;
   tags: string[];
   description?: string;
   draft?: boolean;
@@ -98,6 +99,7 @@ export interface Article {
   title: string;
   slug: string;
   date: Date;
+  modifiedDate: Date;
   tags: string[];
   description: string;
   content: string;

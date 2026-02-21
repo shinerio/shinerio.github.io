@@ -99,6 +99,7 @@ describe('SiteGenerator', () => {
         metadata: {
           title: '第一篇文章',
           date: new Date('2023-01-01'),
+          modifiedDate: new Date('2023-01-01'),
           tags: ['技术', 'JavaScript'],
           description: '这是第一篇文章的描述',
           draft: false,
@@ -112,6 +113,7 @@ describe('SiteGenerator', () => {
         metadata: {
           title: '第二篇文章',
           date: new Date('2023-01-02'),
+          modifiedDate: new Date('2023-01-02'),
           tags: ['技术', 'TypeScript'],
           description: '这是第二篇文章的描述',
           draft: false,
@@ -153,6 +155,7 @@ describe('SiteGenerator', () => {
         metadata: {
           title: '草稿文章',
           date: new Date('2023-01-03'),
+          modifiedDate: new Date('2023-01-03'),
           tags: ['草稿'],
           draft: true
         },
@@ -239,6 +242,7 @@ describe('SiteGenerator', () => {
         metadata: {
           title: 'Markdown测试',
           date: new Date('2023-01-01'),
+          modifiedDate: new Date('2023-01-01'),
           tags: [],
           slug: 'markdown-test'
         },
@@ -258,7 +262,7 @@ describe('SiteGenerator', () => {
       const articleContent = await fs.readFile(path.join(mockConfig.outputPath, 'markdown-test.html'), 'utf-8');
       
       // 检查HTML转换
-      expect(articleContent).toContain('<h1>标题</h1>');
+      expect(articleContent).toContain('<h1 id="标题">标题</h1>');
       expect(articleContent).toContain('<strong>粗体</strong>');
       expect(articleContent).toContain('<em>斜体</em>');
       expect(articleContent).toContain('<ul>');
@@ -395,6 +399,7 @@ describe('SiteGenerator Property Tests', () => {
               metadata: {
                 title: data.title,
                 date: new Date(),
+                modifiedDate: new Date(),
                 tags: data.tags,
                 description: `Description for ${data.title}`,
                 slug: `article-${idx}-${data.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`
@@ -459,6 +464,7 @@ describe('SiteGenerator Property Tests', () => {
               metadata: {
                 title: data.title,
                 date: new Date(data.dateStr),
+                modifiedDate: new Date(data.dateStr),
                 tags: [],
                 description: `Description for ${data.title}`,
                 slug: data.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
@@ -526,6 +532,7 @@ describe('SiteGenerator Property Tests', () => {
               metadata: {
                 title: 'Test Article',
                 date: new Date(),
+                modifiedDate: new Date(),
                 tags: ['test'],
                 description: 'Test description',
                 slug: 'test-article'
@@ -581,6 +588,7 @@ describe('SiteGenerator Property Tests', () => {
                 metadata: {
                   title: article1Title,
                   date: new Date(),
+                  modifiedDate: new Date(),
                   tags: [],
                   description: 'First article',
                   slug: slug1
@@ -593,6 +601,7 @@ describe('SiteGenerator Property Tests', () => {
                 metadata: {
                   title: article2Title,
                   date: new Date(),
+                  modifiedDate: new Date(),
                   tags: [],
                   description: 'Second article',
                   slug: slug2

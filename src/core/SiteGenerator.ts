@@ -246,6 +246,7 @@ export class SiteGenerator {
       id: article.id,
       title: article.title,
       date: article.date.toISOString(),
+      modifiedDate: article.modifiedDate.toISOString(),
       tags: article.tags,
       readingTime: article.readingTime,
       slug: article.slug,
@@ -266,6 +267,7 @@ export class SiteGenerator {
               <select id="sort-select" class="filter-select">
                 <option value="date-desc">最新发布</option>
                 <option value="date-asc">最早发布</option>
+                <option value="modified-desc">最近修改</option>
                 <option value="title-asc">标题 A-Z</option>
                 <option value="title-desc">标题 Z-A</option>
                 <option value="readtime-asc">阅读时间 (短至长)</option>
@@ -546,6 +548,7 @@ document.addEventListener('DOMContentLoaded', function() {
       title: parsed.metadata.title,
       slug: parsed.metadata.slug || this.createSlug(parsed.metadata.title),
       date: parsed.metadata.date,
+      modifiedDate: parsed.metadata.modifiedDate,
       tags: parsed.metadata.tags,
       description: parsed.metadata.description || this.extractDescription(parsed.content),
       content: parsed.content,
@@ -982,9 +985,9 @@ document.addEventListener('DOMContentLoaded', function() {
   private createSlug(text: string): string {
     return text
       .toLowerCase()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/[\s_-]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+      .replace(/[^\w\u4e00-\u9fa5\s-]/g, '') // 移除特殊字符，保留中文字符
+      .replace(/[\s_-]+/g, '-') // 空格和下划线转为连字符
+      .replace(/^-+|-+$/g, ''); // 移除首尾连字符
   }
 
   /**

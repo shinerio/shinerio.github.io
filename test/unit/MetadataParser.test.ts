@@ -29,6 +29,7 @@ describe('MetadataParser', () => {
       const frontmatter = {
         title: 'Test Article',
         date: '2023-01-01',
+        updated: '2023-01-02',
         tags: ['test', 'markdown'],
         description: 'A test article'
       };
@@ -40,6 +41,7 @@ describe('MetadataParser', () => {
 
       expect(result.metadata.title).toBe('Test Article');
       expect(result.metadata.date).toEqual(new Date('2023-01-01'));
+      expect(result.metadata.modifiedDate).toEqual(new Date('2023-01-02'));
       expect(result.metadata.tags).toEqual(['test', 'markdown']);
       expect(result.metadata.description).toBe('A test article');
       expect(result.content).toContain('This is the article content.');
@@ -122,12 +124,14 @@ describe('MetadataParser', () => {
       expect(result3.tags).toEqual(['single']);
     });
 
-    it('should extract date from various formats', () => {
-      const result1 = parser.extractFrontmatter({ date: '2023-01-01' }, '/path/file.md');
+    it('should extract date and modifiedDate from various formats', () => {
+      const result1 = parser.extractFrontmatter({ date: '2023-01-01', updated: '2023-01-05' }, '/path/file.md');
       expect(result1.date).toEqual(new Date('2023-01-01'));
+      expect(result1.modifiedDate).toEqual(new Date('2023-01-05'));
 
-      const result2 = parser.extractFrontmatter({ created: '2023-02-01' }, '/path/file.md');
+      const result2 = parser.extractFrontmatter({ created: '2023-02-01', modified: '2023-02-10' }, '/path/file.md');
       expect(result2.date).toEqual(new Date('2023-02-01'));
+      expect(result2.modifiedDate).toEqual(new Date('2023-02-10'));
     });
 
     it('should extract draft status', () => {
@@ -224,13 +228,15 @@ describe('MetadataParser', () => {
           (dateString) => {
             const dateObj = new Date(dateString);
 
-            // Test 'date' field
-            const result1 = parser.extractFrontmatter({ date: dateString }, '/path/file.md');
+            // Test 'date' and 'updated' fields
+            const result1 = parser.extractFrontmatter({ date: dateString, updated: dateString }, '/path/file.md');
             expect(result1.date.getTime()).toBe(dateObj.getTime());
+            expect(result1.modifiedDate.getTime()).toBe(dateObj.getTime());
 
-            // Test 'created' field (fallback)
-            const result2 = parser.extractFrontmatter({ created: dateString }, '/path/file.md');
+            // Test 'created' and 'modified' fields (fallback)
+            const result2 = parser.extractFrontmatter({ created: dateString, modified: dateString }, '/path/file.md');
             expect(result2.date.getTime()).toBe(dateObj.getTime());
+            expect(result2.modifiedDate.getTime()).toBe(dateObj.getTime());
           }
         ),
         { numRuns: 50 }
