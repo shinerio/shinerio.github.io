@@ -205,58 +205,6 @@
     background-color: var(--color-bg-tertiary);
 }
 
-/* Filter chips for active filters */
-.active-filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-md);
-    padding: var(--spacing-sm) 0;
-}
-
-.filter-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-sm) var(--spacing-md);
-    background-color: var(--color-accent-primary);
-    color: white;
-    border-radius: var(--radius-2xl);
-    font-family: var(--font-display);
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
-
-.filter-chip:hover {
-    background-color: var(--color-accent-secondary);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
-}
-
-.filter-chip .remove-filter {
-    cursor: pointer;
-    font-weight: bold;
-    margin-left: var(--spacing-xs);
-    opacity: 0.8;
-    transition: opacity var(--transition-fast);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.2);
-    line-height: 1;
-}
-
-.filter-chip .remove-filter:hover {
-    opacity: 1;
-    background-color: rgba(255, 255, 255, 0.35);
-}
-
 .article-list,
 .article-grid {
     display: grid;
