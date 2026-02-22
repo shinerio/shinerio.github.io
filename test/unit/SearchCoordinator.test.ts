@@ -26,6 +26,7 @@ describe('SearchCoordinator Backward Compatibility', () => {
         metadata: {
           title: 'Test Article',
           date: new Date('2023-01-01'),
+          modifiedDate: new Date('2023-01-01'),
           tags: ['test', 'article'],
           description: 'Test description',
           draft: false
@@ -62,6 +63,7 @@ describe('SearchCoordinator Backward Compatibility', () => {
         metadata: {
           title: 'TypeScript Guide',
           date: new Date('2023-01-01'),
+          modifiedDate: new Date('2023-01-01'),
           tags: ['typescript', 'guide'],
           description: 'Complete TypeScript guide',
           draft: false
@@ -74,6 +76,7 @@ describe('SearchCoordinator Backward Compatibility', () => {
         metadata: {
           title: 'JavaScript and TypeScript Basics',
           date: new Date('2023-01-02'),
+          modifiedDate: new Date('2023-01-02'),
           tags: ['javascript', 'typescript', 'basics'],
           description: 'JavaScript and TypeScript fundamentals',
           draft: false

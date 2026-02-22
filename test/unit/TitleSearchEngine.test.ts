@@ -21,6 +21,7 @@ describe('TitleSearchEngine', () => {
           metadata: {
             title: 'Introduction to TypeScript',
             date: new Date('2023-01-01'),
+            modifiedDate: new Date('2023-01-01'),
             tags: ['typescript', 'programming'],
             description: 'Learn TypeScript basics',
             draft: false
@@ -33,6 +34,7 @@ describe('TitleSearchEngine', () => {
           metadata: {
             title: 'Advanced JavaScript Concepts',
             date: new Date('2023-01-02'),
+            modifiedDate: new Date('2023-01-02'),
             tags: ['javascript', 'programming'],
             description: 'Deep dive into JavaScript',
             draft: false
@@ -59,6 +61,7 @@ describe('TitleSearchEngine', () => {
           metadata: {
             title: 'Published Article',
             date: new Date('2023-01-01'),
+            modifiedDate: new Date('2023-01-01'),
             tags: ['published'],
             description: 'This is published',
             draft: false
@@ -71,6 +74,7 @@ describe('TitleSearchEngine', () => {
           metadata: {
             title: 'Draft Article',
             date: new Date('2023-01-02'),
+            modifiedDate: new Date('2023-01-02'),
             tags: ['draft'],
             description: 'This is a draft',
             draft: true
@@ -102,6 +106,7 @@ describe('TitleSearchEngine', () => {
           metadata: {
             title: 'TypeScript Tutorial',
             date: new Date('2023-01-01'),
+            modifiedDate: new Date('2023-01-01'),
             tags: ['typescript', 'tutorial'],
             description: 'Complete TypeScript tutorial',
             draft: false
@@ -114,6 +119,7 @@ describe('TitleSearchEngine', () => {
           metadata: {
             title: 'JavaScript Guide',
             date: new Date('2023-01-02'),
+            modifiedDate: new Date('2023-01-02'),
             tags: ['javascript', 'guide'],
             description: 'JavaScript guide for beginners',
             draft: false
@@ -148,6 +154,7 @@ describe('TitleSearchEngine', () => {
           metadata: {
             title: 'JavaScript Guide',
             date: new Date('2023-01-01'),
+            modifiedDate: new Date('2023-01-01'),
             tags: ['javascript', 'guide'],
             description: 'JavaScript guide for beginners',
             draft: false
@@ -178,6 +185,7 @@ describe('TitleSearchEngine', () => {
           metadata: {
             title: 'Sample Article',
             date: new Date('2023-01-01'),
+            modifiedDate: new Date('2023-01-01'),
             tags: ['sample'],
             description: 'Sample article',
             draft: false
@@ -208,6 +216,7 @@ describe('TitleSearchEngine', () => {
           metadata: {
             title: 'TypeScript Deep Dive',
             date: new Date('2023-01-01'),
+            modifiedDate: new Date('2023-01-01'),
             tags: ['typescript', 'advanced'],
             description: 'Deep dive into TypeScript',
             draft: false
@@ -220,6 +229,7 @@ describe('TitleSearchEngine', () => {
           metadata: {
             title: 'TypeScript for Beginners',
             date: new Date('2023-01-02'),
+            modifiedDate: new Date('2023-01-02'),
             tags: ['typescript', 'beginner'],
             description: 'TypeScript introduction for beginners',
             draft: false
@@ -232,6 +242,7 @@ describe('TitleSearchEngine', () => {
           metadata: {
             title: 'JavaScript Overview',
             date: new Date('2023-01-03'),
+            modifiedDate: new Date('2023-01-03'),
             tags: ['javascript'],
             description: 'Overview of JavaScript',
             draft: false
@@ -265,6 +276,7 @@ describe('TitleSearchEngine', () => {
           metadata: {
             title: 'TypeScript Advanced Patterns',
             date: new Date('2023-01-01'),
+            modifiedDate: new Date('2023-01-01'),
             tags: ['typescript', 'patterns'],
             description: 'Advanced TypeScript patterns',
             draft: false
@@ -300,6 +312,7 @@ describe('TitleSearchEngine', () => {
           metadata: {
             title: 'Advanced TypeScript Guide',
             date: new Date('2023-01-01'),
+            modifiedDate: new Date('2023-01-01'),
             tags: ['typescript', 'guide'],
             description: 'Advanced TypeScript guide',
             draft: false
@@ -331,6 +344,7 @@ describe('TitleSearchEngine', () => {
           metadata: {
             title: 'React教程 Guide',
             date: new Date('2023-01-01'),
+            modifiedDate: new Date('2023-01-01'),
             tags: ['react', '教程', 'guide'],
             description: 'React tutorial 教程',
             draft: false
@@ -382,6 +396,7 @@ describe('TitleSearchEngine Property Tests', () => {
             metadata: {
               title: data.title,
               date: new Date('2023-01-01'),
+              modifiedDate: new Date('2023-01-01'),
               tags: data.tags,
               description: `Description for ${data.title}`,
               draft: false,
@@ -434,6 +449,7 @@ describe('TitleSearchEngine Property Tests', () => {
             metadata: {
               title: data.title,
               date: new Date('2023-01-01'),
+              modifiedDate: new Date('2023-01-01'),
               tags: [`tag${idx}`],
               description: `Description for ${data.title}`,
               draft: false,

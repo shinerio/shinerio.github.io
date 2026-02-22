@@ -21,6 +21,7 @@ describe('SearchEngine Validation Tests - Fix Search Functionality Change', () =
             metadata: {
               title: 'TypeScript Guide',
               date: new Date('2023-01-01'),
+              modifiedDate: new Date('2023-01-01'),
               tags: ['typescript'],
               description: 'Complete TypeScript guide',
               draft: false
@@ -33,6 +34,7 @@ describe('SearchEngine Validation Tests - Fix Search Functionality Change', () =
             metadata: {
               title: 'JavaScript Overview',
               date: new Date('2023-01-02'),
+              modifiedDate: new Date('2023-01-02'),
               tags: ['javascript'],
               description: 'Overview of JavaScript',
               draft: false
@@ -75,6 +77,7 @@ describe('SearchEngine Validation Tests - Fix Search Functionality Change', () =
             metadata: {
               title: 'Advanced TypeScript Techniques',
               date: new Date('2023-01-01'),
+              modifiedDate: new Date('2023-01-01'),
               tags: ['typescript', 'advanced'],
               description: 'Advanced TypeScript techniques',
               draft: false
@@ -87,6 +90,7 @@ describe('SearchEngine Validation Tests - Fix Search Functionality Change', () =
             metadata: {
               title: 'JavaScript Basics',
               date: new Date('2023-01-02'),
+              modifiedDate: new Date('2023-01-02'),
               tags: ['javascript', 'basics'],
               description: 'JavaScript fundamentals',
               draft: false
@@ -118,6 +122,7 @@ describe('SearchEngine Validation Tests - Fix Search Functionality Change', () =
             metadata: {
               title: 'TypeScript Programming',
               date: new Date('2023-01-01'),
+              modifiedDate: new Date('2023-01-01'),
               tags: ['programming'],
               description: 'TypeScript programming guide',
               draft: false
@@ -130,6 +135,7 @@ describe('SearchEngine Validation Tests - Fix Search Functionality Change', () =
             metadata: {
               title: 'Development Practices',
               date: new Date('2023-01-02'),
+              modifiedDate: new Date('2023-01-02'),
               tags: ['development'],
               description: 'Best practices for development',
               draft: false
@@ -162,6 +168,7 @@ describe('SearchEngine Validation Tests - Fix Search Functionality Change', () =
             metadata: {
               title: 'JavaScript and TypeScript Guide',
               date: new Date('2023-01-01'),
+              modifiedDate: new Date('2023-01-01'),
               tags: ['javascript', 'typescript'],
               description: 'Guide to JavaScript and TypeScript',
               draft: false
@@ -198,6 +205,7 @@ describe('SearchEngine Validation Tests - Fix Search Functionality Change', () =
             metadata: {
               title: 'Understanding TypeScript Errors',
               date: new Date('2023-01-01'),
+              modifiedDate: new Date('2023-01-01'),
               tags: ['typescript', 'errors'],
               description: 'How to handle TypeScript errors',
               draft: false
@@ -232,6 +240,7 @@ describe('SearchEngine Validation Tests - Fix Search Functionality Change', () =
             metadata: {
               title: 'React TypeScript Patterns',
               date: new Date('2023-01-01'),
+              modifiedDate: new Date('2023-01-01'),
               tags: ['react', 'typescript'],
               description: 'React patterns with TypeScript',
               draft: false
@@ -265,6 +274,7 @@ describe('SearchEngine Validation Tests - Fix Search Functionality Change', () =
             metadata: {
               title: 'TypeScript Best Practices',
               date: new Date('2023-01-01'),
+              modifiedDate: new Date('2023-01-01'),
               tags: ['best-practices'],
               description: 'Best practices for TypeScript',
               draft: false
@@ -277,6 +287,7 @@ describe('SearchEngine Validation Tests - Fix Search Functionality Change', () =
             metadata: {
               title: 'JavaScript Fundamentals',
               date: new Date('2023-01-02'),
+              modifiedDate: new Date('2023-01-02'),
               tags: ['fundamentals'],
               description: 'Fundamentals of JavaScript',
               draft: false
@@ -308,6 +319,7 @@ describe('SearchEngine Validation Tests - Fix Search Functionality Change', () =
             metadata: {
               title: 'Vue.js with TypeScript Setup',
               date: new Date('2023-01-01'),
+              modifiedDate: new Date('2023-01-01'),
               tags: ['vue', 'typescript', 'setup'],
               description: 'Setting up Vue.js with TypeScript',
               draft: false
@@ -320,6 +332,7 @@ describe('SearchEngine Validation Tests - Fix Search Functionality Change', () =
             metadata: {
               title: 'Angular Development',
               date: new Date('2023-01-02'),
+              modifiedDate: new Date('2023-01-02'),
               tags: ['angular', 'development'],
               description: 'Angular development techniques',
               draft: false
@@ -364,6 +377,7 @@ describe('SearchEngine Validation Tests - Fix Search Functionality Change', () =
           metadata: {
             title: `Article ${idx}: TypeScript and JavaScript Best Practices`,
             date: new Date('2023-01-' + String(idx + 1).padStart(2, '0')),
+            modifiedDate: new Date('2023-01-' + String(idx + 1).padStart(2, '0')),
             tags: ['typescript', 'javascript', 'programming'].slice(0, Math.floor(Math.random() * 3) + 1),
             description: `Description for article ${idx} discussing TypeScript and JavaScript`,
             draft: false,
@@ -411,6 +425,7 @@ describe('SearchEngine Validation Tests - Fix Search Functionality Change', () =
             metadata: {
               title: 'Consistent Code Patterns in TypeScript',
               date: new Date('2023-01-01'),
+              modifiedDate: new Date('2023-01-01'),
               tags: ['typescript', 'patterns'],
               description: 'Following consistent code patterns',
               draft: false
@@ -448,6 +463,7 @@ describe('SearchEngine Validation Tests - Fix Search Functionality Change', () =
             metadata: {
               title: 'TypeScript学习指南 - TypeScript Learning Guide',
               date: new Date('2023-01-01'),
+              modifiedDate: new Date('2023-01-01'),
               tags: ['typescript', '学习指南', 'tutorial'], // Using multi-character Chinese terms that will pass length filter
               description: '如何学习TypeScript - How to learn TypeScript',
               draft: false
@@ -460,6 +476,7 @@ describe('SearchEngine Validation Tests - Fix Search Functionality Change', () =
             metadata: {
               title: 'JavaScript基础知识 - JavaScript Fundamentals',
               date: new Date('2023-01-02'),
+              modifiedDate: new Date('2023-01-02'),
               tags: ['javascript', '基础知识', 'fundamentals'], // Using multi-character Chinese terms
               description: 'JavaScript基础知识介绍 - Introduction to JavaScript fundamentals',
               draft: false

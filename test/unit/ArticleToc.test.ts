@@ -58,6 +58,7 @@ describe('Article TOC Generation', () => {
       metadata: {
         title: 'TOC Test',
         date: new Date('2023-01-03'),
+        modifiedDate: new Date('2023-01-03'),
         tags: [],
         slug: 'toc-test'
       },
@@ -87,11 +88,12 @@ describe('Article TOC Generation', () => {
     expect(html).not.toContain('href="#ignore-level-4"');
   });
 
-  it('falls back to section-* ids when heading slug is empty', async () => {
+  it('uses unicode text as id for non-ASCII headings', async () => {
     const article: ParsedArticle = {
       metadata: {
         title: 'Chinese TOC',
         date: new Date('2023-01-03'),
+        modifiedDate: new Date('2023-01-03'),
         tags: [],
         slug: 'chinese-toc'
       },
@@ -109,9 +111,9 @@ describe('Article TOC Generation', () => {
     await generator.generateSite(options);
 
     const html = await fs.readFile(path.join(mockConfig.outputPath, 'chinese-toc.html'), 'utf-8');
-    expect(html).toContain('<h2 id="section-1">中文标题</h2>');
-    expect(html).toContain('<h3 id="section-2">第二节</h3>');
-    expect(html).toContain('href="#section-1"');
-    expect(html).toContain('href="#section-2"');
+    expect(html).toContain('<h2 id="中文标题">中文标题</h2>');
+    expect(html).toContain('<h3 id="第二节">第二节</h3>');
+    expect(html).toContain('href="#中文标题"');
+    expect(html).toContain('href="#第二节"');
   });
 });

@@ -17,6 +17,7 @@ describe('ContentOnlySearch', () => {
         metadata: {
           title: 'React Tutorial',
           date: new Date('2023-01-01'),
+          modifiedDate: new Date('2023-01-01'),
           tags: ['react', 'javascript'],
           description: 'Learn React'
         },
@@ -28,6 +29,7 @@ describe('ContentOnlySearch', () => {
         metadata: {
           title: 'Vue Guide',
           date: new Date('2023-01-02'),
+          modifiedDate: new Date('2023-01-02'),
           tags: ['vue', 'typescript'],
           description: 'Learn Vue'
         },
@@ -67,6 +69,7 @@ describe('ContentOnlySearch', () => {
         metadata: {
           title: 'JavaScript in Depth',  // Changed title to also contain "JavaScript"
           date: new Date('2023-01-01'),
+          modifiedDate: new Date('2023-01-01'),
           tags: ['react', 'javascript'],
           description: 'Learn React'
         },
@@ -78,6 +81,7 @@ describe('ContentOnlySearch', () => {
         metadata: {
           title: 'TypeScript Basics',  // Changed title to not contain "JavaScript"
           date: new Date('2023-01-02'),
+          modifiedDate: new Date('2023-01-02'),
           tags: ['javascript', 'typescript'],
           description: 'Learn JavaScript and TypeScript'
         },
