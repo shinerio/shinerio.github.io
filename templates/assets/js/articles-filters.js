@@ -59,14 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // Read per-page config from data attribute, default to 10
   const perPage = parseInt(articleContainer.getAttribute('data-per-page'), 10) || 10;
 
-  // Add container for active filters display
-  if (filtersContainer) {
-    const activeFiltersDiv = document.createElement('div');
-    activeFiltersDiv.className = 'active-filters';
-    activeFiltersDiv.id = 'active-filters';
-    filtersContainer.insertBefore(activeFiltersDiv, filtersContainer.firstChild);
-  }
-
   // Initialize articles container with data-id attributes for easier manipulation
   if (articleContainer) {
     const articleItems = articleContainer.querySelectorAll('.article-item');
@@ -132,9 +124,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update current state with current values from DOM elements
     if (sortSelect) currentState.sortBy = sortSelect.value;
     if (tagFilter) currentState.filterByTag = tagFilter.value;
-
-    // Update active filters display
-    updateActiveFiltersDisplay();
 
     // Filter articles
     let filteredArticles = [...articles];
@@ -293,90 +282,6 @@ document.addEventListener('DOMContentLoaded', function() {
     return pages;
   }
 
-  // Update the display of active filters
-  function updateActiveFiltersDisplay() {
-    const activeFiltersContainer = document.getElementById('active-filters');
-    if (!activeFiltersContainer) return;
-
-    // Clear current active filters display
-    activeFiltersContainer.innerHTML = '';
-
-    // Show tag filter if active
-    if (currentState.filterByTag) {
-      const tagFilterChip = document.createElement('div');
-      tagFilterChip.className = 'filter-chip';
-      tagFilterChip.innerHTML = `
-        <span>标签: ${currentState.filterByTag}</span>
-        <span class="remove-filter" onclick="clearTagFilter()">×</span>
-      `;
-      activeFiltersContainer.appendChild(tagFilterChip);
-    }
-
-    // Show sort method if not default
-    if (currentState.sortBy !== 'date-desc') {
-      const sortOptions = {
-        'date-asc': '最早发布',
-        'modified-desc': '最近修改',
-        'title-asc': '标题 A-Z',
-        'title-desc': '标题 Z-A',
-        'readtime-asc': '阅读时间 (短至长)',
-        'readtime-desc': '阅读时间 (长至短)'
-      };
-
-      const sortFilterChip = document.createElement('div');
-      sortFilterChip.className = 'filter-chip';
-      sortFilterChip.innerHTML = `
-        <span>排序: ${sortOptions[currentState.sortBy]}</span>
-        <span class="remove-filter" onclick="clearSortFilter()">×</span>
-      `;
-      activeFiltersContainer.appendChild(sortFilterChip);
-    }
-
-    // Show "clear all" button if any filters are active
-    if (currentState.filterByTag || currentState.sortBy !== 'date-desc') {
-      const clearAllButton = document.createElement('button');
-      clearAllButton.className = 'filter-chip';
-      clearAllButton.style.background = '#94a3b8';
-      clearAllButton.textContent = '清除所有筛选';
-      clearAllButton.onclick = clearAllFilters;
-      activeFiltersContainer.appendChild(clearAllButton);
-    }
-  }
-
-  // Function to clear tag filter
-  window.clearTagFilter = function() {
-    if (tagFilter) {
-      tagFilter.value = '';
-      currentState.filterByTag = '';
-      currentState.currentPage = 1;
-      applyFilters();
-    }
-  };
-
-  // Function to clear sort filter (reset to default)
-  window.clearSortFilter = function() {
-    if (sortSelect) {
-      sortSelect.value = 'date-desc';
-      currentState.sortBy = 'date-desc';
-      currentState.currentPage = 1;
-      applyFilters();
-    }
-  };
-
-  // Function to clear all filters
-  window.clearAllFilters = function() {
-    if (sortSelect) {
-      sortSelect.value = 'date-desc';
-      currentState.sortBy = 'date-desc';
-    }
-    if (tagFilter) {
-      tagFilter.value = '';
-      currentState.filterByTag = '';
-    }
-    currentState.currentPage = 1;
-    applyFilters();
-  };
-
   // Update the display to show filtered/sorted articles
   function updateArticleDisplay(sortedFilteredArticles) {
     if (!articleContainer) return;
@@ -480,8 +385,6 @@ document.addEventListener('DOMContentLoaded', function() {
       var pagination = document.querySelector('.pagination');
       if (pagination) pagination.style.display = 'none';
       filterGroups.forEach(function(g) { g.style.display = 'none'; });
-      var activeFilters = document.getElementById('active-filters');
-      if (activeFilters) activeFilters.style.display = 'none';
 
       // Show folder view
       if (folderContainer) {
@@ -497,8 +400,6 @@ document.addEventListener('DOMContentLoaded', function() {
       var pagination = document.querySelector('.pagination');
       if (pagination) pagination.style.display = '';
       filterGroups.forEach(function(g) { g.style.display = ''; });
-      var activeFilters = document.getElementById('active-filters');
-      if (activeFilters) activeFilters.style.display = '';
 
       // Hide folder view
       if (folderContainer) folderContainer.style.display = 'none';
