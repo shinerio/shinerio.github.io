@@ -345,8 +345,8 @@ export class MetadataParser {
       return `<a href="${slug}.html" class="internal-link">${linkText}</a>`;
     });
 
-    // 处理Obsidian标签 #tag
-    content = content.replace(/#([a-zA-Z0-9\u4e00-\u9fa5_-]+)/g, '<span class="tag">#$1</span>');
+    // 处理Obsidian标签 #tag (只匹配空白或行首后的#，避免影响URL中的锚点)
+    content = content.replace(/(?<!\S)#([a-zA-Z0-9\u4e00-\u9fa5_-]+)/g, '<span class="tag">#$1</span>');
 
     return content.trim();
   }
