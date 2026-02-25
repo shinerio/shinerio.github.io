@@ -165,7 +165,7 @@ export class SearchCoordinator {
       articles: searchIndex.articles.map(article => ({
         id: article.id,
         title: article.title,
-        content: article.content.substring(0, 200), // Only first 200 characters
+        paragraphs: this.splitIntoParagraphs(article.content),
         tags: article.tags,
         slug: article.slug
       }))
@@ -253,6 +253,17 @@ export class SearchCoordinator {
       .replace(/[#*_~`]/g, '') // Remove markdown symbols
       .replace(/\s+/g, ' ') // Combine spaces
       .trim();
+  }
+
+  /**
+   * 将内容拆分为段落数组
+   * Split content into paragraphs for paragraph-level search
+   */
+  private splitIntoParagraphs(content: string): string[] {
+    return content
+      .split(/\n\n+/)
+      .map(p => p.trim())
+      .filter(p => p.length >= 10);
   }
 
   /**
