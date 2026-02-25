@@ -154,7 +154,12 @@
       "Bash(powershell -Command:*)",
       "Skill(gitacp)",
       "Bash(/c/workspace/code/shinerio.github.io/changelog/change_202602.md:*)",
-      "mcp__chrome-devtools__press_key"
+      "mcp__chrome-devtools__press_key",
+      "mcp__plugin_shinerio-note-plugin_chrome-devtools__list_pages",
+      "mcp__plugin_shinerio-note-plugin_chrome-devtools__take_screenshot",
+      "mcp__plugin_shinerio-note-plugin_chrome-devtools__navigate_page",
+      "mcp__plugin_shinerio-note-plugin_chrome-devtools__evaluate_script",
+      "Bash(tail:*)"
     ]
   }
 }
