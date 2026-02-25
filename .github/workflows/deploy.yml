@@ -39,7 +39,7 @@ jobs:
         with:
           repository: shinerio/obsidian
           token: ${{ secrets.OBSIDIAN_REPO_TOKEN }}
-          path: obsidian/obsidian
+          path: obsidian
           fetch-depth: 0  # 获取完整的 git 历史以支持第一次 commit 时间检测
 
       - name: Setup Node.js
