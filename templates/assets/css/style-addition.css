@@ -1,5 +1,17 @@
 /* Additional layout overrides - sidebar is now fixed positioned */
 
+/* Prevent sidebar flash on page load: applied in <head> before first paint, removed after DOMContentLoaded */
+html.sidebar-pre-collapsed .sidebar {
+    transform: translateX(-280px);
+    transition: none;
+}
+html.sidebar-pre-collapsed body.home-page,
+html.sidebar-pre-collapsed body.articles-page,
+html.sidebar-pre-collapsed body.search-page {
+    padding-left: 0;
+    transition: none;
+}
+
 /* Home layout takes full remaining space */
 body.home-page main.page-main > div.home-layout {
     flex: 1;

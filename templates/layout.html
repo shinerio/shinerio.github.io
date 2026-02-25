@@ -21,6 +21,15 @@
                 : 'light';
             document.documentElement.setAttribute('data-theme', initialTheme);
         })();
+        // Apply sidebar collapsed state before first paint to avoid flash.
+        (function() {
+            try {
+                if (localStorage.getItem('sidebar-collapsed') === 'true' &&
+                    !(window.matchMedia && window.matchMedia('(max-width: 767px)').matches)) {
+                    document.documentElement.classList.add('sidebar-pre-collapsed');
+                }
+            } catch(e) {}
+        })();
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -177,6 +186,8 @@
                 if (!isMobile() && localStorage.getItem('sidebar-collapsed') === 'true') {
                     document.body.classList.add('sidebar-collapsed');
                 }
+                // Remove pre-render suppression class (only needed to prevent flash on load)
+                document.documentElement.classList.remove('sidebar-pre-collapsed');
 
                 sidebarToggle.addEventListener('click', function(e) {
                     e.preventDefault();
