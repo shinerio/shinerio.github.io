@@ -10,7 +10,10 @@
   "githubUrl": "https://github.com/shinerio",
   "blacklist": [
     "Travel/",
-    "Life/"
+    "Life/",
+    "问题定位/",
+    "Attachment/",
+    "Daily/"
   ],
   "comments": {
     "enabled": true,
