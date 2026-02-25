@@ -55,6 +55,11 @@ describe('SearchCoordinator Backward Compatibility', () => {
     expect(typeof searchData).toBe('string');
     const parsedData = JSON.parse(searchData);
     expect(parsedData.articles).toBeTruthy();
+    // Verify new paragraphs format
+    if (parsedData.articles.length > 0) {
+      expect(Array.isArray(parsedData.articles[0].paragraphs)).toBe(true);
+      expect(parsedData.articles[0].content).toBeUndefined();
+    }
   });
 
   it('should maintain the same search behavior as the original', () => {
@@ -95,5 +100,35 @@ describe('SearchCoordinator Backward Compatibility', () => {
     expect(results).toHaveLength(2); // Both articles contain TypeScript
     expect(results[0].article.metadata.title).toContain('TypeScript'); // First result has highest relevance
     expect(results[0].score).toBeGreaterThan(0);
+  });
+
+  it('should split article content into paragraphs in search data', () => {
+    const articles: ParsedArticle[] = [
+      {
+        metadata: {
+          title: 'Paragraph Test',
+          date: new Date('2023-01-01'),
+          modifiedDate: new Date('2023-01-01'),
+          tags: [],
+          draft: false,
+          slug: 'paragraph-test'
+        },
+        content: 'First paragraph with enough text here.\n\nSecond paragraph also long enough.\n\nShort.',
+        filePath: '/vault/paragraph-test.md',
+        wordCount: 10
+      }
+    ];
+
+    const searchIndex = searchCoordinator.buildIndex(articles);
+    const searchData = searchCoordinator.generateSearchData(searchIndex);
+    const parsed = JSON.parse(searchData);
+
+    expect(parsed.articles).toHaveLength(1);
+    const article = parsed.articles[0];
+    expect(Array.isArray(article.paragraphs)).toBe(true);
+    // "Short." is less than 10 chars and should be filtered out
+    expect(article.paragraphs).toContain('First paragraph with enough text here.');
+    expect(article.paragraphs).toContain('Second paragraph also long enough.');
+    expect(article.paragraphs).not.toContain('Short.');
   });
 });

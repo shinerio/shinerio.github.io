@@ -162,13 +162,16 @@ export class SearchCoordinator {
    */
   generateSearchData(searchIndex: SearchIndex): string {
     const searchData = {
-      articles: searchIndex.articles.map(article => ({
-        id: article.id,
-        title: article.title,
-        paragraphs: this.splitIntoParagraphs(article.content),
-        tags: article.tags,
-        slug: article.slug
-      }))
+      articles: searchIndex.articles.map(article => {
+        const originalArticle = this.articleMap.get(article.id);
+        return {
+          id: article.id,
+          title: article.title,
+          paragraphs: originalArticle ? this.splitIntoParagraphs(originalArticle.content) : [],
+          tags: article.tags,
+          slug: article.slug
+        };
+      })
     };
 
     return JSON.stringify(searchData, null, 2);
@@ -262,7 +265,16 @@ export class SearchCoordinator {
   private splitIntoParagraphs(content: string): string[] {
     return content
       .split(/\n\n+/)
-      .map(p => p.trim())
+      .map(p => p
+        .replace(/```[\s\S]*?```/g, '')
+        .replace(/`[^`]+`/g, '')
+        .replace(/!\[.*?\]\(.*?\)/g, '')
+        .replace(/\[.*?\]\(.*?\)/g, '')
+        .replace(/<[^>]*>/g, '')
+        .replace(/[#*_~`]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+      )
       .filter(p => p.length >= 10);
   }
 
