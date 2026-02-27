@@ -1416,11 +1416,6 @@ body.search-page.sidebar-collapsed .sidebar {
         flex: 0 0 34px;
     }
 
-    .sun-icon,
-    .moon-icon {
-        font-size: 1rem;
-    }
-
     body.home-page,
     body.articles-page,
     body.search-page {
