@@ -1,38 +1,38 @@
 :root {
     /* ===========================
-       🌅 Sunset Orange Color System
+       🔷 GitHub Blue Color System
        =========================== */
 
-    /* Light mode colors - Warm & Inviting */
-    --color-bg-primary: #FFFCF9;
-    --color-bg-secondary: #FFF8F3;
-    --color-bg-tertiary: #FFE8D9;
-    --color-text-primary: #2D1810;
-    --color-text-secondary: #5C3D2E;
-    --color-text-tertiary: #8B7269;
-    --color-border: #F4D4C0;
+    /* Light mode colors */
+    --color-bg-primary: #ffffff;
+    --color-bg-secondary: #f6f8fa;
+    --color-bg-tertiary: #eef1f5;
+    --color-text-primary: #1f2328;
+    --color-text-secondary: #57606a;
+    --color-text-tertiary: #6e7781;
+    --color-border: #d0d7de;
 
-    /* Sunset Orange Palette */
-    --color-accent-primary: #FF8C42;        /* Main sunset orange */
-    --color-accent-secondary: #FF6F1E;      /* Deeper orange */
-    --color-accent-highlight: #FFB380;      /* Lighter peachy orange */
-    --color-accent-soft: #FFE5D3;           /* Very soft orange tint */
+    /* Blue Accent Palette */
+    --color-accent-primary: #0969da;
+    --color-accent-secondary: #0550ae;
+    --color-accent-highlight: #54aeff;
+    --color-accent-soft: #ddf4ff;
 
-    /* Dark mode colors - Neutral Standard Dark */
-    --color-dark-bg-primary: #0B0F14;
-    --color-dark-bg-secondary: #131A22;
-    --color-dark-bg-tertiary: #1D2633;
-    --color-dark-text-primary: #F5F7FA;
-    --color-dark-text-secondary: #D3D9E3;
-    --color-dark-text-tertiary: #AAB4C3;
-    --color-dark-border: #2A3442;
-    --color-dark-accent-primary: #7AA2FF;
-    --color-dark-accent-secondary: #5C8DFF;
-    --color-dark-accent-highlight: #9DBBFF;
-    --color-dark-accent-soft: #1A2433;
-    --color-dark-overlay: rgba(5, 8, 12, 0.72);
-    --color-dark-header-bg: rgba(11, 15, 20, 0.88);
-    --color-dark-hero-glow: rgba(122, 162, 255, 0.18);
+    /* Dark mode colors */
+    --color-dark-bg-primary: #0d1117;
+    --color-dark-bg-secondary: #161b22;
+    --color-dark-bg-tertiary: #1c2128;
+    --color-dark-text-primary: #f0f6fc;
+    --color-dark-text-secondary: #8b949e;
+    --color-dark-text-tertiary: #6e7781;
+    --color-dark-border: #30363d;
+    --color-dark-accent-primary: #58a6ff;
+    --color-dark-accent-secondary: #1f6feb;
+    --color-dark-accent-highlight: #79c0ff;
+    --color-dark-accent-soft: #0c2d6b;
+    --color-dark-overlay: rgba(1, 4, 9, 0.8);
+    --color-dark-header-bg: rgba(13, 17, 23, 0.88);
+    --color-dark-hero-glow: rgba(88, 166, 255, 0.15);
 
     /* Component-specific colors */
     --color-card-bg: var(--color-bg-secondary);
@@ -44,67 +44,67 @@
     /* ===========================
        📐 Spacing & Layout
        =========================== */
-    --spacing-xs: 0.375rem;      /* 6px */
-    --spacing-sm: 0.625rem;      /* 10px */
-    --spacing-md: 1rem;          /* 16px */
-    --spacing-lg: 1.75rem;       /* 28px */
-    --spacing-xl: 2.5rem;        /* 40px */
-    --spacing-2xl: 4rem;         /* 64px */
-    --spacing-3xl: 6rem;         /* 96px */
+    --spacing-xs: 0.375rem;
+    --spacing-sm: 0.625rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.75rem;
+    --spacing-xl: 2.5rem;
+    --spacing-2xl: 4rem;
+    --spacing-3xl: 6rem;
 
-    /* Border radius - Soft & Organic */
-    --radius-sm: 0.5rem;
-    --radius-md: 0.875rem;
-    --radius-lg: 1.25rem;
-    --radius-xl: 1.75rem;
-    --radius-2xl: 2.5rem;
+    /* Border radius */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-2xl: 1.5rem;
 
-    /* Shadows - Subtle & Elegant */
-    --shadow-sm: 0 2px 8px rgba(255, 140, 66, 0.08);
-    --shadow-md: 0 4px 16px rgba(255, 140, 66, 0.12), 0 2px 8px rgba(45, 24, 16, 0.04);
-    --shadow-lg: 0 12px 32px rgba(255, 140, 66, 0.16), 0 4px 16px rgba(45, 24, 16, 0.06);
-    --shadow-warm: 0 8px 24px rgba(255, 140, 66, 0.24);
-    --shadow-dark-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
-    --shadow-dark-md: 0 8px 20px rgba(0, 0, 0, 0.4);
-    --shadow-dark-lg: 0 16px 36px rgba(0, 0, 0, 0.46);
-    --shadow-dark-warm: 0 10px 24px rgba(36, 74, 153, 0.35);
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(31, 35, 40, 0.12), 0 1px 2px rgba(31, 35, 40, 0.08);
+    --shadow-md: 0 3px 6px rgba(31, 35, 40, 0.12), 0 2px 4px rgba(31, 35, 40, 0.08);
+    --shadow-lg: 0 8px 24px rgba(31, 35, 40, 0.12), 0 4px 8px rgba(31, 35, 40, 0.06);
+    --shadow-warm: 0 0 0 3px rgba(9, 105, 218, 0.3);
+    --shadow-dark-sm: 0 1px 3px rgba(1, 4, 9, 0.4);
+    --shadow-dark-md: 0 3px 6px rgba(1, 4, 9, 0.45);
+    --shadow-dark-lg: 0 8px 24px rgba(1, 4, 9, 0.5);
+    --shadow-dark-warm: 0 0 0 3px rgba(31, 111, 235, 0.4);
 
     /* Transitions */
-    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-normal: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
     /* Animations */
     --animation-duration-short: 0.3s;
-    --animation-duration-medium: 0.6s;
-    --animation-duration-long: 1s;
-    --animation-easing: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --animation-duration-medium: 0.5s;
+    --animation-duration-long: 0.8s;
+    --animation-easing: cubic-bezier(0.16, 1, 0.3, 1);
 
     /* ===========================
        📝 Typography
        =========================== */
-    --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-body: 'Crimson Pro', Georgia, serif;
-    --font-mono: 'JetBrains Mono', 'Monaco', monospace;
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Monaco', 'Cascadia Code', monospace;
 
-    /* Font sizes - Generous Scale */
-    --font-size-xs: 0.8125rem;   /* 13px */
-    --font-size-sm: 0.9375rem;   /* 15px */
-    --font-size-base: 1.125rem;  /* 18px */
-    --font-size-lg: 1.3125rem;   /* 21px */
-    --font-size-xl: 1.5rem;      /* 24px */
-    --font-size-2xl: 1.875rem;   /* 30px */
-    --font-size-3xl: 2.5rem;     /* 40px */
-    --font-size-4xl: 3.25rem;    /* 52px */
-    --font-size-5xl: 4.5rem;     /* 72px */
+    /* Font sizes */
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.875rem;
+    --font-size-4xl: 2.25rem;
+    --font-size-5xl: 3rem;
 
     /* Typography settings */
     --line-height-base: 1.75;
-    --line-height-heading: 1.2;
+    --line-height-heading: 1.25;
     --line-height-code: 1.6;
-    --letter-spacing-headings: -0.025em;
-    --letter-spacing-body: 0.005em;
-    --letter-spacing-caps: 0.08em;
+    --letter-spacing-headings: -0.02em;
+    --letter-spacing-body: 0;
+    --letter-spacing-caps: 0.05em;
 
     /* Grid layout */
     --container-max-width: 1240px;
