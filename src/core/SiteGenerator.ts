@@ -419,6 +419,7 @@ export class SiteGenerator {
 <script src="assets/js/code-enhance.js" defer></script>
 <script src="assets/js/image-enhance.js" defer></script>
 <script src="assets/js/article-toc.js" defer></script>
+<script src="assets/js/article-presenter.js" defer></script>
 <script type="module">
 import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
 const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
