@@ -7,12 +7,19 @@
   const SVG_NS = 'http://www.w3.org/2000/svg';
 
   const MENU_ITEMS = [
-    { action: 'mode', mode: MODE_BROWSE, label: '浏览模式', shortcut: 'B' },
-    { action: 'mode', mode: MODE_DRAW, label: '画笔模式', shortcut: 'D' },
-    { action: 'mode', mode: MODE_HIGHLIGHT, label: '荧光划词', shortcut: 'H' },
-    { action: 'clear', label: '清空标注', shortcut: 'C' },
-    { action: 'exit', label: '退出演示', shortcut: 'Esc' }
+    { action: 'mode', mode: MODE_BROWSE, label: 'Browse mode', shortcut: 'B' },
+    { action: 'mode', mode: MODE_DRAW, label: 'Pen mode', shortcut: 'D' },
+    { action: 'mode', mode: MODE_HIGHLIGHT, label: 'Text highlight', shortcut: 'H' },
+    { action: 'undo', label: 'Undo last', shortcut: 'Ctrl+Z' },
+    { action: 'clear', label: 'Clear annotations', shortcut: 'C' },
+    { action: 'exit', label: 'Exit presenter', shortcut: 'Esc' }
   ];
+
+  const MODE_LABELS = {
+    browse: 'Browse',
+    draw: 'Pen',
+    highlight: 'Highlight'
+  };
 
   const EXCLUDED_SELECTION_SELECTOR = [
     'pre',
@@ -56,7 +63,7 @@
       stage: null,
       presenterArticle: null,
       presenterContent: null,
-      spotlight: null,
+      pointerGlow: null,
       menu: null,
       badge: null,
       annotations: null,
@@ -65,6 +72,7 @@
       drawing: false,
       currentPath: null,
       currentPoints: [],
+      annotationHistory: [],
       badgeTimer: null,
       highlightCount: 0,
       moveHandler: null,
@@ -73,16 +81,16 @@
       resizeHandler: null,
       clickHandler: null,
       contextHandler: null,
-      scrollHandler: null
+      scrollHandler: null,
+      fullscreenHandler: null
     };
 
     toggleBtn.addEventListener('click', function () {
       if (state.active) {
         exitPresenter(state);
-        return;
+      } else {
+        enterPresenter(state);
       }
-
-      enterPresenter(state);
     });
   }
 
@@ -97,7 +105,7 @@
     setMode(state, MODE_BROWSE);
     updateStageBounds(state);
     bindShellEvents(state);
-    flashBadge(state, '演示者模式已开启');
+    flashBadge(state, 'Presenter mode enabled');
 
     if (state.shell.requestFullscreen) {
       state.shell.requestFullscreen().catch(function () {
@@ -137,8 +145,8 @@
     state.interaction = document.createElement('div');
     state.interaction.className = 'article-presenter-interaction';
 
-    state.spotlight = document.createElement('div');
-    state.spotlight.className = 'article-presenter-spotlight';
+    state.pointerGlow = document.createElement('div');
+    state.pointerGlow.className = 'article-presenter-spotlight';
 
     state.menu = document.createElement('div');
     state.menu.className = 'article-presenter-menu';
@@ -162,7 +170,7 @@
     state.stage.appendChild(state.interaction);
     state.shellInner.appendChild(state.stage);
     state.shell.appendChild(state.shellInner);
-    state.shell.appendChild(state.spotlight);
+    state.shell.appendChild(state.pointerGlow);
     state.shell.appendChild(state.menu);
     state.shell.appendChild(state.badge);
     document.body.appendChild(state.shell);
@@ -174,7 +182,7 @@
         return;
       }
 
-      moveSpotlight(state, event.clientX, event.clientY);
+      movePointerGlow(state, event.clientX, event.clientY);
 
       if (state.drawing) {
         appendPathPoint(state, event);
@@ -213,7 +221,10 @@
       }
 
       const key = event.key.toLowerCase();
-      if (key === 'b') {
+      if ((event.ctrlKey || event.metaKey) && key === 'z') {
+        event.preventDefault();
+        undoLastAnnotation(state);
+      } else if (key === 'b') {
         setMode(state, MODE_BROWSE);
       } else if (key === 'd') {
         setMode(state, MODE_DRAW);
@@ -221,7 +232,7 @@
         setMode(state, MODE_HIGHLIGHT);
       } else if (key === 'c') {
         clearAnnotations(state);
-        flashBadge(state, '已清空标注');
+        flashBadge(state, 'Annotations cleared');
       }
     };
 
@@ -256,10 +267,17 @@
       openMenu(state, event.clientX, event.clientY);
     };
 
+    state.fullscreenHandler = function () {
+      if (state.active && !document.fullscreenElement) {
+        updateStageBounds(state);
+      }
+    };
+
     document.addEventListener('mousemove', state.moveHandler);
     document.addEventListener('mouseup', state.upHandler);
     document.addEventListener('keydown', state.keyHandler);
     window.addEventListener('resize', state.resizeHandler);
+    document.addEventListener('fullscreenchange', state.fullscreenHandler);
     state.shellInner.addEventListener('scroll', state.scrollHandler, { passive: true });
     state.shell.addEventListener('click', state.clickHandler);
     state.shell.addEventListener('contextmenu', state.contextHandler);
@@ -283,29 +301,15 @@
       if (action === 'mode') {
         setMode(state, button.getAttribute('data-mode') || MODE_BROWSE);
         hideMenu(state);
-        return;
-      }
-
-      if (action === 'clear') {
+      } else if (action === 'undo') {
+        undoLastAnnotation(state);
+        hideMenu(state);
+      } else if (action === 'clear') {
         clearAnnotations(state);
         hideMenu(state);
-        flashBadge(state, '已清空标注');
-        return;
-      }
-
-      if (action === 'exit') {
+        flashBadge(state, 'Annotations cleared');
+      } else if (action === 'exit') {
         exitPresenter(state);
-      }
-    });
-
-    document.addEventListener('fullscreenchange', function onFullscreenChange() {
-      if (!state.active) {
-        document.removeEventListener('fullscreenchange', onFullscreenChange);
-        return;
-      }
-
-      if (!document.fullscreenElement && state.shell) {
-        updateStageBounds(state);
       }
     });
   }
@@ -325,12 +329,7 @@
   }
 
   function updateBadge(state) {
-    const labels = {
-      browse: '浏览',
-      draw: '画笔',
-      highlight: '荧光'
-    };
-    state.badge.innerHTML = `模式: <span class="article-presenter-mode-text">${labels[state.mode]}</span>`;
+    state.badge.innerHTML = `Mode: <span class="article-presenter-mode-text">${MODE_LABELS[state.mode]}</span>`;
     state.badge.classList.add('visible');
   }
 
@@ -339,17 +338,16 @@
     state.badge.textContent = message;
     state.badge.classList.add('visible');
     state.badgeTimer = window.setTimeout(function () {
-      if (!state.active) {
-        return;
+      if (state.active) {
+        updateBadge(state);
       }
-      updateBadge(state);
     }, 1100);
   }
 
-  function moveSpotlight(state, clientX, clientY) {
-    state.spotlight.style.left = `${clientX}px`;
-    state.spotlight.style.top = `${clientY}px`;
-    state.spotlight.classList.add('visible');
+  function movePointerGlow(state, clientX, clientY) {
+    state.pointerGlow.style.left = `${clientX}px`;
+    state.pointerGlow.style.top = `${clientY}px`;
+    state.pointerGlow.classList.add('visible');
   }
 
   function openMenu(state, clientX, clientY) {
@@ -402,7 +400,7 @@
     state.currentPoints = [getStagePoint(state, event)];
     state.currentPath = document.createElementNS(SVG_NS, 'path');
     state.currentPath.setAttribute('fill', 'none');
-    state.currentPath.setAttribute('stroke', '#ffb02e');
+    state.currentPath.setAttribute('stroke', '#c88b12');
     state.currentPath.setAttribute('stroke-width', '4');
     state.currentPath.setAttribute('stroke-linecap', 'round');
     state.currentPath.setAttribute('stroke-linejoin', 'round');
@@ -432,6 +430,8 @@
 
     if (state.currentPoints.length < 2) {
       state.currentPath.remove();
+    } else {
+      recordAnnotation(state, state.currentPath);
     }
 
     state.currentPath = null;
@@ -487,6 +487,7 @@
     });
 
     state.annotations.appendChild(group);
+    recordAnnotation(state, group);
     clearSelection();
   }
 
@@ -517,6 +518,24 @@
     return node.parentElement || null;
   }
 
+  function recordAnnotation(state, node) {
+    state.annotationHistory.push(node);
+  }
+
+  function undoLastAnnotation(state) {
+    const lastNode = state.annotationHistory.pop();
+    if (!lastNode) {
+      flashBadge(state, 'Nothing to undo');
+      return;
+    }
+
+    if (lastNode.parentNode) {
+      lastNode.parentNode.removeChild(lastNode);
+    }
+
+    flashBadge(state, 'Last annotation removed');
+  }
+
   function clearAnnotations(state) {
     if (state.annotations) {
       state.annotations.innerHTML = '';
@@ -527,6 +546,8 @@
         state.canvas.removeChild(state.canvas.firstChild);
       }
     }
+
+    state.annotationHistory = [];
   }
 
   function clearSelection() {
@@ -564,6 +585,9 @@
     if (state.resizeHandler) {
       window.removeEventListener('resize', state.resizeHandler);
     }
+    if (state.fullscreenHandler) {
+      document.removeEventListener('fullscreenchange', state.fullscreenHandler);
+    }
 
     if (document.fullscreenElement === state.shell && document.exitFullscreen) {
       document.exitFullscreen().catch(function () {
@@ -580,7 +604,7 @@
     state.stage = null;
     state.presenterArticle = null;
     state.presenterContent = null;
-    state.spotlight = null;
+    state.pointerGlow = null;
     state.menu = null;
     state.badge = null;
     state.annotations = null;
@@ -588,6 +612,7 @@
     state.interaction = null;
     state.currentPath = null;
     state.currentPoints = [];
+    state.annotationHistory = [];
     state.drawing = false;
     state.highlightCount = 0;
   }
