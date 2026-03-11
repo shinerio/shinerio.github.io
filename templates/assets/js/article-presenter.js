@@ -74,6 +74,7 @@
       currentPoints: [],
       annotationHistory: [],
       badgeTimer: null,
+      pointerMoveTimer: null,
       highlightCount: 0,
       moveHandler: null,
       upHandler: null,
@@ -147,6 +148,12 @@
 
     state.pointerGlow = document.createElement('div');
     state.pointerGlow.className = 'article-presenter-spotlight';
+    state.pointerGlow.innerHTML = [
+      '<svg viewBox="0 0 24 24" aria-hidden="true">',
+      '<path d="M8.5 3.5c.83 0 1.5.67 1.5 1.5V10h.75V3.75c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5V10h.75V5.25c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5V11h.75c.97 0 1.75.78 1.75 1.75v1.75c0 2.35-1.08 4.56-2.93 6.01l-.65.51a3.75 3.75 0 0 1-2.32.8H12.4a3.75 3.75 0 0 1-3.54-2.51L7.6 15.55A3.3 3.3 0 0 1 7.5 14.8V5c0-.83.67-1.5 1.5-1.5Z"/>',
+      '<path class="hand-stroke" d="M8.5 3.5c.83 0 1.5.67 1.5 1.5V10h.75V3.75c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5V10h.75V5.25c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5V11h.75c.97 0 1.75.78 1.75 1.75v1.75c0 2.35-1.08 4.56-2.93 6.01l-.65.51a3.75 3.75 0 0 1-2.32.8H12.4a3.75 3.75 0 0 1-3.54-2.51L7.6 15.55A3.3 3.3 0 0 1 7.5 14.8V5c0-.83.67-1.5 1.5-1.5Z"/>',
+      '</svg>'
+    ].join('');
 
     state.menu = document.createElement('div');
     state.menu.className = 'article-presenter-menu';
@@ -347,7 +354,13 @@
   function movePointerGlow(state, clientX, clientY) {
     state.pointerGlow.style.left = `${clientX}px`;
     state.pointerGlow.style.top = `${clientY}px`;
-    state.pointerGlow.classList.add('visible');
+    state.pointerGlow.classList.add('visible', 'is-moving');
+    window.clearTimeout(state.pointerMoveTimer);
+    state.pointerMoveTimer = window.setTimeout(function () {
+      if (state.pointerGlow) {
+        state.pointerGlow.classList.remove('is-moving');
+      }
+    }, 160);
   }
 
   function openMenu(state, clientX, clientY) {
@@ -567,6 +580,7 @@
     clearSelection();
     hideMenu(state);
     window.clearTimeout(state.badgeTimer);
+    window.clearTimeout(state.pointerMoveTimer);
     document.body.classList.remove('presenter-shell-open');
 
     if (state.shellInner && state.scrollHandler) {
@@ -615,5 +629,6 @@
     state.annotationHistory = [];
     state.drawing = false;
     state.highlightCount = 0;
+    state.pointerMoveTimer = null;
   }
 })();
