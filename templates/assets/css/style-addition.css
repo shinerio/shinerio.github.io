@@ -731,3 +731,51 @@ pre.mermaid svg {
     max-width: 100%;
     height: auto;
 }
+
+/* ===== Article TOC Docked Right Auto-Reveal ===== */
+body.article-page .article-toc-hover-zone {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    body.article-page .article-page-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    body.article-page .article-main-column {
+        max-width: 720px;
+        margin-right: 0;
+    }
+
+    body.article-page .article-toc-hover-zone {
+        display: block;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 20px;
+        height: 100vh;
+        z-index: 1150;
+    }
+
+    body.article-page .article-toc-sidebar {
+        position: fixed;
+        top: 96px;
+        right: 12px;
+        width: 280px;
+        max-height: calc(100vh - 120px);
+        overflow: auto;
+        z-index: 1160;
+        transform: translateX(calc(100% + 20px));
+        opacity: 0;
+        pointer-events: none;
+        transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+
+    body.article-page .article-toc-hover-zone:hover + .article-toc-sidebar,
+    body.article-page .article-toc-sidebar:hover,
+    body.article-page .article-toc-sidebar:focus-within {
+        transform: translateX(0);
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
