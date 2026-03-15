@@ -449,87 +449,6 @@ body.presenter-shell-open {
     margin: 0;
 }
 
-.article-presenter-toc {
-    position: fixed;
-    top: 1.4rem;
-    right: max(0.8rem, calc((100vw - 1360px) / 2 + 0.5rem));
-    width: 250px;
-    max-height: calc(100vh - 2.8rem);
-    overflow: auto;
-    padding: 0.95rem 0.85rem;
-    border: 1px solid var(--color-border);
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 16px 45px rgba(15, 23, 42, 0.15);
-    backdrop-filter: blur(10px);
-    z-index: 5;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateX(calc(100% - 1.2rem));
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.article-presenter-toc-hotspot {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 24px;
-    height: 100vh;
-    z-index: 6;
-}
-
-.article-presenter-toc-hotspot:hover + .article-presenter-toc,
-.article-presenter-toc:hover {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateX(0);
-}
-
-[data-theme="dark"] .article-presenter-toc {
-    background: rgba(13, 17, 23, 0.88);
-    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.35);
-}
-
-.article-presenter-toc-title {
-    font-size: 0.76rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-text-tertiary);
-    margin-bottom: 0.6rem;
-}
-
-.article-presenter-toc-nav ul {
-    margin: 0;
-    padding-left: 0;
-    list-style: none;
-}
-
-.article-presenter-toc-nav li + li {
-    margin-top: 0.2rem;
-}
-
-.article-presenter-toc-nav a {
-    display: block;
-    padding: 0.25rem 0.45rem;
-    border-radius: 8px;
-    color: var(--color-text-secondary);
-    text-decoration: none;
-    transition: background-color var(--transition-fast), color var(--transition-fast);
-    font-size: 0.86rem;
-}
-
-.article-presenter-toc-nav a:hover,
-.article-presenter-toc-nav a.is-active {
-    color: var(--color-accent-secondary);
-    background: var(--color-accent-soft);
-}
-
-.article-presenter-toc-nav ul ul a {
-    padding-left: 1rem;
-    font-size: 0.81rem;
-}
-
 .article-presenter-document article {
     background: transparent;
 }
@@ -721,11 +640,6 @@ body.presenter-shell-open {
 }
 
 @media (max-width: 1279px) {
-    .article-presenter-toc-hotspot,
-    .article-presenter-toc {
-        display: none;
-    }
-
     .article-presenter-document {
         margin: 0 auto;
     }
