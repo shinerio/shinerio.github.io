@@ -5,6 +5,9 @@
   const MODE_DRAW = 'draw';
   const MODE_HIGHLIGHT = 'highlight';
   const SVG_NS = 'http://www.w3.org/2000/svg';
+  const PRESENTER_TOC_ACTIVE_OFFSET = 110;
+  const PRESENTER_TOC_SCROLL_OFFSET = 40;
+  const PRESENTER_TOC_CLOSE_DELAY = 120;
 
   const MENU_ITEMS = [
     { action: 'mode', mode: MODE_BROWSE, label: 'Browse mode', shortcut: 'B' },
@@ -38,11 +41,72 @@
     '.tsc-tooltip'
   ].join(', ');
 
-  document.addEventListener('DOMContentLoaded', init);
+  if (typeof document !== 'undefined') {
+    document.addEventListener('DOMContentLoaded', init);
+  }
+
+  function findHeadingById(root, id) {
+    if (!root || !id || typeof root.querySelectorAll !== 'function') {
+      return null;
+    }
+
+    const candidates = Array.from(root.querySelectorAll('[id]'));
+    for (const candidate of candidates) {
+      if (candidate && candidate.id === id) {
+        return candidate;
+      }
+    }
+
+    return null;
+  }
+
+  function collectPresenterTocTargets(tocLinks, presenterArticle) {
+    return Array.from(tocLinks || [])
+      .map(function (link) {
+        const href = link.getAttribute('href') || '';
+        if (!href.startsWith('#')) {
+          return null;
+        }
+
+        const heading = findHeadingById(presenterArticle, href.slice(1));
+        if (!heading) {
+          return null;
+        }
+
+        return { link: link, heading: heading };
+      })
+      .filter(Boolean);
+  }
+
+  function resolveActiveHeadingId(headingTargets, offsetTop) {
+    if (!Array.isArray(headingTargets) || headingTargets.length === 0) {
+      return null;
+    }
+
+    const activeOffset = typeof offsetTop === 'number' ? offsetTop : PRESENTER_TOC_ACTIVE_OFFSET;
+    let currentId = headingTargets[0].heading.id;
+
+    for (const item of headingTargets) {
+      const top = item.heading.getBoundingClientRect().top;
+      if (top - activeOffset <= 0) {
+        currentId = item.heading.id;
+      } else {
+        break;
+      }
+    }
+
+    return currentId;
+  }
+
+  function computePresenterScrollTop(heading, stageTop, currentScrollTop, topOffset) {
+    const offset = typeof topOffset === 'number' ? topOffset : PRESENTER_TOC_SCROLL_OFFSET;
+    return heading.getBoundingClientRect().top - stageTop + currentScrollTop - offset;
+  }
 
   function init() {
     const toggleBtn = document.querySelector('[data-presenter-toggle]');
     const sourceArticle = document.querySelector('.article-main-column article');
+    const sourceToc = document.querySelector('[data-presenter-toc-source]');
 
     if (!toggleBtn || !sourceArticle || !document.body.classList.contains('article-page')) {
       return;
@@ -58,11 +122,17 @@
       mode: MODE_BROWSE,
       toggleBtn: toggleBtn,
       sourceArticle: sourceArticle,
+      sourceToc: sourceToc,
       shell: null,
       shellInner: null,
       stage: null,
       presenterArticle: null,
       presenterContent: null,
+      toc: null,
+      tocTrigger: null,
+      tocLinks: [],
+      tocTargets: [],
+      tocCloseTimer: null,
       menu: null,
       badge: null,
       annotations: null,
@@ -103,6 +173,7 @@
     document.body.classList.add('presenter-shell-open');
     setMode(state, MODE_BROWSE);
     updateStageBounds(state);
+    syncPresenterToc(state);
     bindShellEvents(state);
     flashBadge(state, 'Presenter mode enabled');
 
@@ -144,6 +215,8 @@
     state.interaction = document.createElement('div');
     state.interaction.className = 'article-presenter-interaction';
 
+    buildPresenterToc(state);
+
     state.menu = document.createElement('div');
     state.menu.className = 'article-presenter-menu';
     state.menu.innerHTML = [
@@ -166,9 +239,93 @@
     state.stage.appendChild(state.interaction);
     state.shellInner.appendChild(state.stage);
     state.shell.appendChild(state.shellInner);
+    if (state.tocTrigger) {
+      state.shell.appendChild(state.tocTrigger);
+    }
+    if (state.toc) {
+      state.shell.appendChild(state.toc);
+    }
     state.shell.appendChild(state.menu);
     state.shell.appendChild(state.badge);
     document.body.appendChild(state.shell);
+  }
+
+  function buildPresenterToc(state) {
+    if (!state.sourceToc || !state.presenterArticle) {
+      return;
+    }
+
+    const toc = state.sourceToc.cloneNode(true);
+    toc.classList.add('article-presenter-toc');
+    toc.removeAttribute('data-presenter-toc-source');
+
+    const tocLinks = Array.from(toc.querySelectorAll('.toc-link'));
+    const tocTargets = collectPresenterTocTargets(tocLinks, state.presenterArticle);
+    if (tocTargets.length === 0) {
+      return;
+    }
+
+    const tocTrigger = document.createElement('div');
+    tocTrigger.className = 'article-presenter-toc-trigger';
+    tocTrigger.setAttribute('aria-hidden', 'true');
+
+    const show = function () {
+      showPresenterToc(state);
+    };
+    const queueHide = function () {
+      queueHidePresenterToc(state);
+    };
+
+    tocTrigger.addEventListener('mouseenter', show);
+    tocTrigger.addEventListener('mouseleave', queueHide);
+    toc.addEventListener('mouseenter', show);
+    toc.addEventListener('mouseleave', queueHide);
+    toc.addEventListener('focusin', show);
+    toc.addEventListener('focusout', function (event) {
+      if (toc.contains(event.relatedTarget)) {
+        return;
+      }
+
+      queueHidePresenterToc(state);
+    });
+
+    tocLinks.forEach(function (link) {
+      link.addEventListener('click', function (event) {
+        const href = link.getAttribute('href') || '';
+        if (!href.startsWith('#') || !state.shellInner || !state.stage) {
+          return;
+        }
+
+        const heading = findHeadingById(state.presenterArticle, href.slice(1));
+        if (!heading) {
+          return;
+        }
+
+        event.preventDefault();
+        const stageRect = state.stage.getBoundingClientRect();
+        const nextScrollTop = computePresenterScrollTop(
+          heading,
+          stageRect.top,
+          state.shellInner.scrollTop,
+          PRESENTER_TOC_SCROLL_OFFSET
+        );
+
+        state.shellInner.scrollTo({
+          top: Math.max(0, nextScrollTop),
+          behavior: 'smooth'
+        });
+
+        setPresenterTocActive(state, heading.id);
+        if (typeof history !== 'undefined' && history.replaceState) {
+          history.replaceState(null, '', href);
+        }
+      });
+    });
+
+    state.toc = toc;
+    state.tocTrigger = tocTrigger;
+    state.tocLinks = tocLinks;
+    state.tocTargets = tocTargets;
   }
 
   function bindShellEvents(state) {
@@ -232,12 +389,14 @@
     state.resizeHandler = function () {
       if (state.active) {
         updateStageBounds(state);
+        syncPresenterToc(state);
       }
     };
 
     state.scrollHandler = function () {
       if (state.active) {
         updateStageBounds(state);
+        syncPresenterToc(state);
       }
     };
 
@@ -263,6 +422,7 @@
     state.fullscreenHandler = function () {
       if (state.active && !document.fullscreenElement) {
         updateStageBounds(state);
+        syncPresenterToc(state);
       }
     };
 
@@ -354,6 +514,56 @@
     if (state.menu) {
       state.menu.classList.remove('visible');
     }
+  }
+
+  function showPresenterToc(state) {
+    if (!state.toc) {
+      return;
+    }
+
+    window.clearTimeout(state.tocCloseTimer);
+    state.toc.classList.add('is-visible');
+    if (state.tocTrigger) {
+      state.tocTrigger.classList.add('is-active');
+    }
+    syncPresenterToc(state);
+  }
+
+  function queueHidePresenterToc(state) {
+    window.clearTimeout(state.tocCloseTimer);
+    state.tocCloseTimer = window.setTimeout(function () {
+      hidePresenterToc(state);
+    }, PRESENTER_TOC_CLOSE_DELAY);
+  }
+
+  function hidePresenterToc(state) {
+    window.clearTimeout(state.tocCloseTimer);
+    if (state.toc) {
+      state.toc.classList.remove('is-visible');
+    }
+    if (state.tocTrigger) {
+      state.tocTrigger.classList.remove('is-active');
+    }
+  }
+
+  function setPresenterTocActive(state, id) {
+    if (!Array.isArray(state.tocLinks)) {
+      return;
+    }
+
+    state.tocLinks.forEach(function (link) {
+      const href = link.getAttribute('href') || '';
+      link.classList.toggle('active', Boolean(id) && href === `#${id}`);
+    });
+  }
+
+  function syncPresenterToc(state) {
+    if (!Array.isArray(state.tocTargets) || state.tocTargets.length === 0) {
+      return;
+    }
+
+    const activeId = resolveActiveHeadingId(state.tocTargets, PRESENTER_TOC_ACTIVE_OFFSET);
+    setPresenterTocActive(state, activeId);
   }
 
   function updateStageBounds(state) {
@@ -552,8 +762,10 @@
     state.active = false;
     clearAnnotations(state);
     clearSelection();
+    hidePresenterToc(state);
     hideMenu(state);
     window.clearTimeout(state.badgeTimer);
+    window.clearTimeout(state.tocCloseTimer);
     document.body.classList.remove('presenter-shell-open');
 
     if (state.shellInner && state.scrollHandler) {
@@ -591,6 +803,11 @@
     state.stage = null;
     state.presenterArticle = null;
     state.presenterContent = null;
+    state.toc = null;
+    state.tocTrigger = null;
+    state.tocLinks = [];
+    state.tocTargets = [];
+    state.tocCloseTimer = null;
     state.menu = null;
     state.badge = null;
     state.annotations = null;
@@ -601,5 +818,14 @@
     state.annotationHistory = [];
     state.drawing = false;
     state.highlightCount = 0;
+  }
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+      findHeadingById: findHeadingById,
+      collectPresenterTocTargets: collectPresenterTocTargets,
+      resolveActiveHeadingId: resolveActiveHeadingId,
+      computePresenterScrollTop: computePresenterScrollTop
+    };
   }
 })();

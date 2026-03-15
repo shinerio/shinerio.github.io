@@ -116,4 +116,36 @@ describe('Article TOC Generation', () => {
     expect(html).toContain('href="#中文标题"');
     expect(html).toContain('href="#第二节"');
   });
+
+  it('renders a stable TOC hook for presenter mode reuse', async () => {
+    const repoArticleTemplate = await fs.readFile(
+      path.resolve(__dirname, '../../templates/article.html'),
+      'utf-8'
+    );
+    await fs.writeFile(path.join(tempDir, 'templates', 'article.html'), repoArticleTemplate);
+
+    const article: ParsedArticle = {
+      metadata: {
+        title: 'Presenter TOC',
+        date: new Date('2023-01-03'),
+        modifiedDate: new Date('2023-01-03'),
+        tags: [],
+        slug: 'presenter-toc'
+      },
+      content: '# Main\n\n## Section One\nA',
+      filePath: '/mock/vault/presenter-toc.md',
+      wordCount: 20
+    };
+
+    const options: GenerationOptions = {
+      config: mockConfig,
+      articles: [article],
+      outputPath: mockConfig.outputPath
+    };
+
+    await generator.generateSite(options);
+
+    const html = await fs.readFile(path.join(mockConfig.outputPath, 'presenter-toc.html'), 'utf-8');
+    expect(html).toContain('data-presenter-toc-source');
+  });
 });
