@@ -43,6 +43,7 @@
   function init() {
     const toggleBtn = document.querySelector('[data-presenter-toggle]');
     const sourceArticle = document.querySelector('.article-main-column article');
+    const sourceToc = document.querySelector('.article-toc-sidebar .article-toc-nav');
 
     if (!toggleBtn || !sourceArticle || !document.body.classList.contains('article-page')) {
       return;
@@ -58,11 +59,15 @@
       mode: MODE_BROWSE,
       toggleBtn: toggleBtn,
       sourceArticle: sourceArticle,
+      sourceToc: sourceToc,
       shell: null,
       shellInner: null,
       stage: null,
       presenterArticle: null,
       presenterContent: null,
+      presenterToc: null,
+      tocLinks: [],
+      tocHeadings: [],
       menu: null,
       badge: null,
       annotations: null,
@@ -103,6 +108,7 @@
     document.body.classList.add('presenter-shell-open');
     setMode(state, MODE_BROWSE);
     updateStageBounds(state);
+    updateActiveTocLink(state);
     bindShellEvents(state);
     flashBadge(state, 'Presenter mode enabled');
 
@@ -133,6 +139,11 @@
     const documentWrap = document.createElement('div');
     documentWrap.className = 'article-presenter-document';
     documentWrap.appendChild(state.presenterArticle);
+
+    if (state.sourceToc) {
+      state.presenterToc = buildToc(state);
+      state.stage.appendChild(state.presenterToc);
+    }
 
     state.annotations = document.createElement('div');
     state.annotations.className = 'article-presenter-annotations';
@@ -169,6 +180,45 @@
     state.shell.appendChild(state.menu);
     state.shell.appendChild(state.badge);
     document.body.appendChild(state.shell);
+  }
+
+  function buildToc(state) {
+    const tocWrapper = document.createElement('aside');
+    tocWrapper.className = 'article-presenter-toc';
+    tocWrapper.innerHTML = [
+      '<div class="article-presenter-toc-title">目录</div>',
+      `<nav class="article-presenter-toc-nav">${state.sourceToc.innerHTML}</nav>`
+    ].join('');
+
+    const tocNav = tocWrapper.querySelector('.article-presenter-toc-nav');
+    state.tocLinks = Array.from(tocNav.querySelectorAll('a[href^="#"]'));
+    state.tocHeadings = state.tocLinks.map(function (link) {
+      const headingId = (link.getAttribute('href') || '').replace(/^#/, '');
+      return headingId ? state.presenterArticle.querySelector(`#${CSS.escape(headingId)}`) : null;
+    });
+
+    tocNav.addEventListener('click', function (event) {
+      const link = event.target.closest('a[href^="#"]');
+      if (!link) {
+        return;
+      }
+
+      event.preventDefault();
+      const headingId = (link.getAttribute('href') || '').replace(/^#/, '');
+      if (!headingId) {
+        return;
+      }
+
+      const targetHeading = state.presenterArticle.querySelector(`#${CSS.escape(headingId)}`);
+      if (!targetHeading) {
+        return;
+      }
+
+      scrollToHeading(state, targetHeading);
+      updateActiveTocLink(state);
+    });
+
+    return tocWrapper;
   }
 
   function bindShellEvents(state) {
@@ -238,6 +288,7 @@
     state.scrollHandler = function () {
       if (state.active) {
         updateStageBounds(state);
+        updateActiveTocLink(state);
       }
     };
 
@@ -371,6 +422,42 @@
     state.canvas.setAttribute('viewBox', `0 0 ${width} ${height}`);
     state.canvas.setAttribute('width', String(width));
     state.canvas.setAttribute('height', String(height));
+  }
+
+  function scrollToHeading(state, heading) {
+    const shellRect = state.shellInner.getBoundingClientRect();
+    const headingRect = heading.getBoundingClientRect();
+    const nextTop = state.shellInner.scrollTop + headingRect.top - shellRect.top - 24;
+
+    state.shellInner.scrollTo({
+      top: Math.max(0, nextTop),
+      behavior: 'smooth'
+    });
+  }
+
+  function updateActiveTocLink(state) {
+    if (!state.tocLinks.length) {
+      return;
+    }
+
+    const shellRect = state.shellInner.getBoundingClientRect();
+    const threshold = shellRect.top + 120;
+    let activeIndex = 0;
+
+    state.tocHeadings.forEach(function (heading, index) {
+      if (!heading) {
+        return;
+      }
+
+      const rect = heading.getBoundingClientRect();
+      if (rect.top <= threshold) {
+        activeIndex = index;
+      }
+    });
+
+    state.tocLinks.forEach(function (link, index) {
+      link.classList.toggle('is-active', index === activeIndex);
+    });
   }
 
   function getStagePoint(state, event) {
@@ -591,6 +678,9 @@
     state.stage = null;
     state.presenterArticle = null;
     state.presenterContent = null;
+    state.presenterToc = null;
+    state.tocLinks = [];
+    state.tocHeadings = [];
     state.menu = null;
     state.badge = null;
     state.annotations = null;
